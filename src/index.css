@@ -1,0 +1,57 @@
+/* Basic CSS reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Mapbox custom styles */
+.mapboxgl-popup-content {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.mapboxgl-popup-close-button {
+  font-size: 16px;
+  color: #666;
+}
+
+/* Map component styles */
+.map-wrapper {
+  width: 100%;
+  height: 100%;
+}
+
+.map-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.popup-content {
+  padding: 0.75rem;
+}
+
+.popup-title {
+  font-weight: bold;
+  font-size: 1.125rem;
+}
+
+.popup-borough,
+.popup-cuisine {
+  font-size: 0.875rem;
+  color: #6b7280;
+}

@@ -1,0 +1,85 @@
+.header {
+  width: 100%;
+  background-color: black;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+}
+
+.header-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-title {
+  font-family: Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.header-dates {
+  font-family: Helvetica, Arial, sans-serif;
+  font-weight: bold;
+  font-size: 0.875rem;
+  margin: 0.25rem 0 0 0;
+}
+
+.header-logo {
+  flex-shrink: 0;
+}
+
+.logo-link {
+  display: block;
+  transition: transform 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.logo-link:hover {
+  transform: scale(1.1);
+}
+
+.logo-image {
+  height: 3rem;
+  width: 3rem;
+  object-fit: contain;
+  transition: filter 0.2s ease-in-out;
+}
+
+.logo-link:hover .logo-image {
+  filter: brightness(1.2);
+}
+
+/* Responsive design */
+@media (min-width: 768px) {
+  .header-title {
+    font-size: 1.875rem;
+  }
+  
+  .header-dates {
+    font-size: 1rem;
+  }
+  
+  .logo-image {
+    height: 4rem;
+    width: 4rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .header-title {
+    font-size: 2.25rem;
+  }
+  
+  .header-dates {
+    font-size: 1.125rem;
+  }
+  
+  .logo-image {
+    height: 5rem;
+    width: 5rem;
+  }
+} 

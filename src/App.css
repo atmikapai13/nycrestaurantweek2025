@@ -1,0 +1,87 @@
+.app {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+}
+
+.map-section {
+  width: 66.666667%;
+  height: 100%;
+  padding: 20px;
+  padding-right: 5px;
+  padding-left: 60px;
+}
+
+.sidebar {
+  width: 33.333333%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+
+
+.restaurant-card-section {
+  flex: 1;
+  padding: 1rem;
+  padding-right: 60px;
+}
+
+.restaurant-card {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  padding-right: 60px;
+}
+
+.restaurant-name {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  padding-right: 60px;
+}
+
+.restaurant-borough {
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+
+.restaurant-cuisine {
+  font-size: 0.875rem;
+  color: #9ca3af;
+  margin-bottom: 0.5rem;
+}
+
+.restaurant-summary {
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+.menu-link {
+  color: #2563eb;
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+
+.menu-link:hover {
+  text-decoration: underline;
+}
+
+.no-selection {
+  text-align: center;
+  color: #9ca3af;
+  margin-top: 2rem;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
