@@ -1,6 +1,7 @@
 import json
 import requests
 import time
+import threading
 from typing import List, Dict, Optional, Tuple
 import re
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -14,6 +15,11 @@ class RestaurantCoordinateExtractor:
             'Accept-Encoding': 'gzip, deflate',
             'Connection': 'keep-alive',
         }
+        
+        # Rate limiting for faster but respectful scraping
+        self.request_delay = 0.1  # 100ms between requests
+        self.last_request_time = 0
+        self.request_lock = threading.Lock()
     
     def extract_restaurant_data(self, restaurant: Dict) -> Dict:
         """Extract coordinates and address from restaurant's page source"""
@@ -34,9 +40,20 @@ class RestaurantCoordinateExtractor:
         restaurant_url = f"https://www.nyctourism.com/restaurant-week/{slug}/"
         
         try:
+            # Rate limiting
+            with self.request_lock:
+                current_time = time.time()
+                time_since_last = current_time - self.last_request_time
+                
+                if time_since_last < self.request_delay:
+                    sleep_time = self.request_delay - time_since_last
+                    time.sleep(sleep_time)
+                
+                self.last_request_time = time.time()
+            
             print(f"  🌐 Fetching: {restaurant_url}")
             
-            response = requests.get(restaurant_url, headers=self.headers, timeout=15)
+            response = requests.get(restaurant_url, headers=self.headers, timeout=10)
             
             if response.status_code == 200:
                 page_content = response.text
@@ -124,7 +141,15 @@ class RestaurantCoordinateExtractor:
                     'extraction_method': f'location_pattern_{i+1}'
                 }
         
-        
+        # If no patterns matched, return failure
+        return {
+            'address': None,
+            'latitude': None,
+            'longitude': None,
+            'extraction_success': False,
+            'error': 'No coordinate patterns found in page source',
+            'extraction_method': 'failed'
+        }
     
     def clean_venue_address(self, address_raw: str) -> str:
         """Clean the raw venue address format"""
@@ -150,7 +175,22 @@ class RestaurantCoordinateExtractor:
             # Just return as-is if unusual format
             return address_raw
     
-    
+    def find_address_in_content(self, page_content: str) -> Optional[str]:
+        """Find address in page content using various patterns"""
+        
+        # Look for address patterns
+        address_patterns = [
+            r'"address":"([^"]+)"',
+            r'"streetAddress":"([^"]+)"',
+            r'"venueAddress":"([^"]+)"',
+        ]
+        
+        for pattern in address_patterns:
+            matches = re.findall(pattern, page_content)
+            if matches:
+                return matches[0]
+        
+        return None
     
     def process_restaurant_with_progress(self, restaurant_data) -> Dict:
         """Process a single restaurant with progress tracking"""
@@ -172,17 +212,16 @@ class RestaurantCoordinateExtractor:
         """Extract coordinates for all restaurants"""
         
         print(f"📍 Starting coordinate extraction for {len(restaurants)} restaurants...")
-        print(f"⏱️  Estimated time: ~{len(restaurants) * 2 / 60:.1f} minutes")
+        print(f"⏱️  Estimated time: ~{len(restaurants) * 0.5 / 60:.1f} minutes")
         
         results = []
-        success_count = 0
         
         # Prepare data with progress info
         restaurant_data = [(i+1, len(restaurants), restaurant) 
                           for i, restaurant in enumerate(restaurants)]
         
-        # Use parallel processing
-        with ThreadPoolExecutor(max_workers=4) as executor:
+        # Use parallel processing for speed
+        with ThreadPoolExecutor(max_workers=10) as executor:
             future_to_restaurant = {
                 executor.submit(self.process_restaurant_with_progress, data): data[2]['name']
                 for data in restaurant_data
@@ -194,26 +233,19 @@ class RestaurantCoordinateExtractor:
                     result = future.result()
                     results.append(result)
                     
-                    if result['extraction_success']:
-                        success_count += 1
-                    
                     # Progress update
-                    if len(results) % 50 == 0:
-                        print(f"\n📊 Progress: {len(results)}/{len(restaurants)} " +
-                              f"({success_count} successful, {success_count/len(results)*100:.1f}%)")
+                    if len(results) % 25 == 0:
+                        print(f"\n📊 Progress: {len(results)}/{len(restaurants)}")
                         
                 except Exception as e:
                     print(f"❌ Error processing {restaurant_name}: {e}")
         
-        # Sort to maintain original order
+        # Sort results to maintain original order
         results.sort(key=lambda x: next(i for i, r in enumerate(restaurants) if r['name'] == x['name']))
-        
-        print(f"\n🎉 Coordinate extraction complete!")
-        print(f"✅ Successfully extracted: {success_count}/{len(restaurants)} ({success_count/len(restaurants)*100:.1f}%)")
         
         return results
     
-    def save_results(self, restaurants: List[Dict], filename: str = "restaurants_with_coordinates.json"):
+    def save_results(self, restaurants: List[Dict], filename: str = "data/2restaurants_with_coordinates.json"):
         """Save results to JSON file"""
         
         try:
@@ -229,12 +261,28 @@ def main():
     
     # Load the cleaned restaurant data
     try:
-        with open('clean_restaurant_data.json', 'r', encoding='utf-8') as f:
-            restaurants = json.load(f)
-        print(f"📂 Loaded {len(restaurants)} restaurants")
+        # Try different possible paths
+        possible_paths = [
+            'data/1clean_restaurant_data.json',  # From root directory
+            '../data/1clean_restaurant_data.json',  # From utils directory
+        ]
         
-    except FileNotFoundError:
-        print("❌ Error: clean_restaurant_data.json not found!")
+        restaurants = None
+        for path in possible_paths:
+            try:
+                with open(path, 'r', encoding='utf-8') as f:
+                    restaurants = json.load(f)
+                print(f"📂 Loaded {len(restaurants)} restaurants from {path}")
+                break
+            except FileNotFoundError:
+                continue
+        
+        if restaurants is None:
+            print("❌ Error: Could not find 1clean_restaurant_data.json in data/ or ../data/")
+            return
+            
+    except Exception as e:
+        print(f"❌ Error loading data: {e}")
         return
     
     # Initialize extractor
@@ -264,7 +312,18 @@ def main():
     
     print(f"\n🔍 Extraction methods used:")
     for method, count in methods.items():
-        print(f"   {method}: {count}")
+        percentage = (count / success_count * 100) if success_count > 0 else 0
+        print(f"   {method}: {count} ({percentage:.1f}%)")
+    
+    # Show which strategies are working
+    print(f"\n📈 Strategy Analysis:")
+    venue_address_count = methods.get('venueAddress_location_pattern', 0)
+    location_patterns_count = sum(count for method, count in methods.items() if 'location_pattern_' in method)
+    failed_count = sum(1 for r in restaurants_with_coords if not r['extraction_success'])
+    
+    print(f"   Strategy 1 (venueAddress + location): {venue_address_count}")
+    print(f"   Strategy 2 (location patterns only): {location_patterns_count}")
+    print(f"   Failed extractions: {failed_count}")
     
     # Show some examples
     print(f"\n📋 Sample results:")

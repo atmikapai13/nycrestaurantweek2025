@@ -9,8 +9,8 @@ from bs4 import BeautifulSoup
 
 class RestaurantCharacteristicsExtractor:
     def __init__(self):
-        # Rate limiting for web scraping
-        self.request_delay = 1.0
+        # Rate limiting for web scraping (optimized for speed)
+        self.request_delay = 0.2  # Reduced from 1.0 to 0.2 seconds
         self.last_request_time = 0
         self.request_lock = threading.Lock()
         
@@ -49,7 +49,7 @@ class RestaurantCharacteristicsExtractor:
             response = requests.get(
                 restaurant_url, 
                 headers=self.scraping_headers, 
-                timeout=15
+                timeout=10  # Reduced timeout
             )
             
             if response.status_code == 200:
@@ -206,8 +206,8 @@ class RestaurantCharacteristicsExtractor:
         # Extract characteristics
         result = self.extract_restaurant_characteristics(restaurant)
         
-        # Small delay between restaurants
-        time.sleep(0.5)
+        # Reduced delay between restaurants
+        time.sleep(0.1)
         
         return result
     
@@ -215,7 +215,7 @@ class RestaurantCharacteristicsExtractor:
         """Process all restaurants using parallel processing"""
         
         print(f"🏢 Starting characteristics extraction for {len(restaurants)} restaurants...")
-        print(f"⏱️  Estimated time: ~{len(restaurants) * 1.5 / 60:.1f} minutes")
+        print(f"⏱️  Estimated time: ~{len(restaurants) * 0.3 / 60:.1f} minutes")
         
         processed_restaurants = []
         
@@ -223,8 +223,8 @@ class RestaurantCharacteristicsExtractor:
         restaurant_data = [(i+1, len(restaurants), restaurant) 
                           for i, restaurant in enumerate(restaurants)]
         
-        # Use fewer workers for web scraping to be respectful
-        with ThreadPoolExecutor(max_workers=2) as executor:
+        # Use more workers for faster processing
+        with ThreadPoolExecutor(max_workers=8) as executor:
             future_to_restaurant = {
                 executor.submit(self.process_restaurant, data): data[2]['name']
                 for data in restaurant_data
@@ -238,7 +238,8 @@ class RestaurantCharacteristicsExtractor:
                     
                     # Progress update
                     if len(processed_restaurants) % 25 == 0:
-                        print(f"\n📊 Progress: {len(processed_restaurants)}/{len(restaurants)}")
+                        success_count = sum(1 for r in processed_restaurants if any(r.get(char) for char in ['telephone', 'price_range', 'facebook_url', 'instagram_url', 'menu_url']))
+                        print(f"\n📊 Progress: {len(processed_restaurants)}/{len(restaurants)} ({success_count} with characteristics found)")
                         
                 except Exception as e:
                     print(f"❌ Error processing {restaurant_name}: {e}")
@@ -250,7 +251,7 @@ class RestaurantCharacteristicsExtractor:
         
         return processed_restaurants
     
-    def save_data(self, restaurants: List[Dict], filename: str = "restaurants_with_characteristics.json"):
+    def save_data(self, restaurants: List[Dict], filename: str = "data/3restaurants_with_characteristics.json"):
         """Save restaurant data with characteristics"""
         
         try:
@@ -266,12 +267,28 @@ def main():
     
     # Load the cleaned restaurant data
     try:
-        with open('clean_restaurant_data.json', 'r', encoding='utf-8') as f:
-            restaurants = json.load(f)
-        print(f"📂 Loaded {len(restaurants)} restaurants")
+        # Try different possible paths
+        possible_paths = [
+            'data/2restaurants_with_coordinates.json',  # From root directory
+            '../data/2restaurants_with_coordinates.json',  # From utils directory
+        ]
         
-    except FileNotFoundError:
-        print("❌ Error: clean_restaurant_data.json not found!")
+        restaurants = None
+        for path in possible_paths:
+            try:
+                with open(path, 'r', encoding='utf-8') as f:
+                    restaurants = json.load(f)
+                print(f"📂 Loaded {len(restaurants)} restaurants from {path}")
+                break
+            except FileNotFoundError:
+                continue
+        
+        if restaurants is None:
+            print("❌ Error: Could not find 2restaurants_with_coordinates.json in data/ or ../data/")
+            return
+            
+    except Exception as e:
+        print(f"❌ Error loading data: {e}")
         return
     
     # Initialize processor
