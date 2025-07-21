@@ -45,7 +45,7 @@
 .restaurant-card-overlay {
   position: absolute;
   bottom: 2rem;
-  right: calc(5% + 1rem);
+  right: calc(7% + 1rem);
   z-index: 1000;
   max-width: 300px;
   width: 100%;
