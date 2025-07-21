@@ -1,0 +1,221 @@
+.restaurant-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  padding: 20px 20px 20px 20px;
+  margin-bottom: 16px;
+  height: 300px;
+  overflow-y: auto;
+  border: 1px solid #e5e7eb;
+  flex-shrink: 0;
+}
+
+/* Restaurant Tags */
+.restaurant-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  padding: 1px 5px;
+  padding-top: 2px;
+  border-radius: 6px;
+  font-size: 5px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1px;
+  color: white;
+}
+
+.tag-cuisine {
+  background-color: #3B82F6;
+}
+
+.tag-neighborhood {
+  background-color: #000000;
+}
+
+.tag-price {
+  background-color: #3B82F6;
+}
+
+.tag-michelin {
+  background-color: #FFFFFF;
+  color: #000000;
+}
+
+.tag-bib-gourmand {
+  background-color: #DC2626;
+  color: #FFFFFF;
+}
+
+.michelin-stars {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.michelin-star {
+  width: 12px;
+  height: 12px;
+}
+
+/* Restaurant Name */
+.restaurant-name {
+  font-size: 24px;
+  font-weight: 700;
+  color: #000000;
+  margin: 0 0 5px 0;
+  line-height: 1.2;
+}
+
+/* Restaurant Description */
+.restaurant-description {
+  font-size: 10px;
+  line-height: 1.6;
+  color: #4B5563;
+  margin: 0 0px 15px 0;
+  padding-top:7px;
+}
+
+/* Meals Section */
+.meals-section {
+  margin-bottom: 16px;
+}
+
+.meals-heading {
+  font-size: 12px;
+  font-weight: 700;
+  color: #000000;
+  margin: 0 0 8px 0;
+}
+
+.meals-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.meals-list-two-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 16px;
+}
+
+.meal-item {
+  font-size: 10px;
+  color: #4B5563;
+  line-height: 1.4;
+}
+
+/* Action Buttons */
+.restaurant-actions {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.action-button.primary {
+  background-color: #F2F2F7;
+  color: #007AFF;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.action-button.primary:hover {
+  background-color: #E5E5EA;
+}
+
+.action-links {
+  display: flex;
+  gap: 8px;
+  flex: 1;
+}
+
+.action-link {
+  background-color: #F2F2F7;
+  color: #007AFF;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  flex: 1;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.action-link:hover {
+  background-color: #E5E5EA;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .restaurant-card-overlay {
+    padding: 16px;
+  }
+  
+  .restaurant-card {
+    padding: 20px;
+    max-width: 100%;
+  }
+  
+  .restaurant-name {
+    font-size: 20px;
+  }
+  
+  .restaurant-tags {
+    gap: 6px;
+  }
+  
+  .tag {
+    font-size: 11px;
+    padding: 4px 10px;
+  }
+  
+  .action-links {
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .restaurant-card-overlay {
+    padding: 12px;
+  }
+  
+  .restaurant-card {
+    padding: 16px;
+  }
+  
+  .restaurant-name {
+    font-size: 18px;
+  }
+  
+  .restaurant-description {
+    font-size: 13px;
+  }
+} 

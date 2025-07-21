@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './Filters.css'
+import type { Restaurant } from '../types/restaurant'
 
 interface FilterOption {
   label: string
@@ -12,17 +13,17 @@ interface FiltersProps {
   onSearch: (searchTerm: string) => void
   onFilterChange: (filterType: string, values: string[]) => void
   restaurantCount: number
-  allRestaurants: string[]
+  allRestaurants: Restaurant[]
+  onResetAll: () => void
+  onRestaurantSelect: (restaurant: Restaurant) => void
 }
 
-export default function Filters({ onSearch, onFilterChange, restaurantCount, allRestaurants = []}: FiltersProps) {
+export default function Filters({ onSearch, onFilterChange, restaurantCount, allRestaurants = [], onResetAll, onRestaurantSelect}: FiltersProps) {
   const [searchTerm, setSearchTerm] = useState('')
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
   const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>({})
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [hasMenuActive, setHasMenuActive] = useState(false)
-  const [michelinStarsActive, setMichelinStarsActive] = useState(false)
-  const [bibGourmandActive, setBibGourmandActive] = useState(false)
   
 
   // Filter options (simplified for now, will be populated from data)
@@ -45,16 +46,17 @@ export default function Filters({ onSearch, onFilterChange, restaurantCount, all
   const getSuggestions = () => {
     if (!searchTerm.trim()) return []
     return allRestaurants
-      .filter(name => 
-        name.toLowerCase().includes(searchTerm.toLowerCase())
+      .filter(restaurant => 
+        restaurant.name.toLowerCase().includes(searchTerm.toLowerCase())
       )
       .slice(0, 5) // Limit to 5 suggestions
   }
 
-  const handleSuggestionClick = (suggestion: string) => {
-    setSearchTerm(suggestion)
+  const handleSuggestionClick = (restaurant: Restaurant) => {
+    setSearchTerm(restaurant.name)
     setShowSuggestions(false)
-    onSearch(suggestion)
+    onSearch(restaurant.name)
+    onRestaurantSelect(restaurant)
   }
 
   const handleFilterClick = (filterType: string) => {
@@ -94,81 +96,15 @@ export default function Filters({ onSearch, onFilterChange, restaurantCount, all
     onFilterChange('Has Menu', newActive ? ['active'] : [])
   }
 
-  const handleMichelinStarsToggle = () => {
-    const newActive = !michelinStarsActive
-    console.log('Michelin Star toggle:', { current: michelinStarsActive, new: newActive })
-    
-    setMichelinStarsActive(newActive)
-    
-    // Deactivate Bib Gourmand if Michelin Star becomes active
-    if (newActive) {
-      console.log('Deactivating Bib Gourmand, activating Michelin Star')
-      setBibGourmandActive(false)
-      // Use setTimeout to ensure state updates happen in order
-      setTimeout(() => {
-        onFilterChange('Bib Gourmand', [])
-        onFilterChange('Michelin Star', ['active'])
-      }, 0)
-    } else {
-      console.log('Deactivating Michelin Star only')
-      onFilterChange('Michelin Star', [])
-    }
-  }
-
-  const handleBibGourmandToggle = () => {
-    const newActive = !bibGourmandActive
-    console.log('Bib Gourmand toggle:', { current: bibGourmandActive, new: newActive })
-    
-    setBibGourmandActive(newActive)
-    
-    // Deactivate Michelin Star if Bib Gourmand becomes active
-    if (newActive) {
-      console.log('Deactivating Michelin Star, activating Bib Gourmand')
-      setMichelinStarsActive(false)
-      // Use setTimeout to ensure state updates happen in order
-      setTimeout(() => {
-        onFilterChange('Michelin Star', [])
-        onFilterChange('Bib Gourmand', ['active'])
-      }, 0)
-    } else {
-      console.log('Deactivating Bib Gourmand only')
-      onFilterChange('Bib Gourmand', [])
-    }
-  }
-
   const handleResetAll = () => {
     console.log('Resetting all filters...')
-    // Clear search first
+    // Clear local state
     setSearchTerm('')
-    onSearch('')
-    
-    // Clear all filters state first
     setSelectedFilters({})
-    
-    // Reset Has Menu toggle
     setHasMenuActive(false)
     
-    // Reset Michelin Stars toggle
-    setMichelinStarsActive(false)
-    
-    // Reset Bib Gourmand toggle
-    setBibGourmandActive(false)
-    
-    // Reset all filter types to empty arrays with a small delay
-    setTimeout(() => {
-      Object.keys(filterOptions).forEach(filterType => {
-        console.log(`Resetting ${filterType} to empty array`)
-        onFilterChange(filterType, [])
-      })
-      // Reset Has Menu filter
-      onFilterChange('Has Menu', [])
-      
-      // Reset Michelin Stars filter
-      onFilterChange('Michelin Star', [])
-      
-      // Reset Bib Gourmand filter
-      onFilterChange('Bib Gourmand', [])
-    }, 0)
+    // Call the parent reset function
+    onResetAll()
   }
 
   // Get all applied filters for display
@@ -206,13 +142,13 @@ export default function Filters({ onSearch, onFilterChange, restaurantCount, all
         {/* Search Suggestions */}
         {showSuggestions && getSuggestions().length > 0 && (
           <div className="search-suggestions">
-            {getSuggestions().map((suggestion, index) => (
+            {getSuggestions().map((restaurant, index) => (
               <div
                 key={index}
                 className="suggestion-item"
-                onClick={() => handleSuggestionClick(suggestion)}
+                onClick={() => handleSuggestionClick(restaurant)}
               >
-                {suggestion}
+                {restaurant.name}
               </div>
             ))}
           </div>
@@ -231,25 +167,7 @@ export default function Filters({ onSearch, onFilterChange, restaurantCount, all
           </button>
         </div>
         
-        {/* Michelin Stars Toggle Button */}
-        <div className="filter-group">
-          <button
-            className={`filter-button ${michelinStarsActive ? 'active' : ''}`}
-            onClick={handleMichelinStarsToggle}
-          >
-            Michelin Star
-          </button>
-        </div>
-        
-        {/* Bib Gourmand Toggle Button */}
-        <div className="filter-group">
-          <button
-            className={`filter-button ${bibGourmandActive ? 'active' : ''}`}
-            onClick={handleBibGourmandToggle}
-          >
-            Bib Gourmand
-          </button>
-        </div>
+
         
         {/* Regular Dropdown Filters */}
         {Object.entries(filterOptions).map(([filterType, options]) => (

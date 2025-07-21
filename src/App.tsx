@@ -4,7 +4,7 @@ import type { Restaurant } from './types/restaurant'
 import Map from './components/Map'
 import Header from './components/Header'
 import Filters from './components/Filters'
-import Footer from './components/Footer'
+import RestaurantCard from './components/RestaurantCard'
 
 // Direct import of your restaurant data
 import restaurantData from './data/NYCRestaurantWeek/4_JoinMichelin.json'
@@ -13,9 +13,13 @@ function App() {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([])
   const [filteredRestaurants, setFilteredRestaurants] = useState<Restaurant[]>([])
   const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null)
+  
+  // Find The Bar at the Modern as placeholder
+  const placeholderRestaurant = restaurants.find(r => r.name === "The Bar at the Modern") || null
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [filters, setFilters] = useState<Record<string, string[]>>({})
+  const [mapLegendFilter, setMapLegendFilter] = useState<string | null>(null)
 
   useEffect(() => {
     // Since we're importing directly, we can use it immediately
@@ -27,6 +31,8 @@ function App() {
   const handleRestaurantSelect = (restaurant: Restaurant) => {
     setSelectedRestaurant(restaurant)
   }
+
+
 
   const handleSearch = (searchTerm: string) => {
     setSearchTerm(searchTerm)
@@ -47,6 +53,18 @@ function App() {
     setFilters(newFilters)
     // Use the newFilters object directly to ensure we have the latest values
     applyFilters(searchTerm, newFilters)
+  }
+
+  const handleMapLegendFilter = (filterType: string | null) => {
+    setMapLegendFilter(filterType)
+  }
+
+  const handleResetAll = () => {
+    // Reset all filters
+    setFilters({})
+    setSearchTerm('')
+    setMapLegendFilter(null)
+    setFilteredRestaurants(restaurants)
   }
 
   const applyFilters = (search: string, filterValues: Record<string, string[]>) => {
@@ -71,7 +89,7 @@ function App() {
               values.includes(restaurant.cuisine)
             )
             break
-          case 'Weeks Participating':
+          case 'Participating Weeks':
             filtered = filtered.filter(restaurant =>
               restaurant.participation_weeks.some(week => values.includes(week))
             )
@@ -87,18 +105,7 @@ function App() {
               return menuUrl.trim() !== '' && menuUrl.toLowerCase() !== 'na';
             })
             break
-          case 'Michelin Star':
-            filtered = filtered.filter(restaurant => {
-              const award = restaurant.michelin_award || '';
-              return ['ONE_STAR', 'TWO_STARS', 'THREE_STARS'].includes(award);
-            })
-            break
-          case 'Bib Gourmand':
-            filtered = filtered.filter(restaurant => {
-              const award = restaurant.michelin_award || '';
-              return award === 'BIB_GOURMAND';
-            })
-            break
+
           // Add more filter cases as needed
         }
         console.log(`After ${filterType} filter:`, filtered.length)
@@ -125,21 +132,32 @@ function App() {
           <Map 
             restaurants={filteredRestaurants} 
             onRestaurantSelect={handleRestaurantSelect}
+            activeFilter={mapLegendFilter}
+            onLegendFilterChange={handleMapLegendFilter}
+            totalRestaurants={restaurants.length}
           />
         </div>
 
         {/* Right Section (1/3 width) */}
         <div className="sidebar">
-          <Filters 
-            onSearch={handleSearch}
-            onFilterChange={handleFilterChange}
-            restaurantCount={filteredRestaurants.length}
-            allRestaurants={restaurants.map(r => r.name)}
+          <div className="filters-section">
+            <Filters 
+              onSearch={handleSearch}
+              onFilterChange={handleFilterChange}
+              restaurantCount={filteredRestaurants.length}
+              allRestaurants={restaurants}
+              onResetAll={handleResetAll}
+              onRestaurantSelect={handleRestaurantSelect}
+            />
+          </div>
+          
+          {/* Restaurant Card */}
+          <RestaurantCard 
+            restaurant={selectedRestaurant}
+            placeholderRestaurant={placeholderRestaurant}
           />
         </div>
       </div>
-      {/* Footer - Add it here */}
-      <Footer />
     </div>
   )
 }
