@@ -1,4 +1,3 @@
-import React from 'react'
 import type { Restaurant } from '../types/restaurant'
 import './RestaurantCard.css'
 
@@ -53,13 +52,13 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
       <h2 className="restaurant-name">
         {displayRestaurant.name}
         {displayRestaurant.michelin_award && ['ONE_STAR', 'TWO_STARS', 'THREE_STARS'].includes(displayRestaurant.michelin_award) && (
-          <img src="/MichelinStar.svg.png" alt="Michelin Star" className="michelin-star-inline" />
+          <img src="MichelinStar.svg.png" alt="Michelin Star" className="michelin-star-inline" />
         )}
         {displayRestaurant.michelin_award === 'BIB_GOURMAND' && (
-          <img src="/bibgourmand.png" alt="Bib Gourmand" className="bib-gourmand-inline" />
+          <img src="bibgourmand.png" alt="Bib Gourmand" className="bib-gourmand-inline" />
         )}
         {displayRestaurant.nyttop100_rank && (
-          <img src="/nytimes.png" alt="NYT Top 100" className="nyt-top100-inline" />
+          <img src="nytimes.png" alt="NYT Top 100" className="nyt-top100-inline" />
         )}
       </h2>
       {/* Restaurant Tags */}

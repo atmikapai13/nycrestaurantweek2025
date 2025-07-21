@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import type { Restaurant } from '../types/restaurant'
@@ -15,7 +15,7 @@ interface MapProps {
   favorites: string[]
 }
 
-export default function Map({ restaurants, onRestaurantSelect, activeFilters, onLegendFilterChange, totalRestaurants, favorites }: MapProps) {
+export default function Map({ restaurants, onRestaurantSelect, activeFilters, onLegendFilterChange, favorites }: MapProps) {
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<mapboxgl.Map | null>(null)
   const markers = useRef<mapboxgl.Marker[]>([])
@@ -154,7 +154,7 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
             style={{ cursor: 'pointer' }}
           >
             <div className="legend-marker" style={{ backgroundColor: ' #C81224', width: '10px', height: '10px' }}></div>
-            <img src="/MichelinStar.svg.png" alt="Michelin Star" style={{ width: '10px', height: '10px', marginRight: '2px', verticalAlign: 'middle' }} />
+                            <img src="MichelinStar.svg.png" alt="Michelin Star" style={{ width: '10px', height: '10px', marginRight: '2px', verticalAlign: 'middle' }} />
             <span style={{ fontWeight: activeFilters.includes('michelin') ? 'bold' : 'normal', color: '#000000' }}>Michelin</span>
             {activeFilters.includes('michelin') && (
               <button 
@@ -179,7 +179,7 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
             style={{ cursor: 'pointer' }}
           >
             <div className="legend-marker" style={{ backgroundColor: '#f9a83d', width: '10px', height: '10px' }}></div>
-            <img src="/bibgourmand.png" alt="Bib Gourmand" style={{ width: '10px', height: '10px', marginRight: '2px', verticalAlign: 'middle' }} />
+                            <img src="bibgourmand.png" alt="Bib Gourmand" style={{ width: '10px', height: '10px', marginRight: '2px', verticalAlign: 'middle' }} />
             <span style={{ fontWeight: activeFilters.includes('bib') ? 'bold' : 'normal', color: '#000000' }}>Bib Gourmand</span>
             {activeFilters.includes('bib') && (
               <button 
@@ -204,7 +204,7 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
             style={{ cursor: 'pointer' }}
           >
             <div className="legend-marker" style={{ backgroundColor: '#FF69B4', width: '10px', height: '10px' }}></div>
-            <img src="/nytimes.png" alt="NYT Top 100" style={{ width: '10px', height: '10px', marginRight: '2px', verticalAlign: 'middle' }} />
+                            <img src="nytimes.png" alt="NYT Top 100" style={{ width: '10px', height: '10px', marginRight: '2px', verticalAlign: 'middle' }} />
             <span style={{ fontWeight: activeFilters.includes('nyt') ? 'bold' : 'normal', color: '#000000' }}>NYT Top 100</span>
             {activeFilters.includes('nyt') && (
               <button 
