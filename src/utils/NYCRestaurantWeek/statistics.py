@@ -2,7 +2,7 @@ import json
 from collections import Counter, defaultdict
 from typing import Dict, List, Any
 
-def analyze_restaurant_data(filename: str = "clean_restaurant_data.json"):
+def analyze_restaurant_data(filename: str = "src/data/NYCRestaurantWeek/3_Characteristics.json"):
     """Analyze the clean restaurant data and provide comprehensive statistics"""
     
     try:
@@ -33,19 +33,15 @@ def analyze_restaurant_data(filename: str = "clean_restaurant_data.json"):
     
     # Borough analysis
     boroughs = Counter()
-    neighborhoods = Counter()
     
     # Cuisine analysis
     all_cuisines = []
     
-    # Pricing analysis
-    pricing_stats = {
-        'lunch_30': 0, 'lunch_45': 0, 'lunch_60': 0,
-        'dinner_30': 0, 'dinner_45': 0, 'dinner_60': 0
-    }
-    
     # Meal types analysis
     meal_types = Counter()
+    
+    # Price_Range analysis
+    price_ranges = Counter()
     
     # Collections analysis
     collections = Counter()
@@ -53,33 +49,28 @@ def analyze_restaurant_data(filename: str = "clean_restaurant_data.json"):
     # Participation weeks analysis
     participation_weeks = Counter()
     
-    # Website analysis
+    # Feature analysis
     has_website = 0
     has_image = 0
     has_menu = 0
     has_opentable = 0
+    has_telephone = 0
+    has_facebook = 0
+    has_instagram = 0
     
     for restaurant in restaurants:
-        # Borough and neighborhood
-        borough = restaurant.get('borough', 'Unknown')
-        boroughs[borough] += 1
-        
-        neighborhood = restaurant.get('neighborhood', 'Unknown')
-        neighborhoods[neighborhood] += 1
-        
         # Cuisines
-        cuisines = restaurant.get('cuisine', [])
-        all_cuisines.extend(cuisines)
-        
-        # Pricing
-        pricing = restaurant.get('pricing', {})
-        for price_type, has_price in pricing.items():
-            if has_price:
-                pricing_stats[price_type] += 1
+        cuisine = restaurant.get('cuisine', '')
+        if cuisine:  # Only add if cuisine is not empty
+            all_cuisines.append(cuisine)
         
         # Meal types
         meal_types_list = restaurant.get('meal_types', [])
         meal_types.update(meal_types_list)
+        
+        # Price Range types
+        price_range_list = restaurant.get('price_range', [])
+        price_ranges.update(price_range_list)
         
         # Collections
         collections_list = restaurant.get('collections', [])
@@ -90,64 +81,74 @@ def analyze_restaurant_data(filename: str = "clean_restaurant_data.json"):
         participation_weeks.update(weeks)
         
         # Other features
-        if restaurant.get('website'):
+        if restaurant.get('website') and restaurant.get('website').strip():
             has_website += 1
-        if restaurant.get('image_url'):
+        if restaurant.get('image_url') and restaurant.get('image_url').strip():
             has_image += 1
-        if restaurant.get('menu_url'):
+        if restaurant.get('menu_url') and restaurant.get('menu_url').strip():
             has_menu += 1
-        if restaurant.get('opentable_id'):
+        if restaurant.get('opentable_id') and restaurant.get('opentable_id').strip():
             has_opentable += 1
+        if restaurant.get('telephone') and restaurant.get('telephone').strip():
+            has_telephone += 1
+        if restaurant.get('facebook_url') and restaurant.get('facebook_url').strip():
+            has_facebook += 1
+        if restaurant.get('instagram_url') and restaurant.get('instagram_url').strip():
+            has_instagram += 1
     
     # Print borough stats
     print(f"\n=== By Borough ===")
     for borough, count in boroughs.most_common():
         percentage = (count / len(restaurants)) * 100
         print(f"  {borough}: {count} restaurants ({percentage:.1f}%)")
-    
-    # Print top neighborhoods
-    print(f"\n=== Top 15 Neighborhoods ===")
-    for neighborhood, count in neighborhoods.most_common(15):
-        percentage = (count / len(restaurants)) * 100
-        print(f"  {neighborhood}: {count} restaurants ({percentage:.1f}%)")
+    print(f"  All boroughs: {list(boroughs.keys())}")
     
     # Print cuisine stats
     cuisine_counter = Counter(all_cuisines)
-    print(f"\n=== Top 20 Cuisines ===")
-    for cuisine, count in cuisine_counter.most_common(20):
+    print(f"\n=== By Cuisine ===")
+    for cuisine, count in cuisine_counter.most_common():
         percentage = (count / len(restaurants)) * 100
         print(f"  {cuisine}: {count} restaurants ({percentage:.1f}%)")
-    
-    # Print pricing stats
-    print(f"\n=== Pricing Analysis ===")
-    for price_type, count in pricing_stats.items():
-        percentage = (count / len(restaurants)) * 100
-        print(f"  {price_type}: {count} restaurants ({percentage:.1f}%)")
+    print(f"  All cuisines: {list(cuisine_counter.keys())}")
+
     
     # Print meal types
-    print(f"\n=== Meal Types ===")
+    print(f"\n=== By Meal Types ===")
     for meal_type, count in meal_types.most_common():
         percentage = (count / len(restaurants)) * 100
         print(f"  {meal_type}: {count} restaurants ({percentage:.1f}%)")
+    print(f"  All price range types: {list(meal_types.keys())}")
+    
+    # Print price range types
+    print(f"\n=== By Price Range Types ===")
+    for price_range, count in price_ranges.most_common():
+        percentage = (count / len(restaurants)) * 100
+        print(f"  {price_range}: {count} restaurants ({percentage:.1f}%)")
+    print(f"  All meal types: {list(price_ranges.keys())}")
     
     # Print collections
-    print(f"\n=== Collections ===")
+    print(f"\n=== By Collections ===")
     for collection, count in collections.most_common():
         percentage = (count / len(restaurants)) * 100
         print(f"  {collection}: {count} restaurants ({percentage:.1f}%)")
+    print(f"  All collections: {list(collections.keys())}")
     
     # Print participation weeks
-    print(f"\n=== Participation Weeks ===")
+    print(f"\n=== By Participation Weeks ===")
     for week, count in participation_weeks.most_common():
         percentage = (count / len(restaurants)) * 100
         print(f"  {week}: {count} restaurants ({percentage:.1f}%)")
+    print(f"  All participation weeks: {list(participation_weeks.keys())}")
     
     # Print feature stats
-    print(f"\n=== Feature Analysis ===")
+    print(f"\n=== By Features ===")
     print(f"  Restaurants with website: {has_website} ({(has_website/len(restaurants)*100):.1f}%)")
     print(f"  Restaurants with image: {has_image} ({(has_image/len(restaurants)*100):.1f}%)")
     print(f"  Restaurants with menu: {has_menu} ({(has_menu/len(restaurants)*100):.1f}%)")
     print(f"  Restaurants with OpenTable: {has_opentable} ({(has_opentable/len(restaurants)*100):.1f}%)")
+    print(f"  Restaurants with telephone: {has_telephone} ({(has_telephone/len(restaurants)*100):.1f}%)")
+    print(f"  Restaurants with Facebook: {has_facebook} ({(has_facebook/len(restaurants)*100):.1f}%)")
+    print(f"  Restaurants with Instagram: {has_instagram} ({(has_instagram/len(restaurants)*100):.1f}%)")
     
     # Sample restaurant data
     print(f"\n=== Sample Restaurant Data ===")

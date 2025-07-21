@@ -3,7 +3,7 @@ export interface Restaurant {
   slug: string;
   borough: string;
   neighborhood: string;
-  cuisine: string[];
+  cuisine: string;
   summary: string;
   website?: string;
   image_url?: string;
@@ -13,14 +13,6 @@ export interface Restaurant {
   opentable_id?: string;
   menu_url?: string;
   primary_location?: string;
-  pricing: {
-    lunch_30: boolean;
-    lunch_45: boolean;
-    lunch_60: boolean;
-    dinner_30: boolean;
-    dinner_45: boolean;
-    dinner_60: boolean;
-  };
   // Coordinates (from 2restaurant_geocoder.py)
   address?: string;
   latitude?: number;
@@ -32,4 +24,7 @@ export interface Restaurant {
   price_range?: string;
   facebook_url?: string;
   instagram_url?: string;
+  // Michelin data (from join_michelin_data.py)
+  michelin_award?: string;
+  michelin_slug?: string;
 } 

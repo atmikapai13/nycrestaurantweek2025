@@ -1,0 +1,2316 @@
+{
+    "lookup": {
+        "Cuisine": {
+            "American (New)": {
+                "count": 120,
+                "id": "2u5r3e6lPwri1BwWU31BbX",
+                "label": "American (New)",
+                "slug": "american-new"
+            },
+            "American (Traditional)": {
+                "count": 28,
+                "id": "5uaUeLgy2Su84FYBKP4LVg",
+                "label": "American (Traditional)",
+                "slug": "american-traditional"
+            },
+            "Thai": {
+                "count": 19,
+                "id": "1k9HRmtwlqvSdsJuYqb2m2",
+                "label": "Thai",
+                "slug": "thai"
+            },
+            "Vietnamese": {
+                "count": 4,
+                "id": "7CYKNV83NIZmFkelYeQ7VK",
+                "label": "Vietnamese",
+                "slug": "vietnamese"
+            },
+            "Mexican": {
+                "count": 26,
+                "id": "6lrkEqGroUEvKo551SI1oH",
+                "label": "Mexican",
+                "slug": "mexican"
+            },
+            "Spanish": {
+                "count": 12,
+                "id": "5PlxK4HuEPhLkI6zH1BzM1",
+                "label": "Spanish",
+                "slug": "spanish"
+            },
+            "Italian": {
+                "count": 137,
+                "id": "3yTV00jjj7bszV7PNsxlyY",
+                "label": "Italian",
+                "slug": "italian"
+            },
+            "Seafood": {
+                "count": 43,
+                "id": "2nRMOe37rLv8HWZ5A3l4OI",
+                "label": "Seafood",
+                "slug": "seafood"
+            },
+            "Peruvian": {
+                "count": 2,
+                "id": "56MdKhc9szecVGf2AkacOx",
+                "label": "Peruvian",
+                "slug": "peruvian"
+            },
+            "Japanese / Sushi": {
+                "count": 44,
+                "id": "5mFtbP7WO79eKYANwxaLva",
+                "label": "Japanese / Sushi",
+                "slug": "japanese-sushi"
+            },
+            "Steakhouse": {
+                "count": 56,
+                "id": "66gAlD86rRShshqk3iBr20",
+                "label": "Steakhouse",
+                "slug": "steakhouse"
+            },
+            "Asian Fusion": {
+                "count": 24,
+                "id": "5HxPNXNUlgygLivi9gvQz",
+                "label": "Asian Fusion",
+                "slug": "asian-fusion"
+            },
+            "French": {
+                "count": 58,
+                "id": "hqp75UjDB0fOqwSDraoSt",
+                "label": "French",
+                "slug": "french"
+            },
+            "Korean": {
+                "count": 14,
+                "id": "6erFlIpnXYyPL4aBVDJPqe",
+                "label": "Korean",
+                "slug": "korean"
+            },
+            "Chinese": {
+                "count": 18,
+                "id": "6EOCCoIZAAC8JanUHdxBbY",
+                "label": "Chinese",
+                "slug": "chinese"
+            },
+            "Indian": {
+                "count": 13,
+                "id": "33Q5TQf50mmGwyj2UcpOt9",
+                "label": "Indian",
+                "slug": "indian"
+            },
+            "Austrian": {
+                "count": 2,
+                "id": "OvkoMyGePU5FT0gQHYsO3",
+                "label": "Austrian",
+                "slug": "austrian"
+            },
+            "Irish": {
+                "count": 7,
+                "id": "3Q8A4wHvG1Gj9w0EUrMz5Q",
+                "label": "Irish",
+                "slug": "irish"
+            },
+            "Middle Eastern": {
+                "count": 7,
+                "id": "4grdmRpwni8VDWTsmXNTe1",
+                "label": "Middle Eastern",
+                "slug": "middle-eastern"
+            },
+            "Mediterranean": {
+                "count": 44,
+                "id": "60iKLQ1Xjo4BGC2d67e2U7",
+                "label": "Mediterranean",
+                "slug": "mediterranean"
+            },
+            "Bars/Cocktails": {
+                "count": 21,
+                "id": "76suAEbHFj4NstgNTJwdHl",
+                "label": "Bars/Cocktails",
+                "slug": "barscocktails"
+            },
+            "Belgian": {
+                "count": 1,
+                "id": "7pdzkSXa4AUbT6N2jZEqqJ",
+                "label": "Belgian",
+                "slug": "belgian"
+            },
+            "Pizza": {
+                "count": 11,
+                "id": "3mcQRMMO2B9Y784mU7OZdk",
+                "label": "Pizza",
+                "slug": "pizza"
+            },
+            "Taiwanese": {
+                "count": 1,
+                "id": "2ZpO1etbB3DuNC1evhCSvO",
+                "label": "Taiwanese",
+                "slug": "taiwanese"
+            },
+            "New Zealand": {
+                "count": 1,
+                "id": "11lhwWAzm5FNIsCEPBCn7S",
+                "label": "New Zealand",
+                "slug": "new-zealand"
+            },
+            "Gastropub": {
+                "count": 6,
+                "id": "VH1UZBVqE1NKi99RSAsPb",
+                "label": "Gastropub",
+                "slug": "gastropub"
+            },
+            "Continental": {
+                "count": 5,
+                "id": "6Z7jhDkkNpy93UFgyL43KU",
+                "label": "Continental",
+                "slug": "continental"
+            },
+            "Caribbean": {
+                "count": 6,
+                "id": "1BWHyz7T69If6Ilk5NRkwI",
+                "label": "Caribbean",
+                "slug": "caribbean"
+            },
+            "British": {
+                "count": 3,
+                "id": "5OKA8ZkrMfaccjbksRfYDW",
+                "label": "British",
+                "slug": "british"
+            },
+            "Eclectic": {
+                "count": 11,
+                "id": "7cuqXb4GlRAkQVX7MM5PW3",
+                "label": "Eclectic",
+                "slug": "eclectic"
+            },
+            "Greek": {
+                "count": 21,
+                "id": "583zqMYoCTy26cFt6xdLI1",
+                "label": "Greek",
+                "slug": "greek"
+            },
+            "Vegan": {
+                "count": 3,
+                "id": "7G9WpP5J6ac5cWt1MGhstm",
+                "label": "Vegan",
+                "slug": "vegan"
+            },
+            "Vegetarian": {
+                "count": 3,
+                "id": "1bv92IV29i2YetCKbZExlk",
+                "label": "Vegetarian",
+                "slug": "vegetarian"
+            },
+            "Puerto Rican": {
+                "count": 2,
+                "id": "4o33kmYYkg1nzz0fPa05mV",
+                "label": "Puerto Rican",
+                "slug": "puerto-rican"
+            },
+            "Barbecue": {
+                "count": 5,
+                "id": "6Xe9xXygaRtxKxF0JaNZFf",
+                "label": "Barbecue",
+                "slug": "barbecue"
+            },
+            "Latin American": {
+                "count": 7,
+                "id": "2hebFB3NMBEI0HT37EqLlf",
+                "label": "Latin American",
+                "slug": "latin-american"
+            },
+            "Cuban": {
+                "count": 4,
+                "id": "5SkyKh9qOj7Dd1ynwZ2G0T",
+                "label": "Cuban",
+                "slug": "cuban"
+            },
+            "Hawaiian": {
+                "count": 1,
+                "id": "taDjvz2zSpfYHzWVEqq0f",
+                "label": "Hawaiian",
+                "slug": "hawaiian"
+            },
+            "Delicatessen": {
+                "count": 1,
+                "id": "d7gV1F8AuNdSpGwIqfwwE",
+                "label": "Delicatessen",
+                "slug": "delicatessen"
+            },
+            "Eastern European": {
+                "count": 3,
+                "id": "26eNuSmwdEJMr5UnVVeyae",
+                "label": "Eastern European",
+                "slug": "eastern-european"
+            },
+            "Brazilian": {
+                "count": 4,
+                "id": "1zolqpZ1JyJbqOeDNgFiNW",
+                "label": "Brazilian",
+                "slug": "brazilian"
+            },
+            "Pan-Asian": {
+                "count": 6,
+                "id": "4IHo2T1oNTEehrwBDHJE23",
+                "label": "Pan-Asian",
+                "slug": "pan-asian"
+            },
+            "Soul Food / Southern": {
+                "count": 3,
+                "id": "2ZNSqOO1u1tVur0unoPFAB",
+                "label": "Soul Food / Southern",
+                "slug": "soul-food-southern"
+            },
+            "Burgers": {
+                "count": 3,
+                "id": "4XEejlqHMZIid9cvI3370Q",
+                "label": "Burgers",
+                "slug": "burgers"
+            },
+            "Ukrainian": {
+                "count": 1,
+                "id": "7D9A5BqDNdreHpMpbyXGGb",
+                "label": "Ukrainian",
+                "slug": "ukrainian"
+            },
+            "Cajun/Creole": {
+                "count": 1,
+                "id": "5zUwQcYy94ZJs7r2eJF8m4",
+                "label": "Cajun/Creole",
+                "slug": "cajuncreole"
+            },
+            "Turkish": {
+                "count": 3,
+                "id": "65M2jfg10yM1D6h9Me3SMl",
+                "label": "Turkish",
+                "slug": "turkish"
+            },
+            "Modern European": {
+                "count": 1,
+                "id": "1KDJqsoOBssNJFcXTcL4QE",
+                "label": "Modern European",
+                "slug": "modern-european"
+            },
+            "Argentinian": {
+                "count": 3,
+                "id": "4TF9Q2DNmlbrnw91EeM9Da",
+                "label": "Argentinian",
+                "slug": "argentinian"
+            },
+            "Southwestern": {
+                "count": 1,
+                "id": "6p3TtvjmqaiCTtS0r5c5S1",
+                "label": "Southwestern",
+                "slug": "southwestern"
+            },
+            "Jamaican": {
+                "count": 1,
+                "id": "5HvxVHowtfjvBUKidisRRJ",
+                "label": "Jamaican",
+                "slug": "jamaican"
+            },
+            "Colombian": {
+                "count": 1,
+                "id": "7tBuZRpdL3H8Kimkf2qiq1",
+                "label": "Colombian",
+                "slug": "colombian"
+            },
+            "Malaysian": {
+                "count": 2,
+                "id": "7BGDq9ZYy99R3SCMRCcv4T",
+                "label": "Malaysian",
+                "slug": "malaysian"
+            },
+            "African": {
+                "count": 1,
+                "id": "6DbkztdPTACBKnINFOk8nW",
+                "label": "African",
+                "slug": "african"
+            },
+            "Somali": {
+                "count": 1,
+                "id": "7ktP9GpFxb8Fqnp9AWhwG4",
+                "label": "Somali",
+                "slug": "somali"
+            },
+            "label": "Cuisine",
+            "type": "multiselect",
+            "values": [
+                "American (New)",
+                "American (Traditional)",
+                "Thai",
+                "Vietnamese",
+                "Mexican",
+                "Spanish",
+                "Italian",
+                "Seafood",
+                "Peruvian",
+                "Japanese / Sushi",
+                "Steakhouse",
+                "Asian Fusion",
+                "French",
+                "Korean",
+                "Chinese",
+                "Indian",
+                "Austrian",
+                "Irish",
+                "Middle Eastern",
+                "Mediterranean",
+                "Bars/Cocktails",
+                "Belgian",
+                "Pizza",
+                "Taiwanese",
+                "New Zealand",
+                "Gastropub",
+                "Continental",
+                "Caribbean",
+                "British",
+                "Eclectic",
+                "Greek",
+                "Vegan",
+                "Vegetarian",
+                "Puerto Rican",
+                "Barbecue",
+                "Latin American",
+                "Cuban",
+                "Hawaiian",
+                "Delicatessen",
+                "Eastern European",
+                "Brazilian",
+                "Pan-Asian",
+                "Soul Food / Southern",
+                "Burgers",
+                "Ukrainian",
+                "Cajun/Creole",
+                "Turkish",
+                "Modern European",
+                "Argentinian",
+                "Southwestern",
+                "Jamaican",
+                "Colombian",
+                "Malaysian",
+                "African",
+                "Somali"
+            ],
+            "lookupName": "cuisines"
+        },
+        "Borough": {
+            "Manhattan": {
+                "count": 506,
+                "id": "2NTEba3HJYoWwT28somHcc",
+                "label": "Manhattan",
+                "slug": "manhattan"
+            },
+            "Queens": {
+                "count": 31,
+                "id": "ZLtdnTsUCk7o8gTSHfEgz",
+                "label": "Queens",
+                "slug": "queens"
+            },
+            "Brooklyn": {
+                "count": 61,
+                "id": "3mTu46dYjcg3mB0MrgP5AU",
+                "label": "Brooklyn",
+                "slug": "brooklyn"
+            },
+            "Staten Island": {
+                "count": 7,
+                "id": "6bZ34HUjaMM5ZDPtc5UR7B",
+                "label": "Staten Island",
+                "slug": "staten-island"
+            },
+            "The Bronx": {
+                "count": 4,
+                "id": "3t5Bl1JjoJDRrbv83H7MRS",
+                "label": "The Bronx",
+                "slug": "the-bronx"
+            },
+            "label": "Borough",
+            "type": "multiselect",
+            "values": [
+                "Manhattan",
+                "Queens",
+                "Brooklyn",
+                "Staten Island",
+                "The Bronx"
+            ],
+            "lookupName": "borough"
+        },
+        "Neighborhood": {
+            "Midtown East": {
+                "count": 97,
+                "id": "1yrv3RQN0fXSCHvHm82nHN",
+                "label": "Midtown East",
+                "slug": "midtown-east"
+            },
+            "Lower East Side": {
+                "count": 24,
+                "id": "2qN4P9hfEghwPq6sAjKVjA",
+                "label": "Lower East Side",
+                "slug": "lower-east-side"
+            },
+            "Union Square": {
+                "count": 20,
+                "id": "7BxqcAYVYoj33m3iwvkwqa",
+                "label": "Union Square",
+                "slug": "union-square"
+            },
+            "Noho": {
+                "count": 18,
+                "id": "6B1WbjxIFRHz6mNzkPW6v5",
+                "label": "Noho",
+                "slug": "noho"
+            },
+            "Gramercy": {
+                "count": 34,
+                "id": "6vN5GObLgLffMUPwv5UZu1",
+                "label": "Gramercy",
+                "slug": "gramercy"
+            },
+            "Upper East Side": {
+                "count": 78,
+                "id": "2OrQvTjvaMRREDz0QGlIJU",
+                "label": "Upper East Side",
+                "slug": "upper-east-side"
+            },
+            "Greenwich Village": {
+                "count": 27,
+                "id": "4QangtuYUkuBbu7AU1SRSw",
+                "label": "Greenwich Village",
+                "slug": "greenwich-village"
+            },
+            "The Seaport": {
+                "count": 16,
+                "id": "47OH6Jm8dnAvMDLyGaWzi8",
+                "label": "The Seaport",
+                "slug": "the-seaport"
+            },
+            "Lower Manhattan": {
+                "count": 36,
+                "id": "1ULligRcuT6hxnS5zFfWGl",
+                "label": "Lower Manhattan",
+                "slug": "lower-manhattan"
+            },
+            "Bayside": {
+                "count": 6,
+                "id": "41UtPfm5Xca1FVJWOEJe5w",
+                "label": "Bayside",
+                "slug": "bayside"
+            },
+            "Hudson Yards": {
+                "count": 12,
+                "id": "2KEl3016ktlIWbRHkhvCop",
+                "label": "Hudson Yards",
+                "slug": "hudson-yards"
+            },
+            "Midtown": {
+                "count": 71,
+                "id": "1LExA8nslarYIovIHnDo2M",
+                "label": "Midtown",
+                "slug": "midtown"
+            },
+            "Midtown West": {
+                "count": 115,
+                "id": "61QB2f7blSGMaKZi1yfOLv",
+                "label": "Midtown West",
+                "slug": "midtown-west"
+            },
+            "Williamsburg": {
+                "count": 42,
+                "id": "jqTjGdFa7iLRDJ7Fy5BM0",
+                "label": "Williamsburg",
+                "slug": "williamsburg"
+            },
+            "Nomad": {
+                "count": 36,
+                "id": "5dyV0RJlstwK2LoilQkyI1",
+                "label": "Nomad",
+                "slug": "nomad"
+            },
+            "Times Square/Theatre District": {
+                "count": 75,
+                "id": "7bC6GrAOzXLvoJAGgTOdzl",
+                "label": "Times Square/Theatre District",
+                "slug": "times-squaretheatre-district"
+            },
+            "Forest Hills": {
+                "count": 10,
+                "id": "4LtVjfuTm3Z4hb3YiAgAoC",
+                "label": "Forest Hills",
+                "slug": "forest-hills"
+            },
+            "Flatlands": {
+                "count": 2,
+                "id": "62qagzGg0M7YQrZzLdv5dl",
+                "label": "Flatlands",
+                "slug": "flatlands"
+            },
+            "Hells Kitchen": {
+                "count": 41,
+                "id": "1LKdriQXICZbXvssQcQiWT",
+                "label": "Hells Kitchen",
+                "slug": "hells-kitchen"
+            },
+            "Jamaica": {
+                "count": 2,
+                "id": "56LGR0FYDmfpR3HP5CjiJK",
+                "label": "Jamaica",
+                "slug": "jamaica"
+            },
+            "West Village": {
+                "count": 40,
+                "id": "1h1CKqntuJBlUEzuzszwKK",
+                "label": "West Village",
+                "slug": "west-village"
+            },
+            "Kips Bay": {
+                "count": 5,
+                "id": "2jsST2ttADlnGkLYgpa8qI",
+                "label": "Kips Bay",
+                "slug": "kips-bay"
+            },
+            "East Village": {
+                "count": 50,
+                "id": "6bUnDkwrgIUyGxGWohSJGi",
+                "label": "East Village",
+                "slug": "east-village"
+            },
+            "Flatiron District": {
+                "count": 40,
+                "id": "7gYVRYq01uHCq2pYtNItT5",
+                "label": "Flatiron District",
+                "slug": "flatiron-district"
+            },
+            "Dumbo": {
+                "count": 4,
+                "id": "5WfEIg9alXNmUJsl7CG3hs",
+                "label": "Dumbo",
+                "slug": "dumbo"
+            },
+            "Boerum Hill": {
+                "count": 10,
+                "id": "1AH9V2IzLruG8F4diHBzRf",
+                "label": "Boerum Hill",
+                "slug": "boerum-hill"
+            },
+            "Upper West Side": {
+                "count": 66,
+                "id": "2Fa3xmXblFpWnb67R744VL",
+                "label": "Upper West Side",
+                "slug": "upper-west-side"
+            },
+            "Tribeca": {
+                "count": 16,
+                "id": "E3FdzsWjyFbr6cyt75FS6",
+                "label": "Tribeca",
+                "slug": "tribeca"
+            },
+            "Bloomfield": {
+                "count": 2,
+                "id": "FdQvQLO7SSdPV2fHI5X1u",
+                "label": "Bloomfield",
+                "slug": "bloomfield"
+            },
+            "East Harlem": {
+                "count": 4,
+                "id": "lkb2nfAdErSztMlRJjE6n",
+                "label": "East Harlem",
+                "slug": "east-harlem"
+            },
+            "Herald Square": {
+                "count": 14,
+                "id": "1Jj5rhV8eN7AYPmY4n2b5q",
+                "label": "Herald Square",
+                "slug": "herald-square"
+            },
+            "Chelsea": {
+                "count": 49,
+                "id": "34JJy3vOrcZxehSGau7gq9",
+                "label": "Chelsea",
+                "slug": "chelsea"
+            },
+            "Nolita": {
+                "count": 14,
+                "id": "7FHG8RkEFefLGuEea4yHCO",
+                "label": "Nolita",
+                "slug": "nolita"
+            },
+            "Soho": {
+                "count": 26,
+                "id": "52LVi7xKOFZ0XnSF64Qu8W",
+                "label": "Soho",
+                "slug": "soho"
+            },
+            "Central Park": {
+                "count": 4,
+                "id": "211skuRtHXTL5QiSLLEvgm",
+                "label": "Central Park",
+                "slug": "central-park"
+            },
+            "Bay Ridge": {
+                "count": 8,
+                "id": "6HK93lYIFgNeFGIFzQQRCl",
+                "label": "Bay Ridge",
+                "slug": "bay-ridge"
+            },
+            "Red Hook": {
+                "count": 2,
+                "id": "15O7B8ROpOFDS9DyxU0buJ",
+                "label": "Red Hook",
+                "slug": "red-hook"
+            },
+            "Park Slope": {
+                "count": 18,
+                "id": "26mZqmCzM8u5znaiAFS3zj",
+                "label": "Park Slope",
+                "slug": "park-slope"
+            },
+            "Meatpacking District": {
+                "count": 8,
+                "id": "5fWzIA7KWA59Q5aCB5GnbC",
+                "label": "Meatpacking District",
+                "slug": "meatpacking-district"
+            },
+            "Battery Park City": {
+                "count": 10,
+                "id": "6KgmBWhznEz7Rcy2C5tYgL",
+                "label": "Battery Park City",
+                "slug": "battery-park-city"
+            },
+            "South Slope": {
+                "count": 4,
+                "id": "5DiqiooihIrMNcJfTsr3ck",
+                "label": "South Slope",
+                "slug": "south-slope"
+            },
+            "Carroll Gardens": {
+                "count": 4,
+                "id": "3OrsgsYkXbHfmVRJgehI35",
+                "label": "Carroll Gardens",
+                "slug": "carroll-gardens"
+            },
+            "Little Italy": {
+                "count": 4,
+                "id": "6WWAScC9CIjCCR6jgrExx3",
+                "label": "Little Italy",
+                "slug": "little-italy"
+            },
+            "Hamilton Heights": {
+                "count": 4,
+                "id": "3eqvm5n51tIaN4uBlQphPh",
+                "label": "Hamilton Heights",
+                "slug": "hamilton-heights"
+            },
+            "Flushing": {
+                "count": 8,
+                "id": "1dPHBAhCeLrOjYuXWhgEFb",
+                "label": "Flushing",
+                "slug": "flushing"
+            },
+            "Murray Hill": {
+                "count": 24,
+                "id": "XeL6xZNV0BHanR8jbsMuD",
+                "label": "Murray Hill",
+                "slug": "murray-hill"
+            },
+            "New Dorp": {
+                "count": 2,
+                "id": "2fCtkg8Q2iIkg6MiZJ3ppW",
+                "label": "New Dorp",
+                "slug": "new-dorp"
+            },
+            "Mott Haven": {
+                "count": 2,
+                "id": "5bHTg9EW6XuXmpLYeL79FT",
+                "label": "Mott Haven",
+                "slug": "mott-haven"
+            },
+            "Washington Heights": {
+                "count": 4,
+                "id": "5mO0B8omv4Jg7RWBO9ivAQ",
+                "label": "Washington Heights",
+                "slug": "washington-heights"
+            },
+            "Jackson Heights": {
+                "count": 5,
+                "id": "749ggaz7Xy1RncGKQfhhEM",
+                "label": "Jackson Heights",
+                "slug": "jackson-heights"
+            },
+            "Harlem": {
+                "count": 20,
+                "id": "4vY3o5tV1zIHNE8zuDH8ht",
+                "label": "Harlem",
+                "slug": "harlem"
+            },
+            "Long Island City": {
+                "count": 10,
+                "id": "2n7urs7UPA2wOWpRm1uaf1",
+                "label": "Long Island City",
+                "slug": "long-island-city"
+            },
+            "Garment District": {
+                "count": 14,
+                "id": "23Ol3QxkVOJpbQeL8GPP2P",
+                "label": "Garment District",
+                "slug": "garment-district"
+            },
+            "Belmont": {
+                "count": 2,
+                "id": "4AUp3rWNx0xxVMLoKIq3kp",
+                "label": "Belmont",
+                "slug": "belmont"
+            },
+            "Koreatown": {
+                "count": 6,
+                "id": "6ih6v4gaf3RRw2WqVEzww2",
+                "label": "Koreatown",
+                "slug": "koreatown"
+            },
+            "Woodhaven": {
+                "count": 2,
+                "id": "1oRGiwPcrd2TK4xreBMMiU",
+                "label": "Woodhaven",
+                "slug": "woodhaven"
+            },
+            "Cobble Hill": {
+                "count": 4,
+                "id": "1JKy9cQVz6BX5o7qSO5W1E",
+                "label": "Cobble Hill",
+                "slug": "cobble-hill"
+            },
+            "Rosebank": {
+                "count": 2,
+                "id": "579qWajkpImw6Dkdk56p6o",
+                "label": "Rosebank",
+                "slug": "rosebank"
+            },
+            "Astoria": {
+                "count": 12,
+                "id": "4DCR0vMxDtZFWcVOI0809b",
+                "label": "Astoria",
+                "slug": "astoria"
+            },
+            "Prospect Lefferts Gardens": {
+                "count": 2,
+                "id": "4CmhGvHyl0RxsqLgEXrmFW",
+                "label": "Prospect Lefferts Gardens",
+                "slug": "prospect-lefferts-gardens"
+            },
+            "Greenpoint": {
+                "count": 4,
+                "id": "3Lqy1ED6Ht7eXqmSAkdpoy",
+                "label": "Greenpoint",
+                "slug": "greenpoint"
+            },
+            "Clinton Hill": {
+                "count": 2,
+                "id": "6S1Wdv1BhLyWGjqPUK1d6l",
+                "label": "Clinton Hill",
+                "slug": "clinton-hill"
+            },
+            "Prospect Heights": {
+                "count": 8,
+                "id": "3GZrUyLQwjWgwYbLi9v98i",
+                "label": "Prospect Heights",
+                "slug": "prospect-heights"
+            },
+            "Little Neck": {
+                "count": 2,
+                "id": "1QSHOPOQ3AMbfqBqmrTghy",
+                "label": "Little Neck",
+                "slug": "little-neck"
+            },
+            "Coney Island": {
+                "count": 2,
+                "id": "fgvIVvpt2SxAvJgAZm8Yw",
+                "label": "Coney Island",
+                "slug": "coney-island"
+            },
+            "Brooklyn Heights": {
+                "count": 4,
+                "id": "BrVmeYRTAoLVb6jwQz6SQ",
+                "label": "Brooklyn Heights",
+                "slug": "brooklyn-heights"
+            },
+            "Alphabet City": {
+                "count": 1,
+                "id": "7HCNMQRkqk9WeEdElXAVRF",
+                "label": "Alphabet City",
+                "slug": "alphabet-city"
+            },
+            "New Hyde Park": {
+                "count": 2,
+                "id": "5ZUFjiqujchswsCDEwlYnW",
+                "label": "New Hyde Park",
+                "slug": "new-hyde-park"
+            },
+            "Hudson Square": {
+                "count": 4,
+                "id": "5nCtsqHF2mhDULId9HCyxw",
+                "label": "Hudson Square",
+                "slug": "hudson-square"
+            },
+            "Riverdale": {
+                "count": 2,
+                "id": "2fgOX96OfhpO3WtNAdPl5r",
+                "label": "Riverdale",
+                "slug": "riverdale"
+            },
+            "St. George": {
+                "count": 2,
+                "id": "1fVuJQBPkksFDDc37i0SIR",
+                "label": "St. George",
+                "slug": "st-george"
+            },
+            "Woodstock": {
+                "count": 2,
+                "id": "27qMPhv3k7y867ktrjKhki",
+                "label": "Woodstock",
+                "slug": "woodstock"
+            },
+            "West Brighton": {
+                "count": 2,
+                "id": "3Q1FonXdHYtLtrkwNnBLE2",
+                "label": "West Brighton",
+                "slug": "west-brighton"
+            },
+            "Downtown Brooklyn": {
+                "count": 2,
+                "id": "1OIRg3CypIeCorXfFJ5DNP",
+                "label": "Downtown Brooklyn",
+                "slug": "downtown-brooklyn"
+            },
+            "East Elmhurst": {
+                "count": 2,
+                "id": "7LI6820itCXFFCZv3iurPu",
+                "label": "East Elmhurst",
+                "slug": "east-elmhurst"
+            },
+            "Morningside Heights": {
+                "count": 2,
+                "id": "2ovKDGD5Sy8SpkSyYcp7CH",
+                "label": "Morningside Heights",
+                "slug": "morningside-heights"
+            },
+            "Elmhurst": {
+                "count": 2,
+                "id": "2Ly0gcQhSDKTvu0Aup93Gg",
+                "label": "Elmhurst",
+                "slug": "elmhurst"
+            },
+            "Todt Hill": {
+                "count": 2,
+                "id": "7Ylxe39vQEzjLJOGB6K9m",
+                "label": "Todt Hill",
+                "slug": "todt-hill"
+            },
+            "Tompkinsville": {
+                "count": 2,
+                "id": "4qNRfz22WItCCh4t6UEA5p",
+                "label": "Tompkinsville",
+                "slug": "tompkinsville"
+            },
+            "label": "Neighborhood",
+            "type": "multiselect",
+            "values": [
+                "Midtown East",
+                "Lower East Side",
+                "Union Square",
+                "Noho",
+                "Gramercy",
+                "Upper East Side",
+                "Greenwich Village",
+                "The Seaport",
+                "Lower Manhattan",
+                "Bayside",
+                "Hudson Yards",
+                "Midtown",
+                "Midtown West",
+                "Williamsburg",
+                "Nomad",
+                "Times Square/Theatre District",
+                "Forest Hills",
+                "Flatlands",
+                "Hells Kitchen",
+                "Jamaica",
+                "West Village",
+                "Kips Bay",
+                "East Village",
+                "Flatiron District",
+                "Dumbo",
+                "Boerum Hill",
+                "Upper West Side",
+                "Tribeca",
+                "Bloomfield",
+                "East Harlem",
+                "Herald Square",
+                "Chelsea",
+                "Nolita",
+                "Soho",
+                "Central Park",
+                "Bay Ridge",
+                "Red Hook",
+                "Park Slope",
+                "Meatpacking District",
+                "Battery Park City",
+                "South Slope",
+                "Carroll Gardens",
+                "Little Italy",
+                "Hamilton Heights",
+                "Flushing",
+                "Murray Hill",
+                "New Dorp",
+                "Mott Haven",
+                "Washington Heights",
+                "Jackson Heights",
+                "Harlem",
+                "Long Island City",
+                "Garment District",
+                "Belmont",
+                "Koreatown",
+                "Woodhaven",
+                "Cobble Hill",
+                "Rosebank",
+                "Astoria",
+                "Prospect Lefferts Gardens",
+                "Greenpoint",
+                "Clinton Hill",
+                "Prospect Heights",
+                "Little Neck",
+                "Coney Island",
+                "Brooklyn Heights",
+                "Alphabet City",
+                "New Hyde Park",
+                "Hudson Square",
+                "Riverdale",
+                "St. George",
+                "Woodstock",
+                "West Brighton",
+                "Downtown Brooklyn",
+                "East Elmhurst",
+                "Morningside Heights",
+                "Elmhurst",
+                "Todt Hill",
+                "Tompkinsville"
+            ],
+            "lookupName": "neighborhood"
+        },
+        "Accessibility": {
+            "Wheelchair Accessible": {
+                "count": 559,
+                "id": "3UnxXQdjBymIv5gWofDT00",
+                "label": "Wheelchair Accessible",
+                "slug": "wheelchair-accessible"
+            },
+            "Large Print": {
+                "count": 175,
+                "id": "7F66X8cEpvhXvFRLuqQuep",
+                "label": "Large Print",
+                "slug": "large-print"
+            },
+            "Braille": {
+                "count": 37,
+                "id": "1w4zeGXXQ31MWeV2zYKqoQ",
+                "label": "Braille",
+                "slug": "braille"
+            },
+            "Open and/or Closed Captioned": {
+                "count": 1,
+                "id": "2EWQakO37Rm88FjjOh1CQ1",
+                "label": "Open and/or Closed Captioned",
+                "slug": "open-andor-closed-captioned"
+            },
+            "Volume Control Telephone": {
+                "count": 1,
+                "id": "ZUO4Ezfzu7LSowc8kPWeq",
+                "label": "Volume Control Telephone",
+                "slug": "volume-control-telephone"
+            },
+            "Assistive Listening System": {
+                "count": 1,
+                "id": "3k1gFy7gmkd6G1T6McTea4",
+                "label": "Assistive Listening System",
+                "slug": "assistive-listening-system"
+            },
+            "label": "Accessibility",
+            "type": "multiselect",
+            "values": [
+                "Wheelchair Accessible",
+                "Large Print",
+                "Braille",
+                "Open and/or Closed Captioned",
+                "Volume Control Telephone",
+                "Assistive Listening System"
+            ],
+            "lookupName": "accessibility"
+        },
+        "Meal Types": {
+            "$30 Lunch Price": {
+                "count": 245
+            },
+            "$45 Dinner Price": {
+                "count": 245
+            },
+            "$45 Sunday Dinner Price": {
+                "count": 193
+            },
+            "$45 Lunch Price": {
+                "count": 111
+            },
+            "$60 Dinner Price": {
+                "count": 303
+            },
+            "$60 Sunday Dinner Price": {
+                "count": 219
+            },
+            "$60 Lunch Price": {
+                "count": 23
+            },
+            "$30 Sunday Lunch/Brunch Price": {
+                "count": 123
+            },
+            "$45 Sunday Lunch/Brunch Price": {
+                "count": 79
+            },
+            "$60 Sunday Lunch/Brunch Price": {
+                "count": 14
+            },
+            "$30 Dinner Price": {
+                "count": 23
+            },
+            "$30 Sunday Dinner Price": {
+                "count": 22
+            },
+            "label": "Meal Types",
+            "type": "multiselect",
+            "values": [
+                "$30 Lunch Price",
+                "$45 Dinner Price",
+                "$45 Sunday Dinner Price",
+                "$45 Lunch Price",
+                "$60 Dinner Price",
+                "$60 Sunday Dinner Price",
+                "$60 Lunch Price",
+                "$30 Sunday Lunch/Brunch Price",
+                "$45 Sunday Lunch/Brunch Price",
+                "$60 Sunday Lunch/Brunch Price",
+                "$30 Dinner Price",
+                "$30 Sunday Dinner Price"
+            ],
+            "lookupName": "mealTypes"
+        },
+        "Weeks Participating": {
+            "Week 1 (July 21 - July 27)": {
+                "count": 602
+            },
+            "Week 2 (July 28 - Aug 3)": {
+                "count": 606
+            },
+            "Week 3 (Aug 4 - Aug 10)": {
+                "count": 592
+            },
+            "Week 4 (Aug 11 - Aug 17)": {
+                "count": 583
+            },
+            "Week 5 (Aug 18 - Aug 24)": {
+                "count": 434
+            },
+            "Week 6 (Aug 25 - Aug 31)": {
+                "count": 419
+            },
+            "label": "Weeks Participating",
+            "type": "multiselect",
+            "values": [
+                "Week 1 (July 21 - July 27)",
+                "Week 2 (July 28 - Aug 3)",
+                "Week 3 (Aug 4 - Aug 10)",
+                "Week 4 (Aug 11 - Aug 17)",
+                "Week 5 (Aug 18 - Aug 24)",
+                "Week 6 (Aug 25 - Aug 31)"
+            ],
+            "lookupName": "inclusionWeeks"
+        },
+        "Has Menu": {
+            "true": {
+                "count": 414
+            },
+            "false": {
+                "count": 195
+            },
+            "label": "Has Menu",
+            "type": "toggle",
+            "values": [
+                "true",
+                "false"
+            ],
+            "lookupName": "hasMenu"
+        },
+        "Founded By NYC Categories": {
+            "NYC Original Dish": {
+                "count": 52,
+                "id": "4rdEWIgrDKFsGqJWZ45v9B",
+                "label": "NYC Original Dish",
+                "slug": "rw-fbnyc-nyc-original-dish"
+            },
+            "$16.25 Cocktail": {
+                "count": 81,
+                "id": "6qWcFJDodv5spn11ZBjRS0",
+                "label": "$16.25 Cocktail",
+                "slug": "rw-fbnyc-1625-cocktail"
+            },
+            "Restaurant Signature Dish": {
+                "count": 90,
+                "id": "6V5rSjb80DVddiSy6im5DR",
+                "label": "Restaurant Signature Dish",
+                "slug": "rw-fbnyc-restaurant-signature-dish"
+            },
+            "Restaurant Signature Cocktail": {
+                "count": 48,
+                "id": "3c29wDd7x4x6ArYj8gVfdR",
+                "label": "Restaurant Signature Cocktail",
+                "slug": "rw-fbnyc-restaurant-signature-cocktail"
+            },
+            "NYC Original Cocktail": {
+                "count": 31,
+                "id": "6xqiypVjUTJWhWijgbKeTu",
+                "label": "NYC Original Cocktail",
+                "slug": "rw-fbnyc-nyc-original-cocktail"
+            },
+            "$16.25 Dish": {
+                "count": 23,
+                "id": "2GebBqrL06NBXwiQmQ5fsv",
+                "label": "$16.25 Dish",
+                "slug": "rw-fbnyc-1625-dish"
+            },
+            "label": "Founded By NYC Categories",
+            "type": "multiselect",
+            "values": [
+                "NYC Original Dish",
+                "$16.25 Cocktail",
+                "Restaurant Signature Dish",
+                "Restaurant Signature Cocktail",
+                "NYC Original Cocktail",
+                "$16.25 Dish"
+            ],
+            "lookupName": "rwFbnycCategories"
+        },
+        "Collections": {
+            "hidden-gems": {
+                "count": 10
+            },
+            "celebrity-chefs": {
+                "count": 8
+            },
+            "dress-for-the-occasion": {
+                "count": 13
+            },
+            "around-the-boroughs": {
+                "count": 13
+            },
+            "date-night": {
+                "count": 12
+            },
+            "for-the-foodies": {
+                "count": 9
+            },
+            "classic-restaurants": {
+                "count": 9
+            },
+            "summer-vibes": {
+                "count": 9
+            },
+            "label": "Collections",
+            "type": "multiselect",
+            "values": [
+                "hidden-gems",
+                "celebrity-chefs",
+                "dress-for-the-occasion",
+                "around-the-boroughs",
+                "date-night",
+                "for-the-foodies",
+                "classic-restaurants",
+                "summer-vibes"
+            ],
+            "lookupName": "collections"
+        }
+    },
+    "total": 609,
+    "page": 1,
+    "items": [
+        {
+            "borough": "Manhattan",
+            "neighborhood": "Midtown East",
+            "primaryCategory": "Restaurants",
+            "primaryLocation": "Midtown East",
+            "ctaButtons": {
+                "primary": {
+                    "label": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "promoCode": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "url": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "soldOut": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "additionalProperties": {
+                        "presaleAdditionalPrimaryCta": false,
+                        "presaleAdditionalPrimaryUrl": false,
+                        "presaleAdditionalPrimarySoldout": false,
+                        "generalAdditionalPrimaryCta": "",
+                        "generalAdditionalPrimaryUrl": "",
+                        "generalAdditionalPrimarySoldout": false
+                    }
+                },
+                "secondary": {
+                    "label": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "promoCode": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "url": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "soldOut": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "additionalProperties": {
+                        "presaleAdditionalSecondaryCta": false,
+                        "presaleAdditionalSecondaryUrl": false,
+                        "presaleAdditionalSecondarySoldout": false,
+                        "generalAdditionalSecondaryCta": false,
+                        "generalAdditionalSecondaryUrl": false,
+                        "generalAdditionalSecondarySoldout": false
+                    }
+                }
+            },
+            "tags": [
+                "American (New)",
+                "Midtown East"
+            ],
+            "shortTitle": "Copinette",
+            "slug": "copinette",
+            "image": {
+                "url": "//images.ctfassets.net/1aemqu6a6t65/1G2E0MJdXNkx0PQh59uZvv/c4f1521fca87ccde621b9a847ce48900/Copinette-Manhattan-NYC-Photo-Joalia-Hospitality-1.jpg",
+                "alt": ""
+            },
+            "summary": "Midtown East's Copinette serves American cuisine with strong French influences.",
+            "website": "https://copinettenyc.com",
+            "ecommerce": {
+                "title": "OpenTable",
+                "partnerName": "OpenTable",
+                "partnerId": "1011319"
+            },
+            "menuFileUrl": "",
+            "collections": [],
+            "mealTypes": [
+                "$30 Lunch Price",
+                "$45 Dinner Price",
+                "$45 Sunday Dinner Price"
+            ],
+            "restaurantInclusionWeek": [
+                "Week 1 (July 21 - July 27)",
+                "Week 2 (July 28 - Aug 3)",
+                "Week 3 (Aug 4 - Aug 10)",
+                "Week 4 (Aug 11 - Aug 17)",
+                "Week 5 (Aug 18 - Aug 24)",
+                "Week 6 (Aug 25 - Aug 31)"
+            ]
+        },
+        {
+            "borough": "Manhattan",
+            "neighborhood": "Lower East Side",
+            "primaryCategory": "Restaurants",
+            "primaryLocation": "Lower East Side",
+            "ctaButtons": {
+                "primary": {
+                    "label": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "promoCode": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "url": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "soldOut": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "additionalProperties": {
+                        "presaleAdditionalPrimaryCta": false,
+                        "presaleAdditionalPrimaryUrl": false,
+                        "presaleAdditionalPrimarySoldout": false,
+                        "generalAdditionalPrimaryCta": "",
+                        "generalAdditionalPrimaryUrl": "",
+                        "generalAdditionalPrimarySoldout": false
+                    }
+                },
+                "secondary": {
+                    "label": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "promoCode": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "url": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "soldOut": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "additionalProperties": {
+                        "presaleAdditionalSecondaryCta": false,
+                        "presaleAdditionalSecondaryUrl": false,
+                        "presaleAdditionalSecondarySoldout": false,
+                        "generalAdditionalSecondaryCta": false,
+                        "generalAdditionalSecondaryUrl": false,
+                        "generalAdditionalSecondarySoldout": false
+                    }
+                }
+            },
+            "tags": [
+                "American (Traditional)",
+                "Lower East Side"
+            ],
+            "shortTitle": "Freemans",
+            "slug": "freemans",
+            "image": {
+                "url": "//images.ctfassets.net/1aemqu6a6t65/amX41E9hzY7Qext9Bsjju/fe03925e0bdbb23413af16236fe2c3ef/freemans-lower-east-side-manhattan-nyc-freemansmussels.jpg",
+                "alt": ""
+            },
+            "summary": "It might be a little tricky to find Freeman's but if you can make your way there, you’ll find surreal, hunting lodge–inspired decor, a hip scene and the most comforting meals.",
+            "website": "https://www.freemansrestaurant.com",
+            "menuFileUrl": "",
+            "collections": [
+                "hidden-gems"
+            ],
+            "mealTypes": [
+                "$45 Lunch Price",
+                "$60 Dinner Price",
+                "$60 Sunday Dinner Price"
+            ],
+            "restaurantInclusionWeek": [
+                "Week 1 (July 21 - July 27)",
+                "Week 2 (July 28 - Aug 3)",
+                "Week 3 (Aug 4 - Aug 10)",
+                "Week 4 (Aug 11 - Aug 17)",
+                "Week 5 (Aug 18 - Aug 24)",
+                "Week 6 (Aug 25 - Aug 31)"
+            ]
+        },
+        {
+            "borough": "Manhattan",
+            "neighborhood": "Union Square",
+            "primaryCategory": "Restaurants",
+            "primaryLocation": "Union Square",
+            "ctaButtons": {
+                "primary": {
+                    "label": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "promoCode": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "url": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "soldOut": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "additionalProperties": {
+                        "presaleAdditionalPrimaryCta": false,
+                        "presaleAdditionalPrimaryUrl": false,
+                        "presaleAdditionalPrimarySoldout": false,
+                        "generalAdditionalPrimaryCta": "",
+                        "generalAdditionalPrimaryUrl": "",
+                        "generalAdditionalPrimarySoldout": false
+                    }
+                },
+                "secondary": {
+                    "label": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "promoCode": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "url": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "soldOut": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "additionalProperties": {
+                        "presaleAdditionalSecondaryCta": false,
+                        "presaleAdditionalSecondaryUrl": false,
+                        "presaleAdditionalSecondarySoldout": false,
+                        "generalAdditionalSecondaryCta": false,
+                        "generalAdditionalSecondaryUrl": false,
+                        "generalAdditionalSecondarySoldout": false
+                    }
+                }
+            },
+            "tags": [
+                "American (New)",
+                "Union Square"
+            ],
+            "shortTitle": "ABC Kitchen",
+            "slug": "abc-kitchen",
+            "image": {
+                "url": "//images.ctfassets.net/1aemqu6a6t65/7DVkDiyxO7xo0gENyxNLmX/049828c4f8357da7406b168361d5d527/abc-kitchen-tagger-yancey-iv-4578__1___1_.jpeg",
+                "alt": ""
+            },
+            "summary": "ABC Kitchen by Michelin starred Chef Jean-Georges Vongerichten has a passionate commitment to offering the freshest organic and local ingredients possible.",
+            "website": "https://www.abckitchen.nyc",
+            "ecommerce": {
+                "title": "OpenTable",
+                "partnerName": "OpenTable",
+                "partnerId": "570"
+            },
+            "menuFileUrl": "",
+            "collections": [
+                "celebrity-chefs"
+            ],
+            "mealTypes": [
+                "$60 Lunch Price",
+                "$60 Dinner Price"
+            ],
+            "restaurantInclusionWeek": [
+                "Week 1 (July 21 - July 27)",
+                "Week 2 (July 28 - Aug 3)",
+                "Week 3 (Aug 4 - Aug 10)"
+            ]
+        },
+        {
+            "borough": "Manhattan",
+            "neighborhood": "Midtown East",
+            "primaryCategory": "Restaurants",
+            "primaryLocation": "Midtown East",
+            "ctaButtons": {
+                "primary": {
+                    "label": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "promoCode": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "url": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "soldOut": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "additionalProperties": {
+                        "presaleAdditionalPrimaryCta": false,
+                        "presaleAdditionalPrimaryUrl": false,
+                        "presaleAdditionalPrimarySoldout": false,
+                        "generalAdditionalPrimaryCta": "",
+                        "generalAdditionalPrimaryUrl": "",
+                        "generalAdditionalPrimarySoldout": false
+                    }
+                },
+                "secondary": {
+                    "label": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "promoCode": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "url": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "soldOut": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "additionalProperties": {
+                        "presaleAdditionalSecondaryCta": false,
+                        "presaleAdditionalSecondaryUrl": false,
+                        "presaleAdditionalSecondarySoldout": false,
+                        "generalAdditionalSecondaryCta": false,
+                        "generalAdditionalSecondaryUrl": false,
+                        "generalAdditionalSecondarySoldout": false
+                    }
+                }
+            },
+            "tags": [
+                "Thai",
+                "Midtown East"
+            ],
+            "shortTitle": "Obao Midtown East",
+            "slug": "obao-noodles-grill",
+            "image": {
+                "url": "//images.ctfassets.net/1aemqu6a6t65/1e7Bqk7E7yG0DcQ2M10Ese/a777936e8c6fbb09dc138ab5f1fd53cb/obao-pichan-keitsrichart-5.jpg",
+                "alt": ""
+            },
+            "summary": "Michael Bao Huynh, of Bia Garden and Baoguette fame, brings his formula—Pan-Asian food in a sleek setting—to the east side.",
+            "website": "https://www.obaony.com/home-me",
+            "menuFileUrl": "",
+            "collections": [],
+            "mealTypes": [
+                "$30 Lunch Price",
+                "$45 Dinner Price",
+                "$30 Sunday Lunch/Brunch Price",
+                "$45 Sunday Dinner Price"
+            ],
+            "restaurantInclusionWeek": [
+                "Week 1 (July 21 - July 27)",
+                "Week 2 (July 28 - Aug 3)",
+                "Week 3 (Aug 4 - Aug 10)",
+                "Week 4 (Aug 11 - Aug 17)",
+                "Week 5 (Aug 18 - Aug 24)",
+                "Week 6 (Aug 25 - Aug 31)"
+            ]
+        },
+        {
+            "borough": "Manhattan",
+            "neighborhood": "Noho",
+            "primaryCategory": "Restaurants",
+            "primaryLocation": "Noho",
+            "ctaButtons": {
+                "primary": {
+                    "label": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "promoCode": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "url": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "soldOut": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "additionalProperties": {
+                        "presaleAdditionalPrimaryCta": false,
+                        "presaleAdditionalPrimaryUrl": false,
+                        "presaleAdditionalPrimarySoldout": false,
+                        "generalAdditionalPrimaryCta": "",
+                        "generalAdditionalPrimaryUrl": "",
+                        "generalAdditionalPrimarySoldout": false
+                    }
+                },
+                "secondary": {
+                    "label": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "promoCode": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "url": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "soldOut": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "additionalProperties": {
+                        "presaleAdditionalSecondaryCta": false,
+                        "presaleAdditionalSecondaryUrl": false,
+                        "presaleAdditionalSecondarySoldout": false,
+                        "generalAdditionalSecondaryCta": false,
+                        "generalAdditionalSecondaryUrl": false,
+                        "generalAdditionalSecondarySoldout": false
+                    }
+                }
+            },
+            "tags": [
+                "Mexican",
+                "Noho"
+            ],
+            "shortTitle": "Atla",
+            "slug": "atla",
+            "image": {
+                "url": "//images.ctfassets.net/1aemqu6a6t65/5gIREuaWbO4Al2folQcvYV/bd81b6fa9adf993fcc3cfc3f2ed27a8a/ATLA-Manhattan-NYC-Photo-Araceli-Paz-4.jpg",
+                "alt": ""
+            },
+            "summary": "Mexican celebrity chef Enrique Olvera opened an all-day eatery in Noho.",
+            "website": "https://www.eatatla.com",
+            "menuFileUrl": "",
+            "collections": [],
+            "mealTypes": [
+                "$60 Dinner Price",
+                "$45 Sunday Lunch/Brunch Price",
+                "$60 Sunday Dinner Price"
+            ],
+            "restaurantInclusionWeek": [
+                "Week 1 (July 21 - July 27)",
+                "Week 2 (July 28 - Aug 3)",
+                "Week 3 (Aug 4 - Aug 10)",
+                "Week 4 (Aug 11 - Aug 17)",
+                "Week 5 (Aug 18 - Aug 24)",
+                "Week 6 (Aug 25 - Aug 31)"
+            ]
+        },
+        {
+            "borough": "Manhattan",
+            "neighborhood": "Lower East Side",
+            "primaryCategory": "Restaurants",
+            "primaryLocation": "Lower East Side",
+            "ctaButtons": {
+                "primary": {
+                    "label": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "promoCode": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "url": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "soldOut": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "additionalProperties": {
+                        "presaleAdditionalPrimaryCta": false,
+                        "presaleAdditionalPrimaryUrl": false,
+                        "presaleAdditionalPrimarySoldout": false,
+                        "generalAdditionalPrimaryCta": "",
+                        "generalAdditionalPrimaryUrl": "",
+                        "generalAdditionalPrimarySoldout": false
+                    }
+                },
+                "secondary": {
+                    "label": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "promoCode": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "url": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "soldOut": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "additionalProperties": {
+                        "presaleAdditionalSecondaryCta": false,
+                        "presaleAdditionalSecondaryUrl": false,
+                        "presaleAdditionalSecondarySoldout": false,
+                        "generalAdditionalSecondaryCta": false,
+                        "generalAdditionalSecondaryUrl": false,
+                        "generalAdditionalSecondarySoldout": false
+                    }
+                }
+            },
+            "tags": [
+                "American (New)",
+                "Lower East Side"
+            ],
+            "shortTitle": "Essex",
+            "slug": "essex",
+            "image": {
+                "url": "//images.ctfassets.net/1aemqu6a6t65/4oIY15T2edayZrC83whiZs/f071d16b24219fa1a34be25ae7d28ab9/Essex-Restaurant-Manhattan-NYC-Photo-Courtesy-Essex-Restaurant-2.jpg",
+                "alt": ""
+            },
+            "summary": "Located in the historic Essex Street Market Building, Essex is a loft-like multilevel space with contemporary cuisine inspired by the flavors of the Lower East Side.",
+            "website": "https://www.essexnyc.com",
+            "ecommerce": {
+                "title": "OpenTable",
+                "partnerName": "OpenTable",
+                "partnerId": "13675"
+            },
+            "menuFileUrl": "",
+            "collections": [],
+            "mealTypes": [
+                "$45 Dinner Price",
+                "$30 Sunday Lunch/Brunch Price",
+                "$45 Sunday Dinner Price"
+            ],
+            "restaurantInclusionWeek": [
+                "Week 1 (July 21 - July 27)",
+                "Week 2 (July 28 - Aug 3)",
+                "Week 3 (Aug 4 - Aug 10)",
+                "Week 4 (Aug 11 - Aug 17)",
+                "Week 5 (Aug 18 - Aug 24)",
+                "Week 6 (Aug 25 - Aug 31)"
+            ]
+        },
+        {
+            "borough": "Manhattan",
+            "neighborhood": "Midtown East",
+            "primaryCategory": "Restaurants",
+            "primaryLocation": "Midtown East",
+            "ctaButtons": {
+                "primary": {
+                    "label": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "promoCode": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "url": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "soldOut": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "additionalProperties": {
+                        "presaleAdditionalPrimaryCta": false,
+                        "presaleAdditionalPrimaryUrl": false,
+                        "presaleAdditionalPrimarySoldout": false,
+                        "generalAdditionalPrimaryCta": "",
+                        "generalAdditionalPrimaryUrl": "",
+                        "generalAdditionalPrimarySoldout": false
+                    }
+                },
+                "secondary": {
+                    "label": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "promoCode": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "url": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "soldOut": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "additionalProperties": {
+                        "presaleAdditionalSecondaryCta": false,
+                        "presaleAdditionalSecondaryUrl": false,
+                        "presaleAdditionalSecondarySoldout": false,
+                        "generalAdditionalSecondaryCta": false,
+                        "generalAdditionalSecondaryUrl": false,
+                        "generalAdditionalSecondarySoldout": false
+                    }
+                }
+            },
+            "tags": [
+                "Spanish",
+                "Midtown East"
+            ],
+            "shortTitle": "Socarrat Paella Bar - Midtown East",
+            "slug": "socarrat-paella-bar-midtown-east",
+            "image": {
+                "url": "//images.ctfassets.net/1aemqu6a6t65/5klYuj1DN9HCC2Tetj7e5p/d4a0d2e32073a152a1e98c72f7487e95/socarrat-paella-bar-photo-courtesy-0-3__1___1_.jpeg",
+                "alt": ""
+            },
+            "summary": "Socarrat is the sensuous crust that forms on the bottom of the paella pan when the liquid is rendered and the rice reaches its peak of succulence.",
+            "website": "https://socarratnyc.com/midtown-east",
+            "ecommerce": {
+                "title": "OpenTable",
+                "partnerName": "OpenTable",
+                "partnerId": "96670"
+            },
+            "menuFileUrl": "",
+            "collections": [],
+            "mealTypes": [
+                "$30 Lunch Price",
+                "$45 Dinner Price",
+                "$45 Sunday Dinner Price"
+            ],
+            "restaurantInclusionWeek": [
+                "Week 1 (July 21 - July 27)",
+                "Week 2 (July 28 - Aug 3)",
+                "Week 3 (Aug 4 - Aug 10)",
+                "Week 4 (Aug 11 - Aug 17)",
+                "Week 5 (Aug 18 - Aug 24)",
+                "Week 6 (Aug 25 - Aug 31)"
+            ]
+        },
+        {
+            "borough": "Manhattan",
+            "neighborhood": "Midtown East",
+            "primaryCategory": "Restaurants",
+            "primaryLocation": "Midtown East",
+            "ctaButtons": {
+                "primary": {
+                    "label": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "promoCode": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "url": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "soldOut": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "additionalProperties": {
+                        "presaleAdditionalPrimaryCta": false,
+                        "presaleAdditionalPrimaryUrl": false,
+                        "presaleAdditionalPrimarySoldout": false,
+                        "generalAdditionalPrimaryCta": "",
+                        "generalAdditionalPrimaryUrl": "",
+                        "generalAdditionalPrimarySoldout": false
+                    }
+                },
+                "secondary": {
+                    "label": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "promoCode": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "url": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "soldOut": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "additionalProperties": {
+                        "presaleAdditionalSecondaryCta": false,
+                        "presaleAdditionalSecondaryUrl": false,
+                        "presaleAdditionalSecondarySoldout": false,
+                        "generalAdditionalSecondaryCta": false,
+                        "generalAdditionalSecondaryUrl": false,
+                        "generalAdditionalSecondarySoldout": false
+                    }
+                }
+            },
+            "tags": [
+                "American (New)",
+                "Midtown East"
+            ],
+            "shortTitle": "Four Twenty Five",
+            "slug": "four-twenty-five",
+            "image": {
+                "url": "//images.ctfassets.net/1aemqu6a6t65/6PkOxaGubsmeoBDNP31cSs/2e3a9e48d8f64b61f7af9768ea34d8a1/Fiour-Twenty-Five-Manhattan-NYC-Photo-Nicole-Franzen.jpg",
+                "alt": ""
+            },
+            "summary": "This new restaurant from chef Jean-Georges Vongerichten perfectly blends culinary excellence with architectural marvel and sustainability practices.",
+            "website": "https://www.425parkrestaurant.com",
+            "menuFileUrl": "",
+            "collections": [
+                "celebrity-chefs"
+            ],
+            "mealTypes": [
+                "$60 Lunch Price",
+                "$60 Dinner Price",
+                "$60 Sunday Dinner Price"
+            ],
+            "restaurantInclusionWeek": [
+                "Week 1 (July 21 - July 27)",
+                "Week 2 (July 28 - Aug 3)",
+                "Week 3 (Aug 4 - Aug 10)",
+                "Week 4 (Aug 11 - Aug 17)",
+                "Week 5 (Aug 18 - Aug 24)",
+                "Week 6 (Aug 25 - Aug 31)"
+            ]
+        },
+        {
+            "borough": "Manhattan",
+            "neighborhood": "Gramercy",
+            "primaryCategory": "Restaurants",
+            "primaryLocation": "Gramercy",
+            "ctaButtons": {
+                "primary": {
+                    "label": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "promoCode": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "url": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "soldOut": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "additionalProperties": {
+                        "presaleAdditionalPrimaryCta": false,
+                        "presaleAdditionalPrimaryUrl": false,
+                        "presaleAdditionalPrimarySoldout": false,
+                        "generalAdditionalPrimaryCta": "",
+                        "generalAdditionalPrimaryUrl": "",
+                        "generalAdditionalPrimarySoldout": false
+                    }
+                },
+                "secondary": {
+                    "label": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "promoCode": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "url": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "soldOut": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "additionalProperties": {
+                        "presaleAdditionalSecondaryCta": false,
+                        "presaleAdditionalSecondaryUrl": false,
+                        "presaleAdditionalSecondarySoldout": false,
+                        "generalAdditionalSecondaryCta": false,
+                        "generalAdditionalSecondaryUrl": false,
+                        "generalAdditionalSecondarySoldout": false
+                    }
+                }
+            },
+            "tags": [
+                "Italian",
+                "Gramercy"
+            ],
+            "shortTitle": "Isabelle's Osteria",
+            "slug": "isabelles-osteria",
+            "image": {
+                "url": "//images.ctfassets.net/1aemqu6a6t65/7fMV4crotpEItLeFnNSPy5/e66efb0c58886f9d91704ad58d77c140/rw-to-go_isabelle-s-osteria_b7b8c148-5056-a36f-23f4d255b3767bc3-b7b8c0065056a36_b7b8c19b-5056-a36f-23407696f74795fb.jpg",
+                "alt": ""
+            },
+            "summary": "Isabelle’s Italian menu adds unusual touches to traditional appetizers and entrees.",
+            "website": "https://isabellesnyc.com",
+            "ecommerce": {
+                "title": "OpenTable",
+                "partnerName": "OpenTable",
+                "partnerId": "335782"
+            },
+            "menuFileUrl": "",
+            "collections": [],
+            "mealTypes": [
+                "$45 Lunch Price",
+                "$60 Dinner Price",
+                "$60 Sunday Dinner Price"
+            ],
+            "restaurantInclusionWeek": [
+                "Week 1 (July 21 - July 27)",
+                "Week 2 (July 28 - Aug 3)",
+                "Week 3 (Aug 4 - Aug 10)",
+                "Week 4 (Aug 11 - Aug 17)",
+                "Week 5 (Aug 18 - Aug 24)",
+                "Week 6 (Aug 25 - Aug 31)"
+            ]
+        },
+        {
+            "borough": "Manhattan",
+            "neighborhood": "Upper East Side",
+            "primaryCategory": "Restaurants",
+            "primaryLocation": "Upper East Side",
+            "ctaButtons": {
+                "primary": {
+                    "label": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "promoCode": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "url": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "soldOut": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "additionalProperties": {
+                        "presaleAdditionalPrimaryCta": false,
+                        "presaleAdditionalPrimaryUrl": false,
+                        "presaleAdditionalPrimarySoldout": false,
+                        "generalAdditionalPrimaryCta": "",
+                        "generalAdditionalPrimaryUrl": "",
+                        "generalAdditionalPrimarySoldout": false
+                    }
+                },
+                "secondary": {
+                    "label": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "promoCode": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "url": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "soldOut": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "additionalProperties": {
+                        "presaleAdditionalSecondaryCta": false,
+                        "presaleAdditionalSecondaryUrl": false,
+                        "presaleAdditionalSecondarySoldout": false,
+                        "generalAdditionalSecondaryCta": false,
+                        "generalAdditionalSecondaryUrl": false,
+                        "generalAdditionalSecondarySoldout": false
+                    }
+                }
+            },
+            "tags": [
+                "Peruvian",
+                "Upper East Side"
+            ],
+            "shortTitle": "Mission Ceviche - Upper East Side",
+            "slug": "mission-ceviche-upper-east-side",
+            "image": {
+                "url": "//images.ctfassets.net/1aemqu6a6t65/4EWZoFJ3STKjte0vCOdS6D/d116f508f149486f54f6af6b2f186c89/Mission-Ceviche-UES-Manhattan-NYC-Photo-Oriana-Rivera.jpg",
+                "alt": ""
+            },
+            "summary": "Mission Ceviche, from chef Jose Luis Chavez and partner Brice Mastroluca, has become synonymous with modern Peruvian cuisine, offering a diverse array of dishes crafted from the freshest ingredients.",
+            "website": "https://missionceviche.com/upper-east-side-location",
+            "ecommerce": {
+                "title": "OpenTable",
+                "partnerName": "OpenTable",
+                "partnerId": "1283566"
+            },
+            "menuFileUrl": "",
+            "collections": [],
+            "mealTypes": [
+                "$30 Lunch Price",
+                "$60 Dinner Price",
+                "$45 Sunday Lunch/Brunch Price",
+                "$60 Sunday Dinner Price"
+            ],
+            "restaurantInclusionWeek": [
+                "Week 1 (July 21 - July 27)",
+                "Week 2 (July 28 - Aug 3)",
+                "Week 3 (Aug 4 - Aug 10)",
+                "Week 4 (Aug 11 - Aug 17)",
+                "Week 5 (Aug 18 - Aug 24)",
+                "Week 6 (Aug 25 - Aug 31)"
+            ]
+        },
+        {
+            "borough": "Manhattan",
+            "neighborhood": "Upper East Side",
+            "primaryCategory": "Restaurants",
+            "primaryLocation": "Upper East Side",
+            "ctaButtons": {
+                "primary": {
+                    "label": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "promoCode": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "url": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "soldOut": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "additionalProperties": {
+                        "presaleAdditionalPrimaryCta": false,
+                        "presaleAdditionalPrimaryUrl": false,
+                        "presaleAdditionalPrimarySoldout": false,
+                        "generalAdditionalPrimaryCta": "",
+                        "generalAdditionalPrimaryUrl": "",
+                        "generalAdditionalPrimarySoldout": false
+                    }
+                },
+                "secondary": {
+                    "label": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "promoCode": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "url": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "soldOut": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "additionalProperties": {
+                        "presaleAdditionalSecondaryCta": false,
+                        "presaleAdditionalSecondaryUrl": false,
+                        "presaleAdditionalSecondarySoldout": false,
+                        "generalAdditionalSecondaryCta": false,
+                        "generalAdditionalSecondaryUrl": false,
+                        "generalAdditionalSecondarySoldout": false
+                    }
+                }
+            },
+            "tags": [
+                "American (New)",
+                "Upper East Side"
+            ],
+            "shortTitle": "JoJo",
+            "slug": "jojo",
+            "image": {
+                "url": "//images.ctfassets.net/1aemqu6a6t65/0MdrqEE32TymjSTM4QDBp/dfd6632c06066e5c42faef46fd0a047e/_jojo-francesco-tonelli-003.jpg",
+                "alt": ""
+            },
+            "summary": "A lavishly gorgeous and perfectly refined town house is home to one of Jean-Georges Vongerichten's greatest dining accomplishments.",
+            "website": "https://www.jojorestaurantnyc.com",
+            "ecommerce": {
+                "title": "OpenTable",
+                "partnerName": "OpenTable",
+                "partnerId": "4871"
+            },
+            "menuFileUrl": "",
+            "collections": [],
+            "mealTypes": [
+                "$60 Dinner Price",
+                "$60 Sunday Dinner Price"
+            ],
+            "restaurantInclusionWeek": [
+                "Week 1 (July 21 - July 27)",
+                "Week 2 (July 28 - Aug 3)",
+                "Week 3 (Aug 4 - Aug 10)",
+                "Week 4 (Aug 11 - Aug 17)",
+                "Week 5 (Aug 18 - Aug 24)",
+                "Week 6 (Aug 25 - Aug 31)"
+            ]
+        },
+        {
+            "borough": "Manhattan",
+            "neighborhood": "Greenwich Village",
+            "primaryCategory": "Restaurants",
+            "primaryLocation": "Greenwich Village",
+            "ctaButtons": {
+                "primary": {
+                    "label": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "promoCode": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "url": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "soldOut": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "additionalProperties": {
+                        "presaleAdditionalPrimaryCta": false,
+                        "presaleAdditionalPrimaryUrl": false,
+                        "presaleAdditionalPrimarySoldout": false,
+                        "generalAdditionalPrimaryCta": "",
+                        "generalAdditionalPrimaryUrl": "",
+                        "generalAdditionalPrimarySoldout": false
+                    }
+                },
+                "secondary": {
+                    "label": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "promoCode": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "url": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "soldOut": {
+                        "presale": false,
+                        "general": false
+                    },
+                    "additionalProperties": {
+                        "presaleAdditionalSecondaryCta": false,
+                        "presaleAdditionalSecondaryUrl": false,
+                        "presaleAdditionalSecondarySoldout": false,
+                        "generalAdditionalSecondaryCta": false,
+                        "generalAdditionalSecondaryUrl": false,
+                        "generalAdditionalSecondarySoldout": false
+                    }
+                }
+            },
+            "tags": [
+                "Japanese / Sushi",
+                "Greenwich Village"
+            ],
+            "shortTitle": "DomoDomo NYC",
+            "slug": "domodomo",
+            "image": {
+                "url": "//images.ctfassets.net/1aemqu6a6t65/5z2B58nJGAbSKJ8ulLVRNI/8d9dd80e9db2bfd89e32684ff9c8d5bd/DOMODOMO-NYC-Manhattan-NYC-Courtesy-4.jpg",
+                "alt": ""
+            },
+            "summary": "Domodomo is a premier Japanese restaurant specializing in handrolls, sushi, and modern interpretations of traditional Asian dishes.",
+            "website": "https://www.domodomorestaurant.com/domodomonyc",
+            "menuFileUrl": "",
+            "collections": [],
+            "mealTypes": [
+                "$60 Dinner Price"
+            ],
+            "restaurantInclusionWeek": [
+                "Week 2 (July 28 - Aug 3)"
+            ]
+        }
+    ],
+    "count": 609
+}

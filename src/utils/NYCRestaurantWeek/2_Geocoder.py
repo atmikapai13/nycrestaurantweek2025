@@ -32,9 +32,7 @@ class RestaurantCoordinateExtractor:
             return {
                 'address': None,
                 'latitude': None,
-                'longitude': None,
-                'extraction_success': False,
-                'error': 'No slug'
+                'longitude': None
             }
         
         restaurant_url = f"https://www.nyctourism.com/restaurant-week/{slug}/"
@@ -66,16 +64,20 @@ class RestaurantCoordinateExtractor:
                 else:
                     print(f"  ❌ {extracted_data['error']}")
                 
-                return extracted_data
+                # Remove tracking fields before returning
+                clean_data = {
+                    'address': extracted_data.get('address'),
+                    'latitude': extracted_data.get('latitude'),
+                    'longitude': extracted_data.get('longitude'),
+                }
+                return clean_data
                 
             else:
                 print(f"  ❌ HTTP {response.status_code}")
                 return {
                     'address': None,
                     'latitude': None,
-                    'longitude': None,
-                    'extraction_success': False,
-                    'error': f'HTTP {response.status_code}'
+                    'longitude': None
                 }
                 
         except Exception as e:
@@ -83,9 +85,7 @@ class RestaurantCoordinateExtractor:
             return {
                 'address': None,
                 'latitude': None,
-                'longitude': None,
-                'extraction_success': False,
-                'error': str(e)
+                'longitude': None
             }
     
     def extract_json_data(self, page_content: str, restaurant_name: str) -> Dict:
@@ -107,8 +107,7 @@ class RestaurantCoordinateExtractor:
                 'latitude': float(lat),
                 'longitude': float(lon),
                 'extraction_success': True,
-                'error': None,
-                'extraction_method': 'venueAddress_location_pattern'
+                'error': None
             }
         
         # Strategy 2: Look for broader location patterns
@@ -138,7 +137,7 @@ class RestaurantCoordinateExtractor:
                     'longitude': float(lon),
                     'extraction_success': True,
                     'error': None,
-                    'extraction_method': f'location_pattern_{i+1}'
+                    
                 }
         
         # If no patterns matched, return failure
@@ -148,7 +147,7 @@ class RestaurantCoordinateExtractor:
             'longitude': None,
             'extraction_success': False,
             'error': 'No coordinate patterns found in page source',
-            'extraction_method': 'failed'
+           
         }
     
     def clean_venue_address(self, address_raw: str) -> str:
@@ -245,7 +244,7 @@ class RestaurantCoordinateExtractor:
         
         return results
     
-    def save_results(self, restaurants: List[Dict], filename: str = "data/2restaurants_with_coordinates.json"):
+    def save_results(self, restaurants: List[Dict], filename: str = "src/data/NYCRestaurantWeek/2_Geocoded.json"):
         """Save results to JSON file"""
         
         try:
@@ -263,8 +262,8 @@ def main():
     try:
         # Try different possible paths
         possible_paths = [
-            'data/1clean_restaurant_data.json',  # From root directory
-            '../data/1clean_restaurant_data.json',  # From utils directory
+            'src/data/NYCRestaurantWeek/1_Scraped.json',  # From root directory
+            '../src/data/1_Scraped.json',  # From utils directory
         ]
         
         restaurants = None
@@ -278,7 +277,7 @@ def main():
                 continue
         
         if restaurants is None:
-            print("❌ Error: Could not find 1clean_restaurant_data.json in data/ or ../data/")
+            print("❌ Error: Could not find 2_NYCRestaurantWeek.json in src/data/ or ../src/data/")
             return
             
     except Exception as e:
@@ -297,7 +296,7 @@ def main():
     # Print summary
     print(f"\n📊 Summary:")
     
-    success_count = sum(1 for r in restaurants_with_coords if r['extraction_success'])
+    success_count = sum(1 for r in restaurants_with_coords if r.get('latitude') is not None and r.get('longitude') is not None)
     failed_count = len(restaurants_with_coords) - success_count
     
     print(f"✅ Coordinates extracted: {success_count}")
@@ -306,7 +305,7 @@ def main():
     # Count by extraction method
     methods = {}
     for restaurant in restaurants_with_coords:
-        if restaurant['extraction_success']:
+        if restaurant.get('latitude') is not None and restaurant.get('longitude') is not None:
             method = restaurant.get('extraction_method', 'unknown')
             methods[method] = methods.get(method, 0) + 1
     
@@ -319,7 +318,7 @@ def main():
     print(f"\n📈 Strategy Analysis:")
     venue_address_count = methods.get('venueAddress_location_pattern', 0)
     location_patterns_count = sum(count for method, count in methods.items() if 'location_pattern_' in method)
-    failed_count = sum(1 for r in restaurants_with_coords if not r['extraction_success'])
+    failed_count = sum(1 for r in restaurants_with_coords if r.get('latitude') is None or r.get('longitude') is None)
     
     print(f"   Strategy 1 (venueAddress + location): {venue_address_count}")
     print(f"   Strategy 2 (location patterns only): {location_patterns_count}")
@@ -329,7 +328,7 @@ def main():
     print(f"\n📋 Sample results:")
     count = 0
     for restaurant in restaurants_with_coords:
-        if restaurant['extraction_success'] and count < 5:
+        if restaurant.get('latitude') is not None and restaurant.get('longitude') is not None and count < 5:
             print(f"   {restaurant['name']}")
             print(f"      Address: {restaurant['address']}")
             print(f"      Coordinates: ({restaurant['latitude']:.4f}, {restaurant['longitude']:.4f})")
@@ -340,8 +339,8 @@ def main():
         print(f"\n❌ Failed extractions (first 5):")
         count = 0
         for restaurant in restaurants_with_coords:
-            if not restaurant['extraction_success'] and count < 5:
-                print(f"   {restaurant['name']}: {restaurant['error']}")
+            if (restaurant.get('latitude') is None or restaurant.get('longitude') is None) and count < 5:
+                print(f"   {restaurant['name']}: No coordinates found")
                 count += 1
 
 if __name__ == "__main__":

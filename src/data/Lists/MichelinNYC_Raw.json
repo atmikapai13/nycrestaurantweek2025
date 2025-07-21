@@ -1,0 +1,6236 @@
+[
+  {
+    "_geoloc": {
+      "lat": 40.7141336,
+      "lng": -74.0077126
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Icca",
+    "slug": "icca",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "objectID": "110576",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Chef counters are a treat, but a seat in front",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7168498,
+      "lng": -74.0055912
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Two Stars: Excellent cooking",
+      "slug": "2-stars-michelin",
+      "icon": "n"
+    },
+    "michelin_award": "TWO_STARS",
+    "name": "Atera",
+    "slug": "atera",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "objectID": "110449",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Counter dining can sometimes be a cramped affair, but fortunately",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.71757,
+      "lng": -74.00549
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Shion 69 Leonard Street",
+    "slug": "shoji-at-69-leonard",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "objectID": "110396",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "There are just eight seats and a distinctive Japanese charm",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7187256,
+      "lng": -74.0091114
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Three Stars: Exceptional cuisine",
+      "slug": "3-stars-michelin",
+      "icon": "o"
+    },
+    "michelin_award": "THREE_STARS",
+    "name": "Jungsik New York",
+    "slug": "jungsik-new-york",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "objectID": "110677",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Cool and polished, this dining room bears that perfectly downtown",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7193546,
+      "lng": -74.006101
+    },
+    "area_name": "Manhattan",
+    "chef": "Austin Johnson",
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "One White Street",
+    "slug": "one-white-street",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "objectID": "110681",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "This 19th-century townhouse, once the downtown hangout for John",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7067068,
+      "lng": -74.0087206
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Crown Shy",
+    "slug": "crown-shy",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      }
+    ],
+    "objectID": "110589",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Crown Shy occupies a stunning setting in the landmark Art",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.706144,
+      "lng": -74.0078519
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Two Stars: Excellent cooking",
+      "slug": "2-stars-michelin",
+      "icon": "n"
+    },
+    "michelin_award": "TWO_STARS",
+    "name": "Saga",
+    "slug": "saga",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "objectID": "110574",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Set in a landmark skyscraper that towers over the city",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7133818,
+      "lng": -73.9974181
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Dim Sum Go Go",
+    "slug": "dim-sum-go-go",
+    "cuisines": [
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      },
+      {
+        "code": "TYC_1041",
+        "label": "Dim Sum",
+        "slug": "dim-sum"
+      }
+    ],
+    "objectID": "110542",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "This wildly popular joint is still packed to the gills",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.719162,
+      "lng": -74.00001
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Le Coucou",
+    "slug": "le-coucou",
+    "cuisines": [
+      {
+        "code": "TYC_1049",
+        "label": "French",
+        "slug": "french"
+      },
+      {
+        "code": "TYC_1050",
+        "label": "Classic French",
+        "slug": "classic-french"
+      }
+    ],
+    "objectID": "110410",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Le Coucou remains a white-hot scene that’s equal",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7217842,
+      "lng": -74.0100019
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Sushi Ichimura",
+    "slug": "sushi-ichimura",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "objectID": "110533",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Among real sushi enthusiasts, Chef Eiji Ichimura is a household",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7219387,
+      "lng": -74.0099509
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "L’Abeille",
+    "slug": "l’abeille",
+    "cuisines": [
+      {
+        "code": "TYC_1049",
+        "label": "French",
+        "slug": "french"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "objectID": "110614",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "L’Abeille reflects the luxurious charms of TriBeCa from its",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7191602,
+      "lng": -73.9969395
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Nyonya",
+    "slug": "nyonya",
+    "cuisines": [
+      {
+        "code": "TYC_1077",
+        "label": "Malaysian",
+        "slug": "malaysian"
+      }
+    ],
+    "objectID": "110413",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Nyonya flaunts a comfy setting composed of brick walls and",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7146562,
+      "lng": -73.9929074
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Corima",
+    "slug": "corima",
+    "cuisines": [
+      {
+        "code": "TYC_1084",
+        "label": "Mexican",
+        "slug": "mexican"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "objectID": "110694",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "On the edge of Chinatown, Chef Fidel Caballero is not",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7207604,
+      "lng": -73.9957134
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Thai Diner",
+    "slug": "thai-diner",
+    "cuisines": [
+      {
+        "code": "TYC_1117",
+        "label": "Thai",
+        "slug": "thai"
+      },
+      {
+        "code": "TYC_1161",
+        "label": "Fusion",
+        "slug": "fusion-1161"
+      }
+    ],
+    "objectID": "110485",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Brought to Mott Street, this charming spot from Chefs Ann",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.71479,
+      "lng": -73.9914
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Cervo’s",
+    "slug": "cervo-s",
+    "cuisines": [
+      {
+        "code": "TYC_1044",
+        "label": "Spanish",
+        "slug": "spanish"
+      },
+      {
+        "code": "TYC_1096",
+        "label": "Seafood",
+        "slug": "seafood-1096"
+      }
+    ],
+    "objectID": "110625",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "The cooking has never been better at this high-energy",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7195952,
+      "lng": -73.9932226
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Potluck Club",
+    "slug": "potluck-club",
+    "cuisines": [
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      },
+      {
+        "code": "TYC_1025",
+        "label": "Cantonese",
+        "slug": "cantonese"
+      }
+    ],
+    "objectID": "110424",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Chrystie Street wins big with this high-energy Chinese restaurant",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7144358,
+      "lng": -73.9904615
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Tolo",
+    "slug": "tolo",
+    "cuisines": [
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      }
+    ],
+    "objectID": "110387",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Chef Ron Yan is making a splash with one of",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.71794,
+      "lng": -73.99087
+    },
+    "area_name": "Manhattan",
+    "chef": "Amanda Cohen",
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Dirt Candy",
+    "slug": "dirt-candy",
+    "cuisines": [
+      {
+        "code": "TYC_1126",
+        "label": "Vegetarian",
+        "slug": "vegetarian"
+      },
+      {
+        "code": "TYC_90",
+        "label": "Vegan",
+        "slug": "vegan-90"
+      }
+    ],
+    "objectID": "110644",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Chef Amanda Cohen was an advocate of vegetable- and plant",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7264798,
+      "lng": -74.0019829
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Pinch Chinese",
+    "slug": "pinch-chinese",
+    "cuisines": [
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      },
+      {
+        "code": "TYC_1101",
+        "label": "Regional Cuisine",
+        "slug": "regional-cuisine"
+      }
+    ],
+    "objectID": "110445",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Go ahead and pinch yourself—you’re not dreaming. Pinch",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7271776,
+      "lng": -74.0076088
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Two Stars: Excellent cooking",
+      "slug": "2-stars-michelin",
+      "icon": "n"
+    },
+    "michelin_award": "TWO_STARS",
+    "name": "César",
+    "slug": "cesar",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_1096",
+        "label": "Seafood",
+        "slug": "seafood-1096"
+      }
+    ],
+    "objectID": "110757",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "César Ramirez is one of the few chefs who, night",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.724364,
+      "lng": -73.9952778
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Torrisi",
+    "slug": "torrisi",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_1179",
+        "label": "Italian-American",
+        "slug": "italian-american"
+      }
+    ],
+    "objectID": "110762",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "There is perfection in the details at Torrisi, where waiters",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7195313,
+      "lng": -73.9895477
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Russ & Daughters Cafe",
+    "slug": "russ-daughters-cafe",
+    "cuisines": [
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      }
+    ],
+    "objectID": "110541",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "From white-jacketed servers to that pristine counter, this updated",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.723915,
+      "lng": -73.99375
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "The Musket Room",
+    "slug": "the-musket-room",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_1182",
+        "label": "American Contemporary",
+        "slug": "american-contemporary"
+      }
+    ],
+    "objectID": "110545",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Sleek glass-framed doors are a noticeable reprieve from the",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.72471,
+      "lng": -73.9948
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Estela",
+    "slug": "estela",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      }
+    ],
+    "objectID": "110408",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "This boisterous SoHo alcove is an ideal place to convene",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7183105,
+      "lng": -73.9881503
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Dhamaka",
+    "slug": "dhamaka",
+    "cuisines": [
+      {
+        "code": "TYC_1059",
+        "label": "Indian",
+        "slug": "indian"
+      }
+    ],
+    "objectID": "110591",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "This rousing Indian restaurant in Essex Market is refreshingly unapologetic",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7247064,
+      "lng": -73.9932693
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Torien",
+    "slug": "torien",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1244",
+        "label": "Yakitori",
+        "slug": "yakitori"
+      }
+    ],
+    "objectID": "110403",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "This sibling to Torishiki in Tokyo arrives to NYC by",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7215987,
+      "lng": -73.9888182
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "8282",
+    "slug": "8282",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_1161",
+        "label": "Fusion",
+        "slug": "fusion-1161"
+      }
+    ],
+    "objectID": "110689",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Are there any rules about showering a scoop of honey",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7254254,
+      "lng": -73.9926364
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "C as in Charlie",
+    "slug": "c-as-in-charlie",
+    "cuisines": [
+      {
+        "code": "TYC_1161",
+        "label": "Fusion",
+        "slug": "fusion-1161"
+      }
+    ],
+    "objectID": "110522",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Chef Eric JaeHo Choi's spot flies a bit under",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.721645,
+      "lng": -73.988464
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Una Pizza Napoletana",
+    "slug": "una-pizza-napoletana",
+    "cuisines": [
+      {
+        "code": "TYC_70",
+        "label": "Pizza",
+        "slug": "pizza"
+      }
+    ],
+    "objectID": "110554",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "After rallying crowds on both coasts of the country, pizza",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7221457,
+      "lng": -73.9880552
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Sami & Susu",
+    "slug": "sami-susu",
+    "cuisines": [
+      {
+        "code": "TYC_1083",
+        "label": "Mediterranean Cuisine",
+        "slug": "mediterranean-cuisine"
+      }
+    ],
+    "objectID": "110759",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "As further proof that big things often come in small",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.727269,
+      "lng": -73.993827
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Atla",
+    "slug": "atla",
+    "cuisines": [
+      {
+        "code": "TYC_1084",
+        "label": "Mexican",
+        "slug": "mexican"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "objectID": "110498",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Flatiron favorite Cosme may be doted on by diners, but",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7302491,
+      "lng": -74.003079
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Nami Nori",
+    "slug": "nami-nori",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1036",
+        "label": "Creative",
+        "slug": "creative"
+      }
+    ],
+    "objectID": "110594",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "This modern and minimalist spot emanates with an impressive level",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7262829,
+      "lng": -73.9920393
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Yoshino",
+    "slug": "yoshino-1185037",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "objectID": "110586",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Revered Tokyo chef Tadashi “Edowan” Yoshida has taken NYC by",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.72235,
+      "lng": -73.98743
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Katz's",
+    "slug": "katz-s",
+    "cuisines": [
+      {
+        "code": "TYC_51",
+        "label": "Deli",
+        "slug": "deli"
+      }
+    ],
+    "objectID": "110400",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "One of the last-standing, old-time Eastern European spots",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7236932,
+      "lng": -73.9879972
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Bungalow",
+    "slug": "bungalow",
+    "cuisines": [
+      {
+        "code": "TYC_1059",
+        "label": "Indian",
+        "slug": "indian"
+      }
+    ],
+    "objectID": "110767",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Chef Vikas Khanna has struck out on his own at",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7194832,
+      "lng": -73.984993
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "63 Clinton",
+    "slug": "63-clinton",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "objectID": "110737",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "It would be easy to underestimate this restaurant, located on",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.731716,
+      "lng": -74.00451
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Sushi Nakazawa",
+    "slug": "sushi-nakazawa",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "objectID": "110471",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "For a truly memorable sushi adventure, head to this sleek",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7229804,
+      "lng": -73.9854621
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Little Myanmar",
+    "slug": "little-myanmar",
+    "cuisines": [
+      {
+        "code": "TYC_46",
+        "label": "Burmese",
+        "slug": "burmese"
+      }
+    ],
+    "objectID": "110615",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Husband and wife Thidar Kyaw and Tin Ko Naing along",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7319711,
+      "lng": -73.9996385
+    },
+    "area_name": "Manhattan",
+    "chef": "Dan Barber",
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Family Meal at Blue Hill",
+    "slug": "blue-hill",
+    "cuisines": [
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      }
+    ],
+    "objectID": "110607",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Knowing when to leave something alone, whether you’re a",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.732952,
+      "lng": -74.00744
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Jeju Noodle Bar",
+    "slug": "jeju-noodle-bar",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      }
+    ],
+    "objectID": "110406",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Settle in to your perch at one of the tables",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7331693,
+      "lng": -74.005433
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Red Paper Clip",
+    "slug": "red-paper-clip",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "objectID": "110676",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Blue Hill at Stone Barns alum Chef Kevin Chen made",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.6933811,
+      "lng": -73.9985773
+    },
+    "area_name": "Brooklyn",
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Clover Hill",
+    "slug": "clover-hill",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_63",
+        "label": "Latin American",
+        "slug": "latin-american"
+      }
+    ],
+    "objectID": "110484",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Squirreled away on a quiet street in Brooklyn Heights, this",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7331992,
+      "lng": -73.9988216
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Frevo",
+    "slug": "frevo",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "objectID": "110429",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Frevo is that rare restaurant that flies just under the",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7332903,
+      "lng": -73.9986028
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Shmoné",
+    "slug": "shmone",
+    "cuisines": [
+      {
+        "code": "TYC_1066",
+        "label": "Israeli",
+        "slug": "israeli"
+      },
+      {
+        "code": "TYC_66",
+        "label": "Middle Eastern",
+        "slug": "middle-eastern"
+      }
+    ],
+    "objectID": "110709",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "This small, sleek space punches way above its weight with",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7291736,
+      "lng": -73.9886967
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "CheLi",
+    "slug": "cheli",
+    "cuisines": [
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      },
+      {
+        "code": "TYC_807",
+        "label": "Shanghainese",
+        "slug": "shanghainese"
+      }
+    ],
+    "objectID": "110515",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "With a line that’s almost always stretching out the",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.72572,
+      "lng": -73.984131
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Soda Club",
+    "slug": "soda-club",
+    "cuisines": [
+      {
+        "code": "TYC_90",
+        "label": "Vegan",
+        "slug": "vegan-90"
+      },
+      {
+        "code": "TYC_1179",
+        "label": "Italian-American",
+        "slug": "italian-american"
+      }
+    ],
+    "objectID": "110476",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "This fresh concept's name is derived from Italy's",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.724194,
+      "lng": -73.9828
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Tuome",
+    "slug": "tuome",
+    "cuisines": [
+      {
+        "code": "TYC_55",
+        "label": "Fusion",
+        "slug": "fusion"
+      },
+      {
+        "code": "TYC_1203",
+        "label": "Asian Contemporary",
+        "slug": "asian-contemporary"
+      }
+    ],
+    "objectID": "110668",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Classically trained Chef Thomas Chen is the one to thank",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7272262,
+      "lng": -73.9854205
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "MáLà Project",
+    "slug": "mala-project",
+    "cuisines": [
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      },
+      {
+        "code": "TYC_1116",
+        "label": "Sichuan",
+        "slug": "sichuan"
+      }
+    ],
+    "objectID": "110651",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "This beloved Sichuan haunt now counts multiple locations across the",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7263854,
+      "lng": -73.984228
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Ruffian",
+    "slug": "ruffian",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_1036",
+        "label": "Creative",
+        "slug": "creative"
+      }
+    ],
+    "objectID": "110440",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Spread over two spaces, including a small chef's counter",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7295987,
+      "lng": -73.9879379
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Sobaya",
+    "slug": "soba-ya",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1197",
+        "label": "Soba",
+        "slug": "soba"
+      }
+    ],
+    "objectID": "110622",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "There are a ton of Japanese restaurants that line this",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.72636,
+      "lng": -73.9834395
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Superiority Burger",
+    "slug": "superiority-burger",
+    "cuisines": [
+      {
+        "code": "TYC_1126",
+        "label": "Vegetarian",
+        "slug": "vegetarian"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "objectID": "110523",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "What began with a handful of seats and vegetarian burgers",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7240177,
+      "lng": -73.9806355
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Bar Miller",
+    "slug": "bar-miller",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "objectID": "110765",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "From the team behind Rosella, this diminutive spot with a",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7290162,
+      "lng": -73.9852509
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Tsukimi",
+    "slug": "tsukimi",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1250",
+        "label": "Seasonal Cuisine",
+        "slug": "seasonal-cuisine"
+      }
+    ],
+    "objectID": "110563",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "\"Simplicity is the peak of elegance\" seems a fitting",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7336446,
+      "lng": -73.9931659
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Pranakhon",
+    "slug": "pranakhon",
+    "cuisines": [
+      {
+        "code": "TYC_1117",
+        "label": "Thai",
+        "slug": "thai"
+      }
+    ],
+    "objectID": "110566",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "The name may reference Bangkok's original name, Phra Nakhon",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7360595,
+      "lng": -74.0006729
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Semma",
+    "slug": "semma",
+    "cuisines": [
+      {
+        "code": "TYC_1059",
+        "label": "Indian",
+        "slug": "indian"
+      },
+      {
+        "code": "TYC_1101",
+        "label": "Regional Cuisine",
+        "slug": "regional-cuisine"
+      }
+    ],
+    "objectID": "110454",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Chef Vijay Kumar runs the show at Semma, where regional",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.72922,
+      "lng": -73.98442
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Momofuku Noodle Bar",
+    "slug": "momofuku-noodle-bar",
+    "cuisines": [
+      {
+        "code": "TYC_1010",
+        "label": "Asian",
+        "slug": "asian"
+      }
+    ],
+    "objectID": "110603",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "This elder member of David Chang’s culinary empire is",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7325412,
+      "lng": -73.9879053
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Yellow Rose",
+    "slug": "yellow-rose",
+    "cuisines": [
+      {
+        "code": "TYC_1171",
+        "label": "Tex-Mex",
+        "slug": "tex-mex"
+      }
+    ],
+    "objectID": "110705",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Sorry Texas, this \"yellow rose\" belongs to the bustling East",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7313271,
+      "lng": -73.9857639
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Odre",
+    "slug": "odre",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      }
+    ],
+    "objectID": "110768",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "What more could you want out of this little charmer",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.738316,
+      "lng": -74.00137
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Kosaka",
+    "slug": "kosaka",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "objectID": "110634",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Kosaka offers a stellar omakase in an elegant setting. The",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7294114,
+      "lng": -73.9809572
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Ishq",
+    "slug": "ishq",
+    "cuisines": [
+      {
+        "code": "TYC_1059",
+        "label": "Indian",
+        "slug": "indian"
+      }
+    ],
+    "objectID": "110715",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Promises of “modern Indian” often bring more flash than flavor",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.6878747,
+      "lng": -73.995614
+    },
+    "area_name": "Brooklyn",
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Saint Julivert Fisherie",
+    "slug": "saint-julivert-fisherie",
+    "cuisines": [
+      {
+        "code": "TYC_1096",
+        "label": "Seafood",
+        "slug": "seafood-1096"
+      },
+      {
+        "code": "TYC_1044",
+        "label": "Spanish",
+        "slug": "spanish"
+      }
+    ],
+    "objectID": "110721",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "This long-time neighborhood favorite comes courtesy of Chefs Alex",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.735895,
+      "lng": -73.9873421
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Casa Mono",
+    "slug": "casa-mono",
+    "cuisines": [
+      {
+        "code": "TYC_1044",
+        "label": "Spanish",
+        "slug": "spanish"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "objectID": "110637",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "There’s something reassuring about a kitchen that gets in",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7396183,
+      "lng": -73.9924497
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "bōm",
+    "slug": "bom",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "objectID": "110679",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "This modern counter tucked behind sister restaurant Oiji Mi showcases",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7396366,
+      "lng": -73.9924121
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Oiji Mi",
+    "slug": "oiji-mi",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "objectID": "110531",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Chef Brian Kim and his team serve up very impressive",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7387578,
+      "lng": -73.988991
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Gramercy Tavern",
+    "slug": "gramercy-tavern",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      }
+    ],
+    "objectID": "110508",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "This fabled NY icon is high on most people's",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7390046,
+      "lng": -73.9890088
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Rezdôra",
+    "slug": "rezdora-osteria-emiliana",
+    "cuisines": [
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      },
+      {
+        "code": "TYC_1101",
+        "label": "Regional Cuisine",
+        "slug": "regional-cuisine"
+      }
+    ],
+    "objectID": "110723",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "If you’ve been lucky enough to sample the ethereal",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7404543,
+      "lng": -73.9930802
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Noda",
+    "slug": "noda",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "objectID": "110399",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Chef Shigeyuki Tsunoda's iconic eight-seat half-moon shaped",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7407048,
+      "lng": -73.9929904
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Two Stars: Excellent cooking",
+      "slug": "2-stars-michelin",
+      "icon": "n"
+    },
+    "michelin_award": "TWO_STARS",
+    "name": "odo",
+    "slug": "odo",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "objectID": "110734",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "A serene atmosphere awaits in-the-know diners at this",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.6835424,
+      "lng": -73.9996362
+    },
+    "area_name": "Brooklyn",
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Untable",
+    "slug": "untable",
+    "cuisines": [
+      {
+        "code": "TYC_1117",
+        "label": "Thai",
+        "slug": "thai"
+      }
+    ],
+    "objectID": "110402",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "This cozy, Thai newcomer in Cobble Hill lists a “What",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7435866,
+      "lng": -74.0058783
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Noz 17",
+    "slug": "noz17",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "objectID": "110761",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "This downtown sibling of the impressive Upper East original is",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7403464,
+      "lng": -73.9889011
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Coqodaq",
+    "slug": "coqodaq",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      }
+    ],
+    "objectID": "110426",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "It's very hard to snag a table at this",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7123772,
+      "lng": -73.9667551
+    },
+    "area_name": "Brooklyn",
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Two Stars: Excellent cooking",
+      "slug": "2-stars-michelin",
+      "icon": "n"
+    },
+    "michelin_award": "TWO_STARS",
+    "name": "Aska",
+    "slug": "aska",
+    "cuisines": [
+      {
+        "code": "TYC_1107",
+        "label": "Scandinavian",
+        "slug": "scandinavian"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "objectID": "110467",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Eating here is serious business, but happily the place isn",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7414233,
+      "lng": -73.9914627
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Cote",
+    "slug": "cote",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_75",
+        "label": "Steakhouse",
+        "slug": "steakhouse"
+      }
+    ],
+    "objectID": "110395",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Korean-born Simon Kim opened Cote as a joyful celebration",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.740014,
+      "lng": -73.9874479
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Jua",
+    "slug": "jua",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_1191",
+        "label": "Korean Contemporary",
+        "slug": "korean-contemporary"
+      }
+    ],
+    "objectID": "110687",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Several years in, and Chef Hoyoung Kim and his team",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7135237,
+      "lng": -73.9659318
+    },
+    "area_name": "Brooklyn",
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Shota Omakase",
+    "slug": "shota-omakase",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "objectID": "110766",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Far from the subway stop on a quiet street in",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7415225,
+      "lng": -73.9872217
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Three Stars: Exceptional cuisine",
+      "slug": "3-stars-michelin",
+      "icon": "o"
+    },
+    "michelin_award": "THREE_STARS",
+    "name": "Eleven Madison Park",
+    "slug": "eleven-madison-park",
+    "cuisines": [
+      {
+        "code": "TYC_90",
+        "label": "Vegan",
+        "slug": "vegan-90"
+      },
+      {
+        "code": "TYC_1064",
+        "label": "Innovative",
+        "slug": "innovative"
+      }
+    ],
+    "objectID": "110412",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Chef Daniel Humm presides over this temple of modern elegance",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7103459,
+      "lng": -73.9637588
+    },
+    "area_name": "Brooklyn",
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Francie",
+    "slug": "francie",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      }
+    ],
+    "objectID": "110592",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Francie is headed by John Winterman and native New Yorker",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.6896523,
+      "lng": -73.9723305
+    },
+    "area_name": "Brooklyn",
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Miss Ada",
+    "slug": "miss-ada",
+    "cuisines": [
+      {
+        "code": "TYC_1066",
+        "label": "Israeli",
+        "slug": "israeli"
+      },
+      {
+        "code": "TYC_66",
+        "label": "Middle Eastern",
+        "slug": "middle-eastern"
+      }
+    ],
+    "objectID": "110438",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Many stylish Middle Eastern restaurants have opened in recent years",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7443058,
+      "lng": -73.9826751
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Two Stars: Excellent cooking",
+      "slug": "2-stars-michelin",
+      "icon": "n"
+    },
+    "michelin_award": "TWO_STARS",
+    "name": "Atomix",
+    "slug": "atomix",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "objectID": "110636",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Chef Junghyun Park and his wife Ellia are global ambassadors",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7435537,
+      "lng": -73.9797615
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Norma Gastronomia Siciliana",
+    "slug": "norma-gastronomia-siciliana",
+    "cuisines": [
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      },
+      {
+        "code": "TYC_1109",
+        "label": "Sicilian",
+        "slug": "sicilian"
+      }
+    ],
+    "objectID": "110654",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "To think of these arancini as mere “rice balls” is",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.74666,
+      "lng": -73.98482
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "HanGawi",
+    "slug": "hangawi",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_1126",
+        "label": "Vegetarian",
+        "slug": "vegetarian"
+      }
+    ],
+    "objectID": "110573",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Beyond an ordinary façade lies this serene, shoes-off retreat",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7129264,
+      "lng": -73.9574999
+    },
+    "area_name": "Brooklyn",
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "The Four Horsemen",
+    "slug": "the-four-horsemen",
+    "cuisines": [
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      },
+      {
+        "code": "TYC_47",
+        "label": "Californian",
+        "slug": "californian"
+      }
+    ],
+    "objectID": "110630",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Reservations are required or be ready to queue at this",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.747503,
+      "lng": -73.9867244
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Joo Ok",
+    "slug": "joo-ok-1214822",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "objectID": "110769",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "In the beating heart of Koreatown, take a freight elevator",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7483502,
+      "lng": -73.9879966
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Nōksu",
+    "slug": "noksu",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      }
+    ],
+    "objectID": "110425",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Eating underground in the subway system may not sound appealing",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.674935,
+      "lng": -74.016133
+    },
+    "area_name": "Brooklyn",
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Hometown Bar B Que New York",
+    "slug": "hometown-bar-b-que",
+    "cuisines": [
+      {
+        "code": "TYC_1143",
+        "label": "Barbecue",
+        "slug": "barbecue-1143"
+      }
+    ],
+    "objectID": "110502",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "You'll know you're approaching Hometown Barbecue when you",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.677848,
+      "lng": -73.9859256
+    },
+    "area_name": "Brooklyn",
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Café Mars",
+    "slug": "cafe-mars",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      }
+    ],
+    "objectID": "110461",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "This trendy Brooklyn spot from Chef Paul D’Avino is",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.709439,
+      "lng": -73.95558
+    },
+    "area_name": "Brooklyn",
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Shalom Japan",
+    "slug": "shalom-japan",
+    "cuisines": [
+      {
+        "code": "TYC_55",
+        "label": "Fusion",
+        "slug": "fusion"
+      },
+      {
+        "code": "TYC_1010",
+        "label": "Asian",
+        "slug": "asian"
+      }
+    ],
+    "objectID": "110567",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "This inspired little South Williamsburg spot finds its culinary niche",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7502,
+      "lng": -73.98616
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Cho Dang Gol",
+    "slug": "cho-dang-gol",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      }
+    ],
+    "objectID": "110500",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "For a change of pace in bustling Koreatown, Cho Dang",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7273854,
+      "lng": -73.9571173
+    },
+    "area_name": "Brooklyn",
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Cecily",
+    "slug": "cecily",
+    "cuisines": [
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      }
+    ],
+    "objectID": "110599",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Only good things happen here at Cecily. This little restaurant",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7501,
+      "lng": -73.98443
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Tonchin",
+    "slug": "tonchin",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_839",
+        "label": "Ramen",
+        "slug": "ramen"
+      }
+    ],
+    "objectID": "110537",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Leave it to this Tokyo-based ramen chain to offer",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.747356,
+      "lng": -73.977005
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Little Alley",
+    "slug": "little-alley",
+    "cuisines": [
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      },
+      {
+        "code": "TYC_807",
+        "label": "Shanghainese",
+        "slug": "shanghainese"
+      }
+    ],
+    "objectID": "110453",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Thank Chef Yuchun Cheung for brightening Murray Hill by way",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.6751466,
+      "lng": -73.9814087
+    },
+    "area_name": "Brooklyn",
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Haenyeo",
+    "slug": "haenyeo",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_1191",
+        "label": "Korean Contemporary",
+        "slug": "korean-contemporary"
+      }
+    ],
+    "objectID": "110672",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "This is the kind of spot that serves food so",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7300224,
+      "lng": -73.9555039
+    },
+    "area_name": "Brooklyn",
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Oxomoco",
+    "slug": "oxomoco",
+    "cuisines": [
+      {
+        "code": "TYC_1084",
+        "label": "Mexican",
+        "slug": "mexican"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "objectID": "110588",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Don’t let the casual ambience fool you: Oxomoco is",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.748191,
+      "lng": -73.974663
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Tempura Matsui",
+    "slug": "tempura-matsui",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1174",
+        "label": "Tempura",
+        "slug": "tempura"
+      }
+    ],
+    "objectID": "110407",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Tempura Matsui skillfully demonstrates why tempura is a celebrated Japanese",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7233627,
+      "lng": -73.9521628
+    },
+    "area_name": "Brooklyn",
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Restaurant Yuu",
+    "slug": "restaurant-yuu",
+    "cuisines": [
+      {
+        "code": "TYC_800",
+        "label": "French Contemporary",
+        "slug": "french-contemporary"
+      },
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      }
+    ],
+    "objectID": "110631",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "At the start of service, the lights dim and servers",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7526109,
+      "lng": -73.9848926
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Peppercorn Station",
+    "slug": "peppercorn-station",
+    "cuisines": [
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      },
+      {
+        "code": "TYC_1116",
+        "label": "Sichuan",
+        "slug": "sichuan"
+      }
+    ],
+    "objectID": "110729",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "This particular stretch that runs along the southern edge of",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7560823,
+      "lng": -73.9964997
+    },
+    "area_name": "Manhattan",
+    "chef": "Cesar Ramirez",
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Two Stars: Excellent cooking",
+      "slug": "2-stars-michelin",
+      "icon": "n"
+    },
+    "michelin_award": "TWO_STARS",
+    "name": "Chef's Table at Brooklyn Fare",
+    "slug": "chef-s-table-at-brooklyn-fare",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "objectID": "110648",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "This famed address hidden in the back corner of a",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.6874812,
+      "lng": -73.959801
+    },
+    "area_name": "Brooklyn",
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Speedy Romeo",
+    "slug": "speedy-romeo",
+    "cuisines": [
+      {
+        "code": "TYC_70",
+        "label": "Pizza",
+        "slug": "pizza"
+      }
+    ],
+    "objectID": "110411",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Named for a racehorse and just as focused and quick",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.6801476,
+      "lng": -73.9681126
+    },
+    "area_name": "Brooklyn",
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Alta Calidad",
+    "slug": "alta-calidad",
+    "cuisines": [
+      {
+        "code": "TYC_1084",
+        "label": "Mexican",
+        "slug": "mexican"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "objectID": "110650",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "This stylish Mexican restaurant is bright and modern, with light",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7234369,
+      "lng": -73.9504293
+    },
+    "area_name": "Brooklyn",
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Pierozek",
+    "slug": "pierozek",
+    "cuisines": [
+      {
+        "code": "TYC_1097",
+        "label": "Polish",
+        "slug": "polish"
+      },
+      {
+        "code": "TYC_832",
+        "label": "Dumplings",
+        "slug": "dumplings"
+      }
+    ],
+    "objectID": "110518",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Alexandra Siwiec and Radek Kucharski are behind this casual spot",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7526984,
+      "lng": -73.9808012
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Two Stars: Excellent cooking",
+      "slug": "2-stars-michelin",
+      "icon": "n"
+    },
+    "michelin_award": "TWO_STARS",
+    "name": "Sushi Sho",
+    "slug": "sushi-sho-1213976",
+    "cuisines": [
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      },
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      }
+    ],
+    "objectID": "110699",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "In the shadow of the New York Public Library, Chef",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.75397,
+      "lng": -73.982025
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Two Stars: Excellent cooking",
+      "slug": "2-stars-michelin",
+      "icon": "n"
+    },
+    "michelin_award": "TWO_STARS",
+    "name": "Gabriel Kreuther",
+    "slug": "gabriel-kreuther",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_1003",
+        "label": "Alsatian",
+        "slug": "alsatian"
+      }
+    ],
+    "objectID": "110443",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Distinctively housed at the base of the Grace building, this",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.752517,
+      "lng": -73.9783692
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Le Pavillon",
+    "slug": "le-pavillon-1192744",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_1049",
+        "label": "French",
+        "slug": "french"
+      }
+    ],
+    "objectID": "110695",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "It may have a classic-sounding name, but Le Pavillon",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7532627,
+      "lng": -73.9783451
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Jōji",
+    "slug": "joji",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "objectID": "110386",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Hidden away in a corner of Grand Central, at the",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.717834,
+      "lng": -73.9465277
+    },
+    "area_name": "Brooklyn",
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Bonnie's",
+    "slug": "bonnie-s",
+    "cuisines": [
+      {
+        "code": "TYC_1025",
+        "label": "Cantonese",
+        "slug": "cantonese"
+      },
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      }
+    ],
+    "objectID": "110692",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Located within earshot of the BQE’s rumble in east",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7514424,
+      "lng": -73.9717128
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Sushi Amane",
+    "slug": "sushi-amane",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "objectID": "110555",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Diners arrive for their reservations at Sushi Amane and are",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.711339,
+      "lng": -73.94459
+    },
+    "area_name": "Brooklyn",
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Ammazzacaffè",
+    "slug": "ammazzacaffe",
+    "cuisines": [
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "objectID": "110477",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "This quintessential Italian gem on Grand Street is bound to",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7072662,
+      "lng": -73.9431171
+    },
+    "area_name": "Brooklyn",
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Win Son",
+    "slug": "win-son",
+    "cuisines": [
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      },
+      {
+        "code": "TYC_842",
+        "label": "Taiwanese",
+        "slug": "taiwanese"
+      }
+    ],
+    "objectID": "110731",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "The exterior pays homage to New York's beloved bodegas",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7436597,
+      "lng": -73.9555175
+    },
+    "area_name": "Queens",
+    "chef": null,
+    "city": {
+      "name": "Queens",
+      "slug": "queens",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Meju",
+    "slug": "meju",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_1101",
+        "label": "Regional Cuisine",
+        "slug": "regional-cuisine"
+      }
+    ],
+    "objectID": "110475",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Hiding behind a banchan shop in Long Island City, this",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7619767,
+      "lng": -73.9935116
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Kochi",
+    "slug": "kochi",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "objectID": "110437",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "The idea that tasting menus are hours-long and showy",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7615587,
+      "lng": -73.9904647
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Mari",
+    "slug": "mari",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      }
+    ],
+    "objectID": "110579",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Mari, which means “roll” in Korean, is Hell’s Kitchen",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7426369,
+      "lng": -73.9533994
+    },
+    "area_name": "Queens",
+    "chef": null,
+    "city": {
+      "name": "Queens",
+      "slug": "queens",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Hupo",
+    "slug": "hupo",
+    "cuisines": [
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      },
+      {
+        "code": "TYC_1116",
+        "label": "Sichuan",
+        "slug": "sichuan"
+      }
+    ],
+    "objectID": "110688",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Sometimes you can hear the sound of sizzling woks in",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.6658055,
+      "lng": -73.9829882
+    },
+    "area_name": "Brooklyn",
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Runner Up",
+    "slug": "runner-up",
+    "cuisines": [
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "objectID": "110489",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Next-door sibling Winner may earn the trophy for its",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7615485,
+      "lng": -73.9867528
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Kung Fu Little Steamed Buns Ramen",
+    "slug": "kung-fu-little-steamed-buns-ramen",
+    "cuisines": [
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      },
+      {
+        "code": "TYC_832",
+        "label": "Dumplings",
+        "slug": "dumplings"
+      }
+    ],
+    "objectID": "110561",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Watch out Hell's Kitchen; watch out Flushing—with its",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.76177,
+      "lng": -73.98223
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Three Stars: Exceptional cuisine",
+      "slug": "3-stars-michelin",
+      "icon": "o"
+    },
+    "michelin_award": "THREE_STARS",
+    "name": "Le Bernardin",
+    "slug": "le-bernardin",
+    "cuisines": [
+      {
+        "code": "TYC_9",
+        "label": "Seafood",
+        "slug": "seafood"
+      }
+    ],
+    "objectID": "110548",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Maguy Le Coze and Eric Ripert’s icon has been",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.663062,
+      "lng": -73.984411
+    },
+    "area_name": "Brooklyn",
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "LORE",
+    "slug": "lore",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_1112",
+        "label": "South East Asian",
+        "slug": "south-east-asian"
+      }
+    ],
+    "objectID": "110549",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Welcoming with just the right amount of buzz, Lore embodies",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.76106,
+      "lng": -73.97628
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Two Stars: Excellent cooking",
+      "slug": "2-stars-michelin",
+      "icon": "n"
+    },
+    "michelin_award": "TWO_STARS",
+    "name": "The Modern",
+    "slug": "the-modern",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "objectID": "110655",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "The Modern is designed to capture the iconic feel of",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7655966,
+      "lng": -73.9875299
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "YingTao",
+    "slug": "yingtao",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      }
+    ],
+    "objectID": "110551",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Owner Bolun Yao's beloved grandmother serves as both the",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.76078,
+      "lng": -73.97214
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Two Stars: Excellent cooking",
+      "slug": "2-stars-michelin",
+      "icon": "n"
+    },
+    "michelin_award": "TWO_STARS",
+    "name": "Aquavit",
+    "slug": "aquavit",
+    "cuisines": [
+      {
+        "code": "TYC_1107",
+        "label": "Scandinavian",
+        "slug": "scandinavian"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "objectID": "110470",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "No detail goes unnoticed at this contemporary Swedish beauty, sporting",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.6734308,
+      "lng": -73.9570421
+    },
+    "area_name": "Brooklyn",
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Chavela’s",
+    "slug": "chavela-s",
+    "cuisines": [
+      {
+        "code": "TYC_1084",
+        "label": "Mexican",
+        "slug": "mexican"
+      }
+    ],
+    "objectID": "110466",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Ordering guacamole may be a reflex for many, but at",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.70503,
+      "lng": -73.93411
+    },
+    "area_name": "Brooklyn",
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Roberta's",
+    "slug": "roberta-s",
+    "cuisines": [
+      {
+        "code": "TYC_70",
+        "label": "Pizza",
+        "slug": "pizza"
+      }
+    ],
+    "objectID": "110664",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Entering through this (now) iconic red door is like a",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.6700076,
+      "lng": -73.9583888
+    },
+    "area_name": "Brooklyn",
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Agi's Counter",
+    "slug": "agi-s-counter",
+    "cuisines": [
+      {
+        "code": "TYC_1036",
+        "label": "Creative",
+        "slug": "creative"
+      },
+      {
+        "code": "TYC_1057",
+        "label": "Hungarian",
+        "slug": "hungarian"
+      }
+    ],
+    "objectID": "110711",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "You have room for one more dish, right? It’s",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7063761,
+      "lng": -73.9314679
+    },
+    "area_name": "Brooklyn",
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Sobre Masa",
+    "slug": "sobre-masa",
+    "cuisines": [
+      {
+        "code": "TYC_1084",
+        "label": "Mexican",
+        "slug": "mexican"
+      }
+    ],
+    "objectID": "110432",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Heirloom corn is revered at this Bushwick restaurant, where chef",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7680545,
+      "lng": -73.9825882
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Three Stars: Exceptional cuisine",
+      "slug": "3-stars-michelin",
+      "icon": "o"
+    },
+    "michelin_award": "THREE_STARS",
+    "name": "Per Se",
+    "slug": "per-se",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_1049",
+        "label": "French",
+        "slug": "french"
+      }
+    ],
+    "objectID": "110671",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "An experience at Thomas Keller’s Per Se is one",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.76819,
+      "lng": -73.98234
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Three Stars: Exceptional cuisine",
+      "slug": "3-stars-michelin",
+      "icon": "o"
+    },
+    "michelin_award": "THREE_STARS",
+    "name": "Masa",
+    "slug": "masa",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "objectID": "110391",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "There is nothing like an omakase in the care of",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.76907,
+      "lng": -73.98155
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Two Stars: Excellent cooking",
+      "slug": "2-stars-michelin",
+      "icon": "n"
+    },
+    "michelin_award": "TWO_STARS",
+    "name": "Jean-Georges",
+    "slug": "jean-georges",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_800",
+        "label": "French Contemporary",
+        "slug": "french-contemporary"
+      }
+    ],
+    "objectID": "110447",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Chef Jean-Georges Vongerichten’s culinary empire stretches far and",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.706648,
+      "lng": -73.928737
+    },
+    "area_name": "Brooklyn",
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Falansai",
+    "slug": "falansai",
+    "cuisines": [
+      {
+        "code": "TYC_1129",
+        "label": "Vietnamese",
+        "slug": "vietnamese"
+      }
+    ],
+    "objectID": "110628",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "On a quiet corner in Bushwick, Chef Eric Tran is",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7651685,
+      "lng": -73.9676194
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Café Boulud",
+    "slug": "cafe-boulud",
+    "cuisines": [
+      {
+        "code": "TYC_1049",
+        "label": "French",
+        "slug": "french"
+      }
+    ],
+    "objectID": "110442",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "A new and improved Café Boulud from Daniel Boulud has",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7616417,
+      "lng": -73.9602493
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Lungi",
+    "slug": "lungi",
+    "cuisines": [
+      {
+        "code": "TYC_88",
+        "label": "Sri Lankan",
+        "slug": "sri-lankan"
+      },
+      {
+        "code": "TYC_1059",
+        "label": "Indian",
+        "slug": "indian"
+      }
+    ],
+    "objectID": "110744",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Chef/co-owner Albin Vincent, who grew up in Kanyakumari",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7623778,
+      "lng": -73.9591262
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Bayon",
+    "slug": "bayon",
+    "cuisines": [
+      {
+        "code": "TYC_93",
+        "label": "Cambodian",
+        "slug": "cambodian"
+      }
+    ],
+    "objectID": "110526",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Husband-and-wife owners Minh and Mandy Truong offer an",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7667521,
+      "lng": -73.9675039
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Daniel",
+    "slug": "daniel",
+    "cuisines": [
+      {
+        "code": "TYC_1049",
+        "label": "French",
+        "slug": "french"
+      }
+    ],
+    "objectID": "110633",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Chef Daniel Boulud's eponymous restaurant is a classic New",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7691365,
+      "lng": -73.9568423
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Bohemian Spirit",
+    "slug": "bohemian-spirit",
+    "cuisines": [
+      {
+        "code": "TYC_1118",
+        "label": "Czech",
+        "slug": "czech"
+      }
+    ],
+    "objectID": "110459",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "It's old-world Bohemia, not hippie-chic, at this",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.704894,
+      "lng": -73.917608
+    },
+    "area_name": "Brooklyn",
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Gordo's Cantina",
+    "slug": "gordo-s-cantina",
+    "cuisines": [
+      {
+        "code": "TYC_1084",
+        "label": "Mexican",
+        "slug": "mexican"
+      }
+    ],
+    "objectID": "110703",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "There are some places that truly reflect the heart and",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.77384,
+      "lng": -73.958275
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Two Stars: Excellent cooking",
+      "slug": "2-stars-michelin",
+      "icon": "n"
+    },
+    "michelin_award": "TWO_STARS",
+    "name": "Sushi Noz",
+    "slug": "sushi-noz",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "objectID": "110647",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "There is a certain energy that courses through this sacred",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7808334,
+      "lng": -73.9766573
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Essential by Christophe",
+    "slug": "essential-by-christophe",
+    "cuisines": [
+      {
+        "code": "TYC_800",
+        "label": "French Contemporary",
+        "slug": "french-contemporary"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "objectID": "110521",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Push past the heavy iron doors to this modern restaurant",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.780955,
+      "lng": -73.976205
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Covacha",
+    "slug": "covacha",
+    "cuisines": [
+      {
+        "code": "TYC_1084",
+        "label": "Mexican",
+        "slug": "mexican"
+      },
+      {
+        "code": "TYC_1101",
+        "label": "Regional Cuisine",
+        "slug": "regional-cuisine"
+      }
+    ],
+    "objectID": "110764",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "New Yorkers have restaurateur Cristina Castañeda to thank for this",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7442458,
+      "lng": -73.9212189
+    },
+    "area_name": "Queens",
+    "chef": null,
+    "city": {
+      "name": "Queens",
+      "slug": "queens",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Cardamom",
+    "slug": "cardamom",
+    "cuisines": [
+      {
+        "code": "TYC_1059",
+        "label": "Indian",
+        "slug": "indian"
+      }
+    ],
+    "objectID": "110682",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "This charming Indian restaurant gem, set on a quiet Sunnyside",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7743581,
+      "lng": -73.9544334
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Tha Phraya",
+    "slug": "tha-phraya",
+    "cuisines": [
+      {
+        "code": "TYC_1252",
+        "label": "Thai contemporary",
+        "slug": "thai-contemporary"
+      }
+    ],
+    "objectID": "110617",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Is this the Upper East Side or the streets of",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.6396599,
+      "lng": -74.0090575
+    },
+    "area_name": "Brooklyn",
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Chuan Tian Xia",
+    "slug": "chuan-tian-xia",
+    "cuisines": [
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      },
+      {
+        "code": "TYC_1116",
+        "label": "Sichuan",
+        "slug": "sichuan"
+      }
+    ],
+    "objectID": "110669",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "You’ll almost always find a line stretching out the",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7019454,
+      "lng": -73.9035084
+    },
+    "area_name": "Queens",
+    "chef": null,
+    "city": {
+      "name": "Queens",
+      "slug": "queens",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Rolo's",
+    "slug": "rolo-s",
+    "cuisines": [
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      }
+    ],
+    "objectID": "110685",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Ridgewood has a real gem on its hands in this",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.79022,
+      "lng": -73.97339
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Chick Chick",
+    "slug": "chick-chick",
+    "cuisines": [
+      {
+        "code": "TYC_1010",
+        "label": "Asian",
+        "slug": "asian"
+      },
+      {
+        "code": "TYC_1209",
+        "label": "Chicken Specialities",
+        "slug": "chicken-specialities"
+      }
+    ],
+    "objectID": "110577",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Occupying a prominent corner of the Upper West Side, this",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.6309,
+      "lng": -74.02772
+    },
+    "area_name": "Brooklyn",
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Tanoreen",
+    "slug": "tanoreen",
+    "cuisines": [
+      {
+        "code": "TYC_66",
+        "label": "Middle Eastern",
+        "slug": "middle-eastern"
+      }
+    ],
+    "objectID": "110656",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "This warm Middle Eastern restaurant is tucked into an unassuming",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.64187,
+      "lng": -74.077255
+    },
+    "area_name": "Staten Island",
+    "chef": null,
+    "city": {
+      "name": "Staten Island",
+      "slug": "staten-island",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Enoteca Maria",
+    "slug": "enoteca-maria",
+    "cuisines": [
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      },
+      {
+        "code": "TYC_1065",
+        "label": "International",
+        "slug": "international"
+      }
+    ],
+    "objectID": "110499",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Enoteca Maria is just blocks from St. George Terminal and",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.6378423,
+      "lng": -74.0797638
+    },
+    "area_name": "Staten Island",
+    "chef": null,
+    "city": {
+      "name": "Staten Island",
+      "slug": "staten-island",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Sagara",
+    "slug": "sagara",
+    "cuisines": [
+      {
+        "code": "TYC_88",
+        "label": "Sri Lankan",
+        "slug": "sri-lankan"
+      }
+    ],
+    "objectID": "110581",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Visit Sri Lanka by way of Sagara, where the island",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7473463,
+      "lng": -73.8912572
+    },
+    "area_name": "Queens",
+    "chef": null,
+    "city": {
+      "name": "Queens",
+      "slug": "queens",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Phayul",
+    "slug": "phayul",
+    "cuisines": [
+      {
+        "code": "TYC_1120",
+        "label": "Tibetan",
+        "slug": "tibetan"
+      }
+    ],
+    "objectID": "110460",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Momos are a point of pride for this Tibetan mainstay",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7433172,
+      "lng": -73.8887392
+    },
+    "area_name": "Queens",
+    "chef": null,
+    "city": {
+      "name": "Queens",
+      "slug": "queens",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Zaab Zaab",
+    "slug": "zaab-zaab",
+    "cuisines": [
+      {
+        "code": "TYC_1117",
+        "label": "Thai",
+        "slug": "thai"
+      },
+      {
+        "code": "TYC_1261",
+        "label": "Isan",
+        "slug": "isan"
+      }
+    ],
+    "objectID": "110726",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "In an explosively colorful dining room that looks more like",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7432134,
+      "lng": -73.8836391
+    },
+    "area_name": "Queens",
+    "chef": null,
+    "city": {
+      "name": "Queens",
+      "slug": "queens",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "SaRanRom Thai",
+    "slug": "saranrom-thai",
+    "cuisines": [
+      {
+        "code": "TYC_1117",
+        "label": "Thai",
+        "slug": "thai"
+      }
+    ],
+    "objectID": "110706",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Longtime fans of the previous tenant (Paet Rio) will be",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.8219,
+      "lng": -73.95009
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Oso",
+    "slug": "oso",
+    "cuisines": [
+      {
+        "code": "TYC_1084",
+        "label": "Mexican",
+        "slug": "mexican"
+      },
+      {
+        "code": "TYC_1101",
+        "label": "Regional Cuisine",
+        "slug": "regional-cuisine"
+      }
+    ],
+    "objectID": "110417",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Housed within a brick storefront across from the City College",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.6974281,
+      "lng": -73.8365649
+    },
+    "area_name": "Queens",
+    "chef": null,
+    "city": {
+      "name": "Queens",
+      "slug": "queens",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Caleta 111 Cevicheria",
+    "slug": "caleta-111-cevicheria",
+    "cuisines": [
+      {
+        "code": "TYC_1130",
+        "label": "Peruvian",
+        "slug": "peruvian"
+      }
+    ],
+    "objectID": "110516",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Everyone knows the old adage about being on the right",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.759154,
+      "lng": -73.8327945
+    },
+    "area_name": "Queens",
+    "chef": null,
+    "city": {
+      "name": "Queens",
+      "slug": "queens",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Jiang Nan",
+    "slug": "jiang-nan",
+    "cuisines": [
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      },
+      {
+        "code": "TYC_1101",
+        "label": "Regional Cuisine",
+        "slug": "regional-cuisine"
+      }
+    ],
+    "objectID": "110708",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "One Fulton Square is fast becoming the address for the",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7591074,
+      "lng": -73.8276588
+    },
+    "area_name": "Queens",
+    "chef": null,
+    "city": {
+      "name": "Queens",
+      "slug": "queens",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Alley 41",
+    "slug": "alley-41",
+    "cuisines": [
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      },
+      {
+        "code": "TYC_1116",
+        "label": "Sichuan",
+        "slug": "sichuan"
+      }
+    ],
+    "objectID": "110663",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "True to its name, this Sichuan stalwart does not sit",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.762066,
+      "lng": -73.803024
+    },
+    "area_name": "Queens",
+    "chef": null,
+    "city": {
+      "name": "Queens",
+      "slug": "queens",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Tong Sam Gyup Goo Yi",
+    "slug": "tong-sam-gyup-goo-yi",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_1143",
+        "label": "Barbecue",
+        "slug": "barbecue-1143"
+      }
+    ],
+    "objectID": "110422",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "This Korean barbecue spot in Murray Hill is always packed",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.779633,
+      "lng": -73.79398
+    },
+    "area_name": "Queens",
+    "chef": null,
+    "city": {
+      "name": "Queens",
+      "slug": "queens",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Legend of Taste",
+    "slug": "legend-of-taste",
+    "cuisines": [
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      },
+      {
+        "code": "TYC_1116",
+        "label": "Sichuan",
+        "slug": "sichuan"
+      }
+    ],
+    "objectID": "110418",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Deep into Queens past Flushing is this little gem that",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.9404952,
+      "lng": -73.8343981
+    },
+    "area_name": "Westchester",
+    "chef": null,
+    "city": {
+      "name": "Bronxville",
+      "slug": "bronxville",
+      "exonyms": []
+    },
+    "distinction": {
+      "label": "Bib Gourmand: good quality, good value cooking",
+      "slug": "bib-gourmand",
+      "icon": "="
+    },
+    "michelin_award": "BIB_GOURMAND",
+    "name": "Tredici Social",
+    "slug": "tredici-social",
+    "cuisines": [
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      },
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      }
+    ],
+    "objectID": "110584",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Welcome to this dark, moody, and stylish retreat, where the",
+        "matchLevel": "none"
+      }
+    }
+  }
+]

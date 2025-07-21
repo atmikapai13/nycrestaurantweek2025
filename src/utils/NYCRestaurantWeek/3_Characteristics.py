@@ -9,8 +9,7 @@ from bs4 import BeautifulSoup
 
 class RestaurantCharacteristicsExtractor:
     def __init__(self):
-        # Rate limiting for web scraping (optimized for speed)
-        self.request_delay = 0.2  # Reduced from 1.0 to 0.2 seconds
+        self.request_delay = 0.2  
         self.last_request_time = 0
         self.request_lock = threading.Lock()
         
@@ -78,8 +77,8 @@ class RestaurantCharacteristicsExtractor:
                 if instagram_url:
                     characteristics['instagram_url'] = instagram_url
                 
-                # 5. Extract menu URL (already in original data, but verify)
-                menu_url = restaurant.get('menu_url', '')
+                # 5. Extract menu URL from S3 bucket
+                menu_url = self.extract_menu_url(soup)
                 if menu_url:
                     characteristics['menu_url'] = menu_url
                 
@@ -196,6 +195,39 @@ class RestaurantCharacteristicsExtractor:
         
         return None
     
+    def extract_menu_url(self, soup: BeautifulSoup) -> Optional[str]:
+        """Extract S3 menu URL from the page"""
+        # Look for S3 menu URLs
+        s3_patterns = [
+            r'https?://[^"\s<>]*s3\.amazonaws\.com[^"\s<>]*',
+            r'https?://[^"\s<>]*nyc-tourism-public\.s3\.amazonaws\.com[^"\s<>]*',
+        ]
+        
+        # Search in href attributes for "See Menu" or similar buttons
+        for link in soup.find_all('a', href=True):
+            href = link['href']
+            link_text = link.get_text().lower().strip()
+            
+            # Check if it's a menu-related link
+            if any(keyword in link_text for keyword in ['menu', 'see menu', 'view menu', 'download menu']):
+                if 's3.amazonaws.com' in href:
+                    return href
+        
+        # Search in all href attributes for S3 URLs
+        for link in soup.find_all('a', href=True):
+            href = link['href']
+            if 's3.amazonaws.com' in href:
+                return href
+        
+        # Search in page text for S3 URLs
+        page_text = soup.get_text()
+        for pattern in s3_patterns:
+            matches = re.findall(pattern, page_text)
+            if matches:
+                return matches[0]
+        
+        return None
+    
     def process_restaurant(self, restaurant_data: Tuple[int, int, Dict]) -> Dict:
         """Extract characteristics for a single restaurant"""
         
@@ -251,7 +283,7 @@ class RestaurantCharacteristicsExtractor:
         
         return processed_restaurants
     
-    def save_data(self, restaurants: List[Dict], filename: str = "data/3restaurants_with_characteristics.json"):
+    def save_data(self, restaurants: List[Dict], filename: str = "src/data/NYCRestaurantWeek/3_Characteristics.json"):
         """Save restaurant data with characteristics"""
         
         try:
@@ -269,8 +301,8 @@ def main():
     try:
         # Try different possible paths
         possible_paths = [
-            'data/2restaurants_with_coordinates.json',  # From root directory
-            '../data/2restaurants_with_coordinates.json',  # From utils directory
+            'src/data/NYCRestaurantWeek/2_Geocoded.json',  # From root directory
+            '../src/data/NYCRestaurantWeek/2_Geocoded.json',  # From utils directory
         ]
         
         restaurants = None
@@ -284,7 +316,7 @@ def main():
                 continue
         
         if restaurants is None:
-            print("❌ Error: Could not find 2restaurants_with_coordinates.json in data/ or ../data/")
+            print("❌ Error: Could not find src/data/NYCRestaurantWeek/2_Geocoded.json in src/data/ or ../src/data/")
             return
             
     except Exception as e:

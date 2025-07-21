@@ -1,0 +1,772 @@
+[
+  {
+    "name": "Icca",
+    "slug": "icca",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Atera",
+    "slug": "atera",
+    "michelin_award": "TWO_STARS"
+  },
+  {
+    "name": "Shion 69 Leonard Street",
+    "slug": "shoji-at-69-leonard",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Jungsik New York",
+    "slug": "jungsik-new-york",
+    "michelin_award": "THREE_STARS"
+  },
+  {
+    "name": "One White Street",
+    "slug": "one-white-street",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Crown Shy",
+    "slug": "crown-shy",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Saga",
+    "slug": "saga",
+    "michelin_award": "TWO_STARS"
+  },
+  {
+    "name": "Dim Sum Go Go",
+    "slug": "dim-sum-go-go",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Le Coucou",
+    "slug": "le-coucou",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Sushi Ichimura",
+    "slug": "sushi-ichimura",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "L’Abeille",
+    "slug": "l’abeille",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Nyonya",
+    "slug": "nyonya",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Corima",
+    "slug": "corima",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Thai Diner",
+    "slug": "thai-diner",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Cervo’s",
+    "slug": "cervo-s",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Potluck Club",
+    "slug": "potluck-club",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Tolo",
+    "slug": "tolo",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Dirt Candy",
+    "slug": "dirt-candy",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Pinch Chinese",
+    "slug": "pinch-chinese",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "César",
+    "slug": "cesar",
+    "michelin_award": "TWO_STARS"
+  },
+  {
+    "name": "Torrisi",
+    "slug": "torrisi",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Russ & Daughters Cafe",
+    "slug": "russ-daughters-cafe",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "The Musket Room",
+    "slug": "the-musket-room",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Estela",
+    "slug": "estela",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Dhamaka",
+    "slug": "dhamaka",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Torien",
+    "slug": "torien",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "8282",
+    "slug": "8282",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "C as in Charlie",
+    "slug": "c-as-in-charlie",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Una Pizza Napoletana",
+    "slug": "una-pizza-napoletana",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Sami & Susu",
+    "slug": "sami-susu",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Atla",
+    "slug": "atla",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Nami Nori",
+    "slug": "nami-nori",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Yoshino",
+    "slug": "yoshino-1185037",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Katz's",
+    "slug": "katz-s",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Bungalow",
+    "slug": "bungalow",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "63 Clinton",
+    "slug": "63-clinton",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Sushi Nakazawa",
+    "slug": "sushi-nakazawa",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Little Myanmar",
+    "slug": "little-myanmar",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Family Meal at Blue Hill",
+    "slug": "blue-hill",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Jeju Noodle Bar",
+    "slug": "jeju-noodle-bar",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Red Paper Clip",
+    "slug": "red-paper-clip",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Clover Hill",
+    "slug": "clover-hill",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Frevo",
+    "slug": "frevo",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Shmoné",
+    "slug": "shmone",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "CheLi",
+    "slug": "cheli",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Soda Club",
+    "slug": "soda-club",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Tuome",
+    "slug": "tuome",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "MáLà Project",
+    "slug": "mala-project",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Ruffian",
+    "slug": "ruffian",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Sobaya",
+    "slug": "soba-ya",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Superiority Burger",
+    "slug": "superiority-burger",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Bar Miller",
+    "slug": "bar-miller",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Tsukimi",
+    "slug": "tsukimi",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Pranakhon",
+    "slug": "pranakhon",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Semma",
+    "slug": "semma",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Momofuku Noodle Bar",
+    "slug": "momofuku-noodle-bar",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Yellow Rose",
+    "slug": "yellow-rose",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Odre",
+    "slug": "odre",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Kosaka",
+    "slug": "kosaka",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Ishq",
+    "slug": "ishq",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Saint Julivert Fisherie",
+    "slug": "saint-julivert-fisherie",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Casa Mono",
+    "slug": "casa-mono",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "bōm",
+    "slug": "bom",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Oiji Mi",
+    "slug": "oiji-mi",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Gramercy Tavern",
+    "slug": "gramercy-tavern",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Rezdôra",
+    "slug": "rezdora-osteria-emiliana",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Noda",
+    "slug": "noda",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "odo",
+    "slug": "odo",
+    "michelin_award": "TWO_STARS"
+  },
+  {
+    "name": "Untable",
+    "slug": "untable",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Noz 17",
+    "slug": "noz17",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Coqodaq",
+    "slug": "coqodaq",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Aska",
+    "slug": "aska",
+    "michelin_award": "TWO_STARS"
+  },
+  {
+    "name": "Cote",
+    "slug": "cote",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Jua",
+    "slug": "jua",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Shota Omakase",
+    "slug": "shota-omakase",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Eleven Madison Park",
+    "slug": "eleven-madison-park",
+    "michelin_award": "THREE_STARS"
+  },
+  {
+    "name": "Francie",
+    "slug": "francie",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Miss Ada",
+    "slug": "miss-ada",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Atomix",
+    "slug": "atomix",
+    "michelin_award": "TWO_STARS"
+  },
+  {
+    "name": "Norma Gastronomia Siciliana",
+    "slug": "norma-gastronomia-siciliana",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "HanGawi",
+    "slug": "hangawi",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "The Four Horsemen",
+    "slug": "the-four-horsemen",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Joo Ok",
+    "slug": "joo-ok-1214822",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Nōksu",
+    "slug": "noksu",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Hometown Bar B Que New York",
+    "slug": "hometown-bar-b-que",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Café Mars",
+    "slug": "cafe-mars",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Shalom Japan",
+    "slug": "shalom-japan",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Cho Dang Gol",
+    "slug": "cho-dang-gol",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Cecily",
+    "slug": "cecily",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Tonchin",
+    "slug": "tonchin",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Little Alley",
+    "slug": "little-alley",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Haenyeo",
+    "slug": "haenyeo",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Oxomoco",
+    "slug": "oxomoco",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Tempura Matsui",
+    "slug": "tempura-matsui",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Restaurant Yuu",
+    "slug": "restaurant-yuu",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Peppercorn Station",
+    "slug": "peppercorn-station",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Chef's Table at Brooklyn Fare",
+    "slug": "chef-s-table-at-brooklyn-fare",
+    "michelin_award": "TWO_STARS"
+  },
+  {
+    "name": "Speedy Romeo",
+    "slug": "speedy-romeo",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Alta Calidad",
+    "slug": "alta-calidad",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Pierozek",
+    "slug": "pierozek",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Sushi Sho",
+    "slug": "sushi-sho-1213976",
+    "michelin_award": "TWO_STARS"
+  },
+  {
+    "name": "Gabriel Kreuther",
+    "slug": "gabriel-kreuther",
+    "michelin_award": "TWO_STARS"
+  },
+  {
+    "name": "Le Pavillon",
+    "slug": "le-pavillon-1192744",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Jōji",
+    "slug": "joji",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Bonnie's",
+    "slug": "bonnie-s",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Sushi Amane",
+    "slug": "sushi-amane",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Ammazzacaffè",
+    "slug": "ammazzacaffe",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Win Son",
+    "slug": "win-son",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Meju",
+    "slug": "meju",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Kochi",
+    "slug": "kochi",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Mari",
+    "slug": "mari",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Hupo",
+    "slug": "hupo",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Runner Up",
+    "slug": "runner-up",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Kung Fu Little Steamed Buns Ramen",
+    "slug": "kung-fu-little-steamed-buns-ramen",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Le Bernardin",
+    "slug": "le-bernardin",
+    "michelin_award": "THREE_STARS"
+  },
+  {
+    "name": "LORE",
+    "slug": "lore",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "The Modern",
+    "slug": "the-modern",
+    "michelin_award": "TWO_STARS"
+  },
+  {
+    "name": "YingTao",
+    "slug": "yingtao",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Aquavit",
+    "slug": "aquavit",
+    "michelin_award": "TWO_STARS"
+  },
+  {
+    "name": "Chavela’s",
+    "slug": "chavela-s",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Roberta's",
+    "slug": "roberta-s",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Agi's Counter",
+    "slug": "agi-s-counter",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Sobre Masa",
+    "slug": "sobre-masa",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Per Se",
+    "slug": "per-se",
+    "michelin_award": "THREE_STARS"
+  },
+  {
+    "name": "Masa",
+    "slug": "masa",
+    "michelin_award": "THREE_STARS"
+  },
+  {
+    "name": "Jean-Georges",
+    "slug": "jean-georges",
+    "michelin_award": "TWO_STARS"
+  },
+  {
+    "name": "Falansai",
+    "slug": "falansai",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Café Boulud",
+    "slug": "cafe-boulud",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Lungi",
+    "slug": "lungi",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Bayon",
+    "slug": "bayon",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Daniel",
+    "slug": "daniel",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Bohemian Spirit",
+    "slug": "bohemian-spirit",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Gordo's Cantina",
+    "slug": "gordo-s-cantina",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Sushi Noz",
+    "slug": "sushi-noz",
+    "michelin_award": "TWO_STARS"
+  },
+  {
+    "name": "Essential by Christophe",
+    "slug": "essential-by-christophe",
+    "michelin_award": "ONE_STAR"
+  },
+  {
+    "name": "Covacha",
+    "slug": "covacha",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Cardamom",
+    "slug": "cardamom",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Tha Phraya",
+    "slug": "tha-phraya",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Chuan Tian Xia",
+    "slug": "chuan-tian-xia",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Rolo's",
+    "slug": "rolo-s",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Chick Chick",
+    "slug": "chick-chick",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Tanoreen",
+    "slug": "tanoreen",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Enoteca Maria",
+    "slug": "enoteca-maria",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Sagara",
+    "slug": "sagara",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Phayul",
+    "slug": "phayul",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Zaab Zaab",
+    "slug": "zaab-zaab",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "SaRanRom Thai",
+    "slug": "saranrom-thai",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Oso",
+    "slug": "oso",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Caleta 111 Cevicheria",
+    "slug": "caleta-111-cevicheria",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Jiang Nan",
+    "slug": "jiang-nan",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Alley 41",
+    "slug": "alley-41",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Tong Sam Gyup Goo Yi",
+    "slug": "tong-sam-gyup-goo-yi",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Legend of Taste",
+    "slug": "legend-of-taste",
+    "michelin_award": "BIB_GOURMAND"
+  },
+  {
+    "name": "Tredici Social",
+    "slug": "tredici-social",
+    "michelin_award": "BIB_GOURMAND"
+  }
+]

@@ -24,7 +24,7 @@ export default function Map({ restaurants, onRestaurantSelect }: MapProps) {
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/streets-v12', // Light style like your prototype
       center: [-74.006, 40.7128], // NYC coordinates
-      zoom: 10
+      zoom: 10.0
     })
 
     // Add navigation controls
@@ -56,8 +56,6 @@ export default function Map({ restaurants, onRestaurantSelect }: MapProps) {
         markerEl.style.borderRadius = '50%'
         markerEl.style.backgroundColor = '#FF4B33'
         markerEl.style.border = '1px solid white'
-        markerEl.style.width = '8px'
-        markerEl.style.height = '8px'
         markerEl.style.cursor = 'pointer'
         markerEl.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)'
 
@@ -70,7 +68,7 @@ export default function Map({ restaurants, onRestaurantSelect }: MapProps) {
           <div class="popup-content">
             <h3 class="popup-title">${restaurant.name}</h3>
             <p class="popup-borough">${restaurant.borough}</p>
-            <p class="popup-cuisine">${restaurant.cuisine.join(', ')}</p>
+            <p class="popup-cuisine">${restaurant.cuisine}</p>
           </div>
         `)
 

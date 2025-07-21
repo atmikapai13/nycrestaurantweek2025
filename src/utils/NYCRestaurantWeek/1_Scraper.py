@@ -110,7 +110,7 @@ class FastRestaurantWeekScraper:
                     'slug': restaurant.get('slug', ''),
                     'borough': restaurant.get('borough', ''),
                     'neighborhood': restaurant.get('neighborhood', ''),
-                    'cuisine': restaurant.get('tags', []),
+                    'cuisine': restaurant.get('tags')[0] if restaurant.get('tags') else '',
                     'summary': restaurant.get('summary', ''),
                     'website': restaurant.get('website', ''),
                     'image_url': restaurant.get('image', {}).get('url', ''),
@@ -122,17 +122,6 @@ class FastRestaurantWeekScraper:
                     'primary_location': restaurant.get('primaryLocation', '')
                 }
                 
-                # Extract pricing info from meal types
-                pricing = {
-                    'lunch_30': any('$30 Lunch' in meal for meal in clean_data['meal_types']),
-                    'lunch_45': any('$45 Lunch' in meal for meal in clean_data['meal_types']),
-                    'lunch_60': any('$60 Lunch' in meal for meal in clean_data['meal_types']),
-                    'dinner_30': any('$30 Dinner' in meal for meal in clean_data['meal_types']),
-                    'dinner_45': any('$45 Dinner' in meal for meal in clean_data['meal_types']),
-                    'dinner_60': any('$60 Dinner' in meal for meal in clean_data['meal_types'])
-                }
-                
-                clean_data['pricing'] = pricing
                 cleaned.append(clean_data)
                 
             except Exception as e:
@@ -169,8 +158,8 @@ def main():
         
         # Clean and save data
         clean_restaurants = scraper.clean_restaurant_data(raw_restaurants)
-        scraper.save_data(raw_restaurants, "data/1raw_restaurant_data.json")
-        scraper.save_data(clean_restaurants, "data/1clean_restaurant_data.json")
+        scraper.save_data(raw_restaurants, "src/data/NYCRestaurantWeek/1_ScrapedRaw.json")
+        scraper.save_data(clean_restaurants, "src/data/NYCRestaurantWeek/1_Scraped.json")
         
         # Print summary stats
         boroughs = {}
