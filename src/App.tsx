@@ -1,162 +1,208 @@
 import { useState, useEffect } from 'react'
 import './App.css'
-import type { Restaurant } from './types/restaurant'
-import Map from './components/Map'
 import Header from './components/Header'
+import Map from './components/Map'
 import Filters from './components/Filters'
 import RestaurantCard from './components/RestaurantCard'
-
-// Direct import of your restaurant data
-import restaurantData from './data/NYCRestaurantWeek/4_JoinMichelin.json'
+import type { Restaurant } from './types/restaurant'
+import restaurantData from './data/FinalData.json'
 
 function App() {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([])
   const [filteredRestaurants, setFilteredRestaurants] = useState<Restaurant[]>([])
   const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null)
-  
-  // Find The Bar at the Modern as placeholder
-  const placeholderRestaurant = restaurants.find(r => r.name === "The Bar at the Modern") || null
-  const [loading, setLoading] = useState(true)
+  const [activeFilters, setActiveFilters] = useState<Record<string, string[]>>({})
+  const [legendFilters, setLegendFilters] = useState<string[]>([])
   const [searchTerm, setSearchTerm] = useState('')
-  const [filters, setFilters] = useState<Record<string, string[]>>({})
-  const [mapLegendFilter, setMapLegendFilter] = useState<string | null>(null)
+  const [favorites, setFavorites] = useState<string[]>([])
+  const [favoritesActive, setFavoritesActive] = useState(false)
 
   useEffect(() => {
-    // Since we're importing directly, we can use it immediately
+    // Load restaurants from imported data
     setRestaurants(restaurantData as Restaurant[])
     setFilteredRestaurants(restaurantData as Restaurant[])
-    setLoading(false)
+    
+    // Load favorites from localStorage
+    const savedFavorites = localStorage.getItem('restaurantFavorites')
+    if (savedFavorites) {
+      setFavorites(JSON.parse(savedFavorites))
+    }
   }, [])
+
+  const toggleFavorite = (restaurantName: string) => {
+    const newFavorites = favorites.includes(restaurantName)
+      ? favorites.filter(name => name !== restaurantName)
+      : [...favorites, restaurantName]
+    
+    setFavorites(newFavorites)
+    localStorage.setItem('restaurantFavorites', JSON.stringify(newFavorites))
+  }
+
+  const handleFavoritesToggle = () => {
+    setFavoritesActive(!favoritesActive)
+  }
+
+  const handleSearch = (searchTerm: string) => {
+    setSearchTerm(searchTerm)
+    let filtered = restaurants
+
+    // Apply search filter
+    if (searchTerm.trim()) {
+      filtered = filtered.filter(restaurant =>
+        restaurant.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    }
+
+    // Apply other filters
+    filtered = applyFilters(filtered)
+    setFilteredRestaurants(filtered)
+  }
+
+  const applyFilters = (restaurantsToFilter: Restaurant[]) => {
+    let filtered = restaurantsToFilter
+
+    // Apply favorites filter first
+    if (favoritesActive) {
+      filtered = filtered.filter(restaurant => favorites.includes(restaurant.name))
+    }
+
+    // Apply active filters
+    Object.entries(activeFilters).forEach(([filterType, values]) => {
+      if (values.length > 0) {
+        filtered = filtered.filter(restaurant => {
+          switch (filterType) {
+            case 'Cuisine':
+              return values.includes(restaurant.cuisine)
+            case 'Participating Weeks':
+              return values.some(week => restaurant.participation_weeks.includes(week))
+            case 'Meal Types':
+              return values.some(meal => restaurant.meal_types.includes(meal))
+            case 'Collections':
+              return values.some(collection => restaurant.collections.includes(collection))
+            case 'Has Menu':
+              return restaurant.menu_url && restaurant.menu_url.trim() !== '' && restaurant.menu_url.toLowerCase() !== 'na'
+            default:
+              return true
+          }
+        })
+      }
+    })
+
+    // Apply legend filters
+    if (legendFilters.length > 0) {
+      filtered = filtered.filter(restaurant => {
+        return legendFilters.some(filterType => {
+          switch (filterType) {
+            case 'michelin':
+              return restaurant.michelin_award && ['ONE_STAR', 'TWO_STARS', 'THREE_STARS'].includes(restaurant.michelin_award)
+            case 'bib':
+              return restaurant.michelin_award === 'BIB_GOURMAND'
+            case 'nyt':
+              return restaurant.nyttop100_rank
+            case 'regular':
+              return !restaurant.michelin_award && !restaurant.nyttop100_rank
+            default:
+              return false
+          }
+        })
+      })
+    }
+
+    return filtered
+  }
+
+  const handleFilterChange = (filterType: string, values: string[]) => {
+    const newFilters = { ...activeFilters }
+    if (values.length === 0) {
+      delete newFilters[filterType]
+    } else {
+      newFilters[filterType] = values
+    }
+    setActiveFilters(newFilters)
+  }
+
+  const handleLegendToggle = (filterType: string) => {
+    setLegendFilters(prev => {
+      if (prev.includes(filterType)) {
+        return prev.filter(f => f !== filterType)
+      } else {
+        return [...prev, filterType]
+      }
+    })
+  }
 
   const handleRestaurantSelect = (restaurant: Restaurant) => {
     setSelectedRestaurant(restaurant)
   }
 
-
-
-  const handleSearch = (searchTerm: string) => {
-    setSearchTerm(searchTerm)
-    applyFilters(searchTerm, filters)
-  }
-
-  const handleFilterChange = (filterType: string, values: string[]) => {
-    console.log(`handleFilterChange called with: ${filterType} =`, values)
-    
-    // If this is a reset (empty array) and we have other filters, 
-    // check if this is part of a "reset all" operation
-    if (values.length === 0 && Object.keys(filters).length > 0) {
-      console.log('Detected potential reset operation')
-    }
-    
-    const newFilters = { ...filters, [filterType]: values }
-    console.log('newFilters object:', newFilters)
-    setFilters(newFilters)
-    // Use the newFilters object directly to ensure we have the latest values
-    applyFilters(searchTerm, newFilters)
-  }
-
-  const handleMapLegendFilter = (filterType: string | null) => {
-    setMapLegendFilter(filterType)
-  }
-
   const handleResetAll = () => {
-    // Reset all filters
-    setFilters({})
+    setActiveFilters({})
+    setLegendFilters([])
     setSearchTerm('')
-    setMapLegendFilter(null)
-    setFilteredRestaurants(restaurants)
+    setSelectedRestaurant(null)
+    setFavoritesActive(false)
   }
 
-  const applyFilters = (search: string, filterValues: Record<string, string[]>) => {
+  // Apply filters whenever activeFilters or legendFilters change
+  useEffect(() => {
     let filtered = restaurants
-    console.log('applyFilters called with:', { search, filterValues })
 
     // Apply search filter
-    if (search.trim()) {
+    if (searchTerm.trim()) {
       filtered = filtered.filter(restaurant =>
-        restaurant.name.toLowerCase().includes(search.toLowerCase())
+        restaurant.name.toLowerCase().includes(searchTerm.toLowerCase())
       )
-      console.log('After search filter:', filtered.length)
     }
 
-    // Apply other filters
-    Object.entries(filterValues).forEach(([filterType, values]) => {
-      if (values && values.length > 0) {
-        console.log(`Applying ${filterType} filter with values:`, values)
-        switch (filterType) {
-          case 'Cuisine':
-            filtered = filtered.filter(restaurant =>
-              values.includes(restaurant.cuisine)
-            )
-            break
-          case 'Participating Weeks':
-            filtered = filtered.filter(restaurant =>
-              restaurant.participation_weeks.some(week => values.includes(week))
-            )
-            break
-          case 'Meal Types':
-            filtered = filtered.filter(restaurant =>
-              restaurant.meal_types.some(meal => values.includes(meal))
-            )
-            break
-          case 'Has Menu':
-            filtered = filtered.filter(restaurant => {
-              const menuUrl = restaurant.menu_url || '';
-              return menuUrl.trim() !== '' && menuUrl.toLowerCase() !== 'na';
-            })
-            break
-
-          // Add more filter cases as needed
-        }
-        console.log(`After ${filterType} filter:`, filtered.length)
-      }
-    })
-
-    console.log('Final filtered count:', filtered.length)
+    // Apply all filters
+    filtered = applyFilters(filtered)
     setFilteredRestaurants(filtered)
-  }
-
-  if (loading) {
-    return <div className="loading">Loading restaurant data...</div>
-  }
+  }, [activeFilters, legendFilters, searchTerm, restaurants, favorites, favoritesActive])
 
   return (
     <div className="app">
       {/* Header */}
       <Header />
 
-      {/* Main Content */}
-      <div className="main-content">
-        {/* Map Section (2/3 width) */}
-        <div className="map-section">
-          <Map 
-            restaurants={filteredRestaurants} 
+      {/* Filter Bar - Top, 80% width, centered */}
+      <div className="filter-bar-container">
+        <div className="filter-bar">
+          <Filters 
+            onSearch={handleSearch}
+            onFilterChange={handleFilterChange}
+            restaurantCount={filteredRestaurants.length}
+            allRestaurants={restaurants}
+            onResetAll={handleResetAll}
             onRestaurantSelect={handleRestaurantSelect}
-            activeFilter={mapLegendFilter}
-            onLegendFilterChange={handleMapLegendFilter}
-            totalRestaurants={restaurants.length}
+            favorites={favorites}
+            onFavoritesToggle={handleFavoritesToggle}
+            favoritesActive={favoritesActive}
           />
         </div>
+      </div>
 
-        {/* Right Section (1/3 width) */}
-        <div className="sidebar">
-          <div className="filters-section">
-            <Filters 
-              onSearch={handleSearch}
-              onFilterChange={handleFilterChange}
-              restaurantCount={filteredRestaurants.length}
-              allRestaurants={restaurants}
-              onResetAll={handleResetAll}
-              onRestaurantSelect={handleRestaurantSelect}
+      {/* Map Section - Full width with padding */}
+      <div className="map-section">
+        <Map 
+          restaurants={filteredRestaurants}
+          onRestaurantSelect={handleRestaurantSelect}
+          activeFilters={legendFilters}
+          onLegendFilterChange={handleLegendToggle}
+          totalRestaurants={restaurants.length}
+          favorites={favorites}
+        />
+        
+        {/* Restaurant Card Overlay - Bottom Right */}
+        {selectedRestaurant && (
+          <div className="restaurant-card-overlay">
+            <RestaurantCard 
+              restaurant={selectedRestaurant}
+              onClose={() => setSelectedRestaurant(null)}
+              isFavorited={favorites.includes(selectedRestaurant.name)}
+              onToggleFavorite={() => toggleFavorite(selectedRestaurant.name)}
             />
           </div>
-          
-          {/* Restaurant Card */}
-          <RestaurantCard 
-            restaurant={selectedRestaurant}
-            placeholderRestaurant={placeholderRestaurant}
-          />
-        </div>
+        )}
       </div>
     </div>
   )

@@ -1,0 +1,408 @@
+{
+  "title": "Best NYC Restaurants 2025 - New York Times",
+  "source_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html",
+  "scraped_date": "2025-07-21 14:36:41",
+  "total_restaurants": 100,
+  "restaurants": [
+    {
+      "rank": 1,
+      "name": "Semma"
+    },
+    {
+      "rank": 2,
+      "name": "Atomix"
+    },
+    {
+      "rank": 3,
+      "name": "Le Bernardin"
+    },
+    {
+      "rank": 4,
+      "name": "Kabawa"
+    },
+    {
+      "rank": 5,
+      "name": "Ha’s Snack Bar"
+    },
+    {
+      "rank": 6,
+      "name": "King"
+    },
+    {
+      "rank": 7,
+      "name": "Penny"
+    },
+    {
+      "rank": 8,
+      "name": "Sushi Sho"
+    },
+    {
+      "rank": 9,
+      "name": "Szechuan Mountain House"
+    },
+    {
+      "rank": 10,
+      "name": "Tatiana by Kwame Onwuachi"
+    },
+    {
+      "rank": 11,
+      "name": "188 Bakery Cuchifritos"
+    },
+    {
+      "rank": 12,
+      "name": "A&A Bake and Doubles"
+    },
+    {
+      "rank": 13,
+      "name": "AbuQir Seafood"
+    },
+    {
+      "rank": 14,
+      "name": "Aska"
+    },
+    {
+      "rank": 15,
+      "name": "Atoboy"
+    },
+    {
+      "rank": 16,
+      "name": "Barbuto"
+    },
+    {
+      "rank": 17,
+      "name": "Barney Greengrass"
+    },
+    {
+      "rank": 18,
+      "name": "Birria-Landia"
+    },
+    {
+      "rank": 19,
+      "name": "Borgo"
+    },
+    {
+      "rank": 20,
+      "name": "Bridges"
+    },
+    {
+      "rank": 21,
+      "name": "Bungalow"
+    },
+    {
+      "rank": 22,
+      "name": "Cafe Kestrel"
+    },
+    {
+      "rank": 23,
+      "name": "Cafe Mado"
+    },
+    {
+      "rank": 24,
+      "name": "Carnitas Ramirez"
+    },
+    {
+      "rank": 25,
+      "name": "Casa Mono and Bar Jamón"
+    },
+    {
+      "rank": 26,
+      "name": "Cervo’s"
+    },
+    {
+      "rank": 27,
+      "name": "Chambers"
+    },
+    {
+      "rank": 28,
+      "name": "Chez Ma Tante"
+    },
+    {
+      "rank": 29,
+      "name": "Cho Dang Gol"
+    },
+    {
+      "rank": 30,
+      "name": "Chongqing Lao Zao"
+    },
+    {
+      "rank": 31,
+      "name": "Çka Ka Qëllu"
+    },
+    {
+      "rank": 32,
+      "name": "Claud"
+    },
+    {
+      "rank": 33,
+      "name": "Cocina Consuelo"
+    },
+    {
+      "rank": 34,
+      "name": "Court Street Grocers"
+    },
+    {
+      "rank": 35,
+      "name": "Crown Shy"
+    },
+    {
+      "rank": 36,
+      "name": "Daniel"
+    },
+    {
+      "rank": 37,
+      "name": "Dera"
+    },
+    {
+      "rank": 38,
+      "name": "Dhamaka"
+    },
+    {
+      "rank": 39,
+      "name": "Don Peppe"
+    },
+    {
+      "rank": 40,
+      "name": "Ewe’s Delicious Treats"
+    },
+    {
+      "rank": 41,
+      "name": "Eyval"
+    },
+    {
+      "rank": 42,
+      "name": "The Four Horsemen"
+    },
+    {
+      "rank": 43,
+      "name": "Four Twenty Five"
+    },
+    {
+      "rank": 44,
+      "name": "Frenchette"
+    },
+    {
+      "rank": 45,
+      "name": "Gage & Tollner"
+    },
+    {
+      "rank": 46,
+      "name": "Golden Diner"
+    },
+    {
+      "rank": 47,
+      "name": "Gramercy Tavern"
+    },
+    {
+      "rank": 48,
+      "name": "Great N.Y. Noodletown"
+    },
+    {
+      "rank": 49,
+      "name": "The Grill"
+    },
+    {
+      "rank": 50,
+      "name": "Hainan Chicken House"
+    },
+    {
+      "rank": 51,
+      "name": "Hamburger America"
+    },
+    {
+      "rank": 52,
+      "name": "Hellbender"
+    },
+    {
+      "rank": 53,
+      "name": "Ho Foods"
+    },
+    {
+      "rank": 54,
+      "name": "Houseman"
+    },
+    {
+      "rank": 55,
+      "name": "Jean-Georges"
+    },
+    {
+      "rank": 56,
+      "name": "Jeju Noodle Bar"
+    },
+    {
+      "rank": 57,
+      "name": "Jungsik"
+    },
+    {
+      "rank": 58,
+      "name": "Keens"
+    },
+    {
+      "rank": 59,
+      "name": "Kisa"
+    },
+    {
+      "rank": 60,
+      "name": "Koloman"
+    },
+    {
+      "rank": 61,
+      "name": "Kono"
+    },
+    {
+      "rank": 62,
+      "name": "Kopitiam"
+    },
+    {
+      "rank": 63,
+      "name": "Laghman Express"
+    },
+    {
+      "rank": 64,
+      "name": "Lakruwana"
+    },
+    {
+      "rank": 65,
+      "name": "Le Coucou"
+    },
+    {
+      "rank": 66,
+      "name": "Le Veau d’Or"
+    },
+    {
+      "rank": 67,
+      "name": "Levant"
+    },
+    {
+      "rank": 68,
+      "name": "Lilia"
+    },
+    {
+      "rank": 69,
+      "name": "Little Myanmar"
+    },
+    {
+      "rank": 70,
+      "name": "Lola’s"
+    },
+    {
+      "rank": 71,
+      "name": "Lucia Pizza of Avenue X"
+    },
+    {
+      "rank": 72,
+      "name": "Mắm"
+    },
+    {
+      "rank": 73,
+      "name": "Okdongsik"
+    },
+    {
+      "rank": 74,
+      "name": "Okiboru House of Tsukemen"
+    },
+    {
+      "rank": 75,
+      "name": "Old Sport"
+    },
+    {
+      "rank": 76,
+      "name": "Raf’s"
+    },
+    {
+      "rank": 77,
+      "name": "Raku"
+    },
+    {
+      "rank": 78,
+      "name": "Randazzo’s Clam Bar"
+    },
+    {
+      "rank": 79,
+      "name": "S & P Lunch"
+    },
+    {
+      "rank": 80,
+      "name": "Sailor"
+    },
+    {
+      "rank": 81,
+      "name": "Salty Lunch Lady’s Little Luncheonette"
+    },
+    {
+      "rank": 82,
+      "name": "Shaw-naé’s House"
+    },
+    {
+      "rank": 83,
+      "name": "Shukette"
+    },
+    {
+      "rank": 84,
+      "name": "Sofreh"
+    },
+    {
+      "rank": 85,
+      "name": "Superiority Burger"
+    },
+    {
+      "rank": 86,
+      "name": "Sushi Noz"
+    },
+    {
+      "rank": 87,
+      "name": "Sushi Ouji"
+    },
+    {
+      "rank": 88,
+      "name": "Taiwanese Gourmet"
+    },
+    {
+      "rank": 89,
+      "name": "Temple Canteen"
+    },
+    {
+      "rank": 90,
+      "name": "Thai Diner"
+    },
+    {
+      "rank": 91,
+      "name": "Third Falcon"
+    },
+    {
+      "rank": 92,
+      "name": "Torrisi"
+    },
+    {
+      "rank": 93,
+      "name": "Trinciti Roti Shop"
+    },
+    {
+      "rank": 94,
+      "name": "Txikito"
+    },
+    {
+      "rank": 95,
+      "name": "Una Pizza Napoletana"
+    },
+    {
+      "rank": 96,
+      "name": "Via Carota"
+    },
+    {
+      "rank": 97,
+      "name": "Village Café"
+    },
+    {
+      "rank": 98,
+      "name": "White Bear"
+    },
+    {
+      "rank": 99,
+      "name": "Yoon Haeundae Galbi"
+    },
+    {
+      "rank": 100,
+      "name": "Zaab Zaab"
+    }
+  ]
+}

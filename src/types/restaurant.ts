@@ -27,4 +27,6 @@ export interface Restaurant {
   // Michelin data (from join_michelin_data.py)
   michelin_award?: string;
   michelin_slug?: string;
+  // NYT Top 100 data (from join_nyt_data.py)
+  nyttop100_rank?: string;
 } 

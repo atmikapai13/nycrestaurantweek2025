@@ -9,12 +9,13 @@ mapboxgl.accessToken = "pk.eyJ1IjoiYXRtaWthcGFpMTMiLCJhIjoiY21idHR4eTJpMDdhMjJsb
 interface MapProps {
   restaurants: Restaurant[]
   onRestaurantSelect: (restaurant: Restaurant) => void
-  activeFilter: string | null
-  onLegendFilterChange: (filterType: string | null) => void
+  activeFilters: string[]
+  onLegendFilterChange: (filterType: string) => void
   totalRestaurants: number
+  favorites: string[]
 }
 
-export default function Map({ restaurants, onRestaurantSelect, activeFilter, onLegendFilterChange, totalRestaurants }: MapProps) {
+export default function Map({ restaurants, onRestaurantSelect, activeFilters, onLegendFilterChange, totalRestaurants, favorites }: MapProps) {
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<mapboxgl.Map | null>(null)
   const markers = useRef<mapboxgl.Marker[]>([])
@@ -47,33 +48,44 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilter, onL
 
     // Apply legend filter to the already filtered restaurants from App component
     const legendFilteredRestaurants = restaurants.filter(restaurant => {
-      if (!activeFilter) return true // Show all if no filter active
+      if (activeFilters.length === 0) return true // Show all if no filter active
       
-      if (activeFilter === 'michelin') {
-        return restaurant.michelin_award && ['ONE_STAR', 'TWO_STARS', 'THREE_STARS'].includes(restaurant.michelin_award)
-      } else if (activeFilter === 'bib') {
-        return restaurant.michelin_award === 'BIB_GOURMAND'
-      } else if (activeFilter === 'regular') {
-        return !restaurant.michelin_award
-      }
-      return true
+      return activeFilters.some(filterType => {
+        switch (filterType) {
+          case 'michelin':
+            return restaurant.michelin_award && ['ONE_STAR', 'TWO_STARS', 'THREE_STARS'].includes(restaurant.michelin_award)
+          case 'bib':
+            return restaurant.michelin_award === 'BIB_GOURMAND'
+          case 'nyt':
+            return restaurant.nyttop100_rank
+          case 'regular':
+            return !restaurant.michelin_award && !restaurant.nyttop100_rank
+          case 'favorites':
+            return favorites.includes(restaurant.name)
+          default:
+            return false
+        }
+      })
     })
 
     // Add new markers for restaurants with coordinates
     legendFilteredRestaurants.forEach(restaurant => {
       if (restaurant.latitude && restaurant.longitude) {
-        // Determine marker color based on Michelin award
+        // Determine marker color based on Michelin award (priority) or NYT Top 100
         let markerColor = '#000000' // Black for NYC Restaurant Week restaurants
         let markerSize = '8px'
         
         if (restaurant.michelin_award) {
           if (['ONE_STAR', 'TWO_STARS', 'THREE_STARS'].includes(restaurant.michelin_award)) {
-            markerColor = '#8B5CF6' // Purple for Michelin starred restaurants
+            markerColor = ' #C81224' // Red for Michelin starred restaurants
             markerSize = '10px'
           } else if (restaurant.michelin_award === 'BIB_GOURMAND') {
-            markerColor = '#3B82F6' // Blue for Bib Gourmand
+            markerColor = '#f9a83d' // Orange for Bib Gourmand
             markerSize = '10px'
           }
+        } else if (restaurant.nyttop100_rank) {
+          markerColor = '#FF69B4' // Hot pink for NYT Top 100 restaurants
+          markerSize = '10px'
         }
         
         // Create marker element
@@ -87,23 +99,9 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilter, onL
         markerEl.style.cursor = 'pointer'
         markerEl.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)'
 
-        // Create popup
-        const popup = new mapboxgl.Popup({
-          offset: 25,
-          closeButton: false,
-          className: 'restaurant-popup'
-        }).setHTML(`
-          <div class="popup-content">
-            <h3 class="popup-title">${restaurant.name}</h3>
-            <p class="popup-borough">${restaurant.borough}</p>
-            <p class="popup-cuisine">${restaurant.cuisine}</p>
-          </div>
-        `)
-
         // Create marker
         const marker = new mapboxgl.Marker(markerEl)
           .setLngLat([restaurant.longitude, restaurant.latitude])
-          .setPopup(popup)
           .addTo(map.current!)
 
         // Add click handler
@@ -114,17 +112,33 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilter, onL
         markers.current.push(marker)
       }
     })
-  }, [restaurants, onRestaurantSelect, activeFilter])
+  }, [restaurants, onRestaurantSelect, activeFilters])
 
   const handleLegendClick = (filterType: string) => {
-    if (activeFilter === filterType) {
-      // If clicking the same filter, deactivate it
-      onLegendFilterChange(null)
-    } else {
-      // Otherwise, set the new filter
-      onLegendFilterChange(filterType)
-    }
+    onLegendFilterChange(filterType)
   }
+
+  // Calculate the count of restaurants that match the current legend filter
+  const legendFilteredRestaurants = restaurants.filter(restaurant => {
+    if (activeFilters.length === 0) return true // Show all if no filter active
+    
+    return activeFilters.some(filterType => {
+      switch (filterType) {
+        case 'michelin':
+          return restaurant.michelin_award && ['ONE_STAR', 'TWO_STARS', 'THREE_STARS'].includes(restaurant.michelin_award)
+        case 'bib':
+          return restaurant.michelin_award === 'BIB_GOURMAND'
+        case 'nyt':
+          return restaurant.nyttop100_rank
+        case 'regular':
+          return !restaurant.michelin_award && !restaurant.nyttop100_rank
+        case 'favorites':
+          return favorites.includes(restaurant.name)
+        default:
+          return false
+      }
+    })
+  })
 
   return (
     <div className="map-wrapper">
@@ -132,30 +146,107 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilter, onL
       
       {/* Map Legend */}
       <div className="map-legend">
-        <h4 style={{ color: '#000000' }}>{totalRestaurants} NYC Restaurants</h4>
-        <div 
-          className="legend-item" 
-          onClick={() => handleLegendClick('michelin')}
-          style={{ cursor: 'pointer' }}
-        >
-          <div className="legend-marker" style={{ backgroundColor: '#8B5CF6', width: '10px', height: '10px' }}></div>
-          <span style={{ fontWeight: activeFilter === 'michelin' ? 'bold' : 'normal', fontStyle: activeFilter === 'michelin' ? 'italic' : 'normal', color: '#000000' }}>Michelin</span>
-        </div>
-        <div 
-          className="legend-item" 
-          onClick={() => handleLegendClick('bib')}
-          style={{ cursor: 'pointer' }}
-        >
-          <div className="legend-marker" style={{ backgroundColor: '#3B82F6', width: '9px', height: '9px' }}></div>
-          <span style={{ fontWeight: activeFilter === 'bib' ? 'bold' : 'normal', fontStyle: activeFilter === 'bib' ? 'italic' : 'normal', color: '#000000' }}>Bib Gourmand</span>
-        </div>
-        <div 
-          className="legend-item" 
-          onClick={() => handleLegendClick('regular')}
-          style={{ cursor: 'pointer' }}
-        >
-          <div className="legend-marker" style={{ backgroundColor: '#000000', width: '8px', height: '8px' }}></div>
-          <span style={{ fontWeight: activeFilter === 'regular' ? 'bold' : 'normal', fontStyle: activeFilter === 'regular' ? 'italic' : 'normal', color: '#000000' }}>The Rest</span>
+        <h4 style={{ color: '#000000', margin: '0 0 4px 0' }}>{legendFilteredRestaurants.length} Restaurants</h4>
+        <div className="legend-list-vertical">
+          <div 
+            className="legend-item" 
+            onClick={() => handleLegendClick('michelin')}
+            style={{ cursor: 'pointer' }}
+          >
+            <div className="legend-marker" style={{ backgroundColor: ' #C81224', width: '10px', height: '10px' }}></div>
+            <img src="/MichelinStar.svg.png" alt="Michelin Star" style={{ width: '10px', height: '10px', marginRight: '2px', verticalAlign: 'middle' }} />
+            <span style={{ fontWeight: activeFilters.includes('michelin') ? 'bold' : 'normal', color: '#000000' }}>Michelin</span>
+            {activeFilters.includes('michelin') && (
+              <button 
+                onClick={(e) => { e.stopPropagation(); handleLegendClick('michelin'); }}
+                style={{ 
+                  background: 'none', 
+                  border: 'none', 
+                  color: '#666', 
+                  cursor: 'pointer', 
+                  fontSize: '6px',
+                  padding: '0',
+                  marginLeft: '2px'
+                }}
+              >
+                ×
+              </button>
+            )}
+          </div>
+          <div 
+            className="legend-item" 
+            onClick={() => handleLegendClick('bib')}
+            style={{ cursor: 'pointer' }}
+          >
+            <div className="legend-marker" style={{ backgroundColor: '#f9a83d', width: '10px', height: '10px' }}></div>
+            <img src="/bibgourmand.png" alt="Bib Gourmand" style={{ width: '10px', height: '10px', marginRight: '2px', verticalAlign: 'middle' }} />
+            <span style={{ fontWeight: activeFilters.includes('bib') ? 'bold' : 'normal', color: '#000000' }}>Bib Gourmand</span>
+            {activeFilters.includes('bib') && (
+              <button 
+                onClick={(e) => { e.stopPropagation(); handleLegendClick('bib'); }}
+                style={{ 
+                  background: 'none', 
+                  border: 'none', 
+                  color: '#666', 
+                  cursor: 'pointer', 
+                  fontSize: '6px',
+                  padding: '0',
+                  marginLeft: '2px'
+                }}
+              >
+                ×
+              </button>
+            )}
+          </div>
+          <div 
+            className="legend-item" 
+            onClick={() => handleLegendClick('nyt')}
+            style={{ cursor: 'pointer' }}
+          >
+            <div className="legend-marker" style={{ backgroundColor: '#FF69B4', width: '10px', height: '10px' }}></div>
+            <img src="/nytimes.png" alt="NYT Top 100" style={{ width: '10px', height: '10px', marginRight: '2px', verticalAlign: 'middle' }} />
+            <span style={{ fontWeight: activeFilters.includes('nyt') ? 'bold' : 'normal', color: '#000000' }}>NYT Top 100</span>
+            {activeFilters.includes('nyt') && (
+              <button 
+                onClick={(e) => { e.stopPropagation(); handleLegendClick('nyt'); }}
+                style={{ 
+                  background: 'none', 
+                  border: 'none', 
+                  color: '#666', 
+                  cursor: 'pointer', 
+                  fontSize: '6px',
+                  padding: '0',
+                  marginLeft: '2px'
+                }}
+              >
+                ×
+              </button>
+            )}
+          </div>
+          <div 
+            className="legend-item" 
+            onClick={() => handleLegendClick('regular')}
+            style={{ cursor: 'pointer' }}
+          >
+            <div className="legend-marker" style={{ backgroundColor: '#000000', width: '10px', height: '10px' }}></div>
+            <span style={{ fontWeight: activeFilters.includes('regular') ? 'bold' : 'normal', color: '#000000' }}>The Rest</span>
+            {activeFilters.includes('regular') && (
+              <button 
+                onClick={(e) => { e.stopPropagation(); handleLegendClick('regular'); }}
+                style={{ 
+                  background: 'none', 
+                  border: 'none', 
+                  color: '#666', 
+                  cursor: 'pointer', 
+                  fontSize: '6px',
+                  padding: '0',
+                  marginLeft: '2px'
+                }}
+              >
+                ×
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>

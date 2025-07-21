@@ -16,9 +16,12 @@ interface FiltersProps {
   allRestaurants: Restaurant[]
   onResetAll: () => void
   onRestaurantSelect: (restaurant: Restaurant) => void
+  favorites: string[]
+  onFavoritesToggle: () => void
+  favoritesActive: boolean
 }
 
-export default function Filters({ onSearch, onFilterChange, restaurantCount, allRestaurants = [], onResetAll, onRestaurantSelect}: FiltersProps) {
+export default function Filters({ onSearch, onFilterChange, restaurantCount, allRestaurants = [], onResetAll, onRestaurantSelect, favorites, onFavoritesToggle, favoritesActive}: FiltersProps) {
   const [searchTerm, setSearchTerm] = useState('')
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
   const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>({})
@@ -29,10 +32,8 @@ export default function Filters({ onSearch, onFilterChange, restaurantCount, all
   // Filter options (simplified for now, will be populated from data)
   const filterOptions = {
     'Cuisine': ['Mexican', 'American (Traditional)', 'Steakhouse', 'French', 'Italian', 'Thai', 'Asian Fusion', 'Indian', 'American (New)', 'Japanese / Sushi', 'Chinese', 'Seafood', 'Caribbean', 'Mediterranean', 'Spanish', 'Austrian', 'Gastropub', 'Eclectic', 'Cuban', 'Belgian', 'Puerto Rican', 'Argentinian', 'Taiwanese', 'Greek', 'Eastern European', 'Latin American', 'Middle Eastern', 'Barbecue', 'Ukrainian', 'Brazilian', 'Korean', 'Peruvian', 'Turkish', 'Hawaiian', 'Pan-Asian', 'British', 'Continental', 'Vietnamese', 'Irish', 'Cajun/Creole', 'Soul Food / Southern', 'African', 'Colombian', 'Pizza'],
-    'Weeks Participating': ['Week 1 (July 21 - July 27)', 'Week 2 (July 28 - Aug 3)', 'Week 3 (Aug 4 - Aug 10)', 'Week 4 (Aug 11 - Aug 17)', 'Week 5 (Aug 18 - Aug 24)', 'Week 6 (Aug 25 - Aug 31)'],
+    'Participating Weeks': ['Week 1 (July 21 - July 27)', 'Week 2 (July 28 - Aug 3)', 'Week 3 (Aug 4 - Aug 10)', 'Week 4 (Aug 11 - Aug 17)', 'Week 5 (Aug 18 - Aug 24)', 'Week 6 (Aug 25 - Aug 31)'],
     'Meal Types': ['$30 Lunch Price', '$60 Dinner Price', '$45 Dinner Price', '$30 Sunday Lunch/Brunch Price', '$45 Sunday Dinner Price', '$45 Lunch Price', '$60 Sunday Dinner Price', '$30 Dinner Price', '$30 Sunday Dinner Price', '$45 Sunday Lunch/Brunch Price', '$60 Lunch Price', '$60 Sunday Lunch/Brunch Price'],
-    'NYT Top 100': ['Yes', 'No'],
-    'Accessibility': ['Wheelchair Accessible', 'Hearing Accessible'],
     'Collections' : ['around-the-boroughs', 'date-night', 'summer-vibes', 'celebrity-chefs', 'dress-for-the-occasion', 'classic-restaurants', 'hidden-gems', 'for-the-foodies']
   }
 
@@ -81,15 +82,6 @@ export default function Filters({ onSearch, onFilterChange, restaurantCount, all
     setOpenDropdown(null)
   }
 
-  const handleRemoveFilter = (filterType: string, value: string) => {
-    const currentSelected = selectedFilters[filterType] || []
-    const newSelected = currentSelected.filter(v => v !== value)
-    
-    const newFilters = { ...selectedFilters, [filterType]: newSelected }
-    setSelectedFilters(newFilters)
-    onFilterChange(filterType, newSelected)
-  }
-
   const handleHasMenuToggle = () => {
     const newActive = !hasMenuActive
     setHasMenuActive(newActive)
@@ -120,11 +112,19 @@ export default function Filters({ onSearch, onFilterChange, restaurantCount, all
 
   const appliedFilters = getAppliedFilters()
 
+  // Helper to format collection names for display
+  const formatCollectionName = (name: string) =>
+    name
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ')
+
   return (
     <div className="filters-container">
       {/* Header */}
       <div className="filters-header">
         <h2 className="filters-title">Browse All Restaurants</h2>
+        <p className="filters-instructions">Click on a restaurant on the map or search for one below to learn more about restaurant week offerings:</p>
       </div>
 
       {/* Search Bar */}
@@ -170,19 +170,21 @@ export default function Filters({ onSearch, onFilterChange, restaurantCount, all
 
         
         {/* Regular Dropdown Filters */}
-        {Object.entries(filterOptions).map(([filterType, options]) => (
-          <div key={filterType} className="filter-group">
-            <button
-              className="filter-button"
-              onClick={() => handleFilterClick(filterType)}
-            >
-              {filterType}
-              <span className="dropdown-arrow">
-                <svg width="15" height="15" viewBox="0 0 20 20" fill="none">
-                  <path d="M5 8L10 13L15 8" stroke="black" strokeWidth="2.1" />
-                </svg>
-              </span>
-            </button>
+        {Object.entries(filterOptions).map(([filterType, options]) => {
+          const hasSelectedItems = selectedFilters[filterType] && selectedFilters[filterType].length > 0
+          return (
+            <div key={filterType} className="filter-group">
+              <button
+                className={`filter-button ${hasSelectedItems ? 'active' : ''}`}
+                onClick={() => handleFilterClick(filterType)}
+              >
+                {filterType}
+                <span className="dropdown-arrow">
+                  <svg width="15" height="15" viewBox="0 0 20 20" fill="none">
+                    <path d="M5 8L10 13L15 8" stroke="black" strokeWidth="2.1" />
+                  </svg>
+                </span>
+              </button>
             
             {openDropdown === filterType && (
               <div className="dropdown-menu">
@@ -191,6 +193,8 @@ export default function Filters({ onSearch, onFilterChange, restaurantCount, all
                   const isSelected = option === 'All' 
                     ? currentSelected.length === 0 
                     : currentSelected.includes(option)
+                  // Use formatted display for Collections
+                  const displayText = filterType === 'Collections' ? formatCollectionName(option) : option
                   return (
                     <div
                       key={option}
@@ -200,43 +204,42 @@ export default function Filters({ onSearch, onFilterChange, restaurantCount, all
                       <span className="checkbox">
                         {isSelected ? '☑' : '☐'}
                       </span>
-                      {option}
+                      {displayText}
                     </div>
                   )
                 })}
               </div>
             )}
           </div>
-        ))}
-      </div>
+        )
+        })}
 
-      {/* Applied Filters */}
-      {appliedFilters.length > 0 && (
-        <div className="applied-filters-container">
-          <h3>Applied Filters</h3>
-          <div className="applied-filters">
-            {appliedFilters.map((filter, index) => (
-              <span key={index} className="applied-filter-tag">
-                {filter.value}
-                <button
-                  className="remove-filter-button"
-                  onClick={() => handleRemoveFilter(filter.filterType, filter.value)}
-                >
-                  ×
-                </button>
-              </span>
-            ))}
-            <button className="reset-all-button" onClick={handleResetAll}>
+        {/* Reset All Button - Only show when filters are applied */}
+        {appliedFilters.length > 0 && (
+          <div className="filter-group">
+            <button
+              className="filter-button reset-all-button"
+              onClick={handleResetAll}
+            >
               RESET ALL ×
             </button>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Restaurant Count */}
-      <div className="restaurant-count">
-        {restaurantCount} restaurants
+        {/* Favorites Button - Right aligned */}
+        <div className="filter-group favorites-filter">
+          <button
+            className={`filter-button ${favoritesActive ? 'active' : ''}`}
+            onClick={onFavoritesToggle}
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill={favoritesActive ? "#FF69B4" : "none"} stroke="#FF69B4" strokeWidth="2" style={{ marginRight: '4px' }}>
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+            {favorites.length} Favorites
+          </button>
+        </div>
       </div>
+
     </div>
   )
 } 

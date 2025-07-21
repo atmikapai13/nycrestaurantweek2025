@@ -1,12 +1,53 @@
+.restaurant-card-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  transition: background 0.15s, color 0.15s;
+  z-index: 10;
+}
+
+.restaurant-card-close:hover {
+  background: #f2f2f2;
+  color: #222;
+}
+
+.restaurant-card-heart {
+  position: absolute;
+  top: 12px;
+  right: 40px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  transition: background 0.15s, transform 0.15s;
+  z-index: 10;
+}
+
+.restaurant-card-heart:hover {
+  background: rgba(255, 105, 180, 0.1);
+  transform: scale(1.1);
+}
+
+.restaurant-card-heart:active {
+  transform: scale(0.95);
+}
+
 .restaurant-card {
+  position: relative;
   background: white;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
-  padding: 20px 20px 20px 20px;
-  margin-bottom: 16px;
-  height: 300px;
-  overflow-y: auto;
+  margin-bottom: 10%;
+  height: auto;
+  min-height: 200px;
+  overflow: visible;
   border: 1px solid #e5e7eb;
   flex-shrink: 0;
 }
@@ -15,14 +56,14 @@
 .restaurant-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
 }
 
 .tag {
   padding: 1px 5px;
   padding-top: 2px;
   border-radius: 6px;
-  font-size: 5px;
+  font-size: 4px;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.1px;
@@ -30,11 +71,13 @@
 }
 
 .tag-cuisine {
-  background-color: #3B82F6;
+  background-color: #F5E9DA;
+  color: #000000;
 }
 
 .tag-neighborhood {
-  background-color: #000000;
+  background-color: #FFE066;
+  color: #000000;
 }
 
 .tag-price {
@@ -51,6 +94,11 @@
   color: #FFFFFF;
 }
 
+.tag-nyt-rank {
+  background-color: #FF69B4;
+  color: #FFFFFF;
+}
+
 .michelin-stars {
   display: flex;
   align-items: center;
@@ -64,17 +112,38 @@
 
 /* Restaurant Name */
 .restaurant-name {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
   color: #000000;
-  margin: 0 0 5px 0;
-  line-height: 1.2;
+  margin: 0 0 4px 0;
+  line-height: 1.4;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.michelin-star-inline {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+}
+
+.bib-gourmand-inline {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+}
+
+.nyt-top100-inline {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
 }
 
 /* Restaurant Description */
 .restaurant-description {
-  font-size: 10px;
-  line-height: 1.6;
+  font-size: 8px;
+  line-height: 1.4;
   color: #4B5563;
   margin: 0 0px 15px 0;
   padding-top:7px;
@@ -107,7 +176,7 @@
 .meal-item {
   font-size: 10px;
   color: #4B5563;
-  line-height: 1.4;
+  line-height: 1.0;
 }
 
 /* Action Buttons */
@@ -149,7 +218,7 @@
 
 .action-link {
   background-color: #F2F2F7;
-  color: #007AFF;
+  color: #5d5757;
   border: none;
   padding: 8px 12px;
   border-radius: 6px;
@@ -169,6 +238,30 @@
 
 .action-link:hover {
   background-color: #E5E5EA;
+}
+
+.find-table-btn {
+  width: 100%;
+  margin-top: 10px;
+  background-color: #000000;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  letter-spacing: 0.5px;
+  display: block;
+  text-decoration: none;
+  text-align: center;
+}
+
+.find-table-btn:hover {
+  background-color: #222222;
+  color: #ffffff;
+  font-weight: 900;
 }
 
 /* Responsive Design */

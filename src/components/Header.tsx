@@ -4,30 +4,32 @@ import './Header.css'
 export default function Header() {
   return (
     <header className="header">
-      {/* Left side - Text content */}
-      <div className="header-text">
-        <h1 className="header-title">
-          New York Restaurant Week
-        </h1>
-        <p className="header-dates">
-          Jul 21 - Aug 17, 2025
-        </p>
-      </div>
-
-      {/* Right side - NYC Logo */}
-      <div className="header-logo">
-        <a 
-          href="https://www.nyctourism.com/restaurant-week/" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="logo-link"
-        >
-          <img 
-            src={nycLogo} 
-            alt="NEW YORK CITY" 
-            className="logo-image"
-          />
-        </a>
+      <div className="header-content">
+        <div className="header-left">
+          <h1>New York Restaurant Week</h1>
+          <span className="header-dates">
+            Jul 21 - Aug 17, 2025 |
+            <a
+              href="https://www.nyctourism.com/restaurant-week/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="nyc-credits-link"
+              style={{ color: ' white', textDecoration: 'none', marginLeft: '0.25em' }}
+            >
+              Credits to NYC Tourism
+            </a>
+          </span>
+        </div>
+        <div className="header-right">
+          <a 
+            href="https://www.nyctourism.com/restaurant-week/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="nyc-logo-link"
+          >
+            <img src={nycLogo} alt="NEW YORK CITY" className="nyc-logo" />
+          </a>
+        </div>
       </div>
     </header>
   )

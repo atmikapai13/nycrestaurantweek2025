@@ -1,85 +1,84 @@
 .header {
-  width: 100%;
-  background-color: black;
+  background-image: url('/header.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   color: white;
+  padding: 1.0rem 2.0rem;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 1;
+}
+
+.header-content {
+  position: relative;
+  z-index: 2;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.header-text {
-  display: flex;
-  flex-direction: column;
-}
-
-.header-title {
-  font-family: Helvetica, Arial, sans-serif;
-  font-weight: 700;
-  font-size: 1.5rem;
-  line-height: 1.2;
+.header-left h1 {
   margin: 0;
+  color: #ffffff;
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  font-family: 'Graphik', Arial, sans-serif;
 }
 
 .header-dates {
-  font-family: Helvetica, Arial, sans-serif;
-  font-weight: bold;
-  font-size: 0.875rem;
-  margin: 0.25rem 0 0 0;
+  color: #ffffff;
+  font-size: 1.0rem;
+  font-weight: 700;
+  opacity: 0.9;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+  font-family: 'Graphik', Arial, sans-serif;
 }
 
-.header-logo {
-  flex-shrink: 0;
-}
-
-.logo-link {
+.nyc-logo-link {
   display: block;
   transition: transform 0.2s ease-in-out;
   cursor: pointer;
 }
 
-.logo-link:hover {
-  transform: scale(1.1);
+.nyc-logo-link:hover {
+  transform: scale(1.05);
 }
 
-.logo-image {
-  height: 3rem;
-  width: 3rem;
-  object-fit: contain;
+.nyc-logo {
+  height: 40px;
+  width: auto;
   transition: filter 0.2s ease-in-out;
 }
 
-.logo-link:hover .logo-image {
-  filter: brightness(1.2);
+.nyc-logo-link:hover .nyc-logo {
+  filter: brightness(1.1);
 }
 
 /* Responsive design */
-@media (min-width: 768px) {
-  .header-title {
-    font-size: 1.875rem;
+@media (max-width: 768px) {
+  .header-left h1 {
+    font-size: 2rem;
   }
   
   .header-dates {
-    font-size: 1rem;
+    font-size: 0.875rem;
   }
   
-  .logo-image {
-    height: 4rem;
-    width: 4rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .header-title {
-    font-size: 2.25rem;
-  }
-  
-  .header-dates {
-    font-size: 1.125rem;
-  }
-  
-  .logo-image {
-    height: 5rem;
-    width: 5rem;
+  .nyc-logo {
+    height: 30px;
   }
 } 
