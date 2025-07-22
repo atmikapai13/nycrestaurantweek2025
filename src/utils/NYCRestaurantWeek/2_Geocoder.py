@@ -244,7 +244,7 @@ class RestaurantCoordinateExtractor:
         
         return results
     
-    def save_results(self, restaurants: List[Dict], filename: str = "src/data/NYCRestaurantWeek/2_Geocoded.json"):
+    def save_results(self, restaurants: List[Dict], filename: str = "../data/NYCRestaurantWeek/2_Geocoded.json"):
         """Save results to JSON file"""
         
         try:
@@ -262,8 +262,8 @@ def main():
     try:
         # Try different possible paths
         possible_paths = [
-            'src/data/NYCRestaurantWeek/1_Scraped.json',  # From root directory
-            '../src/data/1_Scraped.json',  # From utils directory
+            '../data/NYCRestaurantWeek/1_Scraped.json',  # From root directory
+            '../data/1_Scraped.json',  # From utils directory
         ]
         
         restaurants = None
@@ -277,7 +277,7 @@ def main():
                 continue
         
         if restaurants is None:
-            print("❌ Error: Could not find 2_NYCRestaurantWeek.json in src/data/ or ../src/data/")
+            print("❌ Error: Could not find 1_Scraped.json in ../data/NYCRestaurantWeek/")
             return
             
     except Exception as e:

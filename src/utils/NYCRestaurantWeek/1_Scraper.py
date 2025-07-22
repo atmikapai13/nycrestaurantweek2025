@@ -158,8 +158,8 @@ def main():
         
         # Clean and save data
         clean_restaurants = scraper.clean_restaurant_data(raw_restaurants)
-        scraper.save_data(raw_restaurants, "src/data/NYCRestaurantWeek/1_ScrapedRaw.json")
-        scraper.save_data(clean_restaurants, "src/data/NYCRestaurantWeek/1_Scraped.json")
+        scraper.save_data(raw_restaurants, "../data/NYCRestaurantWeek/1_ScrapedRaw.json")
+        scraper.save_data(clean_restaurants, "../data/NYCRestaurantWeek/1_Scraped.json")
         
         # Print summary stats
         boroughs = {}

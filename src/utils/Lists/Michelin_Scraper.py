@@ -187,7 +187,7 @@ class MichelinAlgoliaScraper:
         
         return cleaned
     
-    def save_data(self, restaurants: List[Dict], filename: str = "src/data/Lists/MichelinNYC.json"):
+    def save_data(self, restaurants: List[Dict], filename: str = "../data/Lists/MichelinNYC.json"):
         """Save restaurant data to JSON file"""
         
         try:
@@ -213,8 +213,8 @@ def main():
         clean_restaurants = scraper.clean_restaurant_data(raw_restaurants)
         
         # Save both raw and cleaned data
-        scraper.save_data(raw_restaurants, "src/data/Lists/MichelinNYC_Raw.json")
-        scraper.save_data(clean_restaurants, "src/data/Lists/MichelinNYC.json")
+        scraper.save_data(raw_restaurants, "../data/Lists/MichelinNYC_Raw.json")
+        scraper.save_data(clean_restaurants, "../data/Lists/MichelinNYC.json")
         
         # Print summary stats
         print(f"\n📊 Summary:")

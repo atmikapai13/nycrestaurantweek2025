@@ -162,7 +162,7 @@ def scrape_nytimes_restaurants(url):
         print(f"Parsing error: {e}")
         return []
 
-def save_restaurants_json(restaurants, filename='src/data/Lists/NYTTop100.json'):
+def save_restaurants_json(restaurants, filename='../data/Lists/NYTTop100.json'):
     """
     Save restaurants data to JSON file
     """

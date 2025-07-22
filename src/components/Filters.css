@@ -303,4 +303,19 @@
 .favorites-filter .filter-button.active svg {
   fill: white;
   stroke: white;
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 768px) {
+  .filters-container {
+    margin-bottom: 0px;
+  }
+  
+  .filter-buttons {
+    margin-bottom: 0;
+  }
+
+  .favorites-filter {
+    margin-bottom: 0;
+  }
 } 

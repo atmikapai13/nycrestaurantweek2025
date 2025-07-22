@@ -328,11 +328,11 @@ def main():
     print("=" * 60)
     
     # File paths
-    characteristics_file = "src/data/NYCRestaurantWeek/3_Characteristics.json"
-    michelin_file = "src/data/Lists/MichelinNYC.json"
-    nyt_file = "src/data/Lists/NYTTop100.json"
-    michelin_output_file = "src/data/NYCRestaurantWeek/4_JoinMichelin.json"
-    nyttop100_output_file = "src/data/NYCRestaurantWeek/5_JoinNYT.json"
+    characteristics_file = "../data/NYCRestaurantWeek/3_Characteristics.json"
+    michelin_file = "../data/Lists/MichelinNYC.json"
+    nyt_file = "../data/Lists/NYTTop100.json"
+    michelin_output_file = "../data/NYCRestaurantWeek/4_JoinMichelin.json"
+    nyttop100_output_file = "../data/NYCRestaurantWeek/5_JoinNYT.json"
     
     # Load data
     print("\n📂 Loading data files...")
@@ -377,7 +377,7 @@ def main():
     save_joined_data(final_joined_data, nyttop100_output_file)
     
     # Also save as FinalData.json for easy access
-    final_data_file = "src/data/FinalData.json"
+    final_data_file = "../data/FinalData.json"
     save_joined_data(final_joined_data, final_data_file)
     
     # Analyze results

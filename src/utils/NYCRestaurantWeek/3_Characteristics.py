@@ -283,7 +283,7 @@ class RestaurantCharacteristicsExtractor:
         
         return processed_restaurants
     
-    def save_data(self, restaurants: List[Dict], filename: str = "src/data/NYCRestaurantWeek/3_Characteristics.json"):
+    def save_data(self, restaurants: List[Dict], filename: str = "../data/NYCRestaurantWeek/3_Characteristics.json"):
         """Save restaurant data with characteristics"""
         
         try:
@@ -301,8 +301,8 @@ def main():
     try:
         # Try different possible paths
         possible_paths = [
-            'src/data/NYCRestaurantWeek/2_Geocoded.json',  # From root directory
-            '../src/data/NYCRestaurantWeek/2_Geocoded.json',  # From utils directory
+            '../data/NYCRestaurantWeek/2_Geocoded.json',  # From root directory
+            '../data/NYCRestaurantWeek/2_Geocoded.json',  # From utils directory
         ]
         
         restaurants = None
@@ -316,7 +316,7 @@ def main():
                 continue
         
         if restaurants is None:
-            print("❌ Error: Could not find src/data/NYCRestaurantWeek/2_Geocoded.json in src/data/ or ../src/data/")
+            print("❌ Error: Could not find 2_Geocoded.json in ../data/NYCRestaurantWeek/")
             return
             
     except Exception as e:

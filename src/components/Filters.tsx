@@ -2,12 +2,7 @@ import { useState } from 'react'
 import './Filters.css'
 import type { Restaurant } from '../types/restaurant'
 
-interface FilterOption {
-  label: string
-  count: number
-  id: string
-  slug: string
-}
+
 
 interface FiltersProps {
   onSearch: (searchTerm: string) => void
@@ -21,7 +16,7 @@ interface FiltersProps {
   favoritesActive: boolean
 }
 
-export default function Filters({ onSearch, onFilterChange, restaurantCount, allRestaurants = [], onResetAll, onRestaurantSelect, favorites, onFavoritesToggle, favoritesActive}: FiltersProps) {
+export default function Filters({ onSearch, onFilterChange, allRestaurants = [], onResetAll, onRestaurantSelect, favorites, onFavoritesToggle, favoritesActive}: FiltersProps) {
   const [searchTerm, setSearchTerm] = useState('')
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
   const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>({})
@@ -124,7 +119,7 @@ export default function Filters({ onSearch, onFilterChange, restaurantCount, all
       {/* Header */}
       <div className="filters-header">
         <h2 className="filters-title">Browse All Restaurants</h2>
-        <p className="filters-instructions">Click on a restaurant on the map or search for one below to learn more about restaurant week offerings:</p>
+        <p className="filters-instructions">To learn more about NYC Restaurant Week offerings, tap on a restaurant, or toggle the legend in the map, or search for a restaurant below:</p>
       </div>
 
       {/* Search Bar */}
