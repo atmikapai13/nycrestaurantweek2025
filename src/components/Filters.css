@@ -185,44 +185,6 @@
   font-size: 0.75rem;
 }
 
-.restaurant-count {
-  font-size: 0.875rem;
-  color: #6b7280;
-  margin-top: 0.5rem;
-}
-
-.applied-filters-container {
-  margin-bottom: 1rem;
-  padding-right: 120px; /* Match the search container padding */
-}
-
-.applied-filters-container h3 {
-  font-size: 0.6rem;
-  font-weight: 600;
-  color: #000;
-  margin: 0 0 0.5rem 0;
-}
-
-.applied-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-}
-
-.applied-filter-tag {
-  display: inline-flex;
-  align-items: center;
-  height: 25px;
-  padding: 0 10px;
-  border: 1px solid #000;
-  background-color: white;
-  color: #000;
-  font-size: 0.8rem;
-  font-weight: 600;
-  cursor: default;
-}
-
 
 
 .reset-all-button {
@@ -264,24 +226,6 @@
   background-color: #dc2626;
   color: white;
   border-color: #dc2626;
-} 
-
-.legend-list-vertical {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0px;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  margin-bottom: 4px;
-  cursor: pointer;
-}
-
-.legend-item:last-child {
-  margin-bottom: 0;
 } 
 
 .favorites-filter {

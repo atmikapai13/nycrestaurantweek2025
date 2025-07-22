@@ -12,11 +12,6 @@
   z-index: 10;
 }
 
-.restaurant-card-close:hover {
-  background: #f2f2f2;
-  color: #222;
-}
-
 .restaurant-card-heart {
   position: absolute;
   top: 12px;
@@ -28,15 +23,6 @@
   border-radius: 50%;
   transition: background 0.15s, transform 0.15s;
   z-index: 10;
-}
-
-.restaurant-card-heart:hover {
-  background: rgba(255, 105, 180, 0.1);
-  transform: scale(1.1);
-}
-
-.restaurant-card-heart:active {
-  transform: scale(0.95);
 }
 
 .restaurant-card {
@@ -80,35 +66,14 @@
   color: #000000;
 }
 
-.tag-price {
-  background-color: #3B82F6;
-}
 
-.tag-michelin {
-  background-color: #FFFFFF;
-  color: #000000;
-}
-
-.tag-bib-gourmand {
-  background-color: #DC2626;
-  color: #FFFFFF;
-}
 
 .tag-nyt-rank {
   background-color: #FF69B4;
   color: #FFFFFF;
 }
 
-.michelin-stars {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-}
 
-.michelin-star {
-  width: 12px;
-  height: 12px;
-}
 
 /* Restaurant Name */
 .restaurant-name {
@@ -187,28 +152,7 @@
   justify-content: space-between;
 }
 
-.action-button.primary {
-  background-color: #F2F2F7;
-  color: #007AFF;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-}
 
-.action-button.primary:hover {
-  background-color: #E5E5EA;
-}
 
 .action-links {
   display: flex;
@@ -236,9 +180,7 @@
   gap: 4px;
 }
 
-.action-link:hover {
-  background-color: #E5E5EA;
-}
+
 
 .find-table-btn {
   width: 100%;
@@ -258,17 +200,10 @@
   text-align: center;
 }
 
-.find-table-btn:hover {
-  background-color: #222222;
-  color: #ffffff;
-  font-weight: 900;
-}
+
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .restaurant-card-overlay {
-    padding: 16px;
-  }
   
   .restaurant-card {
     padding: 20px;
@@ -297,9 +232,6 @@
 }
 
 @media (max-width: 480px) {
-  .restaurant-card-overlay {
-    padding: 12px;
-  }
   
   .restaurant-card {
     padding: 16px;
