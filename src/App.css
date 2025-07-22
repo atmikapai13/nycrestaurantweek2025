@@ -187,7 +187,8 @@
 
   .restaurant-card-overlay {
     position: static !important;
-    width: 100% !important;
+    align-items: center;
+    width: 95% !important;
     margin-top: 8px;
     margin-bottom: 8px;
     right: auto;
@@ -197,6 +198,8 @@
     display: block;
     order: 2;
     max-width: none;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 
