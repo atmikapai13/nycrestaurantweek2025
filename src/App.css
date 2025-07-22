@@ -169,7 +169,7 @@
   .filter-bar-container {
     order: 1;
     flex-shrink: 0;
-    padding: 0rem 0;
+    padding: 0.2rem 0;
   }
   
   .map-section {
