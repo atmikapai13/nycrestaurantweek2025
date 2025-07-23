@@ -201,6 +201,21 @@
     margin-left: auto;
     margin-right: auto;
   }
+
+  /* Mobile legend adjustments */
+  .map-legend {
+    font-size: 9px;
+    padding: 8px 12px;
+  }
+
+  .map-legend h4 {
+    font-size: 9px;
+    
+  }
+
+  .legend-item {
+    font-size: 9px;
+  }
 }
 
 
