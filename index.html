@@ -55,7 +55,14 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
 
-      gtag('config', 'G-ST8H9F11PP');
+      gtag('config', 'G-ST8H9F11PP', {
+        page_title: 'NYC Eats - Restaurant Week Map',
+        page_location: window.location.href,
+        custom_map: {
+          'custom_parameter_1': 'restaurant_week',
+          'custom_parameter_2': 'nyc_eats'
+        }
+      });
     </script>
   </head>
   <body>
