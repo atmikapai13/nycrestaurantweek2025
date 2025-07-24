@@ -146,7 +146,8 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
       
       {/* Map Legend */}
       <div className="map-legend">
-        <h4 style={{ color: '#000000', margin: '0 0 4px 0' }}>{legendFilteredRestaurants.length} Restaurants</h4>
+        <h4 style={{ color: '#000000', margin: '0 0 -7px 0' }}>{legendFilteredRestaurants.length} Restaurants</h4>
+        <div style={{ fontSize: '6px', color: '#666', marginBottom: '0px', marginTop: '0px' }}>Click on list below:</div>
         <div className="legend-list-vertical">
           <div 
             className="legend-item" 
