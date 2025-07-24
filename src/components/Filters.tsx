@@ -119,7 +119,7 @@ export default function Filters({ onSearch, onFilterChange, allRestaurants = [],
       {/* Header */}
       <div className="filters-header">
         <h2 className="filters-title">Browse All Restaurants</h2>
-        <p className="filters-instructions">To learn more about NYC Restaurant Week offerings, tap on a restaurant, or toggle the legend in the map, or search for a restaurant below:</p>
+        <p className="filters-instructions">To learn more about NYC Restaurant Week offerings, tap on a restaurant or search for one below:</p>
       </div>
 
       {/* Search Bar */}

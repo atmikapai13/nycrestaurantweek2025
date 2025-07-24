@@ -244,7 +244,7 @@ class RestaurantCoordinateExtractor:
         
         return results
     
-    def save_results(self, restaurants: List[Dict], filename: str = "../data/NYCRestaurantWeek/2_Geocoded.json"):
+    def save_results(self, restaurants: List[Dict], filename: str = "src/data/NYCRestaurantWeek/2_Geocoded.json"):
         """Save results to JSON file"""
         
         try:
@@ -262,17 +262,28 @@ def main():
     try:
         # Try different possible paths
         possible_paths = [
-            '../data/NYCRestaurantWeek/1_Scraped.json',  # From root directory
+            'src/data/NYCRestaurantWeek/1_Scraped.json',  # From project root
+            '../data/NYCRestaurantWeek/1_Scraped.json',  # From utils directory
             '../data/1_Scraped.json',  # From utils directory
         ]
         
         restaurants = None
         for path in possible_paths:
             try:
-                with open(path, 'r', encoding='utf-8') as f:
-                    restaurants = json.load(f)
-                print(f"📂 Loaded {len(restaurants)} restaurants from {path}")
-                break
+                # Try different encodings to handle invalid UTF-8
+                for encoding in ['utf-8', 'utf-8-sig', 'latin-1', 'cp1252']:
+                    try:
+                        with open(path, 'r', encoding=encoding) as f:
+                            restaurants = json.load(f)
+                        print(f"📂 Loaded {len(restaurants)} restaurants from {path} (encoding: {encoding})")
+                        break
+                    except UnicodeDecodeError:
+                        continue
+                    except json.JSONDecodeError as e:
+                        print(f"❌ JSON decode error with {encoding} encoding: {e}")
+                        continue
+                if restaurants:
+                    break
             except FileNotFoundError:
                 continue
         
