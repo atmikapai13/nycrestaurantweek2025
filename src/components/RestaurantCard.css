@@ -85,6 +85,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
+  padding-right: 40px; /* Reserve space for heart + close buttons */
 }
 
 .michelin-star-inline {

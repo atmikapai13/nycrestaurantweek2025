@@ -47,7 +47,7 @@
   bottom: 2rem;
   right: calc(7% + 1rem);
   z-index: 1000;
-  max-width: 300px;
+  max-width: 350px;
   width: 100%;
   height: auto;
   max-height: calc(100vh - 400px);
@@ -66,7 +66,7 @@
 }
 
 .restaurant-name {
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   font-weight: bold;
   color: #000;
   margin-bottom: 0.5rem;
@@ -78,13 +78,13 @@
 }
 
 .restaurant-cuisine {
-  font-size: 0.875rem;
+  font-size: 1rem;
   color: #9ca3af;
   margin-bottom: 0.5rem;
 }
 
 .restaurant-summary {
-  font-size: 0.875rem;
+  font-size: 1rem;
   margin-bottom: 0.5rem;
 }
 
@@ -157,6 +157,18 @@
 }
 
 /* Responsive Design */
+@media (min-width: 1400px) {
+  .filter-bar {
+    width: 90%;
+    max-width: none;
+  }
+  
+  .map-wrapper {
+    width: 90%;
+    max-width: none;
+  }
+}
+
 @media (max-width: 768px) {
   .app {
     flex-direction: column;
