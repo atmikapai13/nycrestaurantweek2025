@@ -58,7 +58,7 @@ class MichelinAlgoliaScraper:
             "aroundLatLngViaIP": "false",
             "aroundRadius": "30000",
             "attributesToHighlight": "[]",
-            "attributesToRetrieve": '["name","slug","cuisines","chef","michelin_award","distinction","city","area_name","_geoloc"]',
+            "attributesToRetrieve": '["name","slug","cuisines","chef","michelin_award","distinction","city","area_name","_geoloc","description","summary","about","content","text"]',
             "facetFilters": facet_filters,
             "facets": '["area_slug","booking_provider","categories.lvl0","city.slug","country.cname","country.slug","cuisines.slug","distinction.slug","facilities.slug","good_menu","green_star.slug","meal_times","new_table","offers","online_booking","price_category.slug","region.slug","take_away","with_michelin_guide_hotels"]',
             "filters": "status:Published",
@@ -166,18 +166,32 @@ class MichelinAlgoliaScraper:
         return all_restaurants
     
     def clean_restaurant_data(self, restaurants: List[Dict]) -> List[Dict]:
-        """Extract and clean only name, slug, and michelin_award fields"""
+        """Extract and clean restaurant data including descriptions if available"""
         
         cleaned = []
         
         for restaurant in restaurants:
             try:
-                # Extract only the three fields you specified
+                # Extract basic fields
                 clean_data = {
                     'name': restaurant.get('name', ''),
                     'slug': restaurant.get('slug', ''),
-                    'michelin_award': restaurant.get('michelin_award', '')
+                    'michelin_award': restaurant.get('michelin_award', ''),
+                    'cuisines': restaurant.get('cuisines', ''),
+                    'chef': restaurant.get('chef', ''),
+                    'city': restaurant.get('city', ''),
+                    'area_name': restaurant.get('area_name', '')
                 }
+                
+                # Try to find description in various possible fields
+                description = None
+                for field in ['description', 'summary', 'about', 'content', 'text']:
+                    if restaurant.get(field):
+                        description = restaurant.get(field)
+                        break
+                
+                if description:
+                    clean_data['description'] = description
                 
                 cleaned.append(clean_data)
                 
@@ -220,12 +234,22 @@ def main():
         print(f"\n📊 Summary:")
         print(f"Total restaurants: {len(clean_restaurants)}")
         
+        # Count restaurants with descriptions
+        with_descriptions = sum(1 for r in clean_restaurants if r.get('description'))
+        print(f"Restaurants with descriptions: {with_descriptions}")
+        
         # Show some examples
         print(f"\n📋 Sample restaurants:")
         for i, restaurant in enumerate(clean_restaurants[:5]):
             print(f"\n   {i+1}. {restaurant['name']}")
             print(f"      Slug: {restaurant['slug']}")
             print(f"      Award: {restaurant['michelin_award']}")
+            print(f"      Cuisine: {restaurant.get('cuisines', 'N/A')}")
+            print(f"      Chef: {restaurant.get('chef', 'N/A')}")
+            if restaurant.get('description'):
+                print(f"      Description: {restaurant['description'][:100]}...")
+            else:
+                print(f"      Description: Not available")
     
     else:
         print("❌ Failed to scrape restaurants")
