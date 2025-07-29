@@ -1,0 +1,624 @@
+restaurant_name,has_michelin_match,has_nyt_match,michelin_match_quality,nyt_match_quality,rw_cuisine,michelin_cuisine,nyt_cuisine,rw_borough,rw_neighborhood
+Fogo de Chão Brazilian Steakhouse,False,False,none,none,Brazilian,,,Manhattan,Midtown West
+Muteki Udon,False,False,none,none,Japanese / Sushi,,,Brooklyn,Park Slope
+Heritage Grand Bakery,False,False,none,none,Mediterranean,,,Manhattan,Midtown West
+Chez Nick,False,False,none,none,American (New),,,Manhattan,Upper East Side
+Tanoreen,True,False,exact,none,Middle Eastern,Middle Eastern,,Brooklyn,Bay Ridge
+Amali,False,False,none,none,Mediterranean,,,Manhattan,Upper East Side
+Jack & Charlie’s No. 118,False,False,none,none,American (New),,,Manhattan,West Village
+Mae Mae Cafe & Plant Shop,False,False,none,none,Eclectic,,,The Bronx,Mott Haven
+Mission Ceviche - Upper East Side,False,False,none,none,Peruvian,,,Manhattan,Upper East Side
+Kings of Kobe,False,False,none,none,Steakhouse,,,Manhattan,Hells Kitchen
+L'Express,False,False,none,none,French,,,Manhattan,Gramercy
+Clara,False,False,none,none,American (New),,,Manhattan,Upper West Side
+Rosevale Cocktail Room,False,False,none,none,American (New),,,Manhattan,Hells Kitchen
+Brass & the Tusk Bar,False,False,none,none,American (New),,,Manhattan,Nomad
+Crave Fishbar - Upper East Side,False,False,none,none,Seafood,,,Manhattan,Upper East Side
+Leuca,False,False,none,none,Italian,,,Brooklyn,Williamsburg
+Grotta Azzurra,False,False,none,none,Italian,,,Manhattan,Little Italy
+Buddakan,False,False,none,none,Asian Fusion,,,Manhattan,Chelsea
+Ammos Estiatorio - Grand Central,False,False,none,none,Mediterranean,,,Manhattan,Midtown East
+Warren Street Bar & Restaurant,False,False,none,none,American (New),,,Manhattan,Tribeca
+Excuse My French,False,False,none,none,French,,,Manhattan,Lower East Side
+Isabelle's Osteria,False,False,none,none,Italian,,,Manhattan,Gramercy
+Le Jardinier,False,False,none,none,French,,,Manhattan,Midtown East
+Palermo Argentinian Bistro - NYC,False,False,none,none,Argentinian,,,Manhattan,Times Square/Theatre District
+Suprema Provisions,False,False,none,none,Italian,,,Manhattan,West Village
+The Terrace and Outdoor Gardens,False,False,none,none,American (New),,,Manhattan,Times Square/Theatre District
+AperiBar,False,False,none,none,Italian,,,Manhattan,Times Square/Theatre District
+HanGawi,True,False,exact,none,Korean,Korean,,Manhattan,Koreatown
+Del Frisco's Grille,False,False,none,none,Steakhouse,,,Manhattan,Midtown West
+Loulou Petit Bistro,False,False,none,none,French,,,Manhattan,Chelsea
+Perrine,False,False,none,none,French,,,Manhattan,Upper East Side
+Sotto la Luna,False,False,none,none,Italian,,,Queens,Astoria
+La Grande Boucherie,False,False,none,none,French,,,Manhattan,Midtown West
+Gran Morsi,False,False,none,none,Italian,,,Manhattan,Tribeca
+Rowland's Bar & Grill,False,False,none,none,Gastropub,,,Manhattan,Herald Square
+Reyna,False,False,none,none,Mediterranean,,,Manhattan,Union Square
+Riverpark,False,False,none,none,American (New),,,Manhattan,Kips Bay
+Recette,False,False,none,none,French,,,Brooklyn,Williamsburg
+The Orchard Townhouse,False,False,none,none,American (New),,,Manhattan,Chelsea
+Nar Restaurant,False,False,none,none,Mediterranean,,,Manhattan,Flatiron District
+The Dining Room at Gramercy Tavern,True,True,fuzzy,fuzzy,American (New),Contemporary,New American,Manhattan,Gramercy
+Legasea,False,False,none,none,American (New),,,Manhattan,Garment District
+Bar Primi - Penn District,False,False,none,none,Italian,,,Manhattan,Chelsea
+Four Twenty Five,False,True,none,exact,American (New),,New American,Manhattan,Midtown East
+Wagamama - Midtown,False,False,none,none,Asian Fusion,,,Manhattan,Midtown West
+Del Frisco's Grille - Brookfield Place,False,False,none,none,Steakhouse,,,Manhattan,Battery Park City
+The Library at The Public,False,False,none,none,American (New),,,Manhattan,Noho
+Psaraki,False,False,none,none,Greek,,,Brooklyn,Williamsburg
+The Dutch,False,False,none,none,American (New),,,Manhattan,Soho
+Eléa,False,False,none,none,Greek,,,Manhattan,Upper West Side
+Naks,False,False,none,none,None,,,Manhattan,East Village
+La Sirene,False,False,none,none,French,,,Manhattan,Soho
+David Burke Tavern,False,False,none,none,American (New),,,Manhattan,Upper East Side
+Jue Lan Club,False,False,none,none,Chinese,,,Manhattan,Flatiron District
+Cafe D'Alsace,False,False,none,none,French,,,Manhattan,Upper East Side
+Virgil's Real BBQ - Times Square,False,False,none,none,Barbecue,,,Manhattan,Times Square/Theatre District
+Kurant Wine Bar,False,False,none,none,American (New),,,Manhattan,Midtown East
+Yakiniku Futago,False,False,none,none,Steakhouse,,,Manhattan,Flatiron District
+La Contenta Oeste,False,False,none,none,Mexican,,,Manhattan,West Village
+Chili,False,False,none,none,Chinese,,,Manhattan,Murray Hill
+Jiang Nan - Long Island City,True,False,fuzzy,none,Chinese,Chinese,,Queens,Long Island City
+Lido,False,False,none,none,Italian,,,Manhattan,Harlem
+Shan,False,False,none,none,Chinese,,,Brooklyn,Boerum Hill
+Carne Mare,False,False,none,none,Steakhouse,,,Manhattan,The Seaport
+Manuela,False,False,none,none,American (New),,,Manhattan,Soho
+Mito - Bayside,False,False,none,none,Asian Fusion,,,Queens,Bayside
+Rosa Mexicano - Union Square,False,False,none,none,Mexican,,,Manhattan,Union Square
+Baciccia Pizza e Cucina,False,False,none,none,Italian,,,Brooklyn,Park Slope
+Bocca Di Bacco—Hell's Kitchen,False,False,none,none,Italian,,,Manhattan,Hells Kitchen
+Pink Taco,False,False,none,none,Mexican,,,Manhattan,Times Square/Theatre District
+Mishik,False,False,none,none,Japanese / Sushi,,,Manhattan,Hudson Square
+Casa Lever,False,False,none,none,Italian,,,Manhattan,Midtown East
+Kaizen,False,False,none,none,Japanese / Sushi,,,Queens,Flushing
+Nonna Dora's,False,False,none,none,Italian,,,Manhattan,Kips Bay
+Manhatta,False,False,none,none,American (New),,,Manhattan,Lower Manhattan
+State Grill and Bar,False,False,none,none,American (Traditional),,,Manhattan,Herald Square
+The Fulton,False,False,none,none,Seafood,,,Manhattan,The Seaport
+Café Boulud,True,False,exact,none,French,French,,Manhattan,Upper East Side
+Gyu-Kaku Japanese BBQ - Midtown,False,False,none,none,Japanese / Sushi,,,Manhattan,Midtown East
+Hard Rock Cafe,False,False,none,none,American (Traditional),,,Manhattan,Times Square/Theatre District
+GupShup,False,False,none,none,Indian,,,Manhattan,Gramercy
+Dos Caminos Times Square,False,False,none,none,Mexican,,,Manhattan,Times Square/Theatre District
+The Flatiron Room - Murray Hill,False,False,none,none,American (New),,,Manhattan,Murray Hill
+Ma•dé,False,False,none,none,Asian Fusion,,,Manhattan,Nolita
+The Leopard at Des Artistes,False,False,none,none,Italian,,,Manhattan,Upper West Side
+Stout NYC Bryant Park,False,False,none,none,American (Traditional),,,Manhattan,Garment District
+Society Cafe,False,False,none,none,American (New),,,Manhattan,Greenwich Village
+Mito - Forest Hills,False,False,none,none,Japanese / Sushi,,,Queens,Forest Hills
+The Quimby,False,False,none,none,American (New),,,Queens,Jamaica
+Momoya - Upper West Side,False,False,none,none,Japanese / Sushi,,,Manhattan,Upper West Side
+The Ivory Peacock,False,False,none,none,Gastropub,,,Manhattan,Flatiron District
+Tha Phraya,True,False,exact,none,Thai,Thai contemporary,,Manhattan,Upper East Side
+Indian Table,False,False,none,none,Indian,,,Brooklyn,Cobble Hill
+Obao Hell's Kitchen,False,False,none,none,Thai,,,Manhattan,Hells Kitchen
+Miss Lily's 7A,False,False,none,none,Caribbean,,,Manhattan,East Village
+The Dram Shop Bar,False,False,none,none,American (Traditional),,,Brooklyn,Park Slope
+Addictive NYC,False,False,none,none,Spanish,,,Manhattan,Midtown West
+El Coco - Hell's Kitchen,False,False,none,none,Mexican,,,Manhattan,Hells Kitchen
+Frenchman's Dough,False,False,none,none,Italian,,,Manhattan,The Seaport
+Felice 56,False,False,none,none,Italian,,,Manhattan,Midtown West
+Fresco by Scotto,False,False,none,none,Italian,,,Manhattan,Midtown East
+Socarrat Paella Bar - Chelsea,False,False,none,none,Spanish,,,Manhattan,Chelsea
+Wayan,False,False,none,none,Asian Fusion,,,Manhattan,Nolita
+Armani/Ristorante New York,False,False,none,none,Italian,,,Manhattan,Upper East Side
+Stout NYC Penn Station,False,False,none,none,American (Traditional),,,Manhattan,Herald Square
+Haven Rooftop,False,False,none,none,American (New),,,Manhattan,Times Square/Theatre District
+Luigi's,False,False,none,none,Italian,,,Queens,New Hyde Park
+Jacob's Pickles,False,False,none,none,Soul Food / Southern,,,Manhattan,Upper West Side
+Limani,False,False,none,none,Mediterranean,,,Manhattan,Midtown West
+Le Pavillon,True,False,exact,none,French,Contemporary,,Manhattan,Midtown East
+Iris,False,False,none,none,Greek,,,Manhattan,Midtown West
+Bar Milano by Eataly,False,False,none,none,Italian,,,Manhattan,Flatiron District
+Meadowsweet,False,False,none,none,American (New),,,Brooklyn,Williamsburg
+Yama Ramen,False,False,none,none,Japanese / Sushi,,,Manhattan,Midtown West
+The Queensboro,False,False,none,none,American (Traditional),,,Queens,Jackson Heights
+Gargiulo's,False,False,none,none,Italian,,,Brooklyn,Coney Island
+Delmonico's,False,False,none,none,Steakhouse,,,Manhattan,Lower Manhattan
+Longo Bros.,False,False,none,none,Italian,,,Manhattan,Hells Kitchen
+Felice Columbus,False,False,none,none,Italian,,,Manhattan,Upper West Side
+Kubeh,False,False,none,none,Middle Eastern,,,Manhattan,Greenwich Village
+Cebu Bar & Bistro,False,False,none,none,American (New),,,Brooklyn,Bay Ridge
+Tarallucci e Vino - Upper West Side,False,False,none,none,Italian,,,Manhattan,Upper West Side
+Pastai,False,False,none,none,Italian,,,Manhattan,Chelsea
+Bar Primi - Bowery,False,False,none,none,Italian,,,Manhattan,East Village
+The Bar Room at The Modern,True,False,fuzzy,none,American (New),Contemporary,,Manhattan,Midtown West
+Il Falco,False,False,none,none,Italian,,,Queens,Long Island City
+Plado Tasting Bar,False,False,none,none,Mediterranean,,,Manhattan,East Village
+Panda Harlem,False,False,none,none,Chinese,,,Manhattan,Harlem
+Harta,False,False,none,none,American (New),,,Manhattan,Garment District
+Sant Ambroeus—SoHo,False,False,none,none,Italian,,,Manhattan,Nolita
+So & So's,False,False,none,none,American (New),,,Manhattan,Hells Kitchen
+Beauty & Essex,False,False,none,none,American (New),,,Manhattan,Lower East Side
+Frankie & Johnnie’s Steakhouse,False,False,none,none,Steakhouse,,,Manhattan,Times Square/Theatre District
+Petite Boucherie,False,False,none,none,French,,,Manhattan,West Village
+Pinky Swear,False,False,none,none,Eclectic,,,Manhattan,Lower East Side
+The Musket Room,True,False,exact,none,American (New),Contemporary,,Manhattan,Nolita
+Ci Siamo,False,False,none,none,Italian,,,Manhattan,Chelsea
+House of the Red Pearl,False,False,none,none,Chinese,,,Manhattan,The Seaport
+Bananas,False,False,none,none,American (New),,,Manhattan,East Village
+Kashkaval Garden,False,False,none,none,Mediterranean,,,Manhattan,Hells Kitchen
+Broadway Lounge,False,False,none,none,American (New),,,Manhattan,Times Square/Theatre District
+Felice 64,False,False,none,none,Italian,,,Manhattan,Upper East Side
+Pardon My French,False,False,none,none,French,,,Manhattan,East Village
+La Pecora Bianca Midtown,False,False,none,none,Italian,,,Manhattan,Midtown East
+Qanoon,False,False,none,none,Middle Eastern,,,Manhattan,Chelsea
+Catch NYC,False,False,none,none,Seafood,,,Manhattan,Meatpacking District
+Soba Totto,False,False,none,none,Japanese / Sushi,,,Manhattan,Midtown East
+T. Brasserie,False,False,none,none,French,,,Manhattan,The Seaport
+Vallata,False,False,none,none,Italian,,,Manhattan,Gramercy
+Sake No Hana,False,False,none,none,Japanese / Sushi,,,Manhattan,Lower East Side
+Souvlaki GR - Lower East Side,False,False,none,none,Greek,,,Manhattan,Lower East Side
+The Clocktower,False,False,none,none,British,,,Manhattan,Flatiron District
+Red Rooster Harlem,False,False,none,none,Soul Food / Southern,,,Manhattan,Harlem
+Konban,False,False,none,none,Japanese / Sushi,,,Manhattan,Chelsea
+Oceana,False,False,none,none,Seafood,,,Manhattan,Midtown West
+Tavern on the Green,False,False,none,none,American (New),,,Manhattan,Central Park
+Barbounia,False,False,none,none,Mediterranean,,,Manhattan,Gramercy
+Dinner Party,False,False,none,none,American (New),,,Brooklyn,Clinton Hill
+Darbar Grill,False,False,none,none,Indian,,,Manhattan,Midtown East
+The Noortwyck,False,False,none,none,American (New),,,Manhattan,West Village
+Pappardella,False,False,none,none,Italian,,,Manhattan,Upper West Side
+Il Fiorista,False,False,none,none,Mediterranean,,,Manhattan,Nomad
+JoJo,False,False,none,none,American (New),,,Manhattan,Upper East Side
+Nusr-Et - Midtown,False,False,none,none,Steakhouse,,,Manhattan,Midtown West
+Crave Fishbar - Upper West Side,False,False,none,none,Seafood,,,Manhattan,Upper West Side
+Morgan's Brooklyn Barbecue,False,False,none,none,Barbecue,,,Brooklyn,Prospect Heights
+Hawksmoor,False,False,none,none,Steakhouse,,,Manhattan,Gramercy
+Baar Baar,False,False,none,none,Indian,,,Manhattan,East Village
+Souvlaki GR - Midtown East,False,False,none,none,Greek,,,Manhattan,Midtown East
+Crave Fishbar - Midtown,False,False,none,none,Seafood,,,Manhattan,Midtown East
+Neir's Tavern,False,False,none,none,American (Traditional),,,Queens,Woodhaven
+Il Cortile,False,False,none,none,Italian,,,Manhattan,Little Italy
+The Sea Fire Grill,False,True,none,fuzzy,Seafood,,American,Manhattan,Midtown East
+Estiatorio Milos,False,False,none,none,Seafood,,,Manhattan,Midtown West
+Hunt & Fish Club NYC,False,False,none,none,Steakhouse,,,Manhattan,Times Square/Theatre District
+Zero Otto Nove - Flatiron,False,False,none,none,Italian,,,Manhattan,Flatiron District
+Sant Ambroeus—West Village,False,False,none,none,Italian,,,Manhattan,West Village
+Pomp & Circumstance,False,False,none,none,Mediterranean,,,Brooklyn,Williamsburg
+Jacques Brasserie,False,False,none,none,French,,,Manhattan,Upper East Side
+Osteria 57,False,False,none,none,Italian,,,Manhattan,Greenwich Village
+Le Gratin,False,False,none,none,French,,,Manhattan,Lower Manhattan
+Filé Gumbo Bar,False,False,none,none,Cajun/Creole,,,Manhattan,Tribeca
+Tin Marín,False,False,none,none,Latin American,,,The Bronx,Riverdale
+Giorgio's of Gramercy,False,False,none,none,American (New),,,Manhattan,Gramercy
+De Mole - Williamsburg,False,False,none,none,Mexican,,,Brooklyn,Williamsburg
+abcV,False,False,none,none,American (New),,,Manhattan,Flatiron District
+Nangman BBQ,False,False,none,none,Korean,,,Manhattan,Chelsea
+Lattanzi Cucina Italiana,False,False,none,none,Italian,,,Manhattan,Times Square/Theatre District
+Henry's End,False,False,none,none,American (New),,,Brooklyn,Brooklyn Heights
+Sant Ambroeus—Brookfield,False,False,none,none,Italian,,,Manhattan,Battery Park City
+Tao Uptown,False,False,none,none,Pan-Asian,,,Manhattan,Midtown East
+Sarabeth's Upper West Side,False,False,none,none,American (New),,,Manhattan,Upper West Side
+Felice 83,False,False,none,none,Italian,,,Manhattan,Upper East Side
+London Lennie's,False,False,none,none,Seafood,,,Queens,Forest Hills
+The Stand,False,False,none,none,Italian,,,Manhattan,Union Square
+Crown Shy,True,True,exact,exact,American (New),Contemporary,American,Manhattan,Lower Manhattan
+Greywind,False,False,none,none,American (New),,,Manhattan,Hudson Yards
+STK Downtown,False,False,none,none,Steakhouse,,,Manhattan,Meatpacking District
+Da Andrea - Chelsea,False,False,none,none,Italian,,,Manhattan,Chelsea
+Felice Montague,False,False,none,none,Italian,,,Brooklyn,Brooklyn Heights
+Rynn Thai Restaurant & Bar,False,False,none,none,Thai,,,Manhattan,East Village
+Jazba,False,False,none,none,Indian,,,Manhattan,East Village
+Alice,False,False,none,none,Italian,,,Manhattan,West Village
+Jade Eatery & Lounge,False,False,none,none,Asian Fusion,,,Queens,Forest Hills
+French Louie,False,False,none,none,French,,,Brooklyn,Boerum Hill
+Estiatorio Milos Hudson Yards,False,False,none,none,Seafood,,,Manhattan,Hudson Yards
+Gallaghers Steakhouse,False,False,none,none,Steakhouse,,,Manhattan,Times Square/Theatre District
+Sae Ron,False,False,none,none,Korean,,,Manhattan,Lower East Side
+Le Fleur Rouge,False,False,none,none,Chinese,,,Brooklyn,Park Slope
+Michael's,False,False,none,none,American (New),,,Manhattan,Midtown West
+Cull & Pistol Oyster Bar,False,False,none,none,Seafood,,,Manhattan,Chelsea
+Altesi Downtown,False,False,none,none,Italian,,,Manhattan,Soho
+Stout NYC Grand Central,False,False,none,none,American (Traditional),,,Manhattan,Murray Hill
+Hav & Mar,False,False,none,none,Seafood,,,Manhattan,Chelsea
+No Work Allowed,False,False,none,none,Asian Fusion,,,Manhattan,Midtown East
+La Masseria,False,False,none,none,Italian,,,Manhattan,Times Square/Theatre District
+Park Ave Kitchen by David Burke,False,False,none,none,American (New),,,Manhattan,Midtown East
+Maiella,False,False,none,none,Italian,,,Queens,Long Island City
+Frenchette,False,True,none,exact,French,,French,Manhattan,Tribeca
+Stout NYC Financial District,False,False,none,none,American (Traditional),,,Manhattan,Lower Manhattan
+Indochine,False,False,none,none,Vietnamese,,,Manhattan,Noho
+Catria Cucina and Bar,False,False,none,none,Italian,,,Manhattan,Hudson Yards
+Maya,False,False,none,none,Mexican,,,Manhattan,Upper East Side
+BOTA Supper Club,False,False,none,none,American (New),,,Staten Island,St. George
+The Gallery,False,False,none,none,Japanese / Sushi,,,Manhattan,Flatiron District
+The Chemistry Room,False,False,none,none,Japanese / Sushi,,,Manhattan,Times Square/Theatre District
+Felice on Hudson,False,False,none,none,Italian,,,Manhattan,West Village
+French Roast,False,False,none,none,French,,,Manhattan,Upper West Side
+Kraam,False,False,none,none,Thai,,,Manhattan,Nomad
+Sofrito on the Hudson,False,False,none,none,Puerto Rican,,,Manhattan,Hamilton Heights
+A La Turka,False,False,none,none,Turkish,,,Manhattan,Upper East Side
+Wagamama - Murray Hill,False,False,none,none,Asian Fusion,,,Manhattan,Murray Hill
+Rosemary's East,False,False,none,none,Italian,,,Manhattan,Gramercy
+Central Park Boathouse,False,False,none,none,Continental,,,Manhattan,Central Park
+See No Evil Pizza,False,False,none,none,Pizza,,,Manhattan,Times Square/Theatre District
+Freemans,False,False,none,none,American (Traditional),,,Manhattan,Lower East Side
+The Greenhouse Cafe,False,False,none,none,American (New),,,Brooklyn,Bay Ridge
+Fushimi - Times Square,False,False,none,none,Japanese / Sushi,,,Manhattan,Hells Kitchen
+Prohibition,False,False,none,none,American (New),,,Manhattan,Upper West Side
+Stella 34 Trattoria,False,False,none,none,Italian,,,Manhattan,Herald Square
+Fandi Mata,False,False,none,none,Mediterranean,,,Brooklyn,Williamsburg
+San Carlo,False,False,none,none,Italian,,,Manhattan,Soho
+Altesi Ristorante,False,False,none,none,Italian,,,Manhattan,Upper East Side
+Essex,False,False,none,none,American (New),,,Manhattan,Lower East Side
+Ocean Prime,False,False,none,none,Seafood,,,Manhattan,Midtown West
+Benjamin Prime,False,False,none,none,Steakhouse,,,Manhattan,Murray Hill
+Gair,False,False,none,none,American (New),,,Brooklyn,Dumbo
+Treadwell Park - Downtown,False,False,none,none,American (Traditional),,,Manhattan,Battery Park City
+Benny John's Bar and Grill,False,False,none,none,Steakhouse,,,Manhattan,Midtown East
+Antica Pesa,False,False,none,none,Italian,,,Brooklyn,Williamsburg
+Nougatine at Jean-Georges,True,True,fuzzy,fuzzy,American (New),Contemporary,"French, Tasting",Manhattan,Upper West Side
+Gyu-Kaku Japanese BBQ - Amsterdam,False,False,none,none,Japanese / Sushi,,,Manhattan,Upper West Side
+Golden K Burgers,False,False,none,none,American (Traditional),,,Queens,Bayside
+Redeye Grill,False,False,none,none,American (New),,,Manhattan,Midtown West
+City Cruises Signature Dining,False,False,none,none,American (Traditional),,,Manhattan,Chelsea
+Docks Oyster Bar,False,False,none,none,Seafood,,,Manhattan,Midtown East
+The Ivy Room,False,False,none,none,American (New),,,Manhattan,Nomad
+Koloman,False,True,none,exact,French,,"French, Viennese",Manhattan,Nomad
+Rosa Mexicano - Second Avenue,False,False,none,none,Mexican,,,Manhattan,Midtown East
+Industry Kitchen,False,False,none,none,American (New),,,Manhattan,The Seaport
+Alta Calidad,True,False,exact,none,Mexican,Mexican,,Brooklyn,Prospect Heights
+Tuome,True,False,exact,none,American (New),Fusion,,Manhattan,East Village
+Gyu-Kaku Japanese BBQ - Times Square,False,False,none,none,Japanese / Sushi,,,Manhattan,Hells Kitchen
+Pappas NYC,False,False,none,none,Greek,,,Manhattan,Greenwich Village
+La Voglia,False,False,none,none,Italian,,,Manhattan,Upper East Side
+Mezze on the River,False,False,none,none,American (Traditional),,,Manhattan,Lower Manhattan
+5 Napkin Burger - Hell's Kitchen,False,False,none,none,American (Traditional),,,Manhattan,Hells Kitchen
+Mamo,False,False,none,none,Italian,,,Manhattan,Soho
+Roey's,False,False,none,none,Italian,,,Manhattan,West Village
+Socarrat Paella Bar - Midtown East,False,False,none,none,Spanish,,,Manhattan,Midtown East
+Nice Matin,False,False,none,none,French,,,Manhattan,Upper West Side
+Aqua New York,False,False,none,none,Japanese / Sushi,,,Manhattan,Flatiron District
+Veselka,False,False,none,none,Ukrainian,,,Manhattan,East Village
+Ootoya - Union Square,False,False,none,none,Japanese / Sushi,,,Manhattan,Greenwich Village
+Marlow Bistro,False,False,none,none,Mediterranean,,,Manhattan,Upper West Side
+Tarallucci e Vino - Union Square,False,False,none,none,Italian,,,Manhattan,Union Square
+Nizza,False,False,none,none,Italian,,,Manhattan,Hells Kitchen
+Langan's,False,False,none,none,American (New),,,Manhattan,Times Square/Theatre District
+Bixi,False,False,none,none,Asian Fusion,,,Manhattan,Harlem
+Scarpetta,False,False,none,none,Italian,,,Manhattan,Nomad
+Zuma,False,False,none,none,Japanese / Sushi,,,Manhattan,Murray Hill
+Porter House,False,False,none,none,Steakhouse,,,Manhattan,Midtown West
+Soogil,False,False,none,none,Korean,,,Manhattan,East Village
+Travelers Poets & Friends,False,False,none,none,Italian,,,Manhattan,West Village
+Opto,False,False,none,none,Mediterranean,,,Manhattan,Flatiron District
+Serra,False,False,none,none,Italian,,,Manhattan,Flatiron District
+The Dynamo Room,False,False,none,none,Steakhouse,,,Manhattan,Chelsea
+Tavola,False,False,none,none,Italian,,,Manhattan,Hells Kitchen
+Dagg Thai,False,False,none,none,Thai,,,Manhattan,Murray Hill
+Ben & Jack's 44th Street,False,False,none,none,Steakhouse,,,Manhattan,Midtown East
+Chazz Palminteri Italian Restaurant,False,False,none,none,Italian,,,Manhattan,Midtown West
+Schilling,False,False,none,none,Austrian,,,Manhattan,Lower Manhattan
+Pera SoHo,False,False,none,none,Mediterranean,,,Manhattan,Soho
+Charlie Palmer Steak IV,False,False,none,none,Steakhouse,,,Manhattan,Times Square/Theatre District
+Pasta Lovers,False,False,none,none,Italian,,,Manhattan,Times Square/Theatre District
+Treadwell Park - Upper East Side,False,False,none,none,American (Traditional),,,Manhattan,Upper East Side
+Lure Fishbar,False,False,none,none,Seafood,,,Manhattan,Soho
+Kokomo,False,False,none,none,Caribbean,,,Brooklyn,Williamsburg
+Tudor City Steakhouse,False,False,none,none,Steakhouse,,,Manhattan,Midtown East
+Molyvos,False,False,none,none,Greek,,,Manhattan,Hells Kitchen
+Sushi Ann,False,False,none,none,Japanese / Sushi,,,Manhattan,Midtown East
+Masseria East,False,False,none,none,Italian,,,Manhattan,Upper East Side
+Ai Fiori,False,False,none,none,Italian,,,Manhattan,Midtown West
+Wonderland Bar,False,False,none,none,Asian Fusion,,,Manhattan,East Village
+Lillie's Victorian—Union Square,False,False,none,none,American (New),,,Manhattan,Union Square
+Chela,False,False,none,none,Mexican,,,Brooklyn,Park Slope
+Brooklyn Bowl,False,False,none,none,American (Traditional),,,Brooklyn,Williamsburg
+Felice 15 Gold Street,False,False,none,none,Italian,,,Manhattan,Lower Manhattan
+Dinosaur Bar-B-Que - Harlem,False,False,none,none,Barbecue,,,Manhattan,Harlem
+El Coco - Chelsea,False,False,none,none,Mexican,,,Manhattan,Chelsea
+Nick + Stef's Steakhouse,False,False,none,none,Steakhouse,,,Manhattan,Midtown West
+La Barra,False,False,none,none,Spanish,,,Manhattan,Hudson Yards
+Strip House Midtown,False,False,none,none,Steakhouse,,,Manhattan,Midtown West
+The Tuck Room,False,False,none,none,Gastropub,,,Manhattan,The Seaport
+Grand Brasserie,False,False,none,none,French,,,Manhattan,Midtown East
+Dagon,False,False,none,none,Mediterranean,,,Manhattan,Upper West Side
+Chelsea Ristorante,False,False,none,none,Italian,,,Manhattan,Chelsea
+Robert,True,False,fuzzy,none,American (New),Pizza,,Manhattan,Midtown West
+The Ribbon—Upper West Side,False,False,none,none,American (New),,,Manhattan,Upper West Side
+Wallsé,False,False,none,none,Austrian,,,Manhattan,West Village
+The Bronx Beer Hall,False,False,none,none,Eclectic,,,The Bronx,Belmont
+Tucci,False,False,none,none,Italian,,,Manhattan,Noho
+Trattoria Dell'Arte,False,False,none,none,Italian,,,Manhattan,Midtown West
+Hutong,False,False,none,none,Chinese,,,Manhattan,Midtown East
+Sarabeth's Central Park South,False,False,none,none,American (New),,,Manhattan,Midtown West
+Loring Place,False,False,none,none,American (New),,,Manhattan,Greenwich Village
+Chito Gvrito NYC,False,False,none,none,Eastern European,,,Manhattan,Gramercy
+Fish Cheeks,False,False,none,none,Thai,,,Manhattan,Noho
+"Lorenzo's Restaurant, Bar & Cabaret",False,False,none,none,Italian,,,Staten Island,Bloomfield
+The Shell Seafood Kitchen,False,False,none,none,Mediterranean,,,Manhattan,Upper West Side
+RA Sushi Bar Restaurant – Times Square,False,False,none,none,Japanese / Sushi,,,Manhattan,Times Square/Theatre District
+Via 13,False,False,none,none,Italian,,,Manhattan,West Village
+Ophelia Lounge NYC,False,False,none,none,American (New),,,Manhattan,Midtown East
+Il Carino,False,False,none,none,Italian,,,Manhattan,Upper East Side
+Rivercrest,False,False,none,none,American (New),,,Queens,Astoria
+Kimika,False,False,none,none,Eclectic,,,Manhattan,Nolita
+Mission Ceviche - Union Square,False,False,none,none,Peruvian,,,Manhattan,Union Square
+Francie,True,False,exact,none,American (New),Contemporary,,Brooklyn,Williamsburg
+Union Square Cafe,False,False,none,none,American (New),,,Manhattan,Gramercy
+Pete's Tavern,False,False,none,none,American (Traditional),,,Manhattan,Gramercy
+Stone Park Cafe,False,False,none,none,American (New),,,Brooklyn,Park Slope
+Palermo Argentinian Bistro - Gramercy,False,False,none,none,Argentinian,,,Manhattan,Gramercy
+Ilili Restaurant,False,False,none,none,Mediterranean,,,Manhattan,Nomad
+Gaonnuri,False,False,none,none,Korean,,,Manhattan,Koreatown
+Mable's Smokehouse and Banquet Hall,False,False,none,none,Barbecue,,,Brooklyn,Williamsburg
+La Pecora Bianca NoMad,False,False,none,none,Italian,,,Manhattan,Nomad
+Ootoya - Chelsea,False,False,none,none,Japanese / Sushi,,,Manhattan,Flatiron District
+Brooklyn Chop House - Times Square,False,False,none,none,Asian Fusion,,,Manhattan,Times Square/Theatre District
+DomoDomo NYC,False,False,none,none,Japanese / Sushi,,,Manhattan,Greenwich Village
+Sagaponack,False,False,none,none,Seafood,,,Manhattan,Flatiron District
+Animo!,False,False,none,none,Mexican,,,Manhattan,Midtown East
+Uva Next Door,False,False,none,none,Italian,,,Manhattan,Upper East Side
+Balade,False,False,none,none,Middle Eastern,,,Manhattan,East Village
+Hearth,False,False,none,none,Italian,,,Manhattan,East Village
+Momofuku Noodle Bar,True,False,exact,none,Asian Fusion,Asian,,Manhattan,East Village
+The Uptown Garrison,False,False,none,none,American (New),,,Manhattan,Washington Heights
+Il Nonno,False,False,none,none,Italian,,,Queens,Astoria
+Le Relais De Venise,False,False,none,none,French,,,Manhattan,Midtown East
+Atrio Wine Bar & Restaurant,False,False,none,none,American (New),,,Manhattan,Battery Park City
+Rosemary's Midtown,False,False,none,none,Italian,,,Manhattan,Midtown East
+Āne Bar & Restaurant,False,False,none,none,Eclectic,,,Manhattan,Garment District
+ABC Cocina,False,False,none,none,Latin American,,,Manhattan,Union Square
+Rampoldi,False,False,none,none,French,,,Manhattan,Upper West Side
+Girasole Trattoria,False,False,none,none,Italian,,,Manhattan,East Harlem
+Blackbarn,False,False,none,none,American (New),,,Manhattan,Nomad
+Kyma,False,False,none,none,Greek,,,Manhattan,Flatiron District
+Carmine's Times Square,False,False,none,none,Italian,,,Manhattan,Times Square/Theatre District
+Marsanne,False,False,none,none,Mediterranean,,,Manhattan,Chelsea
+Oscar Wilde,False,False,none,none,American (New),,,Manhattan,Nomad
+Sweet Catch,False,False,none,none,Seafood,,,Brooklyn,Prospect Lefferts Gardens
+Boucherie West Village,False,False,none,none,French,,,Manhattan,West Village
+Little Maven,False,False,none,none,American (New),,,Manhattan,Flatiron District
+Philippe by Philippe Chow Downtown,False,False,none,none,Chinese,,,Manhattan,Chelsea
+Emmy Squared Pizza - Upper East Side,False,False,none,none,Pizza,,,Manhattan,Upper East Side
+Benoit Restaurant & Wine Bar,False,False,none,none,French,,,Manhattan,Midtown West
+Red Hook Lobster Pound,False,False,none,none,Seafood,,,Brooklyn,Red Hook
+The Independent,False,False,none,none,American (New),,,Manhattan,Times Square/Theatre District
+Arte Cafe,False,False,none,none,Italian,,,Manhattan,Upper West Side
+Aromi,False,False,none,none,Italian,,,Brooklyn,Carroll Gardens
+Bocca Di Bacco—Chelsea,False,False,none,none,Italian,,,Manhattan,Chelsea
+The Palm - Midtown,False,False,none,none,Steakhouse,,,Manhattan,Times Square/Theatre District
+Dear Strangers,False,False,none,none,American (New),,,Manhattan,Greenwich Village
+Gui Steakhouse,False,False,none,none,Steakhouse,,,Manhattan,Times Square/Theatre District
+Noreetuh,False,False,none,none,Hawaiian,,,Manhattan,East Village
+Junoon,False,False,none,none,Indian,,,Manhattan,Flatiron District
+Takumen,False,False,none,none,Japanese / Sushi,,,Queens,Long Island City
+Little Thai Kitchen,False,False,none,none,Thai,,,Manhattan,Midtown East
+Carlotto,False,False,none,none,Italian,,,Manhattan,Gramercy
+STK Rooftop,False,False,none,none,Steakhouse,,,Manhattan,Meatpacking District
+Altamirano’s Italian Ristorante,False,False,none,none,Italian,,,Manhattan,Upper East Side
+Temple Court,False,False,none,none,American (New),,,Manhattan,Lower Manhattan
+The Dolar Shop Hot Pot,False,False,none,none,Chinese,,,Manhattan,East Village
+La Mercerie,False,False,none,none,French,,,Manhattan,Soho
+The Russian Tea Room,False,False,none,none,Continental,,,Manhattan,Midtown West
+Sicily Osteria,False,False,none,none,Italian,,,Manhattan,Times Square/Theatre District
+Hunter's Steak & Ale House,False,False,none,none,Steakhouse,,,Brooklyn,Bay Ridge
+Strip House Downtown,False,False,none,none,Steakhouse,,,Manhattan,Greenwich Village
+Tasca NYC,False,False,none,none,Latin American,,,Manhattan,Upper West Side
+Sinigual,False,False,none,none,Mexican,,,Manhattan,Midtown East
+The Parlour Room,False,False,none,none,American (New),,,Manhattan,Herald Square
+Archer & Goat,False,False,none,none,American (New),,,Manhattan,Harlem
+When in Bangkok,False,False,none,none,Thai,,,Queens,Flushing
+T Bar,False,False,none,none,American (New),,,Manhattan,Upper East Side
+Bobo,False,False,none,none,French,,,Manhattan,West Village
+Kissaki,False,False,none,none,Japanese / Sushi,,,Manhattan,East Village
+Wagamama - Nomad/Flatiron,False,False,none,none,Asian Fusion,,,Manhattan,Flatiron District
+Empellón,False,False,none,none,Mexican,,,Manhattan,Midtown East
+Koi New York,False,False,none,none,Japanese / Sushi,,,Manhattan,Midtown West
+Rosemary's West Village,False,False,none,none,Italian,,,Manhattan,West Village
+Sushi Lab Rooftop,False,False,none,none,Japanese / Sushi,,,Manhattan,Times Square/Theatre District
+Aqua Boil,False,False,none,none,Seafood,,,Manhattan,Hells Kitchen
+Kyma Hudson Yards,False,False,none,none,Greek,,,Manhattan,Hudson Yards
+Baires Grill New York,False,False,none,none,Argentinian,,,Manhattan,Hells Kitchen
+Sarabeth's Park Avenue South,False,False,none,none,American (New),,,Manhattan,Nomad
+Baci & Abbracci,False,False,none,none,Italian,,,Brooklyn,Williamsburg
+Gaia,False,False,none,none,Mediterranean,,,Manhattan,Herald Square
+Malii Gramercy,False,False,none,none,Thai,,,Manhattan,Gramercy
+Meet the Meat,False,False,none,none,Steakhouse,,,Queens,Astoria
+Malibu Farm,False,False,none,none,American (New),,,Manhattan,The Seaport
+Sei Less,False,False,none,none,Chinese,,,Manhattan,Garment District
+Morandi,False,False,none,none,Italian,,,Manhattan,West Village
+Jing Li,False,False,none,none,Chinese,,,Queens,Long Island City
+La Pulperia,False,False,none,none,Latin American,,,Manhattan,Times Square/Theatre District
+Blue Mezze Bar - UES,False,False,none,none,Mediterranean,,,Manhattan,Upper East Side
+Copinette,False,False,none,none,American (New),,,Manhattan,Midtown East
+Lafayette,False,False,none,none,French,,,Manhattan,Noho
+Kru,False,False,none,none,Thai,,,Brooklyn,Greenpoint
+American Cut Tribeca,False,False,none,none,Steakhouse,,,Manhattan,Tribeca
+Boucherie Union Square,False,False,none,none,French,,,Manhattan,Gramercy
+The Wolfe,False,False,none,none,American (New),,,Manhattan,Upper West Side
+Marseille,False,False,none,none,French,,,Manhattan,Hells Kitchen
+Metropolis,False,False,none,none,American (New),,,Manhattan,Lower Manhattan
+Empire Steak House - Midtown East,False,False,none,none,Steakhouse,,,Manhattan,Midtown East
+Gyu-Kaku Japanese BBQ - East Village,False,False,none,none,Japanese / Sushi,,,Manhattan,Noho
+Oda House - Manhattan,False,False,none,none,Eastern European,,,Manhattan,Upper East Side
+Obao Midtown East,False,False,none,none,Thai,,,Manhattan,Midtown East
+Vino &... - Eataly NYC Downtown,False,False,none,none,Italian,,,Manhattan,Lower Manhattan
+Blue Fin,False,False,none,none,Seafood,,,Manhattan,Times Square/Theatre District
+Le Rock,False,False,none,none,French,,,Manhattan,Midtown West
+Siren Oyster Bar & Restaurant,False,False,none,none,Seafood,,,Brooklyn,South Slope
+Burger & Lobster Bryant Park,False,False,none,none,Seafood,,,Manhattan,Times Square/Theatre District
+Cosme,False,False,none,none,Mexican,,,Manhattan,Flatiron District
+The Flatiron Room - NoMad,False,False,none,none,American (New),,,Manhattan,Nomad
+Nudibranch,False,False,none,none,Korean,,,Manhattan,East Village
+Tinto Tapas Restaurant & Wine Bar,False,False,none,none,Spanish,,,Manhattan,Washington Heights
+La Marchande,False,False,none,none,French,,,Manhattan,Lower Manhattan
+Oceans,False,False,none,none,Seafood,,,Manhattan,Gramercy
+Café d’Anvers,False,False,none,none,Belgian,,,Manhattan,East Harlem
+Asuka Sushi,False,False,none,none,Japanese / Sushi,,,Manhattan,Chelsea
+Atlantic Grill,False,False,none,none,Seafood,,,Manhattan,Upper West Side
+Rosa Mexicano - Lincoln Center,False,False,none,none,Mexican,,,Manhattan,Upper West Side
+Flava of the Bronx,False,False,none,none,Caribbean,,,The Bronx,Woodstock
+Dos Caminos Meatpacking District,False,False,none,none,Mexican,,,Manhattan,Meatpacking District
+Morton's The Steakhouse—World Trade Center,False,False,none,none,Steakhouse,,,Manhattan,Lower Manhattan
+Bar56,False,False,none,none,American (New),,,Brooklyn,Dumbo
+Xolo,False,False,none,none,Mexican,,,Brooklyn,Williamsburg
+Bond 45,False,False,none,none,Italian,,,Manhattan,Times Square/Theatre District
+Sabai Thai,False,False,none,none,Thai,,,Manhattan,Nomad
+Hear & There,False,False,none,none,Japanese / Sushi,,,Brooklyn,Williamsburg
+Barano,False,False,none,none,Italian,,,Brooklyn,Williamsburg
+DiWine,False,False,none,none,American (New),,,Queens,Astoria
+Lore,True,False,exact,none,Eclectic,Contemporary,,Brooklyn,South Slope
+Brooklyn Chop House - Downtown,False,False,none,none,Steakhouse,,,Manhattan,Lower Manhattan
+La Gioconda,False,False,none,none,Italian,,,Manhattan,Midtown East
+STK Midtown,False,False,none,none,Steakhouse,,,Manhattan,Midtown West
+Steak Frites Bistro,False,False,none,none,French,,,Manhattan,Garment District
+Lé Chai,False,False,none,none,Thai,,,Brooklyn,Flatlands
+BLT Prime,False,False,none,none,Steakhouse,,,Manhattan,Upper East Side
+Da Andrea - Greenwich Village,False,False,none,none,Italian,,,Manhattan,Greenwich Village
+Barbetta,False,False,none,none,Italian,,,Manhattan,Times Square/Theatre District
+Bar Sprezzatura,False,False,none,none,Italian,,,Manhattan,Times Square/Theatre District
+Sempre Oggi,False,False,none,none,Italian,,,Manhattan,Upper West Side
+Maggie's Place,False,False,none,none,American (New),,,Manhattan,Midtown East
+Benjamin Steakhouse,False,False,none,none,Steakhouse,,,Manhattan,Midtown East
+Kellari Taverna,False,False,none,none,Greek,,,Manhattan,Midtown West
+Celeste,False,False,none,none,Italian,,,Manhattan,Upper West Side
+Restaurant Nippon,False,False,none,none,Japanese / Sushi,,,Manhattan,Midtown East
+Maison Pickle,False,False,none,none,American (Traditional),,,Manhattan,Upper West Side
+Taste of India II,False,False,none,none,Indian,,,Staten Island,New Dorp
+Morton's The Steakhouse—Manhattan,False,False,none,none,Steakhouse,,,Manhattan,Midtown East
+Havana Central,False,False,none,none,Cuban,,,Manhattan,Times Square/Theatre District
+Tamarind Tribeca,False,False,none,none,Indian,,,Manhattan,Tribeca
+53,False,False,none,none,Pan-Asian,,,Manhattan,Midtown West
+Atla,True,False,exact,none,Mexican,Mexican,,Manhattan,Noho
+Palo Santo,False,False,none,none,Latin American,,,Brooklyn,Park Slope
+Carmine's - Upper West Side,False,False,none,none,Italian,,,Manhattan,Upper West Side
+La Sirene UWS,False,False,none,none,French,,,Manhattan,Upper West Side
+Dowling’s at The Carlyle,False,False,none,none,American (Traditional),,,Manhattan,Upper East Side
+Nami Nori - Williamsburg,True,False,fuzzy,none,Japanese / Sushi,Japanese,,Brooklyn,Williamsburg
+Olio e Più,False,False,none,none,Italian,,,Manhattan,West Village
+Socarrat Paella Bar - Nolita,False,False,none,none,Spanish,,,Manhattan,Nolita
+Acadia,False,False,none,none,Mediterranean,,,Manhattan,Midtown West
+Villa Berulia,False,False,none,none,Italian,,,Manhattan,Murray Hill
+Tarallucci e Vino - NoMad,False,False,none,none,Italian,,,Manhattan,Nomad
+Pera Mediterranean Brasserie,False,False,none,none,Mediterranean,,,Manhattan,Murray Hill
+Torch & Crown Brewing Company,False,False,none,none,American (New),,,Manhattan,Hudson Square
+Leonetta,False,False,none,none,Mediterranean,,,Manhattan,Murray Hill
+Victor's Cafe,False,False,none,none,Cuban,,,Manhattan,Times Square/Theatre District
+Perry Street,False,False,none,none,American (New),,,Manhattan,West Village
+Momoya Soho,False,False,none,none,Japanese / Sushi,,,Manhattan,Nolita
+Bocca Di Bacco—Theatre District,False,False,none,none,Italian,,,Manhattan,Hells Kitchen
+Club A Steakhouse,False,False,none,none,Steakhouse,,,Manhattan,Midtown East
+Il Buco Alimentari & Vineria,False,False,none,none,Italian,,,Manhattan,Noho
+Tuscan Hills,False,False,none,none,Italian,,,Queens,Forest Hills
+Anassa Taverna - Manhattan,False,False,none,none,Greek,,,Manhattan,Upper East Side
+Le Rivage,False,False,none,none,French,,,Manhattan,Times Square/Theatre District
+The Long Room,False,False,none,none,Irish,,,Manhattan,Times Square/Theatre District
+Calle Dão - Bryant Park,False,False,none,none,Asian Fusion,,,Manhattan,Midtown West
+Del Friscos Double Eagle Steakhouse New York,False,False,none,none,Taiwanese,,,Manhattan,Midtown West
+Veerays,False,False,none,none,Indian,,,Manhattan,Midtown East
+Sereneco,False,False,none,none,American (New),,,Brooklyn,Greenpoint
+Keuka Kafe,False,False,none,none,American (New),,,Queens,Forest Hills
+Mesiba,False,False,none,none,Mediterranean,,,Brooklyn,Williamsburg
+Monterey,False,False,none,none,American (New),,,Manhattan,Midtown East
+Maizal,False,False,none,none,Mexican,,,Staten Island,Rosebank
+Draught 55,False,False,none,none,Gastropub,,,Manhattan,Midtown East
+Chez Josephine,False,False,none,none,French,,,Manhattan,Hells Kitchen
+Lincoln Ristorante,False,False,none,none,Italian,,,Manhattan,Upper West Side
+Evalyn’s Tap House,False,False,none,none,Gastropub,,,Brooklyn,Boerum Hill
+Twilight Lounge,False,False,none,none,Chinese,,,Manhattan,East Village
+Il Mulino Prime | Soho,False,False,none,none,Steakhouse,,,Manhattan,Soho
+Churrascaria Plataforma Brazilian Steakhouse,False,False,none,none,Brazilian,,,Manhattan,Midtown West
+La Baraka,False,False,none,none,French,,,Queens,Little Neck
+Barbalu Bklyn,False,False,none,none,Italian,,,Brooklyn,Boerum Hill
+ABC Kitchen,False,False,none,none,American (New),,,Manhattan,Union Square
+Lele's Roman,False,False,none,none,Italian,,,Brooklyn,Boerum Hill
+Sushi of Gari 46,False,False,none,none,Japanese / Sushi,,,Manhattan,Times Square/Theatre District
+Mark's Off Madison,False,False,none,none,Italian,,,Manhattan,Nomad
+Levant on Smith,False,True,none,fuzzy,French,,Middle Eastern,Brooklyn,Carroll Gardens
+Conmigo - 87th and 1st,False,False,none,none,Mexican,,,Manhattan,Upper East Side
+Nisí Estiatorio,False,False,none,none,Greek,,,Queens,Astoria
+Amaranth,False,False,none,none,Mediterranean,,,Manhattan,Upper East Side
+Oyamel,False,False,none,none,Mexican,,,Manhattan,Hudson Yards
+La Pecora Bianca Bryant Park,False,False,none,none,Italian,,,Manhattan,Midtown West
+Pylos,False,False,none,none,Greek,,,Manhattan,East Village
+Bourbon Steak New York,False,False,none,none,Steakhouse,,,Manhattan,Midtown West
+The Commissary at Metrograph,False,False,none,none,American (Traditional),,,Manhattan,Lower East Side
+Tinos,False,False,none,none,Greek,,,Manhattan,Upper East Side
+Naro,False,False,none,none,Korean,,,Manhattan,Midtown West
+Murano Ristorante,False,False,none,none,Italian,,,Manhattan,Midtown East
+Anassa Taverna - Downtown,False,False,none,none,Greek,,,Manhattan,Battery Park City
+Yefsi Estiatorio,False,False,none,none,Greek,,,Manhattan,Upper East Side
+Acru,False,False,none,none,American (New),,,Manhattan,Greenwich Village
+Mamazul,False,False,none,none,Mexican,,,Manhattan,Nomad
+Korali Estiatorio,False,False,none,none,Greek,,,Manhattan,Upper East Side
+Table d'Hote,False,False,none,none,French,,,Manhattan,Upper East Side
+Le Monde,False,False,none,none,French,,,Manhattan,Morningside Heights
+Aquarelle,False,False,none,none,Seafood,,,Manhattan,East Village
+Zaytinya,False,False,none,none,Mediterranean,,,Manhattan,Nomad
+Wayward Fare,False,False,none,none,Mediterranean,,,Brooklyn,Prospect Heights
+Sojourn Social,False,False,none,none,American (New),,,Manhattan,Upper East Side
+Dhamaka,True,True,exact,exact,Indian,Indian,Indian,Manhattan,Lower East Side
+Burrito Bar,False,False,none,none,Mexican,,,Staten Island,West Brighton
+Laut,False,False,none,none,Asian Fusion,,,Manhattan,Union Square
+Ishq,True,False,exact,none,Indian,Indian,,Manhattan,East Village
+La Pecora Bianca Upper East Side,False,False,none,none,Italian,,,Manhattan,Upper East Side
+Addictive Wine & Tapas Bar,False,False,none,none,Spanish,,,Queens,East Elmhurst
+Barawine,False,False,none,none,French,,,Manhattan,Harlem
+Catch n' Chop,False,False,none,none,Steakhouse,,,Manhattan,Upper East Side
+The Otter,False,False,none,none,Seafood,,,Manhattan,Soho
+La Pecora Bianca SoHo,False,False,none,none,Italian,,,Manhattan,Soho
+Fogo de Chão Brazilian Steakhouse - Brooklyn,False,False,none,none,Brazilian,,,Brooklyn,Downtown Brooklyn
+Fogo de Chão Brazilian Steakhouse - Elmhurst,False,False,none,none,Brazilian,,,Queens,Elmhurst
+Café Carmellini,False,False,none,none,Italian,,,Manhattan,Nomad
+Little Fino,False,False,none,none,Italian,,,Brooklyn,Williamsburg
+Altair,False,False,none,none,American (New),,,Manhattan,Garment District
+Gage & Tollner,False,True,none,exact,American (Traditional),,"Seafood, American",Brooklyn,Downtown Brooklyn
+Supper Club by Le Petit Parisien,False,False,none,none,French,,,Manhattan,Upper East Side
+Margaux by La Sirène,False,False,none,none,French,,,Manhattan,Murray Hill
+Verde on Smith,False,False,none,none,Italian,,,Brooklyn,Cobble Hill
+Max's Esca,False,False,none,none,Continental,,,Staten Island,Todt Hill
+Paris Bar,False,False,none,none,French,,,Manhattan,Midtown West
+Raf's,False,False,none,none,French,,,Manhattan,Noho
+Little Alley,True,False,exact,none,Chinese,Chinese,,Manhattan,Murray Hill
+Sarabeth's Greenwich Village,False,False,none,none,American (Traditional),,,Manhattan,Greenwich Village
+Masaaki,False,False,none,none,Japanese / Sushi,,,Queens,Bayside
+Le B.,False,False,none,none,French,,,Manhattan,West Village
+Patrick's on the Hill,False,False,none,none,Caribbean,,,Manhattan,Hamilton Heights
+Kahlo,False,False,none,none,Mexican,,,Manhattan,Chelsea
+La Pecora Bianca Upper West Side,False,False,none,none,Italian,,,Manhattan,Upper West Side
+Nizuc,False,False,none,none,Mexican,,,Manhattan,Hudson Yards
+Carib-Soul Bk,False,False,none,none,Caribbean,,,Brooklyn,Prospect Heights
+Cha Cha Tang,False,False,none,none,Chinese,,,Manhattan,West Village
+Mastro's Steakhouse NYC,False,False,none,none,Steakhouse,,,Manhattan,Midtown West
+Cafe Zaffri,False,False,none,none,Middle Eastern,,,Manhattan,Union Square
+Amélie - Upper West Side,False,False,none,none,French,,,Manhattan,Upper West Side
+Masalawala & Sons,False,False,none,none,Indian,,,Brooklyn,Park Slope
+Noodle Bar - Uptown,False,False,none,none,Asian Fusion,,,Manhattan,Midtown West
+Kanyakumari,False,False,none,none,Indian,,,Manhattan,Union Square
+Docks Off 5th,False,False,none,none,Seafood,,,Manhattan,Midtown West
+Enoteca Harlem,False,False,none,none,Spanish,,,Manhattan,Harlem
+Flatiron Steakhouse,False,False,none,none,Steakhouse,,,Brooklyn,Park Slope
+Cacío e Pepe - East Village,False,False,none,none,Italian,,,Manhattan,East Village
+Sungold,False,False,none,none,American (New),,,Brooklyn,Williamsburg
+Gyu-Kaku Japanese BBQ - Long Island City,False,False,none,none,Japanese / Sushi,,,Queens,Long Island City
+Chocolat Restaurant & Bar,False,False,none,none,Soul Food / Southern,,,Manhattan,Harlem
+8282,True,False,exact,none,Korean,Korean,,Manhattan,Lower East Side
+Wan Waan,False,False,none,none,Thai,,,Manhattan,Chelsea
+Charoen Krung Thai Restaurant,False,False,none,none,Thai,,,Manhattan,Midtown East
+Raval Steakhouse,False,False,none,none,Steakhouse,,,Staten Island,Tompkinsville
+Dos Caminos Lexington,False,False,none,none,Mexican,,,Manhattan,Midtown East
+Safari,False,False,none,none,African,,,Manhattan,Harlem
+Barlume,False,False,none,none,Mediterranean,,,Manhattan,Flatiron District
+Vestry,False,False,none,none,American (New),,,Manhattan,Soho
+Tonchin Brooklyn,True,False,fuzzy,none,Japanese / Sushi,Japanese,,Brooklyn,Williamsburg
+Smyth Tavern,False,False,none,none,American (Traditional),,,Manhattan,Tribeca
+Le Jardin Bistro,False,False,none,none,French,,,Manhattan,Lower East Side
+Wildflower,False,False,none,none,American (New),,,Manhattan,Chelsea
+María Mulata,False,False,none,none,Colombian,,,Manhattan,Upper East Side
+Cathédrale,False,False,none,none,French,,,Manhattan,East Village
+Atlantis Prime,False,False,none,none,Steakhouse,,,Manhattan,Herald Square
+Guksu Jip,False,False,none,none,Korean,,,Queens,Flushing
+Akoya,False,False,none,none,Japanese / Sushi,,,Manhattan,Times Square/Theatre District
+Romeo's Italian Restaurant,False,False,none,none,Italian,,,Queens,Jackson Heights
+Zoì Mediterranean Cuisine,False,False,none,none,Mediterranean,,,Manhattan,Koreatown
+Le Tout Va Bien,False,False,none,none,French,,,Manhattan,Hells Kitchen
+Gyu-Kaku Japanese BBQ – Flushing,False,False,none,none,Japanese / Sushi,,,Queens,Flushing
+Pig and Khao - Upper West Side,False,False,none,none,Pan-Asian,,,Manhattan,Upper West Side
+Benihana,False,False,none,none,Japanese / Sushi,,,Manhattan,Midtown West
+Pepolino,False,False,none,none,Italian,,,Manhattan,Tribeca
+Hortus NYC,False,False,none,none,Asian Fusion,,,Manhattan,Nomad
+Amélie - West Village,False,False,none,none,French,,,Manhattan,Greenwich Village
+SEA by Jungsik,False,True,none,fuzzy,Thai,,Korean,Manhattan,Chelsea

@@ -1,0 +1,17 @@
+restaurant_name,datasets_present,match_type,Restaurant Week_cuisine,NYT Top 100_cuisine,Michelin_cuisine
+Four Twenty Five,2,completely_different,American (New),New American,
+Crown Shy,3,completely_different,American (New),American,Contemporary
+Jean-Georges,2,completely_different,,"French, Tasting",Contemporary
+Tha Phraya,2,completely_different,Thai,,Thai contemporary
+Torrisi,2,completely_different,,Italian,Contemporary
+Francie,2,completely_different,American (New),,Contemporary
+Momofuku Noodle Bar,2,completely_different,Asian Fusion,,Asian
+Gramercy Tavern,2,completely_different,,New American,Contemporary
+Sushi Sho,2,completely_different,,Sushi Omakase,Sushi
+Sushi Noz,2,completely_different,,Sushi Omakase,Japanese
+Lore,2,completely_different,Eclectic,,Contemporary
+Tuome,2,completely_different,American (New),,Fusion
+The Musket Room,2,completely_different,American (New),,Contemporary
+Le Pavillon,2,completely_different,French,,Contemporary
+The Four Horsemen,2,completely_different,,New American,American
+Gage & Tollner,2,completely_different,American (Traditional),"Seafood, American",

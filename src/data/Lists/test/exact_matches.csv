@@ -1,0 +1,20 @@
+restaurant_name,datasets_present,match_type,Michelin_cuisine,NYT Top 100_cuisine,Restaurant Week_cuisine
+Zaab Zaab,2,exact_match,Thai,Thai,
+Café Boulud,2,exact_match,French,,French
+Una Pizza Napoletana,2,exact_match,Pizza,Pizza,
+Frenchette,2,exact_match,,French,French
+Little Alley,2,exact_match,Chinese,,Chinese
+Tanoreen,2,exact_match,Middle Eastern,,Middle Eastern
+Jeju Noodle Bar,2,exact_match,Korean,Korean,
+HanGawi,2,exact_match,Korean,,Korean
+Semma,2,exact_match,Indian,Indian,
+Atla,2,exact_match,Mexican,,Mexican
+Alta Calidad,2,exact_match,Mexican,,Mexican
+Dhamaka,3,exact_match,Indian,Indian,Indian
+Le Coucou,2,exact_match,French,French,
+Little Myanmar,2,exact_match,Burmese,Burmese,
+Thai Diner,2,exact_match,Thai,Thai,
+Cho Dang Gol,2,exact_match,Korean,Korean,
+Ishq,2,exact_match,Indian,,Indian
+Bungalow,2,exact_match,Indian,Indian,
+8282,2,exact_match,Korean,,Korean

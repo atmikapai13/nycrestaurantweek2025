@@ -1,0 +1,43 @@
+restaurant_name,datasets_present,match_type,common_cuisines,Michelin_cuisine,NYT Top 100_cuisine,Restaurant Week_cuisine
+Zaab Zaab,2,exact_match,,Thai,Thai,
+Café Boulud,2,exact_match,,French,,French
+Una Pizza Napoletana,2,exact_match,,Pizza,Pizza,
+Frenchette,2,exact_match,,,French,French
+Little Alley,2,exact_match,,Chinese,,Chinese
+Tanoreen,2,exact_match,,Middle Eastern,,Middle Eastern
+Jeju Noodle Bar,2,exact_match,,Korean,Korean,
+HanGawi,2,exact_match,,Korean,,Korean
+Semma,2,exact_match,,Indian,Indian,
+Atla,2,exact_match,,Mexican,,Mexican
+Alta Calidad,2,exact_match,,Mexican,,Mexican
+Dhamaka,3,exact_match,,Indian,Indian,Indian
+Le Coucou,2,exact_match,,French,French,
+Little Myanmar,2,exact_match,,Burmese,Burmese,
+Thai Diner,2,exact_match,,Thai,Thai,
+Cho Dang Gol,2,exact_match,,Korean,Korean,
+Ishq,2,exact_match,,Indian,,Indian
+Bungalow,2,exact_match,,Indian,Indian,
+8282,2,exact_match,,Korean,,Korean
+Cervo’s,2,partial_match,spanish,Spanish,"Portuguese, Spanish",
+Daniel,2,partial_match,french,French,"French, Tasting",
+Atomix,2,partial_match,korean,Korean,"Korean, Tasting",
+Le Bernardin,2,partial_match,seafood,Seafood,"French, Seafood, Tasting",
+Aska,2,partial_match,scandinavian,Scandinavian,"Scandinavian, Tasting",
+Superiority Burger,2,partial_match,vegetarian,Vegetarian,"Diner, Vegetarian",
+Koloman,2,partial_match,french,,"French, Viennese",French
+Four Twenty Five,2,completely_different,,,New American,American (New)
+Crown Shy,3,completely_different,,Contemporary,American,American (New)
+Jean-Georges,2,completely_different,,Contemporary,"French, Tasting",
+Tha Phraya,2,completely_different,,Thai contemporary,,Thai
+Torrisi,2,completely_different,,Contemporary,Italian,
+Francie,2,completely_different,,Contemporary,,American (New)
+Momofuku Noodle Bar,2,completely_different,,Asian,,Asian Fusion
+Gramercy Tavern,2,completely_different,,Contemporary,New American,
+Sushi Sho,2,completely_different,,Sushi,Sushi Omakase,
+Sushi Noz,2,completely_different,,Japanese,Sushi Omakase,
+Lore,2,completely_different,,Contemporary,,Eclectic
+Tuome,2,completely_different,,Fusion,,American (New)
+The Musket Room,2,completely_different,,Contemporary,,American (New)
+Le Pavillon,2,completely_different,,Contemporary,,French
+The Four Horsemen,2,completely_different,,American,New American,
+Gage & Tollner,2,completely_different,,,"Seafood, American",American (Traditional)

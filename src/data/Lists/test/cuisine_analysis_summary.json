@@ -1,0 +1,19 @@
+{
+  "overlap_summary": {
+    "total_restaurants_in_multiple_datasets": 42,
+    "restaurant_week_and_michelin": 17,
+    "restaurant_week_and_nyt": 6,
+    "michelin_and_nyt": 23,
+    "all_three_datasets": 2
+  },
+  "consistency_summary": {
+    "total_comparisons": 42,
+    "exact_matches": 19,
+    "partial_matches": 7,
+    "completely_different": 16,
+    "exact_match_rate": 45.23809523809524,
+    "partial_match_rate": 16.666666666666664,
+    "different_rate": 38.095238095238095
+  },
+  "total_restaurants_analyzed": 42
+}

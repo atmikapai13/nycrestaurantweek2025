@@ -1,7 +1,10 @@
 import requests
 import json
+import time
 from typing import List, Dict, Optional
 import urllib.parse
+from bs4 import BeautifulSoup
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 class MichelinAlgoliaScraper:
     def __init__(self):
@@ -23,6 +26,17 @@ class MichelinAlgoliaScraper:
             'Sec-Fetch-Dest': 'empty',
             'Sec-Fetch-Mode': 'cors',
             'Sec-Fetch-Site': 'cross-site',
+        }
+        
+        # Headers for individual page requests
+        self.page_headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.9,fr;q=0.8',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'DNT': '1',
+            'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1',
         }
     
     def search_michelin_restaurants(self, page: int = 0, hits_per_page: int = 48, include_bib_gourmand: bool = True) -> Optional[Dict]:
@@ -165,33 +179,140 @@ class MichelinAlgoliaScraper:
         
         return all_restaurants
     
+    def get_restaurant_description(self, slug: str) -> Optional[str]:
+        """Extract description from a restaurant's individual page"""
+        
+        url = f"https://guide.michelin.com/us/en/new-york-state/new-york/restaurant/{slug}"
+        
+        try:
+            response = requests.get(url, headers=self.page_headers, timeout=30)
+            
+            if response.status_code == 200:
+                soup = BeautifulSoup(response.content, 'html.parser')
+                
+                # Look for the data-sheet__description element
+                description_element = soup.find('div', class_='data-sheet__description')
+                
+                if description_element:
+                    description = description_element.get_text(strip=True)
+                    return description
+                else:
+                    return None
+                    
+            else:
+                return None
+                
+        except Exception as e:
+            print(f"❌ Error fetching description for {slug}: {e}")
+            return None
+    
+    def extract_descriptions_for_restaurants(self, restaurants: List[Dict], max_workers: int = 5, delay_seconds: float = 0.5) -> List[Dict]:
+        """Extract descriptions for all restaurants using parallel processing"""
+        
+        print(f"🌟 Starting parallel description extraction for {len(restaurants)} restaurants...")
+        print(f"   Using {max_workers} workers with {delay_seconds}s delay between requests")
+        
+        restaurants_with_descriptions = []
+        successful = 0
+        failed = 0
+        
+        # Create a thread-safe counter for progress tracking
+        from threading import Lock
+        progress_lock = Lock()
+        
+        def extract_single_description(restaurant):
+            """Extract description for a single restaurant"""
+            nonlocal successful, failed
+            
+            try:
+                description = self.get_restaurant_description(restaurant['slug'])
+                
+                # Add description to restaurant data
+                restaurant_with_desc = restaurant.copy()
+                if description:
+                    restaurant_with_desc['description'] = description
+                    with progress_lock:
+                        successful += 1
+                    print(f"   ✅ [{restaurant['name']}] Found description ({len(description)} characters)")
+                else:
+                    restaurant_with_desc['description'] = None
+                    with progress_lock:
+                        failed += 1
+                    print(f"   ⚠️ [{restaurant['name']}] No description found")
+                
+                return restaurant_with_desc
+                
+            except Exception as e:
+                with progress_lock:
+                    failed += 1
+                print(f"   ❌ [{restaurant['name']}] Error: {e}")
+                restaurant_with_desc = restaurant.copy()
+                restaurant_with_desc['description'] = None
+                return restaurant_with_desc
+        
+        # Use ThreadPoolExecutor for parallel processing
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            # Submit all tasks
+            future_to_restaurant = {
+                executor.submit(extract_single_description, restaurant): restaurant 
+                for restaurant in restaurants
+            }
+            
+            # Process completed tasks
+            for i, future in enumerate(as_completed(future_to_restaurant), 1):
+                restaurant_with_desc = future.result()
+                restaurants_with_descriptions.append(restaurant_with_desc)
+                
+                # Progress update
+                print(f"📝 Progress: {i}/{len(restaurants)} restaurants processed")
+                
+                # Small delay to be respectful to servers
+                if i < len(restaurants):
+                    time.sleep(delay_seconds)
+        
+        # Sort results to maintain original order using slug
+        restaurants_with_descriptions.sort(key=lambda x: next(i for i, r in enumerate(restaurants) if r['slug'] == x['slug']))
+        
+        print(f"\n📊 Description extraction summary:")
+        print(f"   Total restaurants: {len(restaurants)}")
+        print(f"   Successful extractions: {successful}")
+        print(f"   Failed extractions: {failed}")
+        print(f"   Success rate: {(successful/len(restaurants)*100):.1f}%")
+        
+        return restaurants_with_descriptions
+    
     def clean_restaurant_data(self, restaurants: List[Dict]) -> List[Dict]:
-        """Extract and clean restaurant data including descriptions if available"""
+        """Extract and clean restaurant data"""
         
         cleaned = []
         
         for restaurant in restaurants:
             try:
-                # Extract basic fields
+                # Extract first cuisine label only
+                cuisines = restaurant.get('cuisines', [])
+                cuisine_label = None
+                if cuisines and len(cuisines) > 0:
+                    first_cuisine = cuisines[0]
+                    if isinstance(first_cuisine, dict) and 'label' in first_cuisine:
+                        cuisine_label = first_cuisine['label']
+                    elif isinstance(first_cuisine, str):
+                        cuisine_label = first_cuisine
+                
+                # Extract latitude and longitude from _geoloc
+                geoloc = restaurant.get('_geoloc', {})
+                latitude = geoloc.get('lat') if geoloc else None
+                longitude = geoloc.get('lng') if geoloc else None
+                
+                # Extract only the specified fields
                 clean_data = {
                     'name': restaurant.get('name', ''),
                     'slug': restaurant.get('slug', ''),
                     'michelin_award': restaurant.get('michelin_award', ''),
-                    'cuisines': restaurant.get('cuisines', ''),
-                    'chef': restaurant.get('chef', ''),
-                    'city': restaurant.get('city', ''),
-                    'area_name': restaurant.get('area_name', '')
+                    'cuisine': cuisine_label,
+                    'latitude': latitude,
+                    'longitude': longitude,
+                    'description': restaurant.get('description', None)
                 }
-                
-                # Try to find description in various possible fields
-                description = None
-                for field in ['description', 'summary', 'about', 'content', 'text']:
-                    if restaurant.get(field):
-                        description = restaurant.get(field)
-                        break
-                
-                if description:
-                    clean_data['description'] = description
                 
                 cleaned.append(clean_data)
                 
@@ -223,11 +344,19 @@ def main():
     if raw_restaurants:
         print(f"\n🎉 Successfully scraped {len(raw_restaurants)} Michelin restaurants!")
         
-        # Clean the data
-        clean_restaurants = scraper.clean_restaurant_data(raw_restaurants)
+        # Extract descriptions for all restaurants using parallel processing
+        print(f"\n🌟 Starting description extraction...")
+        restaurants_with_descriptions = scraper.extract_descriptions_for_restaurants(
+            raw_restaurants, 
+            max_workers=5,  # Process 5 restaurants simultaneously
+            delay_seconds=0.5  # 0.5 second delay between requests
+        )
+        
+        # Clean the data (now including descriptions)
+        clean_restaurants = scraper.clean_restaurant_data(restaurants_with_descriptions)
         
         # Save both raw and cleaned data
-        scraper.save_data(raw_restaurants, "../data/Lists/MichelinNYC_Raw.json")
+        scraper.save_data(restaurants_with_descriptions, "../data/Lists/MichelinNYC_Raw.json")
         scraper.save_data(clean_restaurants, "../data/Lists/MichelinNYC.json")
         
         # Print summary stats
@@ -244,8 +373,8 @@ def main():
             print(f"\n   {i+1}. {restaurant['name']}")
             print(f"      Slug: {restaurant['slug']}")
             print(f"      Award: {restaurant['michelin_award']}")
-            print(f"      Cuisine: {restaurant.get('cuisines', 'N/A')}")
-            print(f"      Chef: {restaurant.get('chef', 'N/A')}")
+            print(f"      Cuisine: {restaurant.get('cuisine', 'N/A')}")
+            print(f"      Location: {restaurant.get('latitude', 'N/A')}, {restaurant.get('longitude', 'N/A')}")
             if restaurant.get('description'):
                 print(f"      Description: {restaurant['description'][:100]}...")
             else:

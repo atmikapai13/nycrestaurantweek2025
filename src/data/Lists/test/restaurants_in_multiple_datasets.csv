@@ -1,0 +1,43 @@
+restaurant_name,datasets_present,rw_cuisine,michelin_cuisine,nyt_cuisine,michelin_award,nyt_rank
+Thai Diner,"Michelin, NYT Top 100",,Thai,Thai,BIB_GOURMAND,90
+Ishq,"Restaurant Week, Michelin",Indian,Indian,,BIB_GOURMAND,
+Sushi Noz,"Michelin, NYT Top 100",,Japanese,Sushi Omakase,TWO_STARS,86
+Dhamaka,"Restaurant Week, Michelin, NYT Top 100",Indian,Indian,Indian,BIB_GOURMAND,38
+Atomix,"Michelin, NYT Top 100",,Korean,"Korean, Tasting",TWO_STARS,2
+Cho Dang Gol,"Michelin, NYT Top 100",,Korean,Korean,BIB_GOURMAND,29
+Atla,"Restaurant Week, Michelin",Mexican,Mexican,,BIB_GOURMAND,
+Gage & Tollner,"Restaurant Week, NYT Top 100",American (Traditional),,"Seafood, American",,45
+HanGawi,"Restaurant Week, Michelin",Korean,Korean,,BIB_GOURMAND,
+Crown Shy,"Restaurant Week, Michelin, NYT Top 100",American (New),Contemporary,American,ONE_STAR,35
+Zaab Zaab,"Michelin, NYT Top 100",,Thai,Thai,BIB_GOURMAND,100
+Little Alley,"Restaurant Week, Michelin",Chinese,Chinese,,BIB_GOURMAND,
+Superiority Burger,"Michelin, NYT Top 100",,Vegetarian,"Diner, Vegetarian",BIB_GOURMAND,85
+Little Myanmar,"Michelin, NYT Top 100",,Burmese,Burmese,BIB_GOURMAND,69
+Semma,"Michelin, NYT Top 100",,Indian,Indian,ONE_STAR,1
+Sushi Sho,"Michelin, NYT Top 100",,Sushi,Sushi Omakase,TWO_STARS,8
+Una Pizza Napoletana,"Michelin, NYT Top 100",,Pizza,Pizza,BIB_GOURMAND,95
+Aska,"Michelin, NYT Top 100",,Scandinavian,"Scandinavian, Tasting",TWO_STARS,14
+Le Pavillon,"Restaurant Week, Michelin",French,Contemporary,,ONE_STAR,
+Lore,"Restaurant Week, Michelin",Eclectic,Contemporary,,BIB_GOURMAND,
+The Four Horsemen,"Michelin, NYT Top 100",,American,New American,ONE_STAR,42
+Tha Phraya,"Restaurant Week, Michelin",Thai,Thai contemporary,,BIB_GOURMAND,
+Torrisi,"Michelin, NYT Top 100",,Contemporary,Italian,ONE_STAR,92
+Frenchette,"Restaurant Week, NYT Top 100",French,,French,,44
+Cervo’s,"Michelin, NYT Top 100",,Spanish,"Portuguese, Spanish",BIB_GOURMAND,26
+Bungalow,"Michelin, NYT Top 100",,Indian,Indian,BIB_GOURMAND,21
+Momofuku Noodle Bar,"Restaurant Week, Michelin",Asian Fusion,Asian,,BIB_GOURMAND,
+Alta Calidad,"Restaurant Week, Michelin",Mexican,Mexican,,BIB_GOURMAND,
+Tuome,"Restaurant Week, Michelin",American (New),Fusion,,ONE_STAR,
+8282,"Restaurant Week, Michelin",Korean,Korean,,BIB_GOURMAND,
+Jeju Noodle Bar,"Michelin, NYT Top 100",,Korean,Korean,ONE_STAR,56
+Koloman,"Restaurant Week, NYT Top 100",French,,"French, Viennese",,60
+Café Boulud,"Restaurant Week, Michelin",French,French,,ONE_STAR,
+Tanoreen,"Restaurant Week, Michelin",Middle Eastern,Middle Eastern,,BIB_GOURMAND,
+Le Bernardin,"Michelin, NYT Top 100",,Seafood,"French, Seafood, Tasting",THREE_STARS,3
+Daniel,"Michelin, NYT Top 100",,French,"French, Tasting",ONE_STAR,36
+Gramercy Tavern,"Michelin, NYT Top 100",,Contemporary,New American,ONE_STAR,47
+The Musket Room,"Restaurant Week, Michelin",American (New),Contemporary,,ONE_STAR,
+Le Coucou,"Michelin, NYT Top 100",,French,French,ONE_STAR,65
+Jean-Georges,"Michelin, NYT Top 100",,Contemporary,"French, Tasting",TWO_STARS,55
+Four Twenty Five,"Restaurant Week, NYT Top 100",American (New),,New American,,43
+Francie,"Restaurant Week, Michelin",American (New),Contemporary,,ONE_STAR,

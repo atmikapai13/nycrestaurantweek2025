@@ -1,0 +1,534 @@
+{
+  "exact_matches": [
+    {
+      "name": "Zaab Zaab",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Thai",
+        "NYT Top 100": "Thai"
+      }
+    },
+    {
+      "name": "Café Boulud",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "French",
+        "Michelin": "French"
+      }
+    },
+    {
+      "name": "Una Pizza Napoletana",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Pizza",
+        "NYT Top 100": "Pizza"
+      }
+    },
+    {
+      "name": "Frenchette",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "French",
+        "NYT Top 100": "French"
+      }
+    },
+    {
+      "name": "Little Alley",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "Chinese",
+        "Michelin": "Chinese"
+      }
+    },
+    {
+      "name": "Tanoreen",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "Middle Eastern",
+        "Michelin": "Middle Eastern"
+      }
+    },
+    {
+      "name": "Jeju Noodle Bar",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Korean",
+        "NYT Top 100": "Korean"
+      }
+    },
+    {
+      "name": "HanGawi",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "Korean",
+        "Michelin": "Korean"
+      }
+    },
+    {
+      "name": "Semma",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Indian",
+        "NYT Top 100": "Indian"
+      }
+    },
+    {
+      "name": "Atla",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "Mexican",
+        "Michelin": "Mexican"
+      }
+    },
+    {
+      "name": "Alta Calidad",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "Mexican",
+        "Michelin": "Mexican"
+      }
+    },
+    {
+      "name": "Dhamaka",
+      "datasets_present": 3,
+      "cuisines": {
+        "Restaurant Week": "Indian",
+        "Michelin": "Indian",
+        "NYT Top 100": "Indian"
+      }
+    },
+    {
+      "name": "Le Coucou",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "French",
+        "NYT Top 100": "French"
+      }
+    },
+    {
+      "name": "Little Myanmar",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Burmese",
+        "NYT Top 100": "Burmese"
+      }
+    },
+    {
+      "name": "Thai Diner",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Thai",
+        "NYT Top 100": "Thai"
+      }
+    },
+    {
+      "name": "Cho Dang Gol",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Korean",
+        "NYT Top 100": "Korean"
+      }
+    },
+    {
+      "name": "Ishq",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "Indian",
+        "Michelin": "Indian"
+      }
+    },
+    {
+      "name": "Bungalow",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Indian",
+        "NYT Top 100": "Indian"
+      }
+    },
+    {
+      "name": "8282",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "Korean",
+        "Michelin": "Korean"
+      }
+    }
+  ],
+  "partial_matches": [
+    {
+      "name": "Cervo’s",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Spanish",
+        "NYT Top 100": "Portuguese, Spanish"
+      },
+      "common_cuisines": [
+        "spanish"
+      ]
+    },
+    {
+      "name": "Daniel",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "French",
+        "NYT Top 100": "French, Tasting"
+      },
+      "common_cuisines": [
+        "french"
+      ]
+    },
+    {
+      "name": "Atomix",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Korean",
+        "NYT Top 100": "Korean, Tasting"
+      },
+      "common_cuisines": [
+        "korean"
+      ]
+    },
+    {
+      "name": "Le Bernardin",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Seafood",
+        "NYT Top 100": "French, Seafood, Tasting"
+      },
+      "common_cuisines": [
+        "seafood"
+      ]
+    },
+    {
+      "name": "Aska",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Scandinavian",
+        "NYT Top 100": "Scandinavian, Tasting"
+      },
+      "common_cuisines": [
+        "scandinavian"
+      ]
+    },
+    {
+      "name": "Superiority Burger",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Vegetarian",
+        "NYT Top 100": "Diner, Vegetarian"
+      },
+      "common_cuisines": [
+        "vegetarian"
+      ]
+    },
+    {
+      "name": "Koloman",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "French",
+        "NYT Top 100": "French, Viennese"
+      },
+      "common_cuisines": [
+        "french"
+      ]
+    }
+  ],
+  "completely_different": [
+    {
+      "name": "Four Twenty Five",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "American (New)",
+        "NYT Top 100": "New American"
+      }
+    },
+    {
+      "name": "Crown Shy",
+      "datasets_present": 3,
+      "cuisines": {
+        "Restaurant Week": "American (New)",
+        "Michelin": "Contemporary",
+        "NYT Top 100": "American"
+      }
+    },
+    {
+      "name": "Jean-Georges",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Contemporary",
+        "NYT Top 100": "French, Tasting"
+      }
+    },
+    {
+      "name": "Tha Phraya",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "Thai",
+        "Michelin": "Thai contemporary"
+      }
+    },
+    {
+      "name": "Torrisi",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Contemporary",
+        "NYT Top 100": "Italian"
+      }
+    },
+    {
+      "name": "Francie",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "American (New)",
+        "Michelin": "Contemporary"
+      }
+    },
+    {
+      "name": "Momofuku Noodle Bar",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "Asian Fusion",
+        "Michelin": "Asian"
+      }
+    },
+    {
+      "name": "Gramercy Tavern",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Contemporary",
+        "NYT Top 100": "New American"
+      }
+    },
+    {
+      "name": "Sushi Sho",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Sushi",
+        "NYT Top 100": "Sushi Omakase"
+      }
+    },
+    {
+      "name": "Sushi Noz",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Japanese",
+        "NYT Top 100": "Sushi Omakase"
+      }
+    },
+    {
+      "name": "Lore",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "Eclectic",
+        "Michelin": "Contemporary"
+      }
+    },
+    {
+      "name": "Tuome",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "American (New)",
+        "Michelin": "Fusion"
+      }
+    },
+    {
+      "name": "The Musket Room",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "American (New)",
+        "Michelin": "Contemporary"
+      }
+    },
+    {
+      "name": "Le Pavillon",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "French",
+        "Michelin": "Contemporary"
+      }
+    },
+    {
+      "name": "The Four Horsemen",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "American",
+        "NYT Top 100": "New American"
+      }
+    },
+    {
+      "name": "Gage & Tollner",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "American (Traditional)",
+        "NYT Top 100": "Seafood, American"
+      }
+    }
+  ],
+  "cuisine_variations": {
+    "Thai": [
+      "Zaab Zaab",
+      "Zaab Zaab",
+      "Tha Phraya",
+      "Thai Diner",
+      "Thai Diner"
+    ],
+    "American (New)": [
+      "Four Twenty Five",
+      "Crown Shy",
+      "Francie",
+      "Tuome",
+      "The Musket Room"
+    ],
+    "New American": [
+      "Four Twenty Five",
+      "Gramercy Tavern",
+      "The Four Horsemen"
+    ],
+    "Contemporary": [
+      "Crown Shy",
+      "Jean-Georges",
+      "Torrisi",
+      "Francie",
+      "Gramercy Tavern",
+      "Lore",
+      "The Musket Room",
+      "Le Pavillon"
+    ],
+    "American": [
+      "Crown Shy",
+      "The Four Horsemen"
+    ],
+    "French, Tasting": [
+      "Jean-Georges",
+      "Daniel"
+    ],
+    "Thai contemporary": [
+      "Tha Phraya"
+    ],
+    "French": [
+      "Café Boulud",
+      "Café Boulud",
+      "Frenchette",
+      "Frenchette",
+      "Daniel",
+      "Koloman",
+      "Le Coucou",
+      "Le Coucou",
+      "Le Pavillon"
+    ],
+    "Pizza": [
+      "Una Pizza Napoletana",
+      "Una Pizza Napoletana"
+    ],
+    "Spanish": [
+      "Cervo’s"
+    ],
+    "Portuguese, Spanish": [
+      "Cervo’s"
+    ],
+    "Chinese": [
+      "Little Alley",
+      "Little Alley"
+    ],
+    "Korean": [
+      "Atomix",
+      "Jeju Noodle Bar",
+      "Jeju Noodle Bar",
+      "HanGawi",
+      "HanGawi",
+      "Cho Dang Gol",
+      "Cho Dang Gol",
+      "8282",
+      "8282"
+    ],
+    "Korean, Tasting": [
+      "Atomix"
+    ],
+    "Middle Eastern": [
+      "Tanoreen",
+      "Tanoreen"
+    ],
+    "Italian": [
+      "Torrisi"
+    ],
+    "Asian Fusion": [
+      "Momofuku Noodle Bar"
+    ],
+    "Asian": [
+      "Momofuku Noodle Bar"
+    ],
+    "Seafood": [
+      "Le Bernardin"
+    ],
+    "French, Seafood, Tasting": [
+      "Le Bernardin"
+    ],
+    "Scandinavian": [
+      "Aska"
+    ],
+    "Scandinavian, Tasting": [
+      "Aska"
+    ],
+    "Sushi": [
+      "Sushi Sho"
+    ],
+    "Sushi Omakase": [
+      "Sushi Sho",
+      "Sushi Noz"
+    ],
+    "Indian": [
+      "Semma",
+      "Semma",
+      "Dhamaka",
+      "Dhamaka",
+      "Dhamaka",
+      "Ishq",
+      "Ishq",
+      "Bungalow",
+      "Bungalow"
+    ],
+    "Japanese": [
+      "Sushi Noz"
+    ],
+    "Mexican": [
+      "Atla",
+      "Atla",
+      "Alta Calidad",
+      "Alta Calidad"
+    ],
+    "Vegetarian": [
+      "Superiority Burger"
+    ],
+    "Diner, Vegetarian": [
+      "Superiority Burger"
+    ],
+    "Eclectic": [
+      "Lore"
+    ],
+    "French, Viennese": [
+      "Koloman"
+    ],
+    "Fusion": [
+      "Tuome"
+    ],
+    "Burmese": [
+      "Little Myanmar",
+      "Little Myanmar"
+    ],
+    "American (Traditional)": [
+      "Gage & Tollner"
+    ],
+    "Seafood, American": [
+      "Gage & Tollner"
+    ]
+  },
+  "consistency_stats": {
+    "total_comparisons": 42,
+    "exact_matches": 19,
+    "partial_matches": 7,
+    "completely_different": 16,
+    "exact_match_rate": 45.23809523809524,
+    "partial_match_rate": 16.666666666666664,
+    "different_rate": 38.095238095238095
+  }
+}

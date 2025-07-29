@@ -1,0 +1,689 @@
+{
+  "restaurants_in_multiple_datasets": [
+    {
+      "name": "Zaab Zaab",
+      "datasets_present": 2,
+      "datasets": [
+        "Michelin",
+        "NYT Top 100"
+      ]
+    },
+    {
+      "name": "Four Twenty Five",
+      "datasets_present": 2,
+      "datasets": [
+        "Restaurant Week",
+        "NYT Top 100"
+      ]
+    },
+    {
+      "name": "Crown Shy",
+      "datasets_present": 3,
+      "datasets": [
+        "Restaurant Week",
+        "Michelin",
+        "NYT Top 100"
+      ]
+    },
+    {
+      "name": "Jean-Georges",
+      "datasets_present": 2,
+      "datasets": [
+        "Michelin",
+        "NYT Top 100"
+      ]
+    },
+    {
+      "name": "Tha Phraya",
+      "datasets_present": 2,
+      "datasets": [
+        "Restaurant Week",
+        "Michelin"
+      ]
+    },
+    {
+      "name": "Café Boulud",
+      "datasets_present": 2,
+      "datasets": [
+        "Restaurant Week",
+        "Michelin"
+      ]
+    },
+    {
+      "name": "Una Pizza Napoletana",
+      "datasets_present": 2,
+      "datasets": [
+        "Michelin",
+        "NYT Top 100"
+      ]
+    },
+    {
+      "name": "Frenchette",
+      "datasets_present": 2,
+      "datasets": [
+        "Restaurant Week",
+        "NYT Top 100"
+      ]
+    },
+    {
+      "name": "Cervo’s",
+      "datasets_present": 2,
+      "datasets": [
+        "Michelin",
+        "NYT Top 100"
+      ]
+    },
+    {
+      "name": "Little Alley",
+      "datasets_present": 2,
+      "datasets": [
+        "Restaurant Week",
+        "Michelin"
+      ]
+    },
+    {
+      "name": "Daniel",
+      "datasets_present": 2,
+      "datasets": [
+        "Michelin",
+        "NYT Top 100"
+      ]
+    },
+    {
+      "name": "Atomix",
+      "datasets_present": 2,
+      "datasets": [
+        "Michelin",
+        "NYT Top 100"
+      ]
+    },
+    {
+      "name": "Tanoreen",
+      "datasets_present": 2,
+      "datasets": [
+        "Restaurant Week",
+        "Michelin"
+      ]
+    },
+    {
+      "name": "Torrisi",
+      "datasets_present": 2,
+      "datasets": [
+        "Michelin",
+        "NYT Top 100"
+      ]
+    },
+    {
+      "name": "Francie",
+      "datasets_present": 2,
+      "datasets": [
+        "Restaurant Week",
+        "Michelin"
+      ]
+    },
+    {
+      "name": "Jeju Noodle Bar",
+      "datasets_present": 2,
+      "datasets": [
+        "Michelin",
+        "NYT Top 100"
+      ]
+    },
+    {
+      "name": "Momofuku Noodle Bar",
+      "datasets_present": 2,
+      "datasets": [
+        "Restaurant Week",
+        "Michelin"
+      ]
+    },
+    {
+      "name": "Le Bernardin",
+      "datasets_present": 2,
+      "datasets": [
+        "Michelin",
+        "NYT Top 100"
+      ]
+    },
+    {
+      "name": "Gramercy Tavern",
+      "datasets_present": 2,
+      "datasets": [
+        "Michelin",
+        "NYT Top 100"
+      ]
+    },
+    {
+      "name": "HanGawi",
+      "datasets_present": 2,
+      "datasets": [
+        "Restaurant Week",
+        "Michelin"
+      ]
+    },
+    {
+      "name": "Aska",
+      "datasets_present": 2,
+      "datasets": [
+        "Michelin",
+        "NYT Top 100"
+      ]
+    },
+    {
+      "name": "Sushi Sho",
+      "datasets_present": 2,
+      "datasets": [
+        "Michelin",
+        "NYT Top 100"
+      ]
+    },
+    {
+      "name": "Semma",
+      "datasets_present": 2,
+      "datasets": [
+        "Michelin",
+        "NYT Top 100"
+      ]
+    },
+    {
+      "name": "Sushi Noz",
+      "datasets_present": 2,
+      "datasets": [
+        "Michelin",
+        "NYT Top 100"
+      ]
+    },
+    {
+      "name": "Atla",
+      "datasets_present": 2,
+      "datasets": [
+        "Restaurant Week",
+        "Michelin"
+      ]
+    },
+    {
+      "name": "Alta Calidad",
+      "datasets_present": 2,
+      "datasets": [
+        "Restaurant Week",
+        "Michelin"
+      ]
+    },
+    {
+      "name": "Superiority Burger",
+      "datasets_present": 2,
+      "datasets": [
+        "Michelin",
+        "NYT Top 100"
+      ]
+    },
+    {
+      "name": "Lore",
+      "datasets_present": 2,
+      "datasets": [
+        "Restaurant Week",
+        "Michelin"
+      ]
+    },
+    {
+      "name": "Koloman",
+      "datasets_present": 2,
+      "datasets": [
+        "Restaurant Week",
+        "NYT Top 100"
+      ]
+    },
+    {
+      "name": "Dhamaka",
+      "datasets_present": 3,
+      "datasets": [
+        "Restaurant Week",
+        "Michelin",
+        "NYT Top 100"
+      ]
+    },
+    {
+      "name": "Le Coucou",
+      "datasets_present": 2,
+      "datasets": [
+        "Michelin",
+        "NYT Top 100"
+      ]
+    },
+    {
+      "name": "Tuome",
+      "datasets_present": 2,
+      "datasets": [
+        "Restaurant Week",
+        "Michelin"
+      ]
+    },
+    {
+      "name": "Little Myanmar",
+      "datasets_present": 2,
+      "datasets": [
+        "Michelin",
+        "NYT Top 100"
+      ]
+    },
+    {
+      "name": "Thai Diner",
+      "datasets_present": 2,
+      "datasets": [
+        "Michelin",
+        "NYT Top 100"
+      ]
+    },
+    {
+      "name": "The Musket Room",
+      "datasets_present": 2,
+      "datasets": [
+        "Restaurant Week",
+        "Michelin"
+      ]
+    },
+    {
+      "name": "Le Pavillon",
+      "datasets_present": 2,
+      "datasets": [
+        "Restaurant Week",
+        "Michelin"
+      ]
+    },
+    {
+      "name": "Cho Dang Gol",
+      "datasets_present": 2,
+      "datasets": [
+        "Michelin",
+        "NYT Top 100"
+      ]
+    },
+    {
+      "name": "The Four Horsemen",
+      "datasets_present": 2,
+      "datasets": [
+        "Michelin",
+        "NYT Top 100"
+      ]
+    },
+    {
+      "name": "Gage & Tollner",
+      "datasets_present": 2,
+      "datasets": [
+        "Restaurant Week",
+        "NYT Top 100"
+      ]
+    },
+    {
+      "name": "Ishq",
+      "datasets_present": 2,
+      "datasets": [
+        "Restaurant Week",
+        "Michelin"
+      ]
+    },
+    {
+      "name": "Bungalow",
+      "datasets_present": 2,
+      "datasets": [
+        "Michelin",
+        "NYT Top 100"
+      ]
+    },
+    {
+      "name": "8282",
+      "datasets_present": 2,
+      "datasets": [
+        "Restaurant Week",
+        "Michelin"
+      ]
+    }
+  ],
+  "cuisine_comparisons": [
+    {
+      "name": "Zaab Zaab",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Thai",
+        "NYT Top 100": "Thai"
+      }
+    },
+    {
+      "name": "Four Twenty Five",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "American (New)",
+        "NYT Top 100": "New American"
+      }
+    },
+    {
+      "name": "Crown Shy",
+      "datasets_present": 3,
+      "cuisines": {
+        "Restaurant Week": "American (New)",
+        "Michelin": "Contemporary",
+        "NYT Top 100": "American"
+      }
+    },
+    {
+      "name": "Jean-Georges",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Contemporary",
+        "NYT Top 100": "French, Tasting"
+      }
+    },
+    {
+      "name": "Tha Phraya",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "Thai",
+        "Michelin": "Thai contemporary"
+      }
+    },
+    {
+      "name": "Café Boulud",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "French",
+        "Michelin": "French"
+      }
+    },
+    {
+      "name": "Una Pizza Napoletana",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Pizza",
+        "NYT Top 100": "Pizza"
+      }
+    },
+    {
+      "name": "Frenchette",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "French",
+        "NYT Top 100": "French"
+      }
+    },
+    {
+      "name": "Cervo’s",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Spanish",
+        "NYT Top 100": "Portuguese, Spanish"
+      }
+    },
+    {
+      "name": "Little Alley",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "Chinese",
+        "Michelin": "Chinese"
+      }
+    },
+    {
+      "name": "Daniel",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "French",
+        "NYT Top 100": "French, Tasting"
+      }
+    },
+    {
+      "name": "Atomix",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Korean",
+        "NYT Top 100": "Korean, Tasting"
+      }
+    },
+    {
+      "name": "Tanoreen",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "Middle Eastern",
+        "Michelin": "Middle Eastern"
+      }
+    },
+    {
+      "name": "Torrisi",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Contemporary",
+        "NYT Top 100": "Italian"
+      }
+    },
+    {
+      "name": "Francie",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "American (New)",
+        "Michelin": "Contemporary"
+      }
+    },
+    {
+      "name": "Jeju Noodle Bar",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Korean",
+        "NYT Top 100": "Korean"
+      }
+    },
+    {
+      "name": "Momofuku Noodle Bar",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "Asian Fusion",
+        "Michelin": "Asian"
+      }
+    },
+    {
+      "name": "Le Bernardin",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Seafood",
+        "NYT Top 100": "French, Seafood, Tasting"
+      }
+    },
+    {
+      "name": "Gramercy Tavern",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Contemporary",
+        "NYT Top 100": "New American"
+      }
+    },
+    {
+      "name": "HanGawi",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "Korean",
+        "Michelin": "Korean"
+      }
+    },
+    {
+      "name": "Aska",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Scandinavian",
+        "NYT Top 100": "Scandinavian, Tasting"
+      }
+    },
+    {
+      "name": "Sushi Sho",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Sushi",
+        "NYT Top 100": "Sushi Omakase"
+      }
+    },
+    {
+      "name": "Semma",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Indian",
+        "NYT Top 100": "Indian"
+      }
+    },
+    {
+      "name": "Sushi Noz",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Japanese",
+        "NYT Top 100": "Sushi Omakase"
+      }
+    },
+    {
+      "name": "Atla",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "Mexican",
+        "Michelin": "Mexican"
+      }
+    },
+    {
+      "name": "Alta Calidad",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "Mexican",
+        "Michelin": "Mexican"
+      }
+    },
+    {
+      "name": "Superiority Burger",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Vegetarian",
+        "NYT Top 100": "Diner, Vegetarian"
+      }
+    },
+    {
+      "name": "Lore",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "Eclectic",
+        "Michelin": "Contemporary"
+      }
+    },
+    {
+      "name": "Koloman",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "French",
+        "NYT Top 100": "French, Viennese"
+      }
+    },
+    {
+      "name": "Dhamaka",
+      "datasets_present": 3,
+      "cuisines": {
+        "Restaurant Week": "Indian",
+        "Michelin": "Indian",
+        "NYT Top 100": "Indian"
+      }
+    },
+    {
+      "name": "Le Coucou",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "French",
+        "NYT Top 100": "French"
+      }
+    },
+    {
+      "name": "Tuome",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "American (New)",
+        "Michelin": "Fusion"
+      }
+    },
+    {
+      "name": "Little Myanmar",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Burmese",
+        "NYT Top 100": "Burmese"
+      }
+    },
+    {
+      "name": "Thai Diner",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Thai",
+        "NYT Top 100": "Thai"
+      }
+    },
+    {
+      "name": "The Musket Room",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "American (New)",
+        "Michelin": "Contemporary"
+      }
+    },
+    {
+      "name": "Le Pavillon",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "French",
+        "Michelin": "Contemporary"
+      }
+    },
+    {
+      "name": "Cho Dang Gol",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Korean",
+        "NYT Top 100": "Korean"
+      }
+    },
+    {
+      "name": "The Four Horsemen",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "American",
+        "NYT Top 100": "New American"
+      }
+    },
+    {
+      "name": "Gage & Tollner",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "American (Traditional)",
+        "NYT Top 100": "Seafood, American"
+      }
+    },
+    {
+      "name": "Ishq",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "Indian",
+        "Michelin": "Indian"
+      }
+    },
+    {
+      "name": "Bungalow",
+      "datasets_present": 2,
+      "cuisines": {
+        "Michelin": "Indian",
+        "NYT Top 100": "Indian"
+      }
+    },
+    {
+      "name": "8282",
+      "datasets_present": 2,
+      "cuisines": {
+        "Restaurant Week": "Korean",
+        "Michelin": "Korean"
+      }
+    }
+  ],
+  "summary_stats": {
+    "total_restaurants_in_multiple_datasets": 42,
+    "restaurant_week_and_michelin": 17,
+    "restaurant_week_and_nyt": 6,
+    "michelin_and_nyt": 23,
+    "all_three_datasets": 2
+  }
+}

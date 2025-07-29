@@ -1,408 +1,961 @@
 {
   "title": "Best NYC Restaurants 2025 - New York Times",
   "source_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html",
-  "scraped_date": "2025-07-21 17:42:05",
+  "scraped_date": "2025-07-29 15:07:36",
   "total_restaurants": 100,
   "restaurants": [
     {
       "rank": 1,
-      "name": "Semma"
+      "name": "Semma",
+      "cuisine": "Indian",
+      "price": "$$$",
+      "full_address": "60 Greenwich Avenue, Greenwich Village, Manhattan",
+      "website": "https://www.semma.nyc/",
+      "description": "New York is teeming with Indian restaurants. Yet before Semma, a deeply personal tribute to the chef Vijay Kumar’s upbringing in the South Indian state of Tamil Nadu, the city’s diners had never seen Indian food like this. Punctuated with chiles, coconut and earthy curry leaves, Semma’s flavors are lingering and loud, yet restrained. Its dosa is the best in the city: a crisp specimen that’s heady with fermentation and slicked with ghee and fiery gunpowder spice. Semma altered the course of Indian dining here, and four years on, Mr. Kumar’s food continues to feel fresh. PRIYA KRISHNA"
     },
     {
       "rank": 2,
-      "name": "Atomix"
+      "name": "Atomix",
+      "cuisine": "Korean, Tasting",
+      "price": "$$$$",
+      "full_address": "104 East 30th Street, NoMad, Manhattan",
+      "website": "https://www.atomixnyc.com/",
+      "description": "Even six years in, Atomix still feels like the tasting menu of the future. With its punchy, distinctly Korean flavors, understated service (the custom-designed cards introducing each course are a lovely touch) and an eye toward the rest of the world in the presentation and technique, the restaurateurs Junghyun and Ellia Park seamlessly fuse tradition with modernity. Dining in this subterranean space is a fascinating, ever-evolving study in what Korean cuisine is — and also what it can be. PRIYA KRISHNA",
+      "stars": "★★★"
     },
     {
       "rank": 3,
-      "name": "Le Bernardin"
+      "name": "Le Bernardin",
+      "cuisine": "French, Seafood, Tasting",
+      "price": "$$$$",
+      "full_address": "155 West 51st Street, Midtown, Manhattan",
+      "website": "https://www.le-bernardin.com/",
+      "description": "It’s been 30 years since Eric Ripert garnered his first four-star New York Times review at Le Bernardin, and he has kept up his game ever since. The elegant, airy Midtown room is luxe, the crowd well-heeled, the service charmingly French. But the often-changing, ambitious, seafood-focused menu proves that Mr. Ripert is not the laurel-resting type. He consistently takes big swings, like his stunning signature ellipse of pounded raw tuna layered with foie gras, and somehow never misses. Even mild-mannered fluke — enveloped in a fragrant dill- and yuzu-infused apple broth — vibrates with flavor in his expert hands. MELISSA CLARK",
+      "stars": "★★★★"
     },
     {
       "rank": 4,
-      "name": "Kabawa"
+      "name": "Kabawa",
+      "cuisine": "Caribbean, Tasting Menu",
+      "price": "$$$",
+      "full_address": "8 Extra Place, East Village, Manhattan",
+      "website": "https://www.instagram.com/kabawa",
+      "description": "Just a few months after opening, Kabawa is already a well-oiled machine. Its exuberant, richly spiced Caribbean cuisine is made with care and served up with palpable joy. Paul Carmichael, born in Barbados, has a long history at the Momofuku group, with stints overseeing kitchens at Má Pêche and the acclaimed Seiōbo in Sydney. Happily for us, he’s returned to New York City in the former Ko space, where he and his team in tie-dyed aprons offer a deft and playful three-course prix fixe menu that includes the likes of rotis to swipe in bowls of tamarind eggplant and cultured butter, meltingly tender braised goat with fried curry leaves, and a caramel-sauced cream cheese flan replete with rainbow sprinkles. Dishes like these make it delightfully easy, as the menu proposes, to “eat yuh guts full” — and then go back for more. MELISSA CLARK"
     },
     {
       "rank": 5,
-      "name": "Ha’s Snack Bar"
+      "name": "Ha’s Snack Bar",
+      "cuisine": "French, Vietnamese, Wine Bar",
+      "price": "$$$",
+      "full_address": "297 Broome Street, Lower East Side, Manhattan",
+      "website": "https://www.instagram.com/has_dac_biet/?hl=en",
+      "description": "After years of pop-ups, the chefs Anthony Ha and Sadie Mae Burns-Ha found a permanent space for their game-changing talents. Freewheeling flavors married with precise technique make Ha’s Snack Bar — whose dishes evoke Vietnam, France or whatever happened to inspire the couple that day — one of the most exciting restaurants in the city. These restaurateurs’ boundless ideas and enthusiasm, which extend to the tight-but-thrilling wine list and a dessert menu that might include both lemon meringue pie and bánh flan cà phê, make dining around a cramped bar fun. PRIYA KRISHNA",
+      "stars": "★★"
     },
     {
       "rank": 6,
-      "name": "King"
+      "name": "King",
+      "cuisine": "Mediterranean",
+      "price": "$$$",
+      "full_address": "18 King Street, South Village, Manhattan",
+      "website": "https://kingrestaurant.nyc/",
+      "description": "King is a beloved, nearly decade-old restaurant that’s kept true to its owners’ original vision: Open a deeply personal, Southern French- and Italian-accented restaurant on a sunny corner in the West Village; create a dynamic, seasonal menu that changes every day; and then continue to evolve and improve upon it, always pushing to make the hand-rolled pasta a little silkier, the wine-braised rabbit even more succulently winey. The chef and owner, Jess Shadbolt, along with the head chef, Angeles Chavarria, have re-energized the kitchen as of late, and the food — complex, sensuous, often whimsical, always delectable — is on point. There’s no other place in the city quite like King. MELISSA CLARK",
+      "stars": "★★"
     },
     {
       "rank": 7,
-      "name": "Penny"
+      "name": "Penny",
+      "cuisine": "Seafood, French",
+      "price": "$$$",
+      "full_address": "90 East 10th Street, East Village, Manhattan",
+      "website": "https://www.penny-nyc.com/",
+      "description": "There is every other seafood counter you’ve sidled up to, and then there is Penny. Behind the sleek marble bar, the chef Joshua Pinsky and his team prepare dishes that are beguiling in their simplicity and cunning in execution. The soft, plump shrimp cocktail tastes of sweetness and seawater. Fresh, delicate razor clams are gussied up with a tangle of pickled vegetables. With little more than a fridge and a binchotan grill as equipment, Mr. Pinsky isn’t doing much to his ingredients — and that’s the whole point. PRIYA KRISHNA",
+      "stars": "★★★"
     },
     {
       "rank": 8,
-      "name": "Sushi Sho"
+      "name": "Sushi Sho",
+      "cuisine": "Sushi Omakase",
+      "price": "$$$$",
+      "full_address": "3 East 41st Street, Midtown, Manhattan",
+      "description": "At this tucked-away omakase restaurant, that the fish is superbly fresh is a given. The renowned sushi chef Keiji Nakazawa, who holds court over a minimalist counter, goes a step further, showing the transformative power of his ingredients. In one course, the sushi rice has fermented for months, giving it an almost cheesy character. Another, thin-sliced kazunoko, or dried herring roe, delivers a fishy sharpness. The meal also serves as a history lesson in sushi, which began as a means of preservation. It’s never overly didactic, and the food is always thrilling. PRIYA KRISHNA"
     },
     {
       "rank": 9,
-      "name": "Szechuan Mountain House"
+      "name": "Szechuan Mountain House",
+      "cuisine": "Chinese",
+      "price": "$$$",
+      "full_address": "23 St. Marks Place (and one other), East Village, Manhattan",
+      "website": "http://szechuanmountainhouse.com/",
+      "description": "If you love the numbing, lingering, brow-moistening heat of Sichuan peppercorns, you’ve come to the right place. Szechuan Mountain House shows just how versatile these peppercorns can be, whether floating in a pool of hot oil alongside delicate flakes of fish or lending perky depth to a fiery pot of mapo tofu. Here, the heat is relentless, but the flavors are always nuanced. PRIYA KRISHNA"
     },
     {
       "rank": 10,
-      "name": "Tatiana by Kwame Onwuachi"
+      "name": "Tatiana by Kwame Onwuachi",
+      "cuisine": "American, Caribbean, Creole",
+      "price": "$$$$",
+      "full_address": "10 Lincoln Center Plaza, Upper West Side, Manhattan",
+      "website": "https://www.tatiananyc.com/",
+      "description": "When the chef Kwame Onwuachi brought braised oxtails and goat patties to Lincoln Center a few years ago, the city’s dining landscape changed for the better. Mr. Onwuachi paints a vibrant portrait of the Afro-Caribbean culinary diaspora, adding surprising touches inspired by his Bronx upbringing — spicy, nutty suya is dusted onto pastrami, while lobster gets the bright and bracing escovitch treatment. Set inside one of New York’s great cultural institutions, Tatiana is a reminder of how dynamic, fearless cooking can be its own art form. PRIYA KRISHNA",
+      "stars": "★★★"
     },
     {
       "rank": 11,
-      "name": "188 Bakery Cuchifritos"
+      "name": "188 Bakery Cuchifritos",
+      "cuisine": "Puerto Rican, Dominican",
+      "price": "$",
+      "full_address": "158 East 188th Street, Fordham Heights, The Bronx",
+      "website": "http://facebook.com/188cuchifritos",
+      "description": "The meat sweats start when you walk in the door of this Bronx pork palace — in the best possible way. The morcilla blood sausage is the journeyman’s favorite here, but the chicharrones, with that perfect ratio of meat to bubbled fried skin, are a perfect finger food for a group. The choices are vast, including pernil and cuajitos, fried intestines. It’s an assortment of cuts and parts so varied that it makes you wonder why the pig on the sign outside is smiling. There are pleasures other than the porcine, however. As you cast your eyes over the ample array of trays in the window, don’t leave behind the chicken pastelillos or the plantain fritters. BRIAN GALLAGHER"
     },
     {
       "rank": 12,
-      "name": "A&A Bake and Doubles"
+      "name": "A&A Bake and Doubles",
+      "cuisine": "Trinidadian and Tobagonian",
+      "price": "$",
+      "full_address": "1337 Fulton Street, Bedford-Stuyvesant, Brooklyn"
     },
     {
       "rank": 13,
-      "name": "AbuQir Seafood"
+      "name": "AbuQir Seafood",
+      "cuisine": "Egyptian, Seafood",
+      "price": "$$",
+      "full_address": "24-19 Steinway Street, Astoria, Queens",
+      "website": "http://instagram.com/abuqir/",
+      "description": "Point to a fish, pick a cooking method, select some sides, then wait patiently. The rewards at this longtime Egyptian haunt are great: a pungently spiced whole fish blackened by the grill, grilled shrimp luxuriating in garlic and olive oil, eggplant that has surrendered to a saucy pool of tomato. Everything is cooked and seasoned just right. And when you’re done, a stack of puffy pita awaits for the rewarding task of sopping up leftover sauces. PRIYA KRISHNA"
     },
     {
       "rank": 14,
-      "name": "Aska"
+      "name": "Aska",
+      "cuisine": "Scandinavian, Tasting",
+      "price": "$$$$",
+      "full_address": "47 South Fifth Street, Williamsburg, Brooklyn",
+      "website": "http://askanyc.com/",
+      "description": "If the notion of New Nordic cuisine brings to mind a humorless, multicourse curriculum of foraged moss, plankton and seagull eggs, it’s time you visited Aska. Fredrik Berselius’s inventive cooking upends the clichés, with a vibrant tasting menu that manages to be playful, soulful and entirely fresh. Many of the courses arrive with a story about their creation, making dishes like langoustine with red gooseberries and quail with morels feel personal and immediate, but never academic. They’re also visually stunning enough to give you a pang when you cut in. Such is Aska’s ode to nature’s beauty: exquisite, ephemeral and delectable. MELISSA CLARK",
+      "stars": "★★★"
     },
     {
       "rank": 15,
-      "name": "Atoboy"
+      "name": "Atoboy",
+      "cuisine": "Korean",
+      "price": "$$$$",
+      "full_address": "43 East 28th Street, NoMad, Manhattan",
+      "website": "https://www.atoboynyc.com/",
+      "description": "This narrow sliver of a restaurant feels like a laboratory of great ideas, all of which happen to taste Korean. The Brutalist dining room serves as a backdrop for a dynamic set menu, priced at $75, that might pair kimchi with beurre blanc, or buchu muchim with chimichurri. And it’s always worth spending the extra $28 to add on some of the crispiest fried chicken in the city. PRIYA KRISHNA",
+      "stars": "★★"
     },
     {
       "rank": 16,
-      "name": "Barbuto"
+      "name": "Barbuto",
+      "cuisine": "New American, Italian",
+      "price": "$$$",
+      "full_address": "113 Horatio Street, Meatpacking District, Manhattan",
+      "website": "https://www.barbutonyc.com/",
+      "description": "Once you get it right, you don’t mess with it. For decades, Jonathan Waxman has been serving an unimprovable roast chicken, with its soul-mate salsa verde of herbs, capers and anchovies. This food has deep roots: Mr. Waxman cooked with Alice Waters at Chez Panisse in the 1970s, brought his New Californian style to go-go New York in the ’80’s and debuted his simple, Italian-accented Barbuto in the aughts at its first location in the West Village. Trends come and go, but his pan-fried gnocchi with crispy brussels sprouts remains a steady delight, and the deep-green kale salad has lost none of its uncanny umami. Start with a glass of wine and those citrus-scented, warm olives, then follow your heart. MELISSA CLARK"
     },
     {
       "rank": 17,
-      "name": "Barney Greengrass"
+      "name": "Barney Greengrass",
+      "cuisine": "Deli, Appetizing, Breakfast",
+      "price": "$$",
+      "full_address": "541 Amsterdam Avenue, Upper West Side, Manhattan",
+      "website": "http://barneygreengrass.com/",
+      "description": "Latkes or blintzes? Nova or belly lox? Bagel or bialy? The extensive menu at this Upper West Side elder can seem daunting for a first-timer, but regulars know there are no wrong choices. Barney Greengrass has been serving smoked fish and other appetizing staples with curmudgeonly panache since 1908. Maybe the matzo ball soup could arrive a little hotter, the tables wobble a little less, the line move a little faster. Nu? There’s no better spot for a taste of O.G. New York Jewish charm, especially when it’s expressed in a plate of lox, eggs and onions. MELISSA CLARK"
     },
     {
       "rank": 18,
-      "name": "Birria-Landia"
+      "name": "Birria-Landia",
+      "cuisine": "Mexican",
+      "price": "$",
+      "full_address": "77-99 Roosevelt Ave (and three others), Jackson Heights, Queens",
+      "website": "https://birrialandia.com/",
+      "description": "Viral fame can change a place. Not Birria-Landia, a string of food trucks across New York that helped unleash a tidal wave of obsession for birria. This Tijuana-style version, made from beef that’s marinated in adobo and then cooked for several hours, is every bit as exciting as it was when the first truck pulled up in 2019. Crisp tacos bronzed with spicy jus encase meat that’s drippy, fatty and might just melt away if not for the tortilla. Consomé, punctuated with onion and cilantro, will stain your lips with coppery beef fat — and maybe heal whatever ails you. PRIYA KRISHNA",
+      "stars": "★★"
     },
     {
       "rank": 19,
-      "name": "Borgo"
+      "name": "Borgo",
+      "cuisine": "Italian",
+      "price": "$$$",
+      "full_address": "124 East 27th Street, Midtown, Manhattan",
+      "website": "https://borgonyc.com/",
+      "description": "The restaurateur Andrew Tarlow’s Manhattan debut, Borgo, brings his uber-cool Brooklyn aesthetic to East 27th Street, but with a grown-up elegance. The trattoria-style menu, a collaboration with the chef Jordan Frosolone, changes monthly. It manages to balance certified crowd-pleasers — like an irresistible disk of cheese-filled focaccia, a plump handmade ravioli stuffed with ricotta, and a bronze-skinned roast chicken with Marsala — with earthier, more complex offerings like plump sweetbreads and fried rabbit with shallots. Add a bottle from the wine director Lee Campbell’s thoughtful, natural-leaning list or a martini from the well-appointed cart, and toast to Mr. Tarlow’s successful sortie across the East River. MELISSA CLARK",
+      "stars": "★★"
     },
     {
       "rank": 20,
-      "name": "Bridges"
+      "name": "Bridges",
+      "cuisine": "New American, French",
+      "price": "$$$",
+      "full_address": "9 Chatham Square, Chinatown, Manhattan",
+      "website": "https://www.bridges-nyc.com/menu",
+      "description": "This stylish Chinatown hot spot is more than just an art-world clubhouse. Beyond the It Crowd and the Billy Cotton-designed chic minimalist décor, there is a piercingly intelligent and original restaurant. The chef Sam Lawrence, formerly at Estela, plates his richly layered cuisine with austere grace, the food drawn from global traditions and his own whirling imagination. The Comté tart feels almost louche, its silky, trembling custard topped voluptuously with wine-soaked mushrooms. House-aged duck breast arrives lightly smoked, alongside a potato purée spiked with a shellfish-infused chile crisp. Less than a year in, the cooking at Bridges is already daring and insightful — and it keeps getting better. MELISSA CLARK",
+      "stars": "★★"
     },
     {
       "rank": 21,
-      "name": "Bungalow"
+      "name": "Bungalow",
+      "cuisine": "Indian",
+      "price": "$$$",
+      "full_address": "24 First Avenue, East Village, Manhattan",
+      "website": "https://www.bungalowny.com/",
+      "description": "The chef Vikas Khanna knows how to showcase regional Indian cuisine while innovating within it. His food at this East Village spot is technically proficient but playful. He stuffs an earthy, curry-leaf-laced shrimp mixture from Goa into puff-pastry cones, and makes dahi kabab by encasing tart, thick yogurt in wisps of kataifi and serving it alongside an electric-purple cabbage sauce. The stately dining room looks like a wealthy ancestor’s home, and Mr. Khanna, who regularly strolls around to check the spice level of the chicken and pose for selfies, is its charismatic patriarch. PRIYA KRISHNA",
+      "stars": "★★★"
     },
     {
       "rank": 22,
-      "name": "Cafe Kestrel"
+      "name": "Cafe Kestrel",
+      "cuisine": "European, New American",
+      "price": "$$$",
+      "full_address": "293 Van Brunt Street, Red Hook, Brooklyn",
+      "website": "https://www.kesnewyork.com/",
+      "description": "There’s an unfussy allure to this Red Hook jewel box, starting with the warm greeting at the door and the bowl of just-popped popcorn presented as you sit down. The charm only deepens throughout the meal, with dishes like a sticky miso-marinated chicken buried under butter-glazed carrot coins, and a pepper-dusted macaroni and cheese. The decorations are sparse. Nothing is overly precious or designed for Instagram. It’s all a little old-fashioned, and that’s just what the city’s dining scene needed. PRIYA KRISHNA",
+      "stars": "★★"
     },
     {
       "rank": 23,
-      "name": "Cafe Mado"
+      "name": "Cafe Mado",
+      "cuisine": "New American, French",
+      "price": "$$$",
+      "full_address": "791 Washington Avenue, Prospect Heights, Brooklyn",
+      "website": "https://www.cafemadonyc.com/",
+      "description": "When Nico Russell retooled Oxalis, his seasonal tasting menu restaurant, into Cafe Mado, he wanted to better meet the needs of his Prospect Heights neighbors, who were looking for casual, flexible dining after the pandemic. What they got was a laid-back all-day cafe where Mr. Russell quietly juxtaposes refined technique and unorthodox flavor to build a menu of perennial favorites. His Caesar salad is boosted with horseradish. Fries are crispy strands perfumed with herbes de Provence and served with aioli. But it’s the ever-changing seasonal vegetable dishes that really show off his brilliance: bean purée with charred sweet peppers, a pea green salad and crescents of spiky fried pumpkin dusted with cherry blossom. Cafe Mado turns a neighborhood weeknight out into something truly special. MELISSA CLARK",
+      "stars": "★★"
     },
     {
       "rank": 24,
-      "name": "Carnitas Ramirez"
+      "name": "Carnitas Ramirez",
+      "cuisine": "Mexican",
+      "price": "$",
+      "full_address": "210 East 3rd Street, East Village, Manhattan",
+      "website": "https://www.carnitasramirez.com/menu-explained",
+      "description": "A cazo filled with bubbling lard powers this taqueria, where all cuts of the pig — including tripe, snout and brain — share equal billing on the menu, each one expertly cooked and offering distinct textural delights. Run by two married couples — Kari Boden and Yvon deTassigny, and Tania Apolinar and Giovanni Cervantes, who taught themselves to make tacos during the pandemic — Carnitas Ramirez takes an uncomplicated approach. Fat-laced pork is pressed into fresh corn tortillas and dressed with escabeche jalapeños and curtido onions with habanero. Settle onto an overturned paint bucket and dig in. PRIYA KRISHNA",
+      "stars": "★★"
     },
     {
       "rank": 25,
-      "name": "Casa Mono and Bar Jamón"
+      "name": "Casa Mono and Bar Jamón",
+      "cuisine": "Spanish",
+      "price": "$$",
+      "full_address": "52 Irving Place, Union Square, Manhattan",
+      "website": "https://www.casamononyc.com/",
+      "stars": "★★★"
     },
     {
       "rank": 26,
-      "name": "Cervo’s"
+      "name": "Cervo’s",
+      "cuisine": "Portuguese, Spanish",
+      "price": "$$",
+      "full_address": "43 Canal Street, Lower East Side, Manhattan",
+      "website": "https://www.cervosnyc.com/",
+      "description": "There are few New York moments more pleasurable than sitting outside at Cervo’s on a sunny day eating crispy shrimp heads and sipping vermouth — or whatever intriguing glass of wine the team — which includes the chefs Aaron Crowder, Tyler Faughnan and Nick Perkins, and Mr. Perkins’s co-owners, Leah Campbell and Nialls Fallon — is pouring that day. This restaurant, plunked in the middle of bustling Dimes Square, is the embodiment of Lower Manhattan cool, with excellent food to back it up. (The team also runs Hart’s, the Fly and Eel Bar.) Its menu of bright, olive-oil-soaked seafood shimmies down the Iberian Peninsula, with olives and anchovies aplenty. PRIYA KRISHNA",
+      "stars": "★"
     },
     {
       "rank": 27,
-      "name": "Chambers"
+      "name": "Chambers",
+      "cuisine": "American",
+      "price": "$$$",
+      "full_address": "94 Chambers Street #1, TriBeCa, Manhattan",
+      "website": "https://chambers.nyc/",
+      "description": "With its bar and communal table reserved for walk-ins, and calm, exposed-brick dining room, Chambers could pass for an extra-nice neighborhood restaurant. But with an 89-page wine list and Greenmarket-driven plates swirled with color, this has become the destination for wine geeks with discerning appetites. The star sommelier Pascaline Lepeltier has built a cellar several thousand bottles deep that includes a range of vintages, hard-to-get cult favorites and even more obscure (and often affordable) bottles made with a commitment to conscientious farming. To accompany this vinous bounty, the Gramercy Tavern alumnus Jonathan Karis cooks earnestly, seasonally and originally, offering a concise menu with dishes that work just as well with a 1999 Thierry Allemand Cornas as they do with a simple glass of rosé. MELISSA CLARK",
+      "stars": "★★"
     },
     {
       "rank": 28,
-      "name": "Chez Ma Tante"
+      "name": "Chez Ma Tante",
+      "cuisine": "American, European",
+      "price": "$$",
+      "full_address": "90 Calyer Street, Greenpoint, Brooklyn",
+      "website": "https://chezmatantebk.com/",
+      "description": "North Brooklyn, check; minimalist dining room, check; brunch, yeah, yeah. But wait: The pancakes, black at the edges from the cast-iron skillet and rising impressively from a maple pool, are some of the most adored in the city for good reason. The chefs Aidan O’Neal and Jake Leiber know how to please, and they have the chops to do it with seasoned inventiveness. Dinner is gutsy, with the sort of rough-hewed, Euro-Canadian sensibility you might find dining in Montreal. Pig’s head terrine, squid with cannellini beans, a grilled pork steak and fantastic falafel? It all looks pretty darn good — but as it turns out, it tastes even better. MELISSA CLARK",
+      "stars": "★★"
     },
     {
       "rank": 29,
-      "name": "Cho Dang Gol"
+      "name": "Cho Dang Gol",
+      "cuisine": "Korean",
+      "price": "$$",
+      "full_address": "55 West 35th Street, Midtown, Manhattan",
+      "website": "https://chodanggolnyc.com/",
+      "description": "Blocks of homemade tofu — trembling, mild and just barely sweet — are at the heart of the menu at this Koreatown staple, which has been serving transcendent bean curd-based dishes for nearly 30 years. Every meal starts with a custardy scoop of that soft tofu, served warm and unadorned in a shallow bowl. Yes, you can also find it in myriad iterations — swimming in bubbling, kimchi-spiced casseroles and soups, stuffed into dumplings, fried into brick-like vegan bo ssam. But the kitchen also excels in non-tofu Korean classics like pajeon and bibimbap. Still, it’s that wobbly warm tofu that makes it worth the unavoidable wait. MELISSA CLARK",
+      "stars": "★★"
     },
     {
       "rank": 30,
-      "name": "Chongqing Lao Zao"
+      "name": "Chongqing Lao Zao",
+      "cuisine": "Chinese",
+      "price": "$$",
+      "full_address": "37-04 Prince Street, Flushing, Queens",
+      "website": "https://www.chongqinglaozao.com/",
+      "description": "The lines are rarely short — but it’s the dizzying assortment of hot-pot accouterments that makes this Flushing fixture stand out among its neighborhood peers. You’ll find milky beef (a favorite, and exactly what it sounds like), pig kidney, basket crab and at least six preparations of tofu, all of it astonishing in its quality. Hot-pot beginners will find the menu easy to navigate, and connoisseurs will find offerings they may not have encountered elsewhere. The dessert menu, which includes a bouncy pumpkin pancake and brown sugar rice cakes, is a sleeper hit. PRIYA KRISHNA"
     },
     {
       "rank": 31,
-      "name": "Çka Ka Qëllu"
+      "name": "Çka Ka Qëllu",
+      "cuisine": "Albanian",
+      "price": "$$",
+      "full_address": "2321 Hughes Avenue (and one other), Belmont, The Bronx",
+      "website": "http://ckakaqellue.com/",
+      "stars": "★★"
     },
     {
       "rank": 32,
-      "name": "Claud"
+      "name": "Claud",
+      "cuisine": "New American, French",
+      "price": "$$$",
+      "full_address": "90 East 10th Street, East Village, Manhattan",
+      "website": "https://www.claudnyc.com/",
+      "description": "Don’t let the cramped East Village basement space fool you: Claud is a sophisticated restaurant with an intelligently quirky, classically schooled kitchen. The chef Joshua Pinsky subtly enlivens everything he touches, raising the bar on modern bistro cuisine with sly, gutsy touches. Escargots and their garlicky, herby butter are tucked into molten croquettes; rillettes arrive like pots of porky manna; roast chicken is bathed in a jus fragrant with lovage and pickled peppers. Even classic devil’s food cake gets a glow-up, tall as a mountain and light as a cloud. MELISSA CLARK",
+      "stars": "★★★"
     },
     {
       "rank": 33,
-      "name": "Cocina Consuelo"
+      "name": "Cocina Consuelo",
+      "cuisine": "Mexican",
+      "price": "$$",
+      "full_address": "130 Hamilton Place, Harlem, Manhattan",
+      "website": "https://www.cocinaconsuelonyc.com/",
+      "description": "Stepping into Cocina Consuelo is like entering a cozy, well-decorated living room. A piano sits at the edge of the dining room, colorful trinkets line the shelves and the smell of masa and mole wafts through the air. The homey atmosphere is offset by the food (hibiscus quesadillas, birria-topped bone marrow), inspired by the co-owner Lalo Rodriguez’s upbringing in Puebla and Oaxaca and brought to life by his wife Karina Garcia, the chef and co-owner. Just the thick masa pancake varnished with honey butter is one of New York’s great breakfasts. PRIYA KRISHNA",
+      "stars": "★★"
     },
     {
       "rank": 34,
-      "name": "Court Street Grocers"
+      "name": "Court Street Grocers",
+      "cuisine": "Sandwiches",
+      "price": "$",
+      "full_address": "485 Court Street (and others), Carroll Gardens, Brooklyn",
+      "website": "https://www.courtstreetgrocers.com/",
+      "description": "The fat, inhalable sandwiches at this local mini-chain are feats of culinary wizardry. No shop but this one would come up with a vegetarian Italian sub built on a roasted plank of sweet potato that may taste even better than the meaty original. But the nonvegetarian options are just as surprising, including a potato-chip-stuffed smoked salmon sandwich and a classic breakfast sandwich punched up with salsa verde and chorizo. PRIYA KRISHNA"
     },
     {
       "rank": 35,
-      "name": "Crown Shy"
+      "name": "Crown Shy",
+      "cuisine": "American",
+      "price": "$$$$",
+      "full_address": "70 Pine Street, Financial District, Manhattan",
+      "website": "https://www.crownshy.nyc/",
+      "description": "The roast chicken here is a thing of beauty. Conceived by the chef James Kent, who died last year, and now executed by the chef Jassimran Singh, it’s a half-bird marinated in citrus and chiles, blackened yet moist, buried under crisp greens and served with an enliveningly tart hot sauce. The rest of the menu at Crown Shy — which sits, curiously, in a financial district office lobby yet possesses none of that staidness — matches this excitement, bringing bright and unexpected twists to dishes (gnocchi, roasted short rib) you thought you already knew. PRIYA KRISHNA",
+      "stars": "★★"
     },
     {
       "rank": 36,
-      "name": "Daniel"
+      "name": "Daniel",
+      "cuisine": "French, Tasting",
+      "price": "$$$$",
+      "full_address": "60 East 65th Street, Upper East Side, Manhattan",
+      "website": "https://www.danielnyc.com/",
+      "description": "Glide through the revolving doors on 65th Street and enter a world where well-coiffed servers still set plates down in unison, and roast duck is carved and pressed tableside. Daniel has reinvented itself a few times, but its appeal remains the same: Here is a classic French restaurant where the food will always be careful and precise, the service is designed to charm and the whole experience will make you feel like a fabulous Upper East Side socialite. The famed chef and restaurateur Daniel Boulud, who runs several other restaurants in New York, still walks the dining room regularly, as if taking a victory lap around his most prized accomplishment. PRIYA KRISHNA",
+      "stars": "★★★"
     },
     {
       "rank": 37,
-      "name": "Dera"
+      "name": "Dera",
+      "cuisine": "Pakistani, Indian, Bangladeshi, Nepali",
+      "price": "$",
+      "full_address": "7209 Broadway, Jackson Heights, Queens",
+      "website": "https://deraeats.com/",
+      "description": "The flamboyant signs outside this cavernous restaurant foreshadow the boldness of the food within. Traditional Pakistani food (all of it is halal) is the focus, with nihari, kebabs, biryani and halwa puri that are all redolent with whole spices you can see and taste. Puffy naan and top-notch chai round out the experience at this Jackson Heights spot, which is as much a community center for locals as a restaurant. PRIYA KRISHNA"
     },
     {
       "rank": 38,
-      "name": "Dhamaka"
+      "name": "Dhamaka",
+      "cuisine": "Indian",
+      "price": "$$$",
+      "full_address": "119 Delancey Street, Lower East Side, Manhattan",
+      "website": "https://www.dhamaka.nyc/",
+      "description": "Dhamaka doesn’t relent. Its bobs and weaves through lesser-known regional cuisines of India, presenting dishes just as you’d find them at banquets or in homes — in all their spice-heavy, bone-in, ghee-soaked glory. This menu jumps from okra stewed in yogurt from Uttarakhand to crab steeped in garlic and pepper from Goa, showing how starkly different Indian cuisine can look from state to state. The housemade paneer, as soft and bouncy as a baby’s cheek, is otherworldly. PRIYA KRISHNA"
     },
     {
       "rank": 39,
-      "name": "Don Peppe"
+      "name": "Don Peppe",
+      "cuisine": "Italian American",
+      "price": "$$",
+      "full_address": "135-58 Lefferts Boulevard, South Ozone Park, Queens",
+      "website": "http://donpeppenyc.com/",
+      "description": "The first thing to know is, you say Don PEP, not Don PEP-ay. So you can save that breath for ordering giant platters of silky roasted peppers, crumb-topped baked clams, gooey eggplant parmigiana and tender veal Marsala — the kind of garlicky, olive-oil-blessed Italian American cuisine that would make Nonna smile. Bring Nonna, in fact, and the whole family, too, because it takes a crowd to make a dent in these fabulously generous portions. And don’t forget to bring a roll of bills: Don Peppe doesn’t take plastic. MELISSA CLARK",
+      "stars": "★"
     },
     {
       "rank": 40,
-      "name": "Ewe’s Delicious Treats"
+      "name": "Ewe’s Delicious Treats",
+      "cuisine": "Nigerian, West African",
+      "price": "$",
+      "full_address": "453 Granville Payne Avenue, New Lots, Brooklyn",
+      "description": "Grab one of just three tables at this hidden gem on a busy stretch of Granville Payne (also known as Pennsylvania) Avenue and immerse yourself in a menu larger than the tiny kitchen would suggest. Ewere Edoro herself will be behind the counter, doling out ample portions of jollof rice — a must order — and deeply flavored and complex egusi and ogbono stews. Heat from Scotch bonnet peppers is a constant, welcome companion, so be sure to specify your spice level. And regardless of where you land, a cold beer from the fridge is a suitable pairing. BRIAN GALLAGHER"
     },
     {
       "rank": 41,
-      "name": "Eyval"
+      "name": "Eyval",
+      "cuisine": "Iranian",
+      "price": "$$",
+      "full_address": "25 Bogart Street, Bushwick, Brooklyn",
+      "website": "http://eyvalnyc.com/",
+      "description": "There’s an energy that courses through the food at this Persian favorite in Bushwick. The chef Ali Saboor wields flavors like tamarind, tahini, saffron, sumac and pomegranate with a flair and finesse that supercharges everything he cooks. The food tastes alive, with sharp contrasts of cool and warm, crunchy and creamy, sour and sweet. Mr. Saboor used to work at Sofreh, a homey Persian restaurant in Prospect Heights. Think of Eyval as its younger, hipper sibling, with a knack for selecting a knockout skin-contact wine. PRIYA KRISHNA",
+      "stars": "★★"
     },
     {
       "rank": 42,
-      "name": "The Four Horsemen"
+      "name": "The Four Horsemen",
+      "cuisine": "New American",
+      "price": "$$",
+      "full_address": "295 Grand Street, Williamsburg, Brooklyn",
+      "website": "https://www.fourhorsemenbk.com/",
+      "description": "Before “natural wine” and “small plates” became ubiquitous catchphrases in dining, the Four Horsemen — co-owned by the LCD Soundsystem frontman James Murphy — was serving world-class versions of both. And even as the genre that it helped create has become ubiquitous, the Four Horsemen continues to evolve with wines and flavors that surprise, and a team, led by the chef Nick Curtola, that’s always challenging itself to innovate. PRIYA KRISHNA",
+      "stars": "★★"
     },
     {
       "rank": 43,
-      "name": "Four Twenty Five"
+      "name": "Four Twenty Five",
+      "cuisine": "New American",
+      "price": "$$$$",
+      "full_address": "425 Park Avenue, Midtown, Manhattan",
+      "website": "https://www.425parkrestaurant.com/",
+      "description": "Berthed in a glassy skyscraper over Park Avenue, Four Twenty Five evokes the glamour of a 1930s ocean liner. The kitchen, a megawatt collaboration of the chefs Jean-Georges Vongerichten and Jonathan Benno, seamlessly melds Mr. Vongerichten’s riotous love of highly spiced, global flavors with Mr. Benno’s subtler, more classic purism. The result? An opulent yet never-fussy menu that seduces. Perfectly executed dishes like plush, handmade agnolotti with winter squash, amaretti and brown butter, and butter-poached lobster with an explosively spicy black pepper and ginger jus prove that in some kitchens, two chefs are better than one. MELISSA CLARK",
+      "stars": "★★★"
     },
     {
       "rank": 44,
-      "name": "Frenchette"
+      "name": "Frenchette",
+      "cuisine": "French",
+      "price": "$$$",
+      "full_address": "241 West Broadway, TriBeCa, Manhattan",
+      "website": "http://frenchettenyc.com/",
+      "description": "No longer the new kid in town, Frenchette has finally settled into itself, growing into the ageless, old-school French bistro it always promised to be. Lee Hanson and Riad Nasr’s food is better than ever, and the service, calm and confident, contributes to a feeling of deep well-being, from the first plate of warm, smoked trout beignets to the last bite of bittersweet tarte au chocolat. In between, you could go classic with a perfectly rare beef filet au poivre and the crispiest fries this side of the Atlantic, or go rogue with soft scrambled eggs topped with Long Island escargot. MELISSA CLARK",
+      "stars": "★★★"
     },
     {
       "rank": 45,
-      "name": "Gage & Tollner"
+      "name": "Gage & Tollner",
+      "cuisine": "Seafood, American",
+      "price": "$$$",
+      "full_address": "372 Fulton Street, Downtown Brooklyn, Brooklyn",
+      "website": "https://www.gageandtollner.com/"
     },
     {
       "rank": 46,
-      "name": "Golden Diner"
+      "name": "Golden Diner",
+      "cuisine": "Asian-American, Diner",
+      "price": "$",
+      "full_address": "123 Madison Street, Chinatown, Manhattan",
+      "website": "https://www.goldendinerny.com/",
+      "description": "When the Momofuku alumnus Sam Yoo opened Golden Diner in 2019, he prophetically sensed precisely what New York needed. Tucked under the Manhattan Bridge, the restaurant serves exactly the right food in exactly the right place at exactly the right time — which, here, is all day long. There’s brilliant breakfast food on offer at all hours, like the gone-viral, feather-light honey butter pancakes and Chinatown egg and cheese. The kitchen has mastered lunchtime grails like the classic tuna melt, offered along with Asian rice and beans, and a supremely beefy burger topped with mushroom gochujang. Did I mention the egg and cheese comes stuffed into a sesame-scallion milk bun? It’s always the right time for that. MELISSA CLARK"
     },
     {
       "rank": 47,
-      "name": "Gramercy Tavern"
+      "name": "Gramercy Tavern",
+      "cuisine": "New American",
+      "price": "$$$$",
+      "full_address": "42 East 20th Street, Gramercy, Manhattan",
+      "website": "https://www.gramercytavern.com/",
+      "description": "After 30 years, Gramercy Tavern is still one of the most reliable meals in town, with its towering dining room, self-assured food and the kind of familiar and accommodating service that embodies the Danny Meyer ethos. The tavern (and its à la carte menu) remains the best way to experience this chameleonic restaurant, which can function as either a casual perch to have a burger and a beer or a high-end destination for a celebratory feast. PRIYA KRISHNA",
+      "stars": "★★★"
     },
     {
       "rank": 48,
-      "name": "Great N.Y. Noodletown"
+      "name": "Great N.Y. Noodletown",
+      "cuisine": "Chinese",
+      "price": "$",
+      "full_address": "28 Bowery, Chinatown, Manhattan",
+      "website": "https://www.greatnewyorknoodletown.com/",
+      "description": "The menu is encyclopedic. You will go dish-blind as you scan it, so know this: The barbecue pork is juicy and thankfully not-too-sweet; the roast duck is some of the best you will find anywhere; the salt-and-pepper squid is a benchmark version of the dish; and if the exquisitely fried soft-shell crab is on offer, you will regret not getting it. As for the busy dining room’s mix of aging Chinatown locals, Gen Zers in light-wash baggy jeans and oenophiles taking advantage of the B.Y.O. policy to open a Chave Hermitage? Only in N.Y. Noodletown, kids, only in N.Y. Noodletown. BRIAN GALLAGHER",
+      "stars": "★★"
     },
     {
       "rank": 49,
-      "name": "The Grill"
+      "name": "The Grill",
+      "cuisine": "American",
+      "price": "$$$$",
+      "full_address": "99 East 52nd Street, Midtown East, Manhattan",
+      "website": "http://thegrillnewyork.com/",
+      "description": "When you close your eyes and imagine a quintessential New York dining room, something resembling the Grill likely comes to mind. Yet this soaring space, with its dramatic bronze sculpture and delicate shades that flutter like eyelids, serves up more than just the look of luxury; the food is every bit as sumptuous. The prime rib is as plush as a sofa, the sauce on the pasta à la presse — theatrically prepared using a vintage silver duck press — is liquid gold, and the lemon chiffon cake is as sculptural as it is puckery. There may be no better expression of New York splendor (and no better bathroom to take a selfie). PRIYA KRISHNA",
+      "stars": "★★★"
     },
     {
       "rank": 50,
-      "name": "Hainan Chicken House"
+      "name": "Hainan Chicken House",
+      "cuisine": "Malaysian",
+      "price": "$$",
+      "full_address": "4807 Eighth Avenue, Sunset Park, Brooklyn",
+      "website": "https://www.hainanchickenhouse.com/",
+      "description": "Hainan Chicken House is a homage to Malaysian Hainanese chicken rice. The restaurant’s name, underscored by whimsical, poultry-themed décor, might lead you to think chicken is the star of the show. But it’s the rice that shines, infused with jasmine, pandan, lemongrass and shallots. The poached chicken is a close second, though, with a texture at once firm, yielding and floppy. Most if its flavor has been distilled into the aromatic golden broth served in cups alongside. Sip this slowly, breathing in the fragrant steam between bites, which you should season liberally with any and all of the three housemade dipping sauces (sesame soy, ginger-scallion, chile). If you’ve got an urge to fly beyond the bird, order the char siu pork belly, with its soy-stained skin and tender, spiced meat. MELISSA CLARK",
+      "stars": "★★"
     },
     {
       "rank": 51,
-      "name": "Hamburger America"
+      "name": "Hamburger America",
+      "cuisine": "Diner, Sandwich",
+      "price": "$$",
+      "full_address": "51 MacDougal Street, SoHo, Manhattan",
+      "website": "https://www.hamburgeramerica.com/",
+      "description": "The chef George Motz was once a student of hamburgers. At Hamburger America, he is the master. The retro restaurant feels rewound in time, with its vinyl tiles, sunny yellow stools and black-and-white photos of famous American burger shops lining the walls. The signature offering (and a staple in Oklahoma) — the fried onion burger — has it all: a squishy bun, a crisp-edged patty that exhales a beefy depth, a wilting slice of American cheese and a pile of onions, some raw, some caramelized and some frizzled to the peak of sweetness. PRIYA KRISHNA",
+      "stars": "★★"
     },
     {
       "rank": 52,
-      "name": "Hellbender"
+      "name": "Hellbender",
+      "cuisine": "Mexican",
+      "price": "$$",
+      "full_address": "68-22 Forest Avenue, Ridgewood, Queens",
+      "website": "https://www.hellbendernyc.com/",
+      "description": "Tucked into the sleepy Queens corner of Ridgewood, Hellbender soundtracks the chef Yara Herrera’s soulful, ingredient-driven Mexican American cooking with a pulsing playlist of hip-hop classics and corridos, walking a razor’s edge between restaurant and bar. Ms. Herrara marshals her fine-dining background to transform familiar flavors with artful dexterity — without ever losing her sense of fun. Puffy fried Oaxacan cheese is like the best mozzarella sticks you’ve ever had, dunked in an exuberant tomatillo salsa. The oyster mushroom tacos have the texture and brawniness of shredded meat. For dessert, the Jell-O of the day, made from scratch in flavors like fresh coconut-lime and brûléed banana, is a sumptuous retro treat with a winsome wobble. MELISSA CLARK",
+      "stars": "★★"
     },
     {
       "rank": 53,
-      "name": "Ho Foods"
+      "name": "Ho Foods",
+      "cuisine": "Taiwanese",
+      "price": "$",
+      "full_address": "110 East 7th Street, East Village, Manhattan",
+      "website": "https://www.hofoodsnyc.com/",
+      "description": "A daytime stalwart of the East Village, Ho Foods is that reliable friend you can always count on. In this case, it’s for crisp-edged radish cakes, fan tuan, invigorating housemade soy milk and beef noodle soup so soul-warming you’ll want to bathe in it. The menu at this Taiwanese haunt is short, but so is life. Our recommendation is to order it all. PRIYA KRISHNA"
     },
     {
       "rank": 54,
-      "name": "Houseman"
+      "name": "Houseman",
+      "cuisine": "New American",
+      "price": "$$$$",
+      "full_address": "508 Greenwich Street, Hudson Square, Manhattan",
+      "website": "http://housemanrestaurant.com/",
+      "description": "It’s one thing when a chef cooks you a beautiful fish. It’s another thing entirely when he’s the one who caught it. Ned Baldwin is that kind of chef — obsessed with the source, quality and minute details of everything he serves at his homey, expectation-busting neighborhood restaurant. You could argue that whether a chef caught that fresh, sparkling striped bass for the daily special or bought it straight off the boat doesn’t matter as much as the expert way he prepares it — in this case, cured in kombu, slicked with pungent olive oil, showered with sour orange zest. But there are a lot of fish in the sea, and precious few as good as this. MELISSA CLARK",
+      "stars": "★★"
     },
     {
       "rank": 55,
-      "name": "Jean-Georges"
+      "name": "Jean-Georges",
+      "cuisine": "French, Tasting",
+      "price": "$$$$",
+      "full_address": "1 Central Park West, Upper West Side, Manhattan",
+      "website": "https://www.jean-georges.com/restaurants/united-states/new-york/jean-georges",
+      "description": "This genteel dining room overlooking Central Park has “refined tasting menu” written all over it, but Jean-Georges Vongerichten has more on his mind. His brilliant nuances and bold flavors are more rousing than respectful. A smear of black garlic hoisin next to charred duck breast mingles the funk of fermentation with the perfume of Earl Grey. A tofu flower, expansive as a sea anemone in its bowl of subtle matsutake mushroom broth, leaves you wondering how something so delicate can possess such umami depth. From the first caviar- and uni-rich amuse to the whimsical grand finale of homemade caramels, fruit jellies, chocolates and marshmallows, Jean-Georges proves that the chef is still not out of unexpected delights. MELISSA CLARK",
+      "stars": "★★★★"
     },
     {
       "rank": 56,
-      "name": "Jeju Noodle Bar"
+      "name": "Jeju Noodle Bar",
+      "cuisine": "Korean",
+      "price": "$$$",
+      "full_address": "679 Greenwich Street, West Village, Manhattan",
+      "website": "https://www.jejunoodlebar.com/",
+      "description": "Impeccably fresh seafood is just the start at this intimate Korean noodle bar. On one side of the menu, the chef Douglas Kim turns slices of scallop, tuna and amberjack into an elegant interplay of bright, tangy and bracing. And on the other, he assembles pristine bowls of ramyun — deepened with lobster emulsions, Parmesan foams and enriching bone broths — that always manage to taste greater than the sum of their exemplary parts. PRIYA KRISHNA",
+      "stars": "★★"
     },
     {
       "rank": 57,
-      "name": "Jungsik"
+      "name": "Jungsik",
+      "cuisine": "Korean",
+      "price": "$$$$",
+      "full_address": "2 Harrison Street, TriBeCa, Manhattan",
+      "website": "https://www.jungsik.com/",
+      "description": "The road to today’s dynamic Korean fine-dining scene in New York runs through Jungsik. This is not some Paris-by-way-of-Seoul interpretation of high-end French food. Each course in the tasting menu is Korean through and through, like kimbap with paper-crisp seaweed and slivers of fish draped not inside, but on top, so you can really taste the quality. The restaurant may look opulent, with white tablecloths and razor-thin glassware, but it’s clear the chefs are still having fun. To wit: a dessert of black sesame mousse and hazelnut cream that arrives in the shape of Dol hareubang, the grandfatherly statues on Jeju Island. PRIYA KRISHNA",
+      "stars": "★★"
     },
     {
       "rank": 58,
-      "name": "Keens"
+      "name": "Keens",
+      "cuisine": "Steakhouse",
+      "price": "$$$",
+      "full_address": "72 West 36th Street, Midtown, Manhattan",
+      "website": "https://www.keens.com/",
+      "description": "Who needs any other steakhouse? The dry-aged U.S.D.A. Prime cuts are expertly handled. (Get a porterhouse for the table). The supporting cast — canonical creamed spinach, plump shrimp cocktail, icy martinis served by vested bartenders — are as they should be. The specialties — the signature mutton chop and prime rib hash — are rightfully renowned. And the 140-year-old, oak-paneled atmosphere invites you to tuck in. Between the hale-fellow-well-met bustle of the barroom and the convivial expanse of the dining rooms lies the cozy, clubbable pub room. Scatter my ashes there. BRIAN GALLAGHER",
+      "stars": "★★"
     },
     {
       "rank": 59,
-      "name": "Kisa"
+      "name": "Kisa",
+      "cuisine": "Korean",
+      "price": "$$",
+      "full_address": "205 Allen Street, Lower East Side, Manhattan",
+      "website": "https://www.kisaus.com/",
+      "description": "Ordering is easy at Kisa. There’s just one option, an exceptionally nourishing platter called a baek ban that consists of rice, soup, banchan and your choice of bulgogi, spicy pork, spicy squid or vegetables. The restaurant is a tribute to kisa sikdang, restaurants where South Korean cabdrivers stop for a quick bite, and there’s a utilitarian pleasure in devouring mung bean jelly salad and sausage and rice cake skewers out of so many tiny stainless steel bowls. PRIYA KRISHNA"
     },
     {
       "rank": 60,
-      "name": "Koloman"
+      "name": "Koloman",
+      "cuisine": "French, Viennese",
+      "price": "$$$",
+      "full_address": "16 West 29th Street, NoMad, Manhattan",
+      "website": "https://kolomanrestaurant.com/",
+      "description": "The chef Markus Glocker’s background in Austrian fine dining and hospitality offers some explanation as to how Koloman can make high art out of crisp apple strudel, schnitzel, and cucumber and potato salads, such homey Viennese standbys. Golden cheesy gougères filled with red-wine shallots and a sleek, Rothko-toned salmon en croûte are signature dishes that marry old-world deliciousness with modern sensibilities. Matched with a bottle from the carefully chosen wine list and any of the jam-filled, bittersweet, schlag-topped desserts, a meal in this intimate, fin-de-siècle dining room transports. MELISSA CLARK",
+      "stars": "★★★"
     },
     {
       "rank": 61,
-      "name": "Kono"
+      "name": "Kono",
+      "cuisine": "Japanese, Tasting",
+      "price": "$$$$",
+      "full_address": "46 Bowery, Chinatown, Manhattan",
+      "website": "https://www.yakitorikono.com/",
+      "description": "At his U-shaped counter in an alleyway off the Bowery, Atsushi Kono can awe you before he even grabs the skewers. Your yakitori omakase dinner might begin with a tart of caviar and green mountain yam, spooned onto a baked chicken-skin crust. Chawanmushi might follow, served in a goblet with silky ramps, shiso blossoms and a perfect, pink shrimp. Then comes the volley of skewers, with all parts of the bird from heart to tail grilled over charcoal until crisp, chewy and haloed with smoke. There are vegetables, too, like plump morels or white asparagus, charred at the tips. Yet the best dish might be simplest: a bowl of gingery chicken broth so intense it distills, purely and intoxicatingly, the essence of every bite that came before. MELISSA CLARK",
+      "stars": "★★★"
     },
     {
       "rank": 62,
-      "name": "Kopitiam"
+      "name": "Kopitiam",
+      "cuisine": "Malaysian",
+      "price": "$",
+      "full_address": "151 East Broadway, Chinatown, Manhattan",
+      "website": "https://www.kopitiamnyc.com/",
+      "description": "Nyonya cuisine takes the stage here, with dishes that blend Chinese and Malay flavors, and taste like they were prepared by a doting auntie. The all-day menu spans noodles, soups, banana-leaf-wrapped snacks and bouncy sweets flavored with coconut or kaya jam. No matter the time, the airy shop buzzes with New Yorkers of all ages huddled around mugs of kopi tarik, coffee sweetened with condensed milk, puzzling over which treat from the laminated menu they might order next. After 10 years, Kopitiam is a bona fide neighborhood institution. PRIYA KRISHNA",
+      "stars": "★"
     },
     {
       "rank": 63,
-      "name": "Laghman Express"
+      "name": "Laghman Express",
+      "cuisine": "Uyghur",
+      "price": "$",
+      "full_address": "6201 20th Avenue, Bensonhurst, Brooklyn",
+      "website": "http://laghmanexpress.com/",
+      "description": "The cooking at this modest Bensonhurst storefront is the food of a crossroads. The Central Asian menu offers up dishes from Uzbek, Kazakh, Tajik and Uyghur cuisines. And you’ll hear the languages of all those cultures spoken in the small dining room. Hand-pulled noodles are a must, preferably with earthy, tongue-tingling cumin lamb and a D.I.Y. infusion of the dark chile-garlic oil present on each table. But don’t skip the chubby manti dumplings or the freshly fried baursak, cousins to the beignet, 7,000 miles removed. BRIAN GALLAGHER"
     },
     {
       "rank": 64,
-      "name": "Lakruwana"
+      "name": "Lakruwana",
+      "cuisine": "Sri Lankan",
+      "price": "$",
+      "full_address": "668 Bay Street, Stapleton Heights, Staten Island",
+      "website": "http://lakruwanarestaurant.com/",
+      "description": "The flavors of Sri Lanka — coconut, chiles, curry leaves, pandan and tamarind among them — come in full force from the kitchen here. Particularly delicious are the hoppers, bowl-shaped pancakes that are spongy at the bottom and lacy crisp at the edges, and a perfect vehicle for the compelling lamb curry. But the roti, aptly described on the menu as a “flour handkerchief,” also work well. The dining room is a veritable museum of Sri Lankan culture, adorned with dozens of artifacts collected over the years by the Wijesinghe family, who own the restaurant. Insider tip: The all-you-can eat buffet, available Saturdays and Sundays starting at lunchtime, is a great way to tour the menu. BRIAN GALLAGHER",
+      "stars": "★"
     },
     {
       "rank": 65,
-      "name": "Le Coucou"
+      "name": "Le Coucou",
+      "cuisine": "French",
+      "price": "$$$$",
+      "full_address": "138 Lafayette Street, SoHo, Manhattan",
+      "website": "http://lecoucou.com/",
+      "description": "Paris shakes hands with New York at Le Coucou, a resplendent French restaurant from the chef Daniel Rose — an American who used to cook in the Second Arrondissement. Mr. Rose’s starting point is the classics, but he manages to seamlessly blend Gallic traditions with downtown swagger. The “tout le lapin,” an entree of rabbit served three ways (roasted with mustard sauce, submerged in stock and coiled in a roulade) is worth a reservation all on its own. PRIYA KRISHNA",
+      "stars": "★★★"
     },
     {
       "rank": 66,
-      "name": "Le Veau d’Or"
+      "name": "Le Veau d’Or",
+      "cuisine": "French",
+      "price": "$$$$",
+      "full_address": "129 East 60th Street, Upper East Side, Manhattan",
+      "website": "https://www.lvdnyc.com/",
+      "description": "The triumphant second coming of this bygone French bistro has retained much of the charm of the original. Inside the transporting, low-slung dining room outfitted with checkered tables and various bovine decorations, you can choose from a prix fixe menu of expertly prepared French standbys like steak frites, pâté en croute and a duck magret with skin so crisp it might shatter. This past year, the city has seen a renaissance in classical French dining. Le Veau d’Or is the most exciting of the bunch. PRIYA KRISHNA",
+      "stars": "★★"
     },
     {
       "rank": 67,
-      "name": "Levant"
+      "name": "Levant",
+      "cuisine": "Middle Eastern",
+      "price": "$$",
+      "full_address": "25-64 Steinway Street, Astoria, Queens",
+      "website": "https://levantnyc.com/",
+      "description": "Feteer, the flaky, layered bread from Egypt, is the centerpiece of this Steinway Street gem — and it’s a showstopper. Stretchy, crispy, generously laced with ghee, it can come filled with homemade sausage and melting cheese, or even stuffed with thick cream, cookie butter and pistachios. But wait, there’s more! Between the shawarma, the butter-smooth hummus, the za’atar pies and several other delights from across the Levant region, there’s not a bad bite to be found here. PRIYA KRISHNA",
+      "stars": "★★"
     },
     {
       "rank": 68,
-      "name": "Lilia"
+      "name": "Lilia",
+      "cuisine": "Italian",
+      "price": "$$$",
+      "full_address": "567 Union Avenue, Williamsburg, Brooklyn",
+      "website": "https://www.lilianewyork.com/",
+      "description": "People like pasta, so people really like Lilia. The casual Williamsburg space is a perfect canvas for the chef Missy Robbins’s artful way with a noodle. Her agnolotti — rectangles of dough stuffed with sheep’s milk ricotta and feta, glossed in honey-tinged saffron butter and cheerfully strewed with sun-dried tomatoes — resembles nothing so much as a platter of party invitations. While pasta may be the big draw, seafood from the wood-burning oven, like smoky whole black sea bass with salsa verde or grilled clams with Calabrian chile, is just as irresistible. The all-Italian wine list perfectly sets off this elemental, heartfelt festa abbondante. MELISSA CLARK",
+      "stars": "★★★"
     },
     {
       "rank": 69,
-      "name": "Little Myanmar"
+      "name": "Little Myanmar",
+      "cuisine": "Burmese",
+      "price": "$$",
+      "full_address": "150 East 2nd Street, East Village, Manhattan",
+      "website": "https://www.littlemyanmar.nyc/",
+      "description": "This family-run restaurant spotlights the sheer breadth of the cuisine of a country that stands at the confluence of Southeast Asian cultures. Myanmar’s tiny size belies its vast menu, which zigzags between oxtails, coconut, samosas and noodles, showing just how much this cooking laces together the greatest hits from neighboring countries. All of it is anchored by a tea-leaf salad that has pleasing funk and bitterness for days. PRIYA KRISHNA"
     },
     {
       "rank": 70,
-      "name": "Lola’s"
+      "name": "Lola’s",
+      "cuisine": "Asian, Southern",
+      "price": "$$$",
+      "full_address": "2 West 28th Street, NoMad, Manhattan",
+      "website": "https://www.lolasnyc.com/",
+      "description": "The chef Suzanne Cupps has remixed the polished, produce-driven cuisine that made her name at Untitled at the Whitney. This menu is low-key but inspired, filled with craveable dishes you’d be happy come back for every week, served in an unfussy, convivial dining room. You’ll find seared summer squash with homemade chile crisp; springy noodles pan-fried with Japanese curry and tender greens; and fried cubes of lettuce-wrapped tilefish coated with jalapeño tartar sauce that give fish-taco vibes. Yet however comforting and almost familiar Ms. Cupps’s cuisine may seem, it retains a complex splendor, elevated by brilliant twists that spring from a foundation of classic technique. MELISSA CLARK",
+      "stars": "★★"
     },
     {
       "rank": 71,
-      "name": "Lucia Pizza of Avenue X"
+      "name": "Lucia Pizza of Avenue X",
+      "cuisine": "Pizza",
+      "price": "$",
+      "full_address": "2201 Avenue X (and one other), Sheepshead Bay, Brooklyn",
+      "website": "https://lucia.pizza/",
+      "description": "Lucia is a contemporary pizza restaurant with a reverence for the old. Its owner Salvatore Carlino, whose family opened a Brooklyn pizzeria four decades ago, starts with a crust that’s sturdy like a classic New York slice, but slightly airier and crispier. The “original pizza,” with a quick smear of sauce and a fistful of torn basil, could summon the ghost of Dom DeMarco. The clam version could go toe-to-toe with New Haven’s best, and the caramelle piccanti, with cherry peppers, pepperoni and hot honey, tastes like a re-energized version of a cheese slice. PRIYA KRISHNA"
     },
     {
       "rank": 72,
-      "name": "Mắm"
+      "name": "Mắm",
+      "cuisine": "Vietnamese",
+      "price": "$$",
+      "full_address": "70 Forsyth Street, Lower East Side, Manhattan",
+      "website": "https://www.instagram.com/mam.nyc/?hl=en",
+      "description": "The scene on Forsyth Street is a memorable one: dozens of diners on the sidewalk plunked on colorful plastic stools, crouched over baskets of grilled intestines and sticky-rice sausage festooned with a verdant assortment of herbs. This is the charm of Mam, a tiny Vietnamese restaurant where funk, sour and fresh reign supreme. The small check-box menu is a treasure trove — chicken feet fragrant with lemongrass and chiles, grilled snails whose shells hide crumbles of pork — all of it served alongside potent condiments undergirded by fish sauce. PRIYA KRISHNA",
+      "stars": "★★"
     },
     {
       "rank": 73,
-      "name": "Okdongsik"
+      "name": "Okdongsik",
+      "cuisine": "Korean",
+      "price": "$$",
+      "full_address": "13 E 30th Street, Koreatown, Manhattan",
+      "website": "http://handhospitality.com/okdongsik",
+      "description": "Restaurants that perfect one dish and raise it to an art form are rare in Manhattan, and certainly singular when that dish is a humble bowl of pork soup. At Okdongsik, a 13-seat counter on the edge of Koreatown, the chef Ok Dongsik replicates his Seoul restaurant specializing in dweji gomtang, a pork-based variation on Korean gomtang. Bronze bowls of rice and clear broth are topped with near-translucent slices of fatty heritage pork shoulder and a scattering of scallions. It’s stunningly simple, with an uncanny depth of flavor. In fact, there is only one other item on the menu, mandu stuffed with pork, glass noodles and tofu. They are delicious, but nowhere near as ethereal. MELISSA CLARK",
+      "stars": "★★"
     },
     {
       "rank": 74,
-      "name": "Okiboru House of Tsukemen"
+      "name": "Okiboru House of Tsukemen",
+      "cuisine": "Japanese",
+      "price": "$$",
+      "full_address": "117 Orchard Street, Lower East Side, Manhattan",
+      "website": "https://okiboru.com/new-york",
+      "description": "The bowls of ramen here have healing powers. The tsukemen itself, served with a dipping broth that is mole-esque in thickness and complexity, is savory and satisfying, while the tontori, with pork and chicken broth, is milky and rich. Each bowl — even the vegetarian version — packs a wallop, making for superlative counterside slurping. PRIYA KRISHNA",
+      "stars": "★★"
     },
     {
       "rank": 75,
-      "name": "Old Sport"
+      "name": "Old Sport",
+      "cuisine": "Chinese, Halal",
+      "price": "$$",
+      "full_address": "6703 Austin Street, Forest Hillls, Queens",
+      "website": "https://www.oldsportfoodflushing.com/",
+      "description": "Wisps of steam and the fragrant aromas of peppercorn and star anise waft from the bowls of soup that grace the tables at Old Sport. This minimalist restaurant specializes in Lanzhou beef noodle soup from northwestern China, serving a halal rendition with thin, tensile noodles, a refreshing broth, a sinus-clearing chile crisp and delicate petals of beef and radish. The noodles are pulled to order, the broth made fresh each day, and the flavor deepens with each slurp. PRIYA KRISHNA"
     },
     {
       "rank": 76,
-      "name": "Raf’s"
+      "name": "Raf’s",
+      "cuisine": "French, Italian",
+      "price": "$$$$",
+      "full_address": "290 Elizabeth Street, NoHo, Manhattan",
+      "website": "https://www.rafsnewyork.com/",
+      "description": "Whether you’re seeking a wonderful plate of pasta, a genial cafe to grab a pastry or simply a chic seat to people watch, Raf’s is the answer. The Elizabeth Street Hospitality Group team transformed a decades-old bakery into a low-lit French Italian restaurant powered by a wood-fired oven and two chefs, Mary Attea and Camari Mick, who bring a stylish flair to classic dishes like escargots, which are enrobed in whipped lardo, and leeks vinaigrette, covered in stretches of stracciatella. PRIYA KRISHNA",
+      "stars": "★★"
     },
     {
       "rank": 77,
-      "name": "Raku"
+      "name": "Raku",
+      "cuisine": "Japanese",
+      "price": "$$",
+      "full_address": "342 East Sixth Street (and one other), East Village, Manhattan",
+      "website": "https://rakunyc.com/",
+      "description": "The chef Norihiro Ishizuka makes his springy udon noodles with uncommon care, each strand an elastic, al dente triumph with a characteristic pinched end. Plunged into bowls of complex, deeply flavored dashi, the noodles harmonize with whichever garnishes Mr. Ishizuka chooses — a dazzling array of delicate tempura, plump nameko mushrooms, pillows of pink crab, shreds of duck. In New York’s Japanese culinary landscape, udon is often overshadowed by ramen and soba. But Raku’s udon empire continues to expand, with three locations in the city and another in Toronto, a testament to both its loyal following and the power of a great noodle. MELISSA CLARK"
     },
     {
       "rank": 78,
-      "name": "Randazzo’s Clam Bar"
+      "name": "Randazzo’s Clam Bar",
+      "cuisine": "Italian American, Seafood",
+      "price": "$$",
+      "full_address": "2017 Emmons Avenue, Sheepshead Bay, Brooklyn",
+      "website": "https://randazzosclambar.nyc/",
+      "description": "Randazzo’s identifies as a clam bar, but everyone in the know orders the fried calamari. It arrives delicately breaded, fried and greaseless, with a marinara so flavorful and garlicky you’ll want to drink it once the last crunchy squid ring is gone. Prolong the joy by ordering any red-sauced pasta. Spaghetti with the zuppa di pesce comes nicely al dente under a generous jumble of clams, mussels, fish and shrimp, all succulent and perfectly cooked. Of course, as long as you’re here you should also get the clams, littlenecks and cherrystones served raw and ice-cold, the better to magnify their saline splendor. MELISSA CLARK",
+      "stars": "★"
     },
     {
       "rank": 79,
-      "name": "S & P Lunch"
+      "name": "S & P Lunch",
+      "cuisine": "Diner, Deli, Sandwich",
+      "price": "$$",
+      "full_address": "174 Fifth Avenue, Flatiron, Manhattan",
+      "website": "https://sandwich.place/",
+      "stars": "★"
     },
     {
       "rank": 80,
-      "name": "Sailor"
+      "name": "Sailor",
+      "cuisine": "American, English, Mediterranean",
+      "price": "$$$$",
+      "full_address": "228 DeKalb Avenue, Fort Greene, Brooklyn",
+      "website": "https://www.sailor.nyc/",
+      "description": "April Bloomfield has been helming the stove here in Fort Greene for the past 18 months, quickly establishing Sailor as a standout in a neighborhood of great restaurants. She’s often credited with bringing the British gastro-pub movement stateside, with food that’s understated, direct and full of intense flavors, made with seasonal ingredients and without deferring to fashion or trends. Start with a plate of toast with “green sauce” (a pungent, anchovied salsa verde), then move on to seasonal dishes like pea leaves showered heavily with pecorino, and pork shoulder braised with olives until it practically melts. The sweet-toothed among us pine for Ms. Bloomfield’s British-accented desserts, and the sticky ginger cake soaked in cream is a very fine way to ride Sailor’s wave. MELISSA CLARK",
+      "stars": "★★★"
     },
     {
       "rank": 81,
-      "name": "Salty Lunch Lady’s Little Luncheonette"
+      "name": "Salty Lunch Lady’s Little Luncheonette",
+      "cuisine": "Sandwiches",
+      "price": "$",
+      "full_address": "565 Woodward Avenue, Ridgewood, Queens",
+      "website": "https://saltylunchlady.com/"
     },
     {
       "rank": 82,
-      "name": "Shaw-naé’s House"
+      "name": "Shaw-naé’s House",
+      "cuisine": "American, Soul Food",
+      "price": "$$",
+      "full_address": "381 Van Duzer Street, Stapleton Heights, Staten Island",
+      "website": "https://www.instagram.com/shawnaeshouse/?hl=en",
+      "stars": "★★"
     },
     {
       "rank": 83,
-      "name": "Shukette"
+      "name": "Shukette",
+      "cuisine": "Middle Eastern",
+      "price": "$$",
+      "full_address": "230 Ninth Avenue, Chelsea, Manhattan",
+      "website": "https://www.instagram.com/shukettenyc/?hl=en",
+      "description": "When Ayesha Nurdjaja seasons a dish, she doesn’t kid around. Shukette’s roster of Middle Eastern dishes vibrate, explode, even gyrate with garlic, lemon, spices and chiles. The hummus, whipped-cream fluffy, is buried under whole chickpeas and pickled onions and bathed with oil; the grilled-to-order laffa (a dinner-plate-size flatbread) arrives fingertip-burning hot and dramatically smeared with za’atar. Everything comes on small plates that do nothing to diminish the dishes’ outsize personalities — and that’s no joke. MELISSA CLARK"
     },
     {
       "rank": 84,
-      "name": "Sofreh"
+      "name": "Sofreh",
+      "cuisine": "Middle Eastern",
+      "price": "$$$",
+      "full_address": "75 St. Marks Avenue, Prospect Heights, Brooklyn",
+      "website": "https://www.sofrehnyc.com/",
+      "description": "On a tree-lined street in Prospect Heights, Sofreh fills in a missing piece of New York’s Iranian food scene. The former caterer Nasim Alikhani shows off the glories of spice-scented, orange blossom-sprinkled Persian family cuisine in a welcoming, chic setting. A flattened chicken is served charred at the edges, with a sweet-tart sauce of barberries and apricots; tamarind-soured fish is simmered with so many herbs it could count as a green vegetable. But the jewel in Sofreh’s crown is its perfectly executed, saffron-stained tahdig, with a covetable, golden-crisp layer of rice found at the bottom of the pot. MELISSA CLARK",
+      "stars": "★★"
     },
     {
       "rank": 85,
-      "name": "Superiority Burger"
+      "name": "Superiority Burger",
+      "cuisine": "Diner, Vegetarian",
+      "price": "$$",
+      "full_address": "119 Avenue A, East Village, Manhattan",
+      "website": "http://superiorityburger.com/",
+      "description": "The chef Brooks Headley’s brain must be a fascinating place. He’s perpetually rewriting the rules of cooking with vegetables, pairing slippery sheets of yuba with charred broccoli in a sandwich, and serving beets tumbled with pretzels and jalapeño cream cheese. And Mr. Headley’s background as a pastry chef shines through in the lush gelato, which comes in flavors like labneh, lychee and cherry leaf. The titular dish — still a standard-bearer for the veggie burger — is just the tip of the iceberg. PRIYA KRISHNA",
+      "stars": "★★★"
     },
     {
       "rank": 86,
-      "name": "Sushi Noz"
+      "name": "Sushi Noz",
+      "cuisine": "Sushi Omakase",
+      "price": "$$$$",
+      "full_address": "181 East 78th Street, Upper East Side, Manhattan",
+      "website": "https://www.sushinoz.com/",
+      "description": "New York is the kind of town where a person looking to splash out hundreds of dollars on a sushi omakase dinner has a long list of fine options. But those who like their sea creatures pristine and largely unadorned flock to Sushi Noz, where the chef Nozomu Abe graciously presides over an artful parade of seasonal dishes in a hushed yet welcoming room lined with hinoki wood. First come the otsumami, small jewels of appetizers — chunks of octopus with triggerfish, lobes of custardy, saline uni with their deep-sea creaminess, silky slivers of vinegared crab — followed by nigiri so skillfully wrought that they may, for better or worse, have you thinking about taking the plunge again soon. MELISSA CLARK"
     },
     {
       "rank": 87,
-      "name": "Sushi Ouji"
+      "name": "Sushi Ouji",
+      "cuisine": "Sushi Omakase",
+      "price": "$$$",
+      "full_address": "196 Prince Street, Soho, Manhattan",
+      "website": "https://ouji196.com/",
+      "description": "Omakase menus can run up quite a bill in this town ($$$$), and it’s hard to find truly excellent experiences at the other end of the price scale ($). Sushi Ouji brilliantly fills the gap, delivering a carefully curated 14-course selection of inventive otsumami, pristine nigiri and satisfying futomaki, all for a quarter of the price of the more expensive places. Most of the fish is flown in from the Toyosu Market in Tokyo, with the quality and variety consistently superb. The service can feel a little rushed, and maybe the room is too brightly lit, but it’s still one of the best deals in the city. MELISSA CLARK"
     },
     {
       "rank": 88,
-      "name": "Taiwanese Gourmet"
+      "name": "Taiwanese Gourmet",
+      "cuisine": "Taiwanese",
+      "price": "$",
+      "full_address": "8402 Broadway, Elmhurst, Queens",
+      "description": "This cash-only, no-nonsense oasis of Taiwanese cooking has been serving impeccable flies heads (stir-fried flowering chives and ground pork speckled with fermented black beans) and pungent stinky tofu to enthusiastic crowds since the 1990s. All the dishes on the extensive menu are cooked with care and expertise. A whole fish arrives delicately steamed, perfumed with strands of ginger and scallions; bouncy slices of kidney and liver in a concentrated brown glaze are cooked until soft and juicy; braised tofu skin envelops the pork roll, which in turn wraps around bits of daikon and savory minced meat. The move here is to pack the lazy susan on your table by over-ordering, then bring leftovers home to feast on slices of exceptionally crisp fried pork chop all week long. MELISSA CLARK"
     },
     {
       "rank": 89,
-      "name": "Temple Canteen"
+      "name": "Temple Canteen",
+      "cuisine": "Indian",
+      "price": "$",
+      "full_address": "143-09 Holly Avenue, Flushing, Queens",
+      "website": "http://canteen.nyganeshtemple.org/",
+      "description": "Beneath the Hindu temple in Flushing, where devotees pray to Lakshmi and Ganesh, you’ll find a cafe serving devotees of dosa, idli and vada. This basement cafeteria specializes in those South Indian stalwarts, offering an impressive variety. The long tables are usually crowded with families polishing off the last bits of coconut chutney or sambhar from stainless steel trays, using their crisp-edged uttapams as napkins. The service is direct and no-nonsense, and so is the food: The rava masala dosa, speckled with chiles and onions and wisped along the edges, is a standout. PRIYA KRISHNA"
     },
     {
       "rank": 90,
-      "name": "Thai Diner"
+      "name": "Thai Diner",
+      "cuisine": "Thai",
+      "price": "$$",
+      "full_address": "186 Mott Street, NoLIta, Manhattan",
+      "website": "https://www.thaidiner.com/",
+      "description": "Ann Redding and Matt Danzer have created a particular genre of Thai American cooking that leans hard into fish sauce and chiles and doesn’t take itself too seriously. The retro-looking Thai Diner excels at classic dishes like khao soi and pad Thai, yet also infuses French toast with Thai tea and mixes tom yum soup with tomato bisque. No matter what you order, expect loud, fiery flavors and playful touches, like a pair of googly eyes on your pineapple chiffon cake. PRIYA KRISHNA"
     },
     {
       "rank": 91,
-      "name": "Third Falcon"
+      "name": "Third Falcon",
+      "cuisine": "French, American",
+      "price": "$$$",
+      "full_address": "360 Myrtle Avenue, Fort Greene, Brooklyn",
+      "website": "https://www.third-falcon.com/",
+      "description": "Making good on a lifelong dream to own her own restaurant, Cali Faulkner has created a cozy neighborhood treasure in the heart of Fort Greene. Richly influenced by her time in Northern France and a stint at Verjus in Paris, Ms. Faulkner has devised a concise, seasonal menu, which makes deft use of greenmarket bounty. In spring, that means saucers of morels for snacking (“instead of olives,” as the menu clarifies), a wild-leek tart with buttery crust, pink slices of rhubarb on a duck breast, and — arguably most thrilling — an ebullient, perfectly dressed salad filled with flowers, herbs and a many-textured multitude of vegetables. You can find good duck and morels easily enough in this city, but a salad this excellent is a much rarer bird. MELISSA CLARK"
     },
     {
       "rank": 92,
-      "name": "Torrisi"
+      "name": "Torrisi",
+      "cuisine": "Italian",
+      "price": "$$$$",
+      "full_address": "275 Mulberry Street, NoLIta, Manhattan",
+      "website": "https://www.torrisinyc.com/",
+      "description": "A deep love for New York’s culinary history lingers in the food at Torrisi, the stylish reincarnation of the groundbreaking original that put the chef Rich Torrisi and his partners at Major Food Group on the map. Cucumbers New Yorkese, lathered in pickle brine, evoke the city’s best delis, while dishes like cavatelli with a deeply satisfying Jamaican beef ragù are a nod to New York’s many immigrant communities. It’s all presented with the panache that has become this restaurant group’s signature. This is one of New York's great dining rooms, capable of making even a snack at the bar feel like a glamorous night on the town. PRIYA KRISHNA",
+      "stars": "★★★"
     },
     {
       "rank": 93,
-      "name": "Trinciti Roti Shop"
+      "name": "Trinciti Roti Shop",
+      "cuisine": "Trinidadian and Tobagonian",
+      "price": "$",
+      "full_address": "111-03 Lefferts Boulevard, South Ozone Park, Queens",
+      "website": "https://trinciti.com/",
+      "description": "Here’s a power move for anyone arriving at Kennedy Airport. Take the 15-minute cab ride to Trinciti Roti Shop, order a few doubles, an aloo pie and the curry goat from the charming staff behind the counter. Eat your doubles in the shop, letting the stinging pepper sauce and plump chana dribble down your elbows. Take the rest home to enjoy the next day. Revel in your good fortune at having visited this Trinidadian institution. Welcome back to New York, indeed. PRIYA KRISHNA"
     },
     {
       "rank": 94,
-      "name": "Txikito"
+      "name": "Txikito",
+      "cuisine": "Spanish",
+      "price": "$$",
+      "full_address": "240 Ninth Avenue, Chelsea, Manhattan",
+      "website": "https://www.txikitonyc.com/",
+      "description": "This lively Basque restaurant, which began serving a mix of creative and traditional pintxos in 2008, went on hiatus during the pandemic but reopened with a fresh inventiveness and look in 2023. Small plates issue from Alex Raij and Eder Montero’s tiny kitchen, from familiar tapas to idiosyncratic delights: crisp-skinned suckling pig, briny octopus carpaccio, and boquerones that seem unadorned until you bite into zesty minty leaves of Vietnamese rau ram concealed inside. Txikito’s wide-ranging cooking may originate on the Bay of Biscay, but it doesn’t stay there, driven by a relentless verve and curiosity that couldn’t be more Basque. MELISSA CLARK",
+      "stars": "★"
     },
     {
       "rank": 95,
-      "name": "Una Pizza Napoletana"
+      "name": "Una Pizza Napoletana",
+      "cuisine": "Pizza",
+      "price": "$$",
+      "full_address": "175 Orchard Street, Lower East Side, Manhattan",
+      "website": "https://unapizza.com/",
+      "description": "As anyone who worships at the altar of Neapolitan-style pizza will attest, the puffy, singed crust and perfectly balanced toppings on Anthony Mangieri’s pies are worthy of devotion. A reservation at Una Pizza Napoletana is a hard get, but Mr. Mangieri always keeps some dough for the walk-ins who line up more than an hour ahead of opening to score one of his tomatoey, olive-oil-slicked disks. There’s not much else on the menu — some marinated olives, a dish of fire-charred peppers, a gelato or two. But the people who show up typically already know their order by heart. MELISSA CLARK",
+      "stars": "★★"
     },
     {
       "rank": 96,
-      "name": "Via Carota"
+      "name": "Via Carota",
+      "cuisine": "Italian",
+      "price": "$$$$",
+      "full_address": "51 Grove Street, West Village, Manhattan",
+      "website": "http://viacarota.com/",
+      "description": "Since 2014, Via Carota’s quality has continued to justify the length of the wait for a table. The leafy green salad remains sprightly, the breaded olives encased in pork sausage crisp and brawny, and the pastas supple and amply cheese-dusted. Attention to detail is the through line, from the rustic flea-market appointments to the seasonal Italian cooking and streamlined cocktail list with multiple Negronis. Rabbit is pan-fried to golden perfection, and vegetable dishes like caramelized twigs of salsify or tender poached fennel imbued with orange embody the nonchalant elegance that keep this inviting West Village spot packed from midmorning until late at night. MELISSA CLARK",
+      "stars": "★★"
     },
     {
       "rank": 97,
-      "name": "Village Café"
+      "name": "Village Café",
+      "cuisine": "Azerbaijani",
+      "price": "$$",
+      "full_address": "1968 Coney Island Avenue, Gravesend, Brooklyn",
+      "website": "https://villagecafeny.com/",
+      "stars": "★★"
     },
     {
       "rank": 98,
-      "name": "White Bear"
+      "name": "White Bear",
+      "cuisine": "Chinese",
+      "price": "$",
+      "full_address": "135-02 Roosevelt Avenue, Flushing, Queens",
+      "description": "The pork wontons at this walk-up window in Flushing are a New York treasure: overflowing with pork, stained with a prickly chile oil, doused with scallions and sprinkled with pickled vegetables that punctuate every bite with brine. The rest of the menu is great, too, but it’s the No. 6 — those wontons — that stands apart. PRIYA KRISHNA"
     },
     {
       "rank": 99,
-      "name": "Yoon Haeundae Galbi"
+      "name": "Yoon Haeundae Galbi",
+      "cuisine": "Korean",
+      "price": "$$$",
+      "full_address": "8 West 36th Street, Koreatown, Manhattan",
+      "website": "http://yoon-nyc.com/",
+      "description": "A grooved, domed surface sits at the center of each table at this Korean barbecue restaurant, and it’s the key, your server will tell you, to producing fatty, cragged edges on the meats, like that of a smash burger. Every cut here is well-marbled and of remarkable quality, but it’s the “Haeundae cut” short rib — slashed repeatedly along the sides to break up the sinew and yield tender, juicy slivers — that shines brightest. PRIYA KRISHNA"
     },
     {
       "rank": 100,
-      "name": "Zaab Zaab"
+      "name": "Zaab Zaab",
+      "cuisine": "Thai",
+      "price": "$$",
+      "full_address": "76-04 Woodside Avenue, Elmhurst, Queens",
+      "website": "https://www.instagram.com/zaabzaabnyc/",
+      "description": "Elmhurst’s Zaab Zaab (now with outposts in Brooklyn and Manhattan) stands out for its fiery Isan-style Thai cooking, with a focus on seafood. Come with a group of heat-seekers to explore the menu, whose fiery chiles, dried shrimp and intense fish sauces are used the way an arsonist applies gasoline. The signature dish is arguably the larb ped udon, a punchy mix of duck breast and liver accented with crispy bits of fried duck skin. But if you’re not a liver lover, you might go for the intensely oceanic papaya salad enhanced with house-fermented pla ra. Flexitarians should order both, along with the stellar version of beef kapow, topped with fistfuls of fragrant holy basil. MELISSA CLARK",
+      "stars": "★★★"
     }
   ]
 }

@@ -1,0 +1,8 @@
+restaurant_name,datasets_present,match_type,common_cuisines,Michelin_cuisine,NYT Top 100_cuisine,Restaurant Week_cuisine
+Cervo’s,2,partial_match,spanish,Spanish,"Portuguese, Spanish",
+Daniel,2,partial_match,french,French,"French, Tasting",
+Atomix,2,partial_match,korean,Korean,"Korean, Tasting",
+Le Bernardin,2,partial_match,seafood,Seafood,"French, Seafood, Tasting",
+Aska,2,partial_match,scandinavian,Scandinavian,"Scandinavian, Tasting",
+Superiority Burger,2,partial_match,vegetarian,Vegetarian,"Diner, Vegetarian",
+Koloman,2,partial_match,french,,"French, Viennese",French
