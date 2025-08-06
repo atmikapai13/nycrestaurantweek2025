@@ -19,6 +19,45 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<mapboxgl.Map | null>(null)
   const markers = useRef<mapboxgl.Marker[]>([])
+  const markerElements = useRef<HTMLDivElement[]>([])
+  const currentZoom = useRef<number>(10.0)
+  
+  // Function to determine if device is mobile
+  const isMobile = () => {
+    return window.innerWidth <= 768 || 'ontouchstart' in window
+  }
+  
+  // Function to calculate marker size based on zoom level and device
+  const getMarkerSize = (baseSize: number, zoom: number, isMobileDevice: boolean) => {
+    let size = baseSize
+    
+    // Increase size on mobile devices when zoomed in
+    if (isMobile() && zoom >= 12) {
+      size *= 1.5
+    } else if (zoom >= 12) {
+      size *= 1.4 }
+    
+    return Math.round(size)
+  }
+  
+  // Function to update all marker sizes
+  const updateMarkerSizes = () => {
+    if (!map.current) return
+    
+    const zoom = map.current.getZoom()
+    const mobile = isMobile()
+    
+    markerElements.current.forEach((markerEl, index) => {
+      if (markerEl && markerEl.style) {
+        // Get the base size from the marker's data attribute
+        const baseSize = parseInt(markerEl.getAttribute('data-base-size') || '8')
+        const newSize = getMarkerSize(baseSize, zoom, mobile)
+        
+        markerEl.style.width = `${newSize}px`
+        markerEl.style.height = `${newSize}px`
+      }
+    })
+  }
 
   useEffect(() => {
     if (!mapContainer.current) return
@@ -27,14 +66,23 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/streets-v12', // Light style like your prototype
-      center: [-74.006, 40.7128], // NYC coordinates
+      center: [-73.979545, 40.744293], // NYC coordinates
       zoom: 10.0
     })
+
+    // Add zoom event listener to update marker sizes
+    map.current.on('zoom', () => {
+      updateMarkerSizes()
+    })
+
+    // Add resize event listener for mobile detection
+    window.addEventListener('resize', updateMarkerSizes)
 
     return () => {
       if (map.current) {
         map.current.remove()
       }
+      window.removeEventListener('resize', updateMarkerSizes)
     }
   }, [])
 
@@ -45,6 +93,7 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
     // Clear existing markers
     markers.current.forEach(marker => marker.remove())
     markers.current = []
+    markerElements.current = []
 
     // Apply legend filter to the already filtered restaurants from App component
     const legendFilteredRestaurants = restaurants.filter(restaurant => {
@@ -98,6 +147,10 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
         markerEl.style.border = '1px solid white'
         markerEl.style.cursor = 'pointer'
         markerEl.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)'
+        
+        // Store base size for dynamic resizing
+        const baseSize = parseInt(markerSize)
+        markerEl.setAttribute('data-base-size', baseSize.toString())
 
         // Create marker
         const marker = new mapboxgl.Marker(markerEl)
@@ -110,8 +163,12 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
         })
 
         markers.current.push(marker)
+        markerElements.current.push(markerEl)
       }
     })
+    
+    // Update marker sizes after creating all markers
+    updateMarkerSizes()
   }, [restaurants, onRestaurantSelect, activeFilters])
 
   const handleLegendClick = (filterType: string) => {

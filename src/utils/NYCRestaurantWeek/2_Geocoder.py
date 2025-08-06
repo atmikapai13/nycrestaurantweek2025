@@ -244,7 +244,7 @@ class RestaurantCoordinateExtractor:
         
         return results
     
-    def save_results(self, restaurants: List[Dict], filename: str = "src/data/NYCRestaurantWeek/2_Geocoded.json"):
+    def save_results(self, restaurants: List[Dict], filename: str = "../data/NYCRestaurantWeek/2_Geocoded.json"):
         """Save results to JSON file"""
         
         try:

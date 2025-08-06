@@ -7,18 +7,31 @@ export default function Header() {
       <div className="header-content">
         <div className="header-left">
           <h1>NYC Eats</h1>
-          <span className="header-dates">
-            NYC Restaurant Week: Jul 21 - Aug 17, 2025
+                    <div className="header-dates">
+            <div className="header-dates-main">NYC Restaurant Week: Jul 21 - Aug 17, 2025</div>
+          </div>
+          <div className="header-credits">
+            Built by{' '}
+            <a
+              href="https://atmikapai.dev/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="author-link"
+              style={{ color: 'white', textDecoration: 'none' }}
+            >
+              Atmika Pai
+            </a>
+            {' | Sourced from '}
             <a
               href="https://www.nyctourism.com/restaurant-week/"
               target="_blank"
               rel="noopener noreferrer"
               className="nyc-credits-link"
-              style={{ color: ' white', textDecoration: 'none', marginLeft: '0.25em' }}
+              style={{ color: 'white', textDecoration: 'none' }}
             >
-              (Credits to NYC Tourism)
+              NYC Tourism
             </a>
-          </span>
+          </div>
         </div>
         <div className="header-right">
           <a 

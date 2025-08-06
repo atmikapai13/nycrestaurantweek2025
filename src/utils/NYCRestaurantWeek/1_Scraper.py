@@ -164,8 +164,9 @@ def main():
         # Print summary stats
         boroughs = {}
         for restaurant in clean_restaurants:
-            borough = restaurant['borough']
-            boroughs[borough] = boroughs.get(borough, 0) + 1
+            borough = restaurant.get('borough', 'Unknown')
+            if borough:  # Only count non-empty boroughs
+                boroughs[borough] = boroughs.get(borough, 0) + 1
         
         print(f"\n📍 By Borough:")
         for borough, count in sorted(boroughs.items()):
