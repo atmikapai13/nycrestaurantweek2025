@@ -27,7 +27,7 @@
 
 .restaurant-card {
   position: relative;
-  background: white;
+  background: rgb(255, 255, 255);
   border-radius: 8px;
   width: 100%;
   margin-bottom: 10%;

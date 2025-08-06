@@ -216,17 +216,17 @@
 
   /* Mobile legend adjustments */
   .map-legend {
-    font-size: 9px;
+    font-size: 11px;
     padding: 8px 12px;
   }
 
   .map-legend h4 {
-    font-size: 9px;
+    font-size: 11px;
     
   }
 
   .legend-item {
-    font-size: 9px;
+    font-size: 11px;
   }
 }
 

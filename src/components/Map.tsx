@@ -53,8 +53,16 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
         const baseSize = parseInt(markerEl.getAttribute('data-base-size') || '8')
         const newSize = getMarkerSize(baseSize, zoom, mobile)
         
+        // Update the inner marker size (the visual marker)
         markerEl.style.width = `${newSize}px`
         markerEl.style.height = `${newSize}px`
+        
+        // Update the wrapper padding (the click area)
+        const wrapper = markerEl.parentElement
+        if (wrapper) {
+          const padding = mobile ? '12px' : '8px'
+          wrapper.style.padding = padding
+        }
       }
     })
   }
@@ -137,7 +145,15 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
           markerSize = '10px'
         }
         
-        // Create marker element
+        // Create marker wrapper for larger click area
+        const markerWrapper = document.createElement('div')
+        markerWrapper.style.padding = isMobile() ? '12px' : '8px' // Larger padding on mobile
+        markerWrapper.style.display = 'flex'
+        markerWrapper.style.alignItems = 'center'
+        markerWrapper.style.justifyContent = 'center'
+        markerWrapper.style.cursor = 'pointer'
+        
+        // Create the actual marker element (smaller, inside the wrapper)
         const markerEl = document.createElement('div')
         markerEl.className = 'restaurant-marker'
         markerEl.style.width = markerSize
@@ -145,25 +161,27 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
         markerEl.style.borderRadius = '50%'
         markerEl.style.backgroundColor = markerColor
         markerEl.style.border = '1px solid white'
-        markerEl.style.cursor = 'pointer'
         markerEl.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)'
+        
+        // Add the marker to the wrapper
+        markerWrapper.appendChild(markerEl)
         
         // Store base size for dynamic resizing
         const baseSize = parseInt(markerSize)
         markerEl.setAttribute('data-base-size', baseSize.toString())
 
-        // Create marker
-        const marker = new mapboxgl.Marker(markerEl)
+        // Create marker using the wrapper
+        const marker = new mapboxgl.Marker(markerWrapper)
           .setLngLat([restaurant.longitude, restaurant.latitude])
           .addTo(map.current!)
 
-        // Add click handler
-        markerEl.addEventListener('click', () => {
+        // Add click handler to the wrapper
+        markerWrapper.addEventListener('click', () => {
           onRestaurantSelect(restaurant)
         })
 
         markers.current.push(marker)
-        markerElements.current.push(markerEl)
+        markerElements.current.push(markerEl) // Still track the inner marker for size updates
       }
     })
     
