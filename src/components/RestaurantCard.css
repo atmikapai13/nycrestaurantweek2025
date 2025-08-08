@@ -49,7 +49,7 @@
   padding: 1px 5px;
   padding-top: 2px;
   border-radius: 6px;
-  font-size: 4px;
+  font-size: clamp(4px, 0.8vw, 12px);
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.1px;
@@ -77,7 +77,7 @@
 
 /* Restaurant Name */
 .restaurant-name {
-  font-size: 20px;
+  font-size: clamp(20px, 2.5vw, 28px);
   font-weight: 700;
   color: #000000;
   margin: 0 0 4px 0;
@@ -89,26 +89,26 @@
 }
 
 .michelin-star-inline {
-  width: 16px;
-  height: 16px;
+  width: clamp(16px, 1.5vw, 24px);
+  height: clamp(16px, 1.5vw, 24px);
   vertical-align: middle;
 }
 
 .bib-gourmand-inline {
-  width: 16px;
-  height: 16px;
+  width: clamp(16px, 1.5vw, 24px);
+  height: clamp(16px, 1.5vw, 24px);
   vertical-align: middle;
 }
 
 .nyt-top100-inline {
-  width: 16px;
-  height: 16px;
+  width: clamp(16px, 1.5vw, 24px);
+  height: clamp(16px, 1.5vw, 24px);
   vertical-align: middle;
 }
 
 /* Restaurant Description */
 .restaurant-description {
-  font-size: 8px;
+  font-size: clamp(8px, 1.2vw, 16px);
   line-height: 1.4;
   color: #4B5563;
   margin: 0 0px 15px 0;
@@ -121,7 +121,7 @@
 }
 
 .meals-heading {
-  font-size: 12px;
+  font-size: clamp(12px, 1.4vw, 18px);
   font-weight: 700;
   color: #000000;
   margin: 0 0 8px 0;
@@ -140,7 +140,7 @@
 }
 
 .meal-item {
-  font-size: 10px;
+  font-size: clamp(10px, 1vw, 14px);
   color: #4B5563;
   line-height: 1.0;
 }
@@ -167,7 +167,7 @@
   border: none;
   padding: 8px 12px;
   border-radius: 6px;
-  font-size: 10px;
+  font-size: clamp(10px, 1vw, 14px);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.3px;
@@ -188,7 +188,7 @@
   margin-top: 10px;
   background-color: #000000;
   color: #ffffff;
-  font-size: 10px;
+  font-size: clamp(10px, 1vw, 14px);
   font-weight: 700;
   padding: 8px 12px;
   border: none;
@@ -213,7 +213,7 @@
   }
   
   .restaurant-name {
-    font-size: 20px;
+    font-size: clamp(18px, 2.5vw, 24px);
   }
   
   .restaurant-tags {
@@ -221,7 +221,7 @@
   }
   
   .tag {
-    font-size: 11px;
+    font-size: clamp(11px, 1.2vw, 14px);
     padding: 4px 10px;
   }
   
@@ -239,10 +239,10 @@
   }
   
   .restaurant-name {
-    font-size: 18px;
+    font-size: clamp(16px, 2.5vw, 20px);
   }
   
   .restaurant-description {
-    font-size: 13px;
+    font-size: clamp(13px, 1.2vw, 16px);
   }
 } 

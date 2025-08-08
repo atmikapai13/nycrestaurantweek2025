@@ -222,15 +222,15 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
       {/* Map Legend */}
       <div className="map-legend">
         <h4 style={{ color: '#000000', margin: '0 0 -7px 0' }}>{legendFilteredRestaurants.length} Restaurants</h4>
-        <div style={{ fontSize: '6px', color: '#666', marginBottom: '0px', marginTop: '0px' }}>Click on list below:</div>
+        <div style={{ fontSize: 'clamp(6px, 0.8vw, 12px)', color: '#666', marginBottom: '0px', marginTop: '0px' }}>Click on list below:</div>
         <div className="legend-list-vertical">
           <div 
             className="legend-item" 
             onClick={() => handleLegendClick('michelin')}
             style={{ cursor: 'pointer' }}
           >
-            <div className="legend-marker" style={{ backgroundColor: ' #C81224', width: '10px', height: '10px' }}></div>
-                            <img src="MichelinStar.svg.png" alt="Michelin Star" style={{ width: '10px', height: '10px', marginRight: '2px', verticalAlign: 'middle' }} />
+            <div className="legend-marker" style={{ backgroundColor: ' #C81224' }}></div>
+                            <img src="MichelinStar.svg.png" alt="Michelin Star" style={{ width: 'clamp(10px, 1.2vw, 16px)', height: 'clamp(10px, 1.2vw, 16px)', marginRight: '2px', verticalAlign: 'middle' }} />
             <span style={{ fontWeight: activeFilters.includes('michelin') ? 'bold' : 'normal', color: '#000000' }}>Michelin</span>
             {activeFilters.includes('michelin') && (
               <button 
@@ -240,7 +240,7 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
                   border: 'none', 
                   color: '#666', 
                   cursor: 'pointer', 
-                  fontSize: '6px',
+                  fontSize: 'clamp(6px, 0.8vw, 12px)',
                   padding: '0',
                   marginLeft: '2px'
                 }}
@@ -254,8 +254,8 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
             onClick={() => handleLegendClick('bib')}
             style={{ cursor: 'pointer' }}
           >
-            <div className="legend-marker" style={{ backgroundColor: '#f9a83d', width: '10px', height: '10px' }}></div>
-                            <img src="bibgourmand.png" alt="Bib Gourmand" style={{ width: '10px', height: '10px', marginRight: '2px', verticalAlign: 'middle' }} />
+            <div className="legend-marker" style={{ backgroundColor: '#f9a83d' }}></div>
+                            <img src="bibgourmand.png" alt="Bib Gourmand" style={{ width: 'clamp(10px, 1.2vw, 16px)', height: 'clamp(10px, 1.2vw, 16px)', marginRight: '2px', verticalAlign: 'middle' }} />
             <span style={{ fontWeight: activeFilters.includes('bib') ? 'bold' : 'normal', color: '#000000' }}>Bib Gourmand</span>
             {activeFilters.includes('bib') && (
               <button 
@@ -265,7 +265,7 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
                   border: 'none', 
                   color: '#666', 
                   cursor: 'pointer', 
-                  fontSize: '6px',
+                  fontSize: 'clamp(6px, 0.8vw, 12px)',
                   padding: '0',
                   marginLeft: '2px'
                 }}
@@ -279,8 +279,8 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
             onClick={() => handleLegendClick('nyt')}
             style={{ cursor: 'pointer' }}
           >
-            <div className="legend-marker" style={{ backgroundColor: '#FF69B4', width: '10px', height: '10px' }}></div>
-                            <img src="nytimes.png" alt="NYT Top 100" style={{ width: '10px', height: '10px', marginRight: '2px', verticalAlign: 'middle' }} />
+            <div className="legend-marker" style={{ backgroundColor: '#FF69B4' }}></div>
+                            <img src="nytimes.png" alt="NYT Top 100" style={{ width: 'clamp(10px, 1.2vw, 16px)', height: 'clamp(10px, 1.2vw, 16px)', marginRight: '2px', verticalAlign: 'middle' }} />
             <span style={{ fontWeight: activeFilters.includes('nyt') ? 'bold' : 'normal', color: '#000000' }}>NYT Top 100</span>
             {activeFilters.includes('nyt') && (
               <button 
@@ -290,7 +290,7 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
                   border: 'none', 
                   color: '#666', 
                   cursor: 'pointer', 
-                  fontSize: '6px',
+                  fontSize: 'clamp(6px, 0.8vw, 12px)',
                   padding: '0',
                   marginLeft: '2px'
                 }}
@@ -304,7 +304,7 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
             onClick={() => handleLegendClick('regular')}
             style={{ cursor: 'pointer' }}
           >
-            <div className="legend-marker" style={{ backgroundColor: '#000000', width: '10px', height: '10px' }}></div>
+            <div className="legend-marker" style={{ backgroundColor: '#000000' }}></div>
             <span style={{ fontWeight: activeFilters.includes('regular') ? 'bold' : 'normal', color: '#000000' }}>The Rest</span>
             {activeFilters.includes('regular') && (
               <button 
@@ -314,7 +314,7 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
                   border: 'none', 
                   color: '#666', 
                   cursor: 'pointer', 
-                  fontSize: '6px',
+                  fontSize: 'clamp(6px, 0.8vw, 12px)',
                   padding: '0',
                   marginLeft: '2px'
                 }}

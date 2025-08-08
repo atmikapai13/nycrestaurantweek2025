@@ -118,18 +118,18 @@
   left: 1%;
   background: rgba(255, 255, 255, 0.9);
   border-radius: 4px;
-  padding: 6px 10px;
+  padding: clamp(6px, 1vw, 12px) clamp(10px, 1.5vw, 20px);
   z-index: 500;
   pointer-events: auto;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  font-size: 7px;
+  font-size: clamp(7px, 1vw, 14px);
 }
 
 .map-legend h4 {
   margin: 0;
-  font-size: 7px;
+  font-size: clamp(7px, 1vw, 14px);
   font-weight: 600;
   color: #333;
 }
@@ -138,7 +138,7 @@
   display: flex;
   align-items: center;
   margin: 0;
-  font-size: 7px;
+  font-size: clamp(7px, 1vw, 14px);
   color: #666;
   cursor: pointer;
 }
@@ -149,6 +149,8 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   margin-right: 8px;
   flex-shrink: 0;
+  width: clamp(10px, 1.2vw, 16px) !important;
+  height: clamp(10px, 1.2vw, 16px) !important;
 }
 
 /* Hide Mapbox logo */
