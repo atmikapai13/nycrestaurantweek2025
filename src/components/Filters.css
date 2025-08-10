@@ -260,6 +260,34 @@
   border-color: #e55aa0;
 }
 
+.share-dropdown {
+  position: relative;
+}
+
+.share-dropdown-menu {
+  right: 0;
+  left: auto;
+  min-width: 200px;
+}
+
+.share-dropdown .dropdown-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.share-dropdown .dropdown-item:hover {
+  background-color: #f9fafb;
+}
+
+.share-dropdown .dropdown-item:last-child {
+  border-bottom: none;
+}
+
 /* Mobile-specific adjustments */
 @media (max-width: 768px) {
   .filters-title {

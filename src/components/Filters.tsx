@@ -114,6 +114,22 @@ export default function Filters({ onSearch, onFilterChange, allRestaurants = [],
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ')
 
+  // Helper function to copy text to clipboard
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      alert('Favorites link copied to clipboard!')
+    }).catch(() => {
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea')
+      textArea.value = text
+      document.body.appendChild(textArea)
+      textArea.select()
+      document.execCommand('copy')
+      document.body.removeChild(textArea)
+      alert('Favorites link copied to clipboard!')
+    })
+  }
+
   return (
     <div className="filters-container">
       {/* Header */}
@@ -232,33 +248,12 @@ export default function Filters({ onSearch, onFilterChange, allRestaurants = [],
           </button>
         </div>
 
-        {/* Share Favorites Button - Only show when there are favorites */}
+        {/* Share Favorites Dropdown - Only show when there are favorites */}
         {favorites.length > 0 && (
-          <div className="filter-group">
+          <div className="filter-group share-dropdown">
             <button
               className="filter-button share-button"
-              onClick={() => {
-                const currentUrl = window.location.origin + window.location.pathname
-                const favoriteSlugs = favorites.map(name => 
-                  allRestaurants.find(r => r.name === name)?.slug
-                ).filter((slug): slug is string => slug !== undefined)
-                const shareUrl = `${currentUrl}#favorites=${encodeURIComponent(favoriteSlugs.join(','))}`
-                
-                // Copy to clipboard
-                navigator.clipboard.writeText(shareUrl).then(() => {
-                  // Show a brief notification (you could add a toast notification here)
-                  alert('Favorites link copied to clipboard!')
-                }).catch(() => {
-                  // Fallback for older browsers
-                  const textArea = document.createElement('textarea')
-                  textArea.value = shareUrl
-                  document.body.appendChild(textArea)
-                  textArea.select()
-                  document.execCommand('copy')
-                  document.body.removeChild(textArea)
-                  alert('Favorites link copied to clipboard!')
-                })
-              }}
+              onClick={() => setOpenDropdown(openDropdown === 'share' ? null : 'share')}
             >
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: '4px' }}>
                 <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
@@ -266,7 +261,81 @@ export default function Filters({ onSearch, onFilterChange, allRestaurants = [],
                 <line x1="12" y1="2" x2="12" y2="15"/>
               </svg>
               Share
+              <span className="dropdown-arrow">
+                <svg width="15" height="15" viewBox="0 0 20 20" fill="none">
+                  <path d="M5 8L10 13L15 8" stroke="currentColor" strokeWidth="2.1" />
+                </svg>
+              </span>
             </button>
+            
+            {openDropdown === 'share' && (
+              <div className="dropdown-menu share-dropdown-menu">
+                <div
+                  className="dropdown-item"
+                  onClick={() => {
+                    const currentUrl = window.location.origin + window.location.pathname
+                    const favoriteSlugs = favorites.map(name => 
+                      allRestaurants.find(r => r.name === name)?.slug
+                    ).filter((slug): slug is string => slug !== undefined)
+                    const shareUrl = `${currentUrl}#favorites=${encodeURIComponent(favoriteSlugs.join(','))}`
+                    
+                    // Try to use native share API first (iOS/Android)
+                    if (navigator.share) {
+                      navigator.share({
+                        title: 'My NYC Restaurant Week Favorites',
+                        text: `Check out my ${favorites.length} favorite restaurants for NYC Restaurant Week!`,
+                        url: shareUrl
+                      }).catch((error) => {
+                        console.log('Share cancelled or failed:', error)
+                        // Fallback to clipboard copy
+                        copyToClipboard(shareUrl)
+                      })
+                    } else {
+                      // Fallback to clipboard copy for browsers that don't support Web Share API
+                      copyToClipboard(shareUrl)
+                    }
+                    setOpenDropdown(null)
+                  }}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: '8px' }}>
+                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                  </svg>
+                  Share with friends
+                </div>
+                <div
+                  className="dropdown-item"
+                  onClick={() => {
+                    // Create a Google Maps directions URL with all favorited restaurants using names
+                    const restaurantNames = favorites.map(name => {
+                      const restaurant = allRestaurants.find(r => r.name === name)
+                      if (restaurant) {
+                        // Use restaurant name and address for better accuracy
+                        const searchQuery = restaurant.address 
+                          ? `${restaurant.name}, ${restaurant.address}`
+                          : restaurant.name
+                        return encodeURIComponent(searchQuery)
+                      }
+                      return null
+                    }).filter((query): query is string => query !== null)
+                    
+                    if (restaurantNames.length > 0) {
+                      // Create directions URL with all restaurant names
+                      const googleMapsUrl = `https://www.google.com/maps/dir/${restaurantNames.join('/')}`
+                      window.open(googleMapsUrl, '_blank')
+                    }
+                    
+                    setOpenDropdown(null)
+                  }}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: '8px' }}>
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                    <circle cx="12" cy="10" r="3"/>
+                  </svg>
+                  Export to Google Maps
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
