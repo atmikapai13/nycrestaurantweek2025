@@ -27,11 +27,23 @@
     <meta property="twitter:description" content="Discover the best NYC Restaurant Week deals with our interactive map. Find Michelin-starred restaurants, Bib Gourmand spots, and NYT Top 100 picks." />
     <meta property="twitter:image" content="https://nyceats.live/message_preview.png" />
     
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    
+    <!-- PWA Icons -->
+    <link rel="apple-touch-icon" href="/nyc.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/nyc.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/nyc.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/nyc.png" />
+    
     <!-- Additional SEO -->
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="theme-color" content="#000000" />
     <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="NYC Eats" />
+    <meta name="msapplication-TileColor" content="#000000" />
+    <meta name="msapplication-TileImage" content="/nyc.png" />
     
     <!-- Apple-specific meta tags for iMessage and iOS -->
     <meta name="apple-itunes-app" content="app-argument=nyceats.live" />
@@ -47,6 +59,10 @@
     
     <!-- Canonical URL -->
     <link rel="canonical" href="https://nyceats.live/" />
+    
+    <!-- Leaflet CSS and JS for OSM maps (offline fallback) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-ST8H9F11PP"></script>

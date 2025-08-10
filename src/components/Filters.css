@@ -255,6 +255,10 @@
   border-color: #FF69B4;
 }
 
+.share-button .dropdown-arrow svg path {
+  stroke: black;
+}
+
 .share-button:hover {
   background-color: #e55aa0;
   border-color: #e55aa0;
