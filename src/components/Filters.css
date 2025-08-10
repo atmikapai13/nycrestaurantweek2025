@@ -249,6 +249,17 @@
   stroke: white;
 }
 
+.share-button {
+  background-color: #FF69B4;
+  color: white;
+  border-color: #FF69B4;
+}
+
+.share-button:hover {
+  background-color: #e55aa0;
+  border-color: #e55aa0;
+}
+
 /* Mobile-specific adjustments */
 @media (max-width: 768px) {
   .filters-title {

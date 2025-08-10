@@ -22,10 +22,22 @@ function App() {
     setRestaurants(restaurantData as Restaurant[])
     setFilteredRestaurants(restaurantData as Restaurant[])
     
-    // Load favorites from localStorage
-    const savedFavorites = localStorage.getItem('restaurantFavorites')
-    if (savedFavorites) {
-      setFavorites(JSON.parse(savedFavorites))
+    // Check for favorites in URL hash first, then localStorage
+    const hash = window.location.hash
+    if (hash && hash.includes('favorites=')) {
+      const favoritesParam = hash.split('favorites=')[1].split('&')[0]
+      const favoriteSlugs = decodeURIComponent(favoritesParam).split(',')
+      const favoriteNames = favoriteSlugs
+        .map(slug => restaurantData.find(r => r.slug === slug)?.name)
+        .filter((name): name is string => name !== undefined) // Type guard to ensure string[]
+      setFavorites(favoriteNames)
+      localStorage.setItem('restaurantFavorites', JSON.stringify(favoriteNames))
+    } else {
+      // Load favorites from localStorage
+      const savedFavorites = localStorage.getItem('restaurantFavorites')
+      if (savedFavorites) {
+        setFavorites(JSON.parse(savedFavorites))
+      }
     }
   }, [])
 
@@ -36,6 +48,27 @@ function App() {
     
     setFavorites(newFavorites)
     localStorage.setItem('restaurantFavorites', JSON.stringify(newFavorites))
+    
+    // Update URL hash with favorites
+    updateFavoritesHash(newFavorites)
+  }
+
+  const updateFavoritesHash = (favoriteNames: string[]) => {
+    if (favoriteNames.length === 0) {
+      // Remove favorites from hash if empty
+      const currentHash = window.location.hash
+      const newHash = currentHash.replace(/&?favorites=[^&]*/, '')
+      window.location.hash = newHash || '#'
+    } else {
+      // Add favorites to hash
+      const favoriteSlugs = favoriteNames
+        .map(name => restaurantData.find(r => r.name === name)?.slug)
+        .filter((slug): slug is string => slug !== undefined)
+      
+      const favoritesParam = encodeURIComponent(favoriteSlugs.join(','))
+      // Always use a clean hash format
+      window.location.hash = `favorites=${favoritesParam}`
+    }
   }
 
   const handleFavoritesToggle = () => {

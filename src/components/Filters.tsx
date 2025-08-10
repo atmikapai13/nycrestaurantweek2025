@@ -231,6 +231,44 @@ export default function Filters({ onSearch, onFilterChange, allRestaurants = [],
             {favorites.length} Favorites
           </button>
         </div>
+
+        {/* Share Favorites Button - Only show when there are favorites */}
+        {favorites.length > 0 && (
+          <div className="filter-group">
+            <button
+              className="filter-button share-button"
+              onClick={() => {
+                const currentUrl = window.location.origin + window.location.pathname
+                const favoriteSlugs = favorites.map(name => 
+                  allRestaurants.find(r => r.name === name)?.slug
+                ).filter((slug): slug is string => slug !== undefined)
+                const shareUrl = `${currentUrl}#favorites=${encodeURIComponent(favoriteSlugs.join(','))}`
+                
+                // Copy to clipboard
+                navigator.clipboard.writeText(shareUrl).then(() => {
+                  // Show a brief notification (you could add a toast notification here)
+                  alert('Favorites link copied to clipboard!')
+                }).catch(() => {
+                  // Fallback for older browsers
+                  const textArea = document.createElement('textarea')
+                  textArea.value = shareUrl
+                  document.body.appendChild(textArea)
+                  textArea.select()
+                  document.execCommand('copy')
+                  document.body.removeChild(textArea)
+                  alert('Favorites link copied to clipboard!')
+                })
+              }}
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: '4px' }}>
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                <polyline points="16,6 12,2 8,6"/>
+                <line x1="12" y1="2" x2="12" y2="15"/>
+              </svg>
+              Share
+            </button>
+          </div>
+        )}
       </div>
 
     </div>
