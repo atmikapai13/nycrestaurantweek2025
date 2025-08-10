@@ -21,7 +21,7 @@
 .filters-instructions {
   font-size: 0.75rem;
   color: #6b7280;
-  margin: 0.25rem 0 0 5px;
+  margin: 0.25rem 0 0 0;
   font-weight: 400;
   line-height: 1.2;
 }
@@ -36,7 +36,7 @@
   width: 100%;
   padding: 0.75rem;
   border: 1px solid #000000;
-  font-size: 0.875rem;
+  font-size: 1rem;
   outline: none;
   
 }
@@ -251,6 +251,13 @@
 
 /* Mobile-specific adjustments */
 @media (max-width: 768px) {
+  .filters-title {
+    font-size: 1.25rem;
+  }
+
+  .filters-instructions {
+    font-size: 0.75rem;
+  }
   .filters-container {
     margin-bottom: 0px;
   }

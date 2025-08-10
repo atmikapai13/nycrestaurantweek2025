@@ -27,9 +27,9 @@ export default function Filters({ onSearch, onFilterChange, allRestaurants = [],
   // Filter options (simplified for now, will be populated from data)
   const filterOptions = {
     'Cuisine': ['Mexican', 'American (Traditional)', 'Steakhouse', 'French', 'Italian', 'Thai', 'Asian Fusion', 'Indian', 'American (New)', 'Japanese / Sushi', 'Chinese', 'Seafood', 'Caribbean', 'Mediterranean', 'Spanish', 'Austrian', 'Gastropub', 'Eclectic', 'Cuban', 'Belgian', 'Puerto Rican', 'Argentinian', 'Taiwanese', 'Greek', 'Eastern European', 'Latin American', 'Middle Eastern', 'Barbecue', 'Ukrainian', 'Brazilian', 'Korean', 'Peruvian', 'Turkish', 'Hawaiian', 'Pan-Asian', 'British', 'Continental', 'Vietnamese', 'Irish', 'Cajun/Creole', 'Soul Food / Southern', 'African', 'Colombian', 'Pizza'],
-    'Participating Weeks': ['Week 1 (July 21 - July 27)', 'Week 2 (July 28 - Aug 3)', 'Week 3 (Aug 4 - Aug 10)', 'Week 4 (Aug 11 - Aug 17)', 'Week 5 (Aug 18 - Aug 24)', 'Week 6 (Aug 25 - Aug 31)'],
     'Meal Types': ['$30 Lunch Price', '$60 Dinner Price', '$45 Dinner Price', '$30 Sunday Lunch/Brunch Price', '$45 Sunday Dinner Price', '$45 Lunch Price', '$60 Sunday Dinner Price', '$30 Dinner Price', '$30 Sunday Dinner Price', '$45 Sunday Lunch/Brunch Price', '$60 Lunch Price', '$60 Sunday Lunch/Brunch Price'],
-    'Collections' : ['around-the-boroughs', 'date-night', 'summer-vibes', 'celebrity-chefs', 'dress-for-the-occasion', 'classic-restaurants', 'hidden-gems', 'for-the-foodies']
+    'Collections' : ['around-the-boroughs', 'date-night', 'summer-vibes', 'celebrity-chefs', 'dress-for-the-occasion', 'classic-restaurants', 'hidden-gems', 'for-the-foodies'],
+    'Participating Weeks': ['Week 1 (July 21 - July 27)', 'Week 2 (July 28 - Aug 3)', 'Week 3 (Aug 4 - Aug 10)', 'Week 4 (Aug 11 - Aug 17)', 'Week 5 (Aug 18 - Aug 24)', 'Week 6 (Aug 25 - Aug 31)']
   }
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -119,7 +119,7 @@ export default function Filters({ onSearch, onFilterChange, allRestaurants = [],
       {/* Header */}
       <div className="filters-header">
         <h2 className="filters-title">Browse All Restaurants</h2>
-        <p className="filters-instructions">To learn more about NYC Restaurant Week offerings, tap on a restaurant or search for one below:</p>
+        <p className="filters-instructions">To learn more about restaurant offerings, tap on a pin in the map or search for one below:</p>
       </div>
 
       {/* Search Bar */}
@@ -152,18 +152,6 @@ export default function Filters({ onSearch, onFilterChange, allRestaurants = [],
 
       {/* Filter Buttons */}
       <div className="filter-buttons">
-        {/* Has Menu Toggle Button */}
-        <div className="filter-group">
-          <button
-            className={`filter-button ${hasMenuActive ? 'active' : ''}`}
-            onClick={handleHasMenuToggle}
-          >
-            Has Menu
-          </button>
-        </div>
-        
-
-        
         {/* Regular Dropdown Filters */}
         {Object.entries(filterOptions).map(([filterType, options]) => {
           const hasSelectedItems = selectedFilters[filterType] && selectedFilters[filterType].length > 0
@@ -208,6 +196,16 @@ export default function Filters({ onSearch, onFilterChange, allRestaurants = [],
           </div>
         )
         })}
+
+        {/* Has Menu Toggle Button */}
+        <div className="filter-group">
+          <button
+            className={`filter-button ${hasMenuActive ? 'active' : ''}`}
+            onClick={handleHasMenuToggle}
+          >
+            Has Menu
+          </button>
+        </div>
 
         {/* Reset All Button - Only show when filters are applied */}
         {appliedFilters.length > 0 && (
