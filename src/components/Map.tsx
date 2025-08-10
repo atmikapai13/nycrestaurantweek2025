@@ -6,6 +6,12 @@ import type { Restaurant } from '../types/restaurant'
 // Set your Mapbox access token
 mapboxgl.accessToken = "pk.eyJ1IjoiYXRtaWthcGFpMTMiLCJhIjoiY21idHR4eTJpMDdhMjJsb20zNmZheTZ6ayJ9.d_bQSBzesyiCUMA-YHRoIA"
 
+// Check if Mapbox is available
+if (!mapboxgl) {
+  console.error('Mapbox GL JS is not available')
+  throw new Error('Mapbox GL JS is not available')
+}
+
 interface MapProps {
   restaurants: Restaurant[]
   onRestaurantSelect: (restaurant: Restaurant) => void
@@ -70,13 +76,22 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
   useEffect(() => {
     if (!mapContainer.current) return
 
-    // Initialize map
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/streets-v12', // Light style like your prototype
-      center: [-73.979545, 40.744293], // NYC coordinates
-      zoom: 10.0
-    })
+    try {
+      console.log('Initializing Mapbox map...')
+      
+      // Initialize map
+      map.current = new mapboxgl.Map({
+        container: mapContainer.current,
+        style: 'mapbox://styles/mapbox/streets-v12', // Light style like your prototype
+        center: [-73.979545, 40.744293], // NYC coordinates
+        zoom: 10.0
+      })
+
+      console.log('Mapbox map initialized successfully')
+    } catch (error) {
+      console.error('Failed to initialize Mapbox map:', error)
+      throw error // Re-throw to trigger fallback
+    }
 
     // Add zoom event listener to update marker sizes
     map.current.on('zoom', () => {

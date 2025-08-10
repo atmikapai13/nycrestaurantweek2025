@@ -1,19 +1,16 @@
 const CACHE_NAME = 'nyc-restaurant-week-v1';
 const DATA_CACHE_NAME = 'nyc-restaurant-data-v1';
 
-// Define what to cache
+// Define what to cache - handle dev vs prod paths
 const urlsToCache = [
   '/',
-  '/static/js/bundle.js',
-  '/static/css/main.css',
   '/manifest.json',
   '/nyc.png',
   '/header.png',
   '/MichelinStar.svg.png',
   '/bibgourmand.png',
   '/nytimes.png',
-  '/src/data/FinalData.json',
-  // Add other static assets as needed
+  // Only cache actual assets that exist
 ];
 
 // Install event - cache static resources
@@ -23,12 +20,19 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME)
       .then((cache) => {
         console.log('[ServiceWorker] Caching app shell');
-        return cache.addAll(urlsToCache);
+        // Cache only valid URLs that exist
+        return cache.addAll(urlsToCache.filter(url => 
+          url.startsWith('/') || url.startsWith('http')
+        ));
       })
       .catch((error) => {
         console.log('[ServiceWorker] Cache failed:', error);
+        // Don't fail completely if some files can't be cached
       })
   );
+  
+  // Activate immediately
+  self.skipWaiting();
 });
 
 // Activate event - clean up old caches
@@ -50,15 +54,29 @@ self.addEventListener('activate', (event) => {
 
 // Fetch event - serve cached content when offline
 self.addEventListener('fetch', (event) => {
-  console.log('[ServiceWorker] Fetch', event.request.url);
-  
-  // Skip chrome-extension URLs entirely
-  if (event.request.url.startsWith('chrome-extension://')) {
+  // Skip non-http(s) requests entirely (chrome-extension, data:, blob:, etc.)
+  if (!event.request.url.startsWith('http')) {
     return;
   }
   
-  // Handle restaurant data API requests
-  if (event.request.url.includes('/src/data/FinalData.json')) {
+  // Skip chrome extension and other browser-specific URLs
+  if (event.request.url.includes('chrome-extension://') || 
+      event.request.url.includes('moz-extension://') ||
+      event.request.url.includes('extension://')) {
+    return;
+  }
+  
+  // Only log important fetches to reduce console noise
+  if (event.request.url.includes('FinalData.json') || 
+      event.request.url.includes('mapbox') ||
+      event.request.destination === 'document') {
+    console.log('[ServiceWorker] Fetch', event.request.url);
+  }
+  
+  // Handle restaurant data API requests (both dev and prod paths)
+  if (event.request.url.includes('FinalData.json') || 
+      event.request.url.includes('/api/restaurants') ||
+      event.request.url.includes('/data/restaurants')) {
     event.respondWith(
       caches.open(DATA_CACHE_NAME)
         .then((cache) => {

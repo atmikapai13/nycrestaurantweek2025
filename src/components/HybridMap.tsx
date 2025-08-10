@@ -14,7 +14,6 @@ interface HybridMapProps {
 
 export default function HybridMap(props: HybridMapProps) {
   const [isOnline, setIsOnline] = useState(navigator.onLine)
-  const [mapboxLoaded, setMapboxLoaded] = useState(false)
 
   useEffect(() => {
     const updateOnlineStatus = () => {
@@ -24,29 +23,29 @@ export default function HybridMap(props: HybridMapProps) {
     window.addEventListener('online', updateOnlineStatus)
     window.addEventListener('offline', updateOnlineStatus)
 
-    // Check if Mapbox is available
-    const checkMapbox = () => {
-      if ((window as any).mapboxgl) {
-        setMapboxLoaded(true)
-      } else {
-        // Retry after a short delay
-        setTimeout(checkMapbox, 100)
-      }
-    }
-    checkMapbox()
-
     return () => {
       window.removeEventListener('online', updateOnlineStatus)
       window.removeEventListener('offline', updateOnlineStatus)
     }
   }, [])
 
-  // Use Mapbox when online and loaded, OSM when offline or Mapbox not available
-  const shouldUseOSM = !isOnline || !mapboxLoaded
+  // Use Mapbox when online, OSM when offline
+  const shouldUseOSM = !isOnline
+
+  console.log('HybridMap - Online status:', isOnline, 'Should use OSM:', shouldUseOSM)
 
   if (shouldUseOSM) {
+    console.log('Using OSM map (offline mode)')
     return <OSMMap {...props} isOffline={!isOnline} />
   }
 
-  return <Map {...props} />
+  console.log('Using Mapbox map (online mode)')
+  
+  // Try to render Mapbox, fallback to OSM if it fails
+  try {
+    return <Map {...props} />
+  } catch (error) {
+    console.error('Mapbox failed to load, falling back to OSM:', error)
+    return <OSMMap {...props} isOffline={false} />
+  }
 }

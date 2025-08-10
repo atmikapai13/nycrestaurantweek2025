@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 import Header from './components/Header'
-import HybridMap from './components/HybridMap'
+import MapWrapper from './components/MapWrapper'
 import Filters from './components/Filters'
 import RestaurantCard from './components/RestaurantCard'
 import { setupInstallPrompt, showInstallPrompt, cacheRestaurantData } from './utils/pwaUtils'
@@ -231,7 +231,7 @@ function App() {
 
       {/* Map Section - Full width with padding */}
       <div className="map-section">
-        <HybridMap 
+        <MapWrapper 
           restaurants={filteredRestaurants}
           onRestaurantSelect={handleRestaurantSelect}
           activeFilters={legendFilters}
