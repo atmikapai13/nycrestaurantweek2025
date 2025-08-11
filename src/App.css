@@ -54,63 +54,9 @@
   overflow-y: auto;
 }
 
-/* OSM Map Styles */
-.osm-map-container {
-  position: relative;
-  height: 100%;
-  width: 100%;
-}
 
-.offline-indicator {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background: rgba(255, 255, 255, 0.9);
-  padding: 8px 12px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 500;
-  color: #666;
-  z-index: 1000;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
 
-/* PWA Install Banner */
-.pwa-install-banner {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: #FF69B4;
-  color: white;
-  padding: 12px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  z-index: 2000;
-  font-size: 14px;
-  font-weight: 500;
-}
 
-.pwa-install-button {
-  background: white;
-  color: #FF69B4;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  font-weight: 600;
-  cursor: pointer;
-  margin-left: 12px;
-}
-
-.pwa-install-close {
-  background: none;
-  color: white;
-  border: none;
-  font-size: 18px;
-  cursor: pointer;
-  margin-left: 12px;
-}
 
 /* Restaurant Card Styles */
 .restaurant-card {

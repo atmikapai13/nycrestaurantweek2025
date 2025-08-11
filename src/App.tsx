@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 import Header from './components/Header'
-import MapWrapper from './components/MapWrapper'
+import Map from './components/Map'
 import Filters from './components/Filters'
 import RestaurantCard from './components/RestaurantCard'
-import { setupInstallPrompt, showInstallPrompt, cacheRestaurantData } from './utils/pwaUtils'
 import type { Restaurant } from './types/restaurant'
 import restaurantData from './data/FinalData.json'
 
@@ -17,16 +16,11 @@ function App() {
   const [searchTerm, setSearchTerm] = useState('')
   const [favorites, setFavorites] = useState<string[]>([])
   const [favoritesActive, setFavoritesActive] = useState(false)
-  const [canInstallPWA, setCanInstallPWA] = useState(false)
-  const [showInstallBanner, setShowInstallBanner] = useState(false)
 
   useEffect(() => {
     // Load restaurants from imported data
     setRestaurants(restaurantData as Restaurant[])
     setFilteredRestaurants(restaurantData as Restaurant[])
-    
-    // Cache restaurant data for offline use
-    cacheRestaurantData(restaurantData)
     
     // Check for favorites in URL hash first, then localStorage
     const hash = window.location.hash
@@ -45,15 +39,6 @@ function App() {
         setFavorites(JSON.parse(savedFavorites))
       }
     }
-
-    // Set up PWA install prompt
-    setupInstallPrompt((canInstall) => {
-      setCanInstallPWA(canInstall)
-      // Show install banner after 5 seconds if PWA can be installed
-      if (canInstall && !localStorage.getItem('pwa-install-dismissed')) {
-        setTimeout(() => setShowInstallBanner(true), 5000)
-      }
-    })
   }, [])
 
   const toggleFavorite = (restaurantName: string) => {
@@ -231,7 +216,7 @@ function App() {
 
       {/* Map Section - Full width with padding */}
       <div className="map-section">
-        <MapWrapper 
+        <Map 
           restaurants={filteredRestaurants}
           onRestaurantSelect={handleRestaurantSelect}
           activeFilters={legendFilters}
@@ -253,31 +238,7 @@ function App() {
         )}
       </div>
 
-      {/* PWA Install Banner */}
-      {showInstallBanner && canInstallPWA && (
-        <div className="pwa-install-banner">
-          <span>📱 Install NYC Eats for quick access and offline use!</span>
-          <button 
-            className="pwa-install-button"
-            onClick={async () => {
-              await showInstallPrompt()
-              setShowInstallBanner(false)
-              setCanInstallPWA(false)
-            }}
-          >
-            Install
-          </button>
-          <button 
-            className="pwa-install-close"
-            onClick={() => {
-              setShowInstallBanner(false)
-              localStorage.setItem('pwa-install-dismissed', 'true')
-            }}
-          >
-            ×
-          </button>
-        </div>
-      )}
+
     </div>
   )
 }
