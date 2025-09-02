@@ -8,7 +8,7 @@ export default function Header() {
         <div className="header-left">
           <h1>NYC Eats</h1>
                     <div className="header-dates">
-            <div className="header-dates-main">NYC Restaurant Week: Jul 21 - Aug 31, 2025</div>
+            <div className="header-dates-main">Stay tuned for Spring 2026 Restaurant Week!</div>
           </div>
           <div className="header-credits">
             Built by{' '}
