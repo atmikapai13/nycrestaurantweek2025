@@ -20,39 +20,16 @@ export default function Filters({ onSearch, onFilterChange, allRestaurants = [],
   const [searchTerm, setSearchTerm] = useState('')
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
   const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>({})
-  const [showSuggestions, setShowSuggestions] = useState(false)
-  const [hasMenuActive, setHasMenuActive] = useState(false)
+  
+  const [activeBadges, setActiveBadges] = useState<string[]>([])
   
 
   // Filter options (simplified for now, will be populated from data)
   const filterOptions = {
     'Cuisine': ['Mexican', 'American (Traditional)', 'Steakhouse', 'French', 'Italian', 'Thai', 'Asian Fusion', 'Indian', 'American (New)', 'Japanese / Sushi', 'Chinese', 'Seafood', 'Caribbean', 'Mediterranean', 'Spanish', 'Austrian', 'Gastropub', 'Eclectic', 'Cuban', 'Belgian', 'Puerto Rican', 'Argentinian', 'Taiwanese', 'Greek', 'Eastern European', 'Latin American', 'Middle Eastern', 'Barbecue', 'Ukrainian', 'Brazilian', 'Korean', 'Peruvian', 'Turkish', 'Hawaiian', 'Pan-Asian', 'British', 'Continental', 'Vietnamese', 'Irish', 'Cajun/Creole', 'Soul Food / Southern', 'African', 'Colombian', 'Pizza'],
-    'Meal Types': ['$30 Lunch Price', '$60 Dinner Price', '$45 Dinner Price', '$30 Sunday Lunch/Brunch Price', '$45 Sunday Dinner Price', '$45 Lunch Price', '$60 Sunday Dinner Price', '$30 Dinner Price', '$30 Sunday Dinner Price', '$45 Sunday Lunch/Brunch Price', '$60 Lunch Price', '$60 Sunday Lunch/Brunch Price'],
-    'Collections' : ['around-the-boroughs', 'date-night', 'summer-vibes', 'celebrity-chefs', 'dress-for-the-occasion', 'classic-restaurants', 'hidden-gems', 'for-the-foodies'],
-    'Participating Weeks': ['Week 1 (July 21 - July 27)', 'Week 2 (July 28 - Aug 3)', 'Week 3 (Aug 4 - Aug 10)', 'Week 4 (Aug 11 - Aug 17)', 'Week 5 (Aug 18 - Aug 24)', 'Week 6 (Aug 25 - Aug 31)']
-  }
-
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    setSearchTerm(value)
-    setShowSuggestions(value.length > 0)
-    onSearch(value)
-  }
-
-  const getSuggestions = () => {
-    if (!searchTerm.trim()) return []
-    return allRestaurants
-      .filter(restaurant => 
-        restaurant.name.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-      .slice(0, 5) // Limit to 5 suggestions
-  }
-
-  const handleSuggestionClick = (restaurant: Restaurant) => {
-    setSearchTerm(restaurant.name)
-    setShowSuggestions(false)
-    onSearch(restaurant.name)
-    onRestaurantSelect(restaurant)
+    'Price': ['$', '$$', '$$$', '$$$$'],
+    'Yelp Rating': ['3.5', '4', '4.5'],
+    'Vibes' : ['around-the-boroughs', 'date-night', 'summer-vibes', 'celebrity-chefs', 'dress-for-the-occasion', 'classic-restaurants', 'hidden-gems', 'for-the-foodies']
   }
 
   const handleFilterClick = (filterType: string) => {
@@ -77,10 +54,13 @@ export default function Filters({ onSearch, onFilterChange, allRestaurants = [],
     setOpenDropdown(null)
   }
 
-  const handleHasMenuToggle = () => {
-    const newActive = !hasMenuActive
-    setHasMenuActive(newActive)
-    onFilterChange('Has Menu', newActive ? ['active'] : [])
+  
+
+  const toggleBadge = (badge: 'michelin' | 'bib' | 'nyt') => {
+    const isActive = activeBadges.includes(badge)
+    const next = isActive ? activeBadges.filter(b => b !== badge) : [...activeBadges, badge]
+    setActiveBadges(next)
+    onFilterChange('Badges', next)
   }
 
   const handleResetAll = () => {
@@ -88,7 +68,8 @@ export default function Filters({ onSearch, onFilterChange, allRestaurants = [],
     // Clear local state
     setSearchTerm('')
     setSelectedFilters({})
-    setHasMenuActive(false)
+    setActiveBadges([])
+    onFilterChange('Badges', [])
     
     // Call the parent reset function
     onResetAll()
@@ -134,38 +115,12 @@ export default function Filters({ onSearch, onFilterChange, allRestaurants = [],
     <div className="filters-container">
       {/* Header */}
       <div className="filters-header">
-        <h2 className="filters-title">Browse All Restaurants</h2>
-        <p className="filters-instructions">To learn more about NYC Restaurant Week Summer 2025 restaurant offerings, tap on a pin in the map or search for one below:</p>
+        <h2 className="filters-title">Browse restaurants</h2>
+        <div className="filters-subrow">
+          <p className="filters-instructions">To learn more about restaurant offerings, tap on a pin in the map or chat with Remi the restaurant concierge:</p>
+        </div>
       </div>
-
-      {/* Search Bar */}
-      <div className="search-container">
-        <input
-          type="text"
-          placeholder="Search"
-          value={searchTerm}
-          onChange={handleSearch}
-          onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-          className="search-input"
-        />
-        <div className="search-icon">🔍</div>
-        
-        {/* Search Suggestions */}
-        {showSuggestions && getSuggestions().length > 0 && (
-          <div className="search-suggestions">
-            {getSuggestions().map((restaurant, index) => (
-              <div
-                key={index}
-                className="suggestion-item"
-                onClick={() => handleSuggestionClick(restaurant)}
-              >
-                {restaurant.name}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
+    
       {/* Filter Buttons */}
       <div className="filter-buttons">
         {/* Regular Dropdown Filters */}
@@ -192,8 +147,8 @@ export default function Filters({ onSearch, onFilterChange, allRestaurants = [],
                   const isSelected = option === 'All' 
                     ? currentSelected.length === 0 
                     : currentSelected.includes(option)
-                  // Use formatted display for Collections
-                  const displayText = filterType === 'Collections' ? formatCollectionName(option) : option
+                  // Use formatted display for Vibes
+                  const displayText = filterType === 'Vibes' ? formatCollectionName(option) : option
                   return (
                     <div
                       key={option}
@@ -213,17 +168,43 @@ export default function Filters({ onSearch, onFilterChange, allRestaurants = [],
         )
         })}
 
-        {/* Has Menu Toggle Button */}
+        
+
+        {/* Badge Toggles */}
         <div className="filter-group">
           <button
-            className={`filter-button ${hasMenuActive ? 'active' : ''}`}
-            onClick={handleHasMenuToggle}
+            className={`filter-button ${activeBadges.includes('michelin') ? 'active' : ''}`}
+            onClick={() => toggleBadge('michelin')}
           >
-            Has Menu
+            <span className="legend-dot" style={{ backgroundColor: '#d81b60', display: 'inline-block', width: '10px', height: '10px', borderRadius: '50%', marginRight: '8px' }} />
+            <img src="/MichelinStar.svg.png" alt="Michelin" style={{ height: '14px', marginRight: '6px' }} />
+            Michelin
           </button>
         </div>
 
-        {/* Reset All Button - Only show when filters are applied */}
+        <div className="filter-group">
+          <button
+            className={`filter-button ${activeBadges.includes('bib') ? 'active' : ''}`}
+            onClick={() => toggleBadge('bib')}
+          >
+            <span className="legend-dot" style={{ backgroundColor: '#ffa000', display: 'inline-block', width: '10px', height: '10px', borderRadius: '50%', marginRight: '8px' }} />
+            <img src="/bibgourmand.png" alt="Bib Gourmand" style={{ height: '14px', marginRight: '6px' }} />
+            Bib Gourmand
+          </button>
+        </div>
+
+        <div className="filter-group">
+          <button
+            className={`filter-button ${activeBadges.includes('nyt') ? 'active' : ''}`}
+            onClick={() => toggleBadge('nyt')}
+          >
+            <span className="legend-dot" style={{ backgroundColor: '#ff66b2', display: 'inline-block', width: '10px', height: '10px', borderRadius: '50%', marginRight: '8px' }} />
+            <img src="/nytimes.png" alt="NYT Top 100" style={{ height: '14px', marginRight: '6px' }} />
+            NYT Top 100
+          </button>
+        </div>
+
+        {/* Reset All Button - Only show when filters are applied (before favorites) */}
         {appliedFilters.length > 0 && (
           <div className="filter-group">
             <button
@@ -235,7 +216,7 @@ export default function Filters({ onSearch, onFilterChange, allRestaurants = [],
           </div>
         )}
 
-        {/* Favorites Button - Right aligned */}
+        {/* Favorites Button - Right aligned within filter row */}
         <div className="filter-group favorites-filter">
           <button
             className={`filter-button ${favoritesActive ? 'active' : ''}`}
@@ -244,7 +225,7 @@ export default function Filters({ onSearch, onFilterChange, allRestaurants = [],
             <svg width="12" height="12" viewBox="0 0 24 24" fill={favoritesActive ? "#FF69B4" : "none"} stroke="#FF69B4" strokeWidth="2" style={{ marginRight: '4px' }}>
               <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
             </svg>
-            {favorites.length} Favorites
+            {favorites.length}
           </button>
         </div>
 
@@ -279,7 +260,6 @@ export default function Filters({ onSearch, onFilterChange, allRestaurants = [],
                     ).filter((slug): slug is string => slug !== undefined)
                     const shareUrl = `${currentUrl}#favorites=${encodeURIComponent(favoriteSlugs.join(','))}`
                     
-                    // Try to use native share API first (iOS/Android)
                     if (navigator.share) {
                       navigator.share({
                         title: 'My NYC Restaurant Week Favorites',
@@ -287,11 +267,9 @@ export default function Filters({ onSearch, onFilterChange, allRestaurants = [],
                         url: shareUrl
                       }).catch((error) => {
                         console.log('Share cancelled or failed:', error)
-                        // Fallback to clipboard copy
                         copyToClipboard(shareUrl)
                       })
                     } else {
-                      // Fallback to clipboard copy for browsers that don't support Web Share API
                       copyToClipboard(shareUrl)
                     }
                     setOpenDropdown(null)
@@ -306,11 +284,9 @@ export default function Filters({ onSearch, onFilterChange, allRestaurants = [],
                 <div
                   className="dropdown-item"
                   onClick={() => {
-                    // Create a Google Maps directions URL with all favorited restaurants using names
                     const restaurantNames = favorites.map(name => {
                       const restaurant = allRestaurants.find(r => r.name === name)
                       if (restaurant) {
-                        // Use restaurant name and address for better accuracy
                         const searchQuery = restaurant.address 
                           ? `${restaurant.name}, ${restaurant.address}`
                           : restaurant.name
@@ -320,7 +296,6 @@ export default function Filters({ onSearch, onFilterChange, allRestaurants = [],
                     }).filter((query): query is string => query !== null)
                     
                     if (restaurantNames.length > 0) {
-                      // Create directions URL with all restaurant names
                       const googleMapsUrl = `https://www.google.com/maps/dir/${restaurantNames.join('/')}`
                       window.open(googleMapsUrl, '_blank')
                     }
@@ -338,6 +313,8 @@ export default function Filters({ onSearch, onFilterChange, allRestaurants = [],
             )}
           </div>
         )}
+
+        
       </div>
 
     </div>

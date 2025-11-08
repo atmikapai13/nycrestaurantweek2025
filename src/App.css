@@ -45,7 +45,7 @@
 .restaurant-card-overlay {
   position: absolute;
   bottom: 2rem;
-  right: calc(7% + 1rem);
+  left: calc(7% + 1rem);
   z-index: 1000;
   max-width: 350px;
   width: 100%;
@@ -53,8 +53,6 @@
   max-height: calc(100vh - 400px);
   overflow-y: auto;
 }
-
-
 
 
 
@@ -67,39 +65,6 @@
   border: 1px solid #e5e7eb;
   height: auto;
   min-height: fit-content;
-}
-
-.restaurant-name {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #000;
-  margin-bottom: 0.5rem;
-}
-
-.restaurant-borough {
-  color: #6b7280;
-  margin-bottom: 0.5rem;
-}
-
-.restaurant-cuisine {
-  font-size: 1rem;
-  color: #9ca3af;
-  margin-bottom: 0.5rem;
-}
-
-.restaurant-summary {
-  font-size: 1rem;
-  margin-bottom: 0.5rem;
-}
-
-.menu-link {
-  color: #2563eb;
-  font-size: 0.875rem;
-  text-decoration: none;
-}
-
-.menu-link:hover {
-  text-decoration: underline;
 }
 
 .no-selection {

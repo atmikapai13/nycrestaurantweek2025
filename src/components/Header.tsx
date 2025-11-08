@@ -8,7 +8,7 @@ export default function Header() {
         <div className="header-left">
           <h1>NYC Eats</h1>
                     <div className="header-dates">
-            <div className="header-dates-main">Stay tuned for Spring 2026 Restaurant Week!</div>
+            <div className="header-dates-main">     </div>
           </div>
           <div className="header-credits">
             Built by{' '}
@@ -21,15 +21,15 @@ export default function Header() {
             >
               Atmika Pai
             </a>
-            {' | Sourced from '}
+            {' | Contributions by '}
             <a
-              href="https://www.nyctourism.com/restaurant-week/"
+              href="https://www.fultonring.com/"
               target="_blank"
               rel="noopener noreferrer"
               className="nyc-credits-link"
               style={{ color: 'white', textDecoration: 'none' }}
             >
-              NYC Tourism
+              Fulton Ring (Pre-seed Startup)
             </a>
           </div>
         </div>

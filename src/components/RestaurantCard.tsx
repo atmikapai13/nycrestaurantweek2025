@@ -70,25 +70,17 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
         )}
       </div>
       {/* Restaurant Description */}
-      <p className="restaurant-description">{displayRestaurant.summary}</p>
+      <p className="restaurant-description" style={{ fontSize: '12px' }}>{displayRestaurant.summary}</p>
 
-      {/* Meals Available */}
-      {displayRestaurant.meal_types && displayRestaurant.meal_types.length > 0 && (
-        <div className="meals-section">
-          <h3 className="meals-heading">Meals Available</h3>
-          <div className={`meals-list ${displayRestaurant.meal_types.length >= 3 ? 'meals-list-two-columns' : ''}`}>
-            {displayRestaurant.meal_types.map((meal, index) => {
-              // Clean up meal type text
-              const cleanMeal = meal
-                .replace(' Price', '')
-                .replace('$', '$')
-              return (
-                <div key={index} className="meal-item">
-                  • {cleanMeal}
-                </div>
-              )
-            })}
-          </div>
+      {/* Yelp Rating and Reviews */}
+      {(displayRestaurant.yelp_rating && displayRestaurant.yelp_review_count) && (
+        <div className="yelp-section">
+          <span className="yelp-rating"><b>Yelp:</b> {displayRestaurant.yelp_rating} ({displayRestaurant.yelp_review_count} reviews)</span>
+          {displayRestaurant.price && (
+            <div className="restaurant-price">
+              <b>Price:</b> {displayRestaurant.price}
+            </div>
+          )}
         </div>
       )}
 

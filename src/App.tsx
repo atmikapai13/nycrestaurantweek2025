@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './App.css'
 import Header from './components/Header'
 import Map from './components/Map'
@@ -16,6 +16,7 @@ function App() {
   const [searchTerm, setSearchTerm] = useState('')
   const [favorites, setFavorites] = useState<string[]>([])
   const [favoritesActive, setFavoritesActive] = useState(false)
+  const mapInstanceRef = useRef<mapboxgl.Map | null>(null)
 
   useEffect(() => {
     // Load restaurants from imported data
@@ -105,15 +106,54 @@ function App() {
         filtered = filtered.filter(restaurant => {
           switch (filterType) {
             case 'Cuisine':
-              return values.includes(restaurant.cuisine)
-            case 'Participating Weeks':
-              return values.some(week => restaurant.participation_weeks.includes(week))
+              // Support both exact match and partial match (for chatbot)
+              if (!restaurant.cuisine) return false
+              return values.some(value =>
+                restaurant.cuisine === value ||
+                restaurant.cuisine.toLowerCase().includes(value.toLowerCase())
+              )
             case 'Meal Types':
               return values.some(meal => restaurant.meal_types.includes(meal))
+            case 'Price':
+              // Prefer v2 `price` if present, otherwise fall back to `price_range`
+              return values.includes((restaurant as any).price ?? restaurant.price_range)
+            case 'Yelp Rating': {
+              const rating = (restaurant as any).yelp_rating as number | undefined
+              if (typeof rating !== 'number') return false
+              const thresholds = values.map(v => parseFloat(v)).filter(n => !Number.isNaN(n))
+              if (thresholds.length === 0) return true
+              const minThreshold = Math.min(...thresholds)
+              return rating >= minThreshold
+            }
             case 'Collections':
+            case 'Vibes':
               return values.some(collection => restaurant.collections.includes(collection))
-            case 'Has Menu':
-              return restaurant.menu_url && restaurant.menu_url.trim() !== '' && restaurant.menu_url.toLowerCase() !== 'na'
+            case 'Badges': {
+              // OR logic: match if restaurant has ANY of the selected badges
+              return values.some((badge) => {
+                switch (badge) {
+                  case 'michelin':
+                    return restaurant.michelin_award && ['ONE_STAR', 'TWO_STARS', 'THREE_STARS'].includes(restaurant.michelin_award)
+                  case 'bib':
+                    return restaurant.michelin_award === 'BIB_GOURMAND'
+                  case 'nyt':
+                    return Boolean(restaurant.nyttop100_rank)
+                  default:
+                    return false
+                }
+              })
+            }
+            case 'Semantic Features': {
+              // Search for keywords in yelp_review_highlights
+              const highlights = restaurant.yelp_review_highlights?.toLowerCase() || ''
+              if (!highlights) return false
+              // Match if ANY keyword is found in the highlights
+              return values.some(keyword => highlights.includes(keyword.toLowerCase()))
+            }
+            case 'Semantic Search Results': {
+              // Filter to only show restaurants that match the slugs from semantic search
+              return values.some(slug => restaurant.slug === slug)
+            }
             default:
               return true
           }
@@ -145,13 +185,15 @@ function App() {
   }
 
   const handleFilterChange = (filterType: string, values: string[]) => {
-    const newFilters = { ...activeFilters }
-    if (values.length === 0) {
-      delete newFilters[filterType]
-    } else {
-      newFilters[filterType] = values
-    }
-    setActiveFilters(newFilters)
+    setActiveFilters(prevFilters => {
+      const newFilters = { ...prevFilters }
+      if (values.length === 0) {
+        delete newFilters[filterType]
+      } else {
+        newFilters[filterType] = values
+      }
+      return newFilters
+    })
   }
 
   const handleLegendToggle = (filterType: string) => {
@@ -174,6 +216,39 @@ function App() {
     setSearchTerm('')
     setSelectedRestaurant(null)
     setFavoritesActive(false)
+  }
+
+  const handleMapFocus = (restaurantIds: string[]) => {
+    // Focus map on these restaurants
+    if (mapInstanceRef.current && restaurantIds.length > 0) {
+      const focusedRestaurants = restaurants.filter(r =>
+        restaurantIds.includes(r.slug) && r.latitude && r.longitude
+      )
+
+      if (focusedRestaurants.length === 1) {
+        // Single restaurant - fly to it
+        const r = focusedRestaurants[0]
+        mapInstanceRef.current.flyTo({
+          center: [r.longitude!, r.latitude!],
+          zoom: 14,
+          duration: 1500
+        })
+      } else if (focusedRestaurants.length > 1) {
+        // Multiple restaurants - fit bounds
+        const coordinates = focusedRestaurants.map(r => [r.longitude!, r.latitude!])
+        const lngs = coordinates.map(c => c[0])
+        const lats = coordinates.map(c => c[1])
+
+        mapInstanceRef.current.fitBounds([
+          [Math.min(...lngs), Math.min(...lats)],
+          [Math.max(...lngs), Math.max(...lats)]
+        ], {
+          padding: 80,
+          duration: 1500,
+          maxZoom: 13
+        })
+      }
+    }
   }
 
   // Apply filters whenever activeFilters or legendFilters change
@@ -216,19 +291,22 @@ function App() {
 
       {/* Map Section - Full width with padding */}
       <div className="map-section">
-        <Map 
+        <Map
           restaurants={filteredRestaurants}
           onRestaurantSelect={handleRestaurantSelect}
           activeFilters={legendFilters}
           onLegendFilterChange={handleLegendToggle}
           totalRestaurants={restaurants.length}
           favorites={favorites}
+          onFilterChange={handleFilterChange}
+          allRestaurants={restaurants}
+          selectedRestaurant={selectedRestaurant}
         />
-        
+
         {/* Restaurant Card Overlay - Bottom Right */}
         {selectedRestaurant && (
           <div className="restaurant-card-overlay">
-            <RestaurantCard 
+            <RestaurantCard
               restaurant={selectedRestaurant}
               onClose={() => setSelectedRestaurant(null)}
               isFavorited={favorites.includes(selectedRestaurant.name)}

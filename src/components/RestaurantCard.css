@@ -27,15 +27,19 @@
 
 .restaurant-card {
   position: relative;
-  background: rgb(255, 255, 255);
   border-radius: 8px;
-  width: 100%;
+  width: 90%;
   margin-bottom: 10%;
   height: auto;
   min-height: 200px;
   overflow: visible;
   border: 1px solid #e5e7eb;
   flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.50);
+  backdrop-filter: blur(3px) saturate(180%);
+  -webkit-backdrop-filter: blur(3px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 /* Restaurant Tags */
@@ -49,7 +53,7 @@
   padding: 1px 5px;
   padding-top: 2px;
   border-radius: 6px;
-  font-size: 4px;
+  font-size: 9px;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.1px;
@@ -76,7 +80,7 @@
 
 /* Restaurant Name */
 .restaurant-name {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   color: #000000;
   margin: 0 0 4px 0;
@@ -107,7 +111,7 @@
 
 /* Restaurant Description */
 .restaurant-description {
-  font-size: clamp(8px, 0.8vw, 12px);
+  font-size: clamp(4px, 0.6vw, 5px);
   line-height: 1.4;
   color: #4B5563;
   margin: 0 0px 5px 0;
@@ -120,7 +124,7 @@
 }
 
 .meals-heading {
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 700;
   color: #000000;
   margin: 0 0 8px 0;
@@ -139,7 +143,7 @@
 }
 
 .meal-item {
-  font-size: 10px;
+  font-size: 8px;
   color: #4B5563;
   line-height: 1.0;
 }
@@ -166,7 +170,7 @@
   border: none;
   padding: 8px 12px;
   border-radius: 6px;
-  font-size: 10px;
+  font-size: 7px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.3px;
@@ -187,7 +191,7 @@
   margin-top: 10px;
   background-color: #000000;
   color: #ffffff;
-  font-size: clamp(10px, 1vw, 14px);
+  font-size: clamp(7px, 0.8vw, 10px);
   font-weight: 700;
   padding: 8px 12px;
   border: none;
@@ -212,7 +216,7 @@
   }
   
   .restaurant-name {
-    font-size: 20px;
+    font-size: 16px;
   }
   
   .restaurant-tags {
@@ -220,7 +224,7 @@
   }
   
   .tag {
-    font-size: 11px;
+    font-size: 8px;
     padding: 4px 10px;
   }
   
@@ -238,10 +242,10 @@
   }
   
   .restaurant-name {
-    font-size: 18px;
+    font-size: 14px;
   }
-  
+
   .restaurant-description {
-    font-size: 13px;
+    font-size: 9px;
   }
 } 

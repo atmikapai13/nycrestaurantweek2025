@@ -1,0 +1,78 @@
+import { API_CONFIG } from '../config/features'
+
+export interface ChatMessage {
+  role: 'user' | 'assistant'
+  content: string
+}
+
+export interface ChatContext {
+  totalRestaurants: number
+  visibleRestaurants: number
+  activeFilters: Record<string, any>
+}
+
+export interface ChatResponse {
+  type: 'text' | 'function_call'
+  message: string
+  function?: {
+    name: string
+    arguments: Record<string, any>
+  }
+}
+
+export async function sendChatMessage(
+  message: string,
+  context: ChatContext
+): Promise<ChatResponse> {
+  const apiUrl = `${API_CONFIG.API_URL}/chat`
+  console.log('API URL:', apiUrl)
+  console.log('API_CONFIG:', API_CONFIG)
+
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 second timeout
+
+  try {
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message,
+        context
+      }),
+      signal: controller.signal
+    })
+
+    clearTimeout(timeoutId)
+
+    console.log('Response status:', response.status)
+    console.log('Response ok:', response.ok)
+    console.log('Response headers:', Object.fromEntries(response.headers.entries()))
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      console.error('Error response text:', errorText)
+      let error
+      try {
+        error = JSON.parse(errorText)
+      } catch {
+        error = { error: errorText || 'Unknown error' }
+      }
+      throw new Error(error.error || `Chat API error: ${response.statusText}`)
+    }
+
+    console.log('Parsing JSON response...')
+    const text = await response.text()
+    console.log('Raw text:', text)
+    const jsonResponse = JSON.parse(text)
+    console.log('JSON parsed successfully:', jsonResponse)
+    return jsonResponse
+  } catch (error) {
+    clearTimeout(timeoutId)
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw new Error('Request timeout - please try again')
+    }
+    throw error
+  }
+}

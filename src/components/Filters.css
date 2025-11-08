@@ -8,6 +8,16 @@
 
 .filters-header {
   margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filters-subrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 .filters-title {
@@ -232,6 +242,19 @@
   margin-left: auto;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.header-share .dropdown-menu {
+  top: calc(100% + 4px);
+  right: 0;
+  left: auto;
+}
+
 .favorites-filter .filter-button {
   display: flex;
   align-items: center;
@@ -303,6 +326,13 @@
   }
   .filters-container {
     margin-bottom: 0px;
+  }
+  .filters-subrow {
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .header-actions {
+    margin-left: auto;
   }
   
   .filter-buttons {

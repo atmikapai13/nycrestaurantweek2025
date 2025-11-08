@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import type { Restaurant } from '../types/restaurant'
+import ChatInterface from './ChatInterface'
 
 // Set your Mapbox access token
 mapboxgl.accessToken = "pk.eyJ1IjoiYXRtaWthcGFpMTMiLCJhIjoiY21idHR4eTJpMDdhMjJsb20zNmZheTZ6ayJ9.d_bQSBzesyiCUMA-YHRoIA"
@@ -15,14 +16,52 @@ interface MapProps {
   onLegendFilterChange: (filterType: string) => void
   totalRestaurants: number
   favorites: string[]
+  onFilterChange: (filterType: string, values: string[]) => void
+  allRestaurants: Restaurant[]
+  onMapFocus?: (restaurantIds: string[]) => void
+  selectedRestaurant?: Restaurant | null
 }
 
-export default function Map({ restaurants, onRestaurantSelect, activeFilters, onLegendFilterChange, favorites }: MapProps) {
+export default function Map({ restaurants, onRestaurantSelect, activeFilters, onLegendFilterChange, favorites, onFilterChange, allRestaurants, onMapFocus, selectedRestaurant }: MapProps) {
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<mapboxgl.Map | null>(null)
   const markers = useRef<mapboxgl.Marker[]>([])
   const markerElements = useRef<HTMLDivElement[]>([])
   const currentZoom = useRef<number>(10.0)
+
+  // Implement onMapFocus handler for semantic search results
+  const handleMapFocus = (restaurantSlugs: string[]) => {
+    console.log('Map focus requested for', restaurantSlugs.length, 'restaurants')
+
+    // Filter allRestaurants to only include the semantic search results
+    const focusedRestaurants = allRestaurants.filter(r => restaurantSlugs.includes(r.slug))
+
+    if (focusedRestaurants.length === 0) {
+      console.warn('No restaurants found matching the provided slugs')
+      return
+    }
+
+    // Use onFilterChange to set a special "Semantic Search" filter
+    // This will trigger App.tsx to update filteredRestaurants
+    onFilterChange('Semantic Search Results', focusedRestaurants.map(r => r.slug))
+
+    // Calculate bounds to fit all focused restaurants
+    if (map.current && focusedRestaurants.length > 0) {
+      const bounds = new mapboxgl.LngLatBounds()
+
+      focusedRestaurants.forEach(restaurant => {
+        if (restaurant.longitude && restaurant.latitude) {
+          bounds.extend([restaurant.longitude, restaurant.latitude])
+        }
+      })
+
+      // Fit map to bounds with padding
+      map.current.fitBounds(bounds, {
+        padding: { top: 100, bottom: 100, left: 100, right: 100 },
+        maxZoom: 14
+      })
+    }
+  }
   
   // Function to determine if device is mobile
   const isMobile = () => {
@@ -75,7 +114,7 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
     // Initialize map
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/streets-v12', // Light style like your prototype
+      style: 'mapbox://styles/atmikapai13/cmhdmnool00ai01qw6qz79zqu', // Custom style
       center: [-73.979545, 40.744293], // NYC coordinates
       zoom: 10.0
     })
@@ -220,112 +259,18 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
   return (
     <div className="map-wrapper">
       <div ref={mapContainer} className="map-container" />
-      
+      {/* Chat/Remy Interface (now inside map, overlays map region only) */}
+      <ChatInterface
+        restaurants={restaurants}
+        allRestaurants={allRestaurants}
+        onFilterChange={onFilterChange}
+        onRestaurantSelect={onRestaurantSelect}
+        onMapFocus={handleMapFocus}
+        selectedRestaurant={selectedRestaurant}
+      />
       {/* Map Legend */}
       <div className="map-legend">
-        <h4 style={{ color: '#000000', margin: '0 0 -7px 0' }}>{legendFilteredRestaurants.length} Restaurants</h4>
-        <div style={{ fontSize: 'clamp(6px, 0.8vw, 12px)', color: '#666', marginBottom: '0px', marginTop: '0px' }}>Click on list below:</div>
-        <div className="legend-list-vertical">
-          <div 
-            className="legend-item" 
-            onClick={() => handleLegendClick('michelin')}
-            style={{ cursor: 'pointer' }}
-          >
-            <div className="legend-marker" style={{ backgroundColor: ' #C81224' }}></div>
-                            <img src="MichelinStar.svg.png" alt="Michelin Star" style={{ width: 'clamp(10px, 1.2vw, 16px)', height: 'clamp(10px, 1.2vw, 16px)', marginRight: '2px', verticalAlign: 'middle' }} />
-            <span style={{ fontWeight: activeFilters.includes('michelin') ? 'bold' : 'normal', color: '#000000' }}>Michelin</span>
-            {activeFilters.includes('michelin') && (
-              <button 
-                onClick={(e) => { e.stopPropagation(); handleLegendClick('michelin'); }}
-                style={{ 
-                  background: 'none', 
-                  border: 'none', 
-                  color: '#666', 
-                  cursor: 'pointer', 
-                  fontSize: 'clamp(6px, 0.8vw, 12px)',
-                  padding: '0',
-                  marginLeft: '2px'
-                }}
-              >
-                ×
-              </button>
-            )}
-          </div>
-          <div 
-            className="legend-item" 
-            onClick={() => handleLegendClick('bib')}
-            style={{ cursor: 'pointer' }}
-          >
-            <div className="legend-marker" style={{ backgroundColor: '#f9a83d' }}></div>
-                            <img src="bibgourmand.png" alt="Bib Gourmand" style={{ width: 'clamp(10px, 1.2vw, 16px)', height: 'clamp(10px, 1.2vw, 16px)', marginRight: '2px', verticalAlign: 'middle' }} />
-            <span style={{ fontWeight: activeFilters.includes('bib') ? 'bold' : 'normal', color: '#000000' }}>Bib Gourmand</span>
-            {activeFilters.includes('bib') && (
-              <button 
-                onClick={(e) => { e.stopPropagation(); handleLegendClick('bib'); }}
-                style={{ 
-                  background: 'none', 
-                  border: 'none', 
-                  color: '#666', 
-                  cursor: 'pointer', 
-                  fontSize: 'clamp(6px, 0.8vw, 12px)',
-                  padding: '0',
-                  marginLeft: '2px'
-                }}
-              >
-                ×
-              </button>
-            )}
-          </div>
-          <div 
-            className="legend-item" 
-            onClick={() => handleLegendClick('nyt')}
-            style={{ cursor: 'pointer' }}
-          >
-            <div className="legend-marker" style={{ backgroundColor: '#FF69B4' }}></div>
-                            <img src="nytimes.png" alt="NYT Top 100" style={{ width: 'clamp(10px, 1.2vw, 16px)', height: 'clamp(10px, 1.2vw, 16px)', marginRight: '2px', verticalAlign: 'middle' }} />
-            <span style={{ fontWeight: activeFilters.includes('nyt') ? 'bold' : 'normal', color: '#000000' }}>NYT Top 100</span>
-            {activeFilters.includes('nyt') && (
-              <button 
-                onClick={(e) => { e.stopPropagation(); handleLegendClick('nyt'); }}
-                style={{ 
-                  background: 'none', 
-                  border: 'none', 
-                  color: '#666', 
-                  cursor: 'pointer', 
-                  fontSize: 'clamp(6px, 0.8vw, 12px)',
-                  padding: '0',
-                  marginLeft: '2px'
-                }}
-              >
-                ×
-              </button>
-            )}
-          </div>
-          <div 
-            className="legend-item" 
-            onClick={() => handleLegendClick('regular')}
-            style={{ cursor: 'pointer' }}
-          >
-            <div className="legend-marker" style={{ backgroundColor: '#000000' }}></div>
-            <span style={{ fontWeight: activeFilters.includes('regular') ? 'bold' : 'normal', color: '#000000' }}>The Rest</span>
-            {activeFilters.includes('regular') && (
-              <button 
-                onClick={(e) => { e.stopPropagation(); handleLegendClick('regular'); }}
-                style={{ 
-                  background: 'none', 
-                  border: 'none', 
-                  color: '#666', 
-                  cursor: 'pointer', 
-                  fontSize: 'clamp(6px, 0.8vw, 12px)',
-                  padding: '0',
-                  marginLeft: '2px'
-                }}
-              >
-                ×
-              </button>
-            )}
-          </div>
-        </div>
+        <h4 style={{ color: '#000000', margin: '0' }}>{legendFilteredRestaurants.length} Restaurants</h4>
       </div>
     </div>
   )
