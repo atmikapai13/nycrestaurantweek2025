@@ -17,8 +17,8 @@
 }
 
 .filter-bar {
-  width: 90%;
-  max-width: 1100px;
+  width: 100%;
+  max-width: 1150px;
 }
 
 /* Map Section */
@@ -33,8 +33,8 @@
 .map-wrapper {
   position: relative;
   height: 100%;
-  width: 90%;
-  max-width: 1100px;
+  width: 100%;
+  max-width: 1150px;
 }
 
 .map-container {
@@ -44,10 +44,10 @@
 /* Restaurant Card Overlay */
 .restaurant-card-overlay {
   position: absolute;
-  bottom: 2rem;
-  left: calc(7% + 1rem);
+  bottom: 1rem;
+  left: calc(5% + 1rem);
   z-index: 1000;
-  max-width: 350px;
+  max-width: 300px;
   width: 100%;
   height: auto;
   max-height: calc(100vh - 400px);

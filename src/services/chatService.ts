@@ -11,6 +11,21 @@ export interface ChatContext {
   activeFilters: Record<string, any>
 }
 
+export interface GeminiMessage {
+  role: 'user' | 'model' | 'function'
+  parts: Array<{
+    text?: string
+    functionCall?: {
+      name: string
+      args: Record<string, any>
+    }
+    functionResponse?: {
+      name: string
+      response: Record<string, any>
+    }
+  }>
+}
+
 export interface ChatResponse {
   type: 'text' | 'function_call'
   message: string
@@ -22,7 +37,8 @@ export interface ChatResponse {
 
 export async function sendChatMessage(
   message: string,
-  context: ChatContext
+  context: ChatContext,
+  conversationHistory: GeminiMessage[] = []
 ): Promise<ChatResponse> {
   const apiUrl = `${API_CONFIG.API_URL}/chat`
   console.log('API URL:', apiUrl)
@@ -39,7 +55,8 @@ export async function sendChatMessage(
       },
       body: JSON.stringify({
         message,
-        context
+        context,
+        conversationHistory
       }),
       signal: controller.signal
     })

@@ -10,10 +10,14 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist --nojekyll --no-history"
+    "deploy": "gh-pages -d dist --nojekyll --no-history",
+    "embeddings:generate": "node scripts/generate-embeddings.js",
+    "embeddings:upload": "node scripts/upload-to-pinecone.js",
+    "embeddings:setup": "npm run embeddings:generate && npm run embeddings:upload"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
+    "@pinecone-database/pinecone": "^3.0.3",
     "@types/mapbox-gl": "^3.4.1",
     "mapbox-gl": "^3.13.0",
     "react": "^18.2.0",

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { sendChatMessage } from '../services/chatService'
+import { sendChatMessage, type GeminiMessage } from '../services/chatService'
 import type { Restaurant } from '../types/restaurant'
 import './ChatInterface.css'
 
@@ -29,9 +29,10 @@ export default function ChatInterface({
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: 'Hey there! I\'m Remi, your friendly neighborhood food expert 🐀👨‍🍳 What kind of dining experience are you craving today?'
+      content: 'Welcome! I\'m Remi, your rodent sommelier of the NYC dining scene. Yes, I\'m aware of the irony—a rat recommending restaurants. But unlike my cousins in the subway, I\'ve been vector-embedded with thousands of Yelp reviews and have a rather refined palate for semantic similarity. What are we looking for today?'
     }
   ])
+  const [conversationHistory, setConversationHistory] = useState<GeminiMessage[]>([])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [lastSelectedRestaurant, setLastSelectedRestaurant] = useState<string | null>(null)
@@ -88,17 +89,40 @@ export default function ChatInterface({
     setMessages(prev => [...prev, { role: 'user', content: userMessage }])
     setIsLoading(true)
 
+    // Add user message to conversation history
+    const userHistoryMessage: GeminiMessage = {
+      role: 'user',
+      parts: [{ text: userMessage }]
+    }
+
+    // Keep only last 10 messages (20 entries = 10 back-and-forth exchanges)
+    const trimmedHistory = conversationHistory.slice(-20)
+    const historyWithUserMessage = [...trimmedHistory, userHistoryMessage]
+
     try {
       console.log('Sending chat message:', userMessage)
+      console.log('Conversation history length:', historyWithUserMessage.length)
+
       const response = await sendChatMessage(userMessage, {
         totalRestaurants: allRestaurants.length,
         visibleRestaurants: restaurants.length,
         activeFilters: {}
-      })
+      }, historyWithUserMessage)
       console.log('Chat response:', response)
 
       // Handle function calls first
       if (response.type === 'function_call' && response.function) {
+        // Add model's function call to history
+        const modelFunctionCall: GeminiMessage = {
+          role: 'model',
+          parts: [{
+            functionCall: {
+              name: response.function.name,
+              args: response.function.arguments
+            }
+          }]
+        }
+
         await handleFunctionCall(response.function)
 
         // Generate a helpful message based on the function call
@@ -129,12 +153,37 @@ export default function ChatInterface({
           }
         }
 
+        // Add function response to history
+        const functionResponse: GeminiMessage = {
+          role: 'function',
+          parts: [{
+            functionResponse: {
+              name: response.function.name,
+              response: {
+                success: true,
+                message: helpfulMessage
+              }
+            }
+          }]
+        }
+
+        // Update conversation history with all three messages
+        setConversationHistory([...historyWithUserMessage, modelFunctionCall, functionResponse])
+
         setMessages(prev => [...prev, {
           role: 'assistant',
           content: helpfulMessage
         }])
       } else {
         // Regular text response
+        const modelTextResponse: GeminiMessage = {
+          role: 'model',
+          parts: [{ text: response.message }]
+        }
+
+        // Update conversation history
+        setConversationHistory([...historyWithUserMessage, modelTextResponse])
+
         setMessages(prev => [...prev, {
           role: 'assistant',
           content: response.message
@@ -240,6 +289,12 @@ export default function ChatInterface({
         await handleSemanticSearch(func.arguments)
         break
       }
+
+      case 'rag_search': {
+        // Call the RAG search API - must await since it's async
+        await handleRagSearch(func.arguments)
+        break
+      }
     }
   }
 
@@ -326,11 +381,106 @@ export default function ChatInterface({
     }
   }
 
+  const handleRagSearch = async (args: { query: string, pre_filters?: any, top_k?: number }) => {
+    try {
+      console.log('Calling RAG search API:', args)
+
+      // Add timeout to fetch request
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 second timeout
+
+      const response = await fetch('/api/rag-search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(args),
+        signal: controller.signal
+      })
+
+      clearTimeout(timeoutId)
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+
+        // Handle specific error cases
+        if (response.status === 429) {
+          throw new Error('API quota exceeded. The RAG search service is temporarily unavailable. Please try again later.')
+        }
+
+        throw new Error(errorData.error || `API error: ${response.statusText}`)
+      }
+
+      const data = await response.json()
+      console.log('RAG search results:', data.total_results, 'restaurants')
+      console.log('Fallback info:', data.fallback)
+      console.log('Overall explanation:', data.overall_explanation)
+
+      // Focus map on the top 7-8 RAG results to avoid decision fatigue
+      // RAG returns pre-filtered results, so we just focus the map without changing UI filters
+      if (onMapFocus && data.results.length > 0) {
+        const topResults = data.results.slice(0, 8) // Only show top 8 on map
+        onMapFocus(topResults.map((r: any) => r.slug))
+      }
+
+      // NOTE: We DON'T apply pre-filters to the UI because:
+      // 1. RAG already filtered the results server-side
+      // 2. Applying filters would hide the RAG results from the map
+      // 3. The map focus already shows only the relevant restaurants
+
+      // Add overall explanation to chat if available
+      if (data.overall_explanation) {
+        setMessages(prev => [...prev, {
+          role: 'assistant',
+          content: data.overall_explanation
+        }])
+      }
+
+      // If there was a fallback, add a message to chat explaining it
+      if (data.fallback) {
+        setMessages(prev => [...prev, {
+          role: 'assistant',
+          content: data.fallback.message
+        }])
+      }
+
+    } catch (error) {
+      console.error('RAG search error:', error)
+
+      let errorMessage = `Sorry, I had trouble searching for "${args.query}". `
+
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') {
+          errorMessage += 'The request timed out. Please try again.'
+        } else if (error.message.includes('quota')) {
+          errorMessage = error.message // Use the full quota message
+        } else if (error.message.includes('PINECONE') || error.message.includes('not configured')) {
+          errorMessage = 'The RAG search system is not fully set up yet. Please use traditional filters or try the basic semantic search.'
+        } else {
+          errorMessage += error.message
+        }
+      } else {
+        errorMessage += 'Please try again or use traditional filters.'
+      }
+
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: errorMessage
+      }])
+    }
+  }
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       handleSend()
     }
+  }
+
+  const handleClearHistory = () => {
+    setConversationHistory([])
+    setMessages([{
+      role: 'assistant',
+      content: 'Hey there! I\'m Remi, your friendly neighborhood food expert 🐀👨‍🍳 What kind of dining experience are you craving today?'
+    }])
   }
 
   return (
@@ -347,6 +497,17 @@ export default function ChatInterface({
       {/* Chat bubble - appears when open */}
       {isOpen && (
         <div className="chat-bubble">
+          <div className="chat-header">
+            <span className="chat-title">Chat with Remi</span>
+            <button
+              className="clear-history-button"
+              onClick={handleClearHistory}
+              title="Clear conversation history"
+              aria-label="Clear conversation history"
+            >
+              ↺
+            </button>
+          </div>
           <div className="chat-messages">
             {messages.map((msg, idx) => (
               <div key={idx} className={`chat-message ${msg.role}`}>

@@ -13,12 +13,6 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
   const displayRestaurant = restaurant || placeholderRestaurant
   if (!displayRestaurant) return null
 
-  const handleSeeMenu = () => {
-    if (displayRestaurant.menu_url) {
-      window.open(displayRestaurant.menu_url, '_blank')
-    }
-  }
-
   const handleLearnMore = () => {
     if (displayRestaurant.website) {
       window.open(displayRestaurant.website, '_blank')
@@ -86,14 +80,6 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
 
       {/* Action Buttons */}
       <div className="restaurant-actions">
-        {displayRestaurant.menu_url && (
-          <button className="action-link" onClick={handleSeeMenu}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-            </svg>
-            See Menu
-          </button>
-        )}
         {displayRestaurant.website && (
           <button className="action-link" onClick={handleLearnMore}>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

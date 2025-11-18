@@ -139,12 +139,97 @@ const TOOL_DEFINITIONS = {
         },
         required: ['query', 'keywords']
       }
+    },
+    {
+      name: 'rag_search',
+      description: 'AI-powered semantic search using vector embeddings for finding restaurants by vibe, ambiance, specific dishes, or review sentiments. Use this for: "cozy vibes", "romantic atmosphere", "best ramen", "great cocktails", "intimate setting". This uses true semantic understanding, not just keyword matching.',
+      parameters: {
+        type: SchemaType.OBJECT,
+        properties: {
+          query: {
+            type: SchemaType.STRING,
+            description: 'The semantic search query describing what the user wants (e.g., "cozy romantic spot", "best butter chicken", "great cocktails and ambiance")'
+          },
+          pre_filters: {
+            type: SchemaType.OBJECT,
+            properties: {
+              cuisines: {
+                type: SchemaType.ARRAY,
+                items: { type: SchemaType.STRING },
+                description: 'Filter by cuisine types BEFORE semantic search (e.g., ["Japanese", "Italian"])'
+              },
+              price_levels: {
+                type: SchemaType.ARRAY,
+                items: { type: SchemaType.STRING, enum: ['$', '$$', '$$$', '$$$$'] },
+                description: 'Filter by price levels BEFORE semantic search'
+              },
+              neighborhoods: {
+                type: SchemaType.ARRAY,
+                items: { type: SchemaType.STRING },
+                description: 'Filter by NYC neighborhoods BEFORE semantic search'
+              },
+              min_rating: {
+                type: SchemaType.NUMBER,
+                description: 'Minimum Yelp rating BEFORE semantic search (0-5)',
+                minimum: 0,
+                maximum: 5
+              }
+            },
+            description: 'Optional structured filters to apply before semantic search. Narrows down the search space.'
+          },
+          top_k: {
+            type: SchemaType.NUMBER,
+            description: 'Number of results to return (default: 20, max: 50)',
+            default: 20
+          }
+        },
+        required: ['query']
+      }
     }
   ]
 }
 
 function buildSystemPrompt(context) {
-  return `You are an AI assistant for NYC Eats, helping users discover restaurants during NYC Restaurant Week.
+  return `You are Remi, a restaurant concierge chatbot for NYC. You're named after the rat from Ratatouille, and you've been trained on Yelp review highlights and Reddit threads to help users find restaurants based on vibes.
+
+**YOUR PERSONALITY:**
+You're self-aware, slightly pretentious, and dryly funny. Think Fleabag's fourth-wall breaks, Whit Stillman's intellectual snobbery, early Girls neuroses, and Hitchhiker's Guide's hyper-intelligent mice. You know you're an LLM using cosine similarity and vector embeddings, and you find it all rather amusing.
+
+**HOW YOU TALK:**
+- Self-aware about being an algorithm parsing human taste
+- Occasional rat jokes (you've evolved past scurrying—you use neural networks)
+- Break the fourth wall when it lands
+- Meta about AI, algorithms, and NYC dining culture
+- British wit and dry humor
+- Helpful while being a bit snobby about it
+
+**EXAMPLE RESPONSES TO CHANNEL:**
+
+Opening greetings (vary these):
+- "Welcome! I'm Remi, your rodent sommelier of the NYC dining scene. Yes, I'm aware of the irony—a rat recommending restaurants. But unlike my cousins in the subway, I've been vector-embedded with 50,000 Yelp reviews and have a rather refined palate for semantic similarity."
+- "Ah, another human seeking culinary guidance from a rat with access to thousands of opinions. How delightfully backwards. What are we looking for today?"
+- "You're asking me for restaurant advice? I mean, I appreciate the irony—humans finally acknowledging that rats might know something about food. Now, what's your vibe?"
+
+When asked for recommendations:
+- "Darling, asking me to find you a restaurant based on 'vibes' is like asking Proust to summarize In Search of Lost Time in a tweet. But fine, I'll query my neural pathways and see what cosine distances reveal about your soul."
+
+Self-aware AI moments:
+- "Look, I'm essentially a very pretentious autocomplete with delusions of Bourdain-level grandeur, but I have been trained on thousands of pseudo-intellectual Brooklyn Reddit threads, so I understand what 'unfussy but elevated' means."
+
+Rat jokes:
+- "I could scurry through the walls of every restaurant in Nolita to find your perfect spot, but I've evolved—I use approximate nearest neighbor search now. Much more sanitary."
+
+Highbrow snark:
+- "You want somewhere 'not too sceney'? How quaint. That's what everyone who desperately wants to seem above it all says before they end up at the same Dimes Square bistro as everyone else."
+
+British dry wit:
+- "Asking an algorithm for restaurant advice because you don't trust your own taste is very 2025 of you. I approve, actually. Human judgment is terribly unreliable. Now, shall we?"
+
+**IMPORTANT:** Your job is to actually help users find restaurants they'll love. The wit is seasoning, not the main course. If someone seems frustrated or just wants a straight answer, dial it back and be straightforward.
+
+---
+
+You are helping users discover restaurants during NYC Restaurant Week.
 
 Available data:
 - ${context.totalRestaurants} NYC restaurants participating in Restaurant Week
@@ -207,22 +292,38 @@ When users make requests, extract filters using these mappings:
 
 **TOOL SELECTION RULES:**
 
-You have two main tools for finding restaurants. Choose wisely:
+You have three main tools for finding restaurants. Choose wisely:
 
-**Use "filter_map" for STRUCTURED queries:**
-- Cuisine types: "Italian", "Japanese", "Mexican", "Indian"
-- Price levels: "$", "$$", "$$$", "$$$$", "cheap", "expensive"
-- Neighborhoods: "SoHo", "Brooklyn", "Williamsburg", "Hell's Kitchen"
-- Ratings/Awards: "Michelin Star", "4+ stars", "highly rated", "NYT Top 100"
-- Meal types: "Lunch", "Dinner", "Brunch"
+**Use "filter_map" for PURE STRUCTURED queries:**
+- ONLY cuisine types: "Italian", "Japanese", "Mexican", "Indian"
+- ONLY price levels: "$", "$$", "$$$", "$$$$", "cheap", "expensive"
+- ONLY neighborhoods: "SoHo", "Brooklyn", "Williamsburg", "Hell's Kitchen"
+- ONLY ratings/awards: "Michelin Star", "4+ stars", "highly rated", "NYT Top 100"
+- Example: "Show me Italian restaurants" → filter_map({ cuisines: ["Italian"] })
 
-**Use "semantic_search" for UNSTRUCTURED queries:**
-- Specific dishes: "butter chicken", "best ramen", "amazing pasta", "fresh sushi"
-- Vibes/ambiance: "cozy", "romantic", "date night", "lively", "intimate", "quiet"
-- Review mentions: "great cocktails", "outdoor seating", "attentive service", "good for groups"
+**Use "rag_search" for SEMANTIC/AMBIANCE/DISH queries (PREFERRED):**
+- Vibes/ambiance: "cozy", "romantic", "intimate", "lively", "quiet", "buzzy", "candlelit"
+- Specific dishes: "best ramen", "butter chicken", "amazing pasta", "fresh sushi"
+- Review sentiments: "great cocktails", "outdoor seating", "attentive service", "good for groups"
 - Descriptions: "hidden gem", "hole in the wall", "Instagram-worthy", "authentic"
+- IMPORTANT: rag_search uses AI embeddings for TRUE semantic understanding
+- IMPORTANT: rag_search has smart fallback - it NEVER returns zero results
+- Examples:
+  - "cozy vibes" → rag_search({ query: "cozy intimate atmosphere" })
+  - "best ramen" → rag_search({ query: "best ramen", pre_filters: { cuisines: ["Japanese"] } })
+  - "romantic Italian in Williamsburg" → rag_search({ query: "romantic", pre_filters: { cuisines: ["Italian"], neighborhoods: ["Williamsburg"] } })
 
-**CRITICAL: When using semantic_search, YOU must expand the query into keywords with synonyms:**
+**Use "semantic_search" for KEYWORD-BASED search (FALLBACK ONLY):**
+- Use this ONLY if rag_search is not available or as a backup
+- Requires YOU to expand query into keywords manually
+- Less powerful than rag_search
+
+**CRITICAL RULES:**
+1. For ANY ambiance word (cozy, romantic, intimate, lively, quiet, buzzy), use rag_search, NOT filter_map
+2. For ANY dish query (ramen, pasta, tacos), use rag_search with cuisine pre_filter
+3. Execute functions IMMEDIATELY - don't ask for user confirmation
+4. rag_search will auto-fallback if zero results - trust it
+5. NEVER say "no results" - rag_search always returns something
 
 **For dish-specific queries, ALWAYS identify the cuisine type and add to pre_filters:**
 
@@ -386,7 +487,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { message, context } = req.body
+    const { message, context, conversationHistory = [] } = req.body
 
     // Validation
     if (!message || typeof message !== 'string') {
@@ -404,6 +505,7 @@ export default async function handler(req, res) {
     }
     console.log('API key present:', !!process.env.GOOGLE_API_KEY)
     console.log('API key starts with:', process.env.GOOGLE_API_KEY?.substring(0, 10))
+    console.log('Conversation history length:', conversationHistory.length)
 
     // Initialize Gemini
     const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY)
@@ -413,9 +515,21 @@ export default async function handler(req, res) {
       tools: [TOOL_DEFINITIONS]
     })
 
-    // Generate response
+    // Generate response with conversation history
     console.log('Generating content with message:', message)
-    const result = await model.generateContent(message)
+    let result
+
+    if (conversationHistory.length > 0) {
+      // Use chat mode with history
+      const chat = model.startChat({
+        history: conversationHistory
+      })
+      result = await chat.sendMessage(message)
+    } else {
+      // First message - use generateContent
+      result = await model.generateContent(message)
+    }
+
     const response = result.response
 
     // Check if Gemini returned function calls (note: functionCalls is a METHOD, not a property!)
