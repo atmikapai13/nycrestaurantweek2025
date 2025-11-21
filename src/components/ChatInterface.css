@@ -37,9 +37,9 @@
 
 /* Chat Bubble Container */
 .chat-bubble {
-  width: 320px;
-  max-height: 370px;
-  background: rgba(255, 255, 255, 0.20);
+  width: 350px;
+  max-height: 450px;
+  background: rgba(255, 255, 255, 0.50);
   backdrop-filter: blur(3px) saturate(180%);
   -webkit-backdrop-filter: blur(3px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.3);

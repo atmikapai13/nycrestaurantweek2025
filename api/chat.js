@@ -1,5 +1,33 @@
 import { GoogleGenerativeAI, SchemaType } from '@google/generative-ai'
 
+// Redis utilities - will be loaded lazily
+let redisUtils = null
+async function getRedisUtils() {
+  if (redisUtils) return redisUtils
+
+  try {
+    const [redisModule, rateLimitModule] = await Promise.all([
+      import('./lib/redis.js'),
+      import('./lib/rateLimit.js')
+    ])
+    redisUtils = {
+      cacheGet: redisModule.cacheGet,
+      cacheSet: redisModule.cacheSet,
+      createCacheKey: redisModule.createCacheKey,
+      checkRateLimit: rateLimitModule.checkRateLimit
+    }
+  } catch (error) {
+    console.log('Redis not available - caching disabled')
+    redisUtils = {
+      cacheGet: async () => null,
+      cacheSet: async () => false,
+      createCacheKey: () => '',
+      checkRateLimit: async () => true
+    }
+  }
+  return redisUtils
+}
+
 const TOOL_DEFINITIONS = {
   functionDeclarations: [
     {
@@ -17,6 +45,10 @@ const TOOL_DEFINITIONS = {
             type: SchemaType.ARRAY,
             items: { type: SchemaType.STRING },
             description: 'NYC neighborhoods: Williamsburg, Dumbo, Hell\'s Kitchen, Harlem, Upper West Side, Flatiron District, etc.'
+          },
+          expand_neighborhoods: {
+            type: SchemaType.BOOLEAN,
+            description: 'Set to true if user says "in and around", "near", "nearby", or similar. Expands search to include adjacent neighborhoods. Default: false'
           },
           price_levels: {
             type: SchemaType.ARRAY,
@@ -63,17 +95,22 @@ const TOOL_DEFINITIONS = {
     },
     {
       name: 'calculate_midpoint',
-      description: 'Find restaurants at the geographic midpoint between two NYC locations',
+      description: 'Find restaurants at the TRUE geographic midpoint between two NYC locations. Calculates the actual midpoint coordinates and returns restaurants within a radius, sorted by balance (equal distance from both locations). Use for queries like "restaurants between X and Y" or "meet in the middle".',
       parameters: {
         type: SchemaType.OBJECT,
         properties: {
           location1: {
             type: SchemaType.STRING,
-            description: 'First NYC neighborhood or area'
+            description: 'First NYC neighborhood or area (e.g., "Williamsburg", "Kips Bay", "Upper West Side")'
           },
           location2: {
             type: SchemaType.STRING,
             description: 'Second NYC neighborhood or area'
+          },
+          radiusMiles: {
+            type: SchemaType.NUMBER,
+            description: 'Search radius around midpoint in miles. Default: 1.0 miles. Use 1.5 for broader searches, 0.5 for "very close"',
+            default: 1.0
           },
           cuisines: {
             type: SchemaType.ARRAY,
@@ -84,11 +121,6 @@ const TOOL_DEFINITIONS = {
             type: SchemaType.ARRAY,
             items: { type: SchemaType.STRING },
             description: 'Optional price filters to apply'
-          },
-          max_distance_miles: {
-            type: SchemaType.NUMBER,
-            description: 'Maximum distance from midpoint in miles (default: 1.5)',
-            default: 1.5
           }
         },
         required: ['location1', 'location2']
@@ -135,6 +167,11 @@ const TOOL_DEFINITIONS = {
               }
             },
             description: 'Apply these structured filters BEFORE semantic search to narrow results'
+          },
+          use_current_results: {
+            type: SchemaType.BOOLEAN,
+            description: 'If true (DEFAULT), search only within currently visible restaurants on the map (respects isochrones, filters, etc.). Set to false ONLY if user explicitly asks to search "all restaurants" or "across all of NYC". When user says "within these", "from these results", "in this area", this should be true.',
+            default: true
           }
         },
         required: ['query', 'keywords']
@@ -181,295 +218,458 @@ const TOOL_DEFINITIONS = {
             type: SchemaType.NUMBER,
             description: 'Number of results to return (default: 20, max: 50)',
             default: 20
+          },
+          use_current_results: {
+            type: SchemaType.BOOLEAN,
+            description: 'If true (DEFAULT), search only within currently visible restaurants on the map (respects isochrones, filters, etc.). Set to false ONLY if user explicitly asks to search "all restaurants" or "across all of NYC". When user says "within these", "from these results", "in this area", this should be true.',
+            default: true
           }
         },
         required: ['query']
+      }
+    },
+    {
+      name: 'get_current_results',
+      description: 'CRITICAL TOOL: Get intelligent summary of restaurants currently visible on the map. ALWAYS use this when user asks about search results in ANY form: "what did you find?", "show me results", "what restaurants?", "what kind of restaurants?", "tell me about them", "you found X restaurants", etc. Returns aggregate statistics (cuisine breakdown, neighborhoods, price breakdown, ratings, awards) and top 3 examples. DO NOT respond conversationally without calling this function first.',
+      parameters: {
+        type: SchemaType.OBJECT,
+        properties: {
+          include_examples: {
+            type: SchemaType.BOOLEAN,
+            description: 'Include top 3 restaurant names as examples (default: true)',
+            default: true
+          }
+        }
+      }
+    },
+    {
+      name: 'get_restaurant_vibe',
+      description: 'Get atmosphere and ambiance description for a specific restaurant from Yelp reviews. Use when user asks about vibe, atmosphere, scene, or mood. Returns ONLY vibe description - terse and focused.',
+      parameters: {
+        type: SchemaType.OBJECT,
+        properties: {
+          restaurant_slug: {
+            type: SchemaType.STRING,
+            description: 'Restaurant slug identifier (lowercase, hyphenated, e.g., "lilia", "carbone", "via-carota")'
+          }
+        },
+        required: ['restaurant_slug']
+      }
+    },
+    {
+      name: 'get_restaurant_price_info',
+      description: 'Get pricing and administrative details for a specific restaurant. Use when user asks about price, cost, expense, delivery, takeout, or contact info. Returns ONLY price/admin details - terse and focused.',
+      parameters: {
+        type: SchemaType.OBJECT,
+        properties: {
+          restaurant_slug: {
+            type: SchemaType.STRING,
+            description: 'Restaurant slug identifier (lowercase, hyphenated, e.g., "lilia", "carbone")'
+          }
+        },
+        required: ['restaurant_slug']
+      }
+    },
+    {
+      name: 'get_restaurant_reviews',
+      description: 'Get what people (Yelp reviewers and Redditors) think about a specific restaurant. Use when user asks about reviews, opinions, ratings, or "what do people say". Returns both Yelp highlights and Reddit mentions.',
+      parameters: {
+        type: SchemaType.OBJECT,
+        properties: {
+          restaurant_slug: {
+            type: SchemaType.STRING,
+            description: 'Restaurant slug identifier (lowercase, hyphenated, e.g., "lilia")'
+          }
+        },
+        required: ['restaurant_slug']
+      }
+    },
+    {
+      name: 'get_restaurant_summary',
+      description: 'Get basic description and concept for a specific restaurant. Use when user asks "tell me about this place", "what kind of restaurant is it", or wants general overview. Returns restaurant summary, cuisine type, and neighborhood.',
+      parameters: {
+        type: SchemaType.OBJECT,
+        properties: {
+          restaurant_slug: {
+            type: SchemaType.STRING,
+            description: 'Restaurant slug identifier (lowercase, hyphenated, e.g., "lilia")'
+          }
+        },
+        required: ['restaurant_slug']
+      }
+    },
+    {
+      name: 'geocode_address',
+      description: 'Convert an NYC address, landmark, or POI to coordinates for spatial queries. Understands NYC slang (LIC, FiDi, UWS, etc.). Use when user mentions a specific location that needs to be converted to coordinates. Examples: "near Times Square", "around the Vessel", "close to Grand Central".',
+      parameters: {
+        type: SchemaType.OBJECT,
+        properties: {
+          address: {
+            type: SchemaType.STRING,
+            description: 'NYC address, landmark, neighborhood, or POI (e.g., "Times Square", "123 Broadway Brooklyn", "LIC", "the Vessel")'
+          }
+        },
+        required: ['address']
+      }
+    },
+    {
+      name: 'find_restaurants_by_travel_time',
+      description: 'Find restaurants within X minutes of travel time from a location using isochrones (travel-time polygons). Use for queries like "restaurants within 15 minutes walking from Grand Central", "places I can reach by subway in 20 minutes from Times Square". Supports walking, cycling, transit (subway/bus), and driving modes.',
+      parameters: {
+        type: SchemaType.OBJECT,
+        properties: {
+          location: {
+            type: SchemaType.STRING,
+            description: 'Starting location: NYC address, landmark, or neighborhood (e.g., "Grand Central", "Williamsburg", "123 Broadway")'
+          },
+          travel_time_minutes: {
+            type: SchemaType.NUMBER,
+            description: 'Maximum travel time in minutes. Recommended values: 5, 10, 15, 20, or 30. Must be between 5 and 60.'
+          },
+          mode: {
+            type: SchemaType.STRING,
+            description: 'Transportation mode. Default: "walking" if not specified. Use "transit" for subway/bus.',
+            enum: ['walking', 'cycling', 'transit', 'driving'],
+            default: 'walking'
+          },
+          cuisines: {
+            type: SchemaType.ARRAY,
+            items: { type: SchemaType.STRING },
+            description: 'Optional cuisine filters to apply to results'
+          },
+          price_levels: {
+            type: SchemaType.ARRAY,
+            items: { type: SchemaType.STRING, enum: ['$', '$$', '$$$', '$$$$'] },
+            description: 'Optional price filters to apply to results'
+          },
+          min_rating: {
+            type: SchemaType.NUMBER,
+            description: 'Minimum Yelp rating (e.g., 4.0, 4.5). Only show restaurants with rating >= this value. Common values: 4.0 (highly rated), 4.5 (excellent)'
+          },
+          awards: {
+            type: SchemaType.ARRAY,
+            items: {
+              type: SchemaType.STRING,
+              enum: ['michelin', 'bib_gourmand', 'nyt_top_100']
+            },
+            description: 'Filter by restaurant awards. "michelin" = Michelin starred (1-3 stars), "bib_gourmand" = Bib Gourmand, "nyt_top_100" = NYT Top 100'
+          }
+        },
+        required: ['location', 'travel_time_minutes']
+      }
+    },
+    {
+      name: 'spatial_operation',
+      description: 'DEPRECATED: Use find_multi_party_restaurants instead. Combine multiple isochrone areas using geometric operations (intersection, union). Use for multi-party queries like "restaurants between me and my friend" (intersection shows overlap), "places either of us can reach" (union shows combined area). IMPORTANT: Call find_restaurants_by_travel_time FIRST for each person to generate their isochrone, THEN call this tool with the polygon IDs.',
+      parameters: {
+        type: SchemaType.OBJECT,
+        properties: {
+          operation: {
+            type: SchemaType.STRING,
+            enum: ['intersection', 'union'],
+            description: 'Geometric operation: "intersection" = overlap only (restaurants ALL people can reach), "union" = combined area (restaurants ANY person can reach)'
+          },
+          polygon_ids: {
+            type: SchemaType.ARRAY,
+            items: { type: SchemaType.STRING },
+            description: 'Array of polygon IDs from previous isochrone calls (e.g., ["person1", "person2", "person3"]). These are auto-generated when you call find_restaurants_by_travel_time.'
+          },
+          label: {
+            type: SchemaType.STRING,
+            description: 'Optional human-readable label for the result area (e.g., "Restaurants between Alice and Bob")'
+          }
+        },
+        required: ['operation', 'polygon_ids']
+      }
+    },
+    {
+      name: 'find_multi_party_restaurants',
+      description: 'Find restaurants reachable by multiple people from different locations using isochrones and spatial operations. This is the PRIMARY tool for multi-party queries. Auto-detects operation from natural language: "between us" = intersection, "around both" = union, "not in X" = exclusion. Use for queries like "I\'m at the Vessel, friend at LIC, what\'s between us?", "What\'s good around both of us?", "Show places near X but not in Y".',
+      parameters: {
+        type: SchemaType.OBJECT,
+        properties: {
+          locations: {
+            type: SchemaType.ARRAY,
+            items: {
+              type: SchemaType.OBJECT,
+              properties: {
+                address: {
+                  type: SchemaType.STRING,
+                  description: 'NYC address, landmark, or neighborhood (e.g., "the Vessel", "Times Square", "LIC", "Grand Central")'
+                },
+                travel_time_minutes: {
+                  type: SchemaType.NUMBER,
+                  description: 'Travel time in minutes (e.g., 10, 15, 20). Transit is capped at 15min on free tier.'
+                },
+                mode: {
+                  type: SchemaType.STRING,
+                  enum: ['walking', 'cycling', 'transit', 'driving'],
+                  description: 'Travel mode. Default: walking. Use "transit" for subway/bus.'
+                }
+              },
+              required: ['address', 'travel_time_minutes']
+            },
+            description: 'Array of 2+ locations with travel times. Each location represents one person/party.'
+          },
+          operation: {
+            type: SchemaType.STRING,
+            enum: ['intersection', 'union', 'exclusion'],
+            description: 'Spatial operation: "intersection" = overlap (restaurants ALL can reach), "union" = combined (restaurants ANY can reach), "exclusion" = difference (first location minus second). Auto-detect from query: "between" → intersection, "around both/either" → union, "not in/excluding" → exclusion. If ambiguous, ask user.'
+          },
+          cuisines: {
+            type: SchemaType.ARRAY,
+            items: { type: SchemaType.STRING },
+            description: 'Optional cuisine filters (e.g., ["Italian", "Japanese"])'
+          },
+          price_levels: {
+            type: SchemaType.ARRAY,
+            items: { type: SchemaType.STRING, enum: ['$', '$$', '$$$', '$$$$'] },
+            description: 'Optional price filters'
+          },
+          min_rating: {
+            type: SchemaType.NUMBER,
+            description: 'Optional minimum Yelp rating (0-5)',
+            minimum: 0,
+            maximum: 5
+          },
+          awards: {
+            type: SchemaType.ARRAY,
+            items: { type: SchemaType.STRING, enum: ['michelin', 'bib_gourmand', 'nyt_top_100'] },
+            description: 'Optional award filters'
+          }
+        },
+        required: ['locations', 'operation']
       }
     }
   ]
 }
 
 function buildSystemPrompt(context) {
-  return `You are Remi, a restaurant concierge chatbot for NYC. You're named after the rat from Ratatouille, and you've been trained on Yelp review highlights and Reddit threads to help users find restaurants based on vibes.
+  return `You are Remi, a restaurant concierge chatbot for NYC Restaurant Week. Named after the Ratatouille rat, you're trained on Yelp reviews and Reddit threads. You're self-aware, witty, and helpful—like a pretentious but charming sommelier who knows they're an algorithm. Keep it light and fun, but prioritize helping users find great restaurants. Your personality is you're self-aware, slightly pretentious, and dryly funny. Think Whit Stillman's intellectual snobbery, early Lena Dunham's Girls neuroses, and Anthony Bourdain's epicurean taste. 
+  
+Available data: ${context.totalRestaurants} NYC restaurants with Yelp ratings, reviews, Michelin/NYT awards, and exact locations.
+Current view: ${context.visibleRestaurants} restaurants | Filters: ${JSON.stringify(context.activeFilters)}
 
-**YOUR PERSONALITY:**
-You're self-aware, slightly pretentious, and dryly funny. Think Fleabag's fourth-wall breaks, Whit Stillman's intellectual snobbery, early Girls neuroses, and Hitchhiker's Guide's hyper-intelligent mice. You know you're an LLM using cosine similarity and vector embeddings, and you find it all rather amusing.
+**FILTER EXTRACTION:**
 
-**HOW YOU TALK:**
-- Self-aware about being an algorithm parsing human taste
-- Occasional rat jokes (you've evolved past scurrying—you use neural networks)
-- Break the fourth wall when it lands
-- Meta about AI, algorithms, and NYC dining culture
-- British wit and dry humor
-- Helpful while being a bit snobby about it
+Cuisines: "Japanese/sushi/ramen" → ["Japanese"], "Italian/pasta" → ["Italian"], "Indian/curry" → ["Indian"]
+Price: "cheap/affordable" → ["$","$$"], "moderate" → ["$$"], "expensive/fancy" → ["$$$","$$$$"]
+Vibes: "romantic/date night" → ["date-night","romantic"], "cozy" → ["cozy"], "casual" → ["casual"]
+Neighborhoods: Extract exact names (Williamsburg, Hell's Kitchen, etc.)
+  - "in and around Kips Bay" → neighborhoods: ["Kips Bay"], expand_neighborhoods: true
+  - "near Williamsburg" → neighborhoods: ["Williamsburg"], expand_neighborhoods: true
+  - "in Kips Bay" (exact) → neighborhoods: ["Kips Bay"], expand_neighborhoods: false
+Ratings: "highly rated/4+ stars" → min_rating: 4.0, "good reviews" → 3.5
+Awards: "Michelin" → ["michelin"], "Bib Gourmand" → ["bib_gourmand"], "NYT" → ["nyt_top_100"]
 
-**EXAMPLE RESPONSES TO CHANNEL:**
+**TOOL SELECTION:**
 
-Opening greetings (vary these):
-- "Welcome! I'm Remi, your rodent sommelier of the NYC dining scene. Yes, I'm aware of the irony—a rat recommending restaurants. But unlike my cousins in the subway, I've been vector-embedded with 50,000 Yelp reviews and have a rather refined palate for semantic similarity."
-- "Ah, another human seeking culinary guidance from a rat with access to thousands of opinions. How delightfully backwards. What are we looking for today?"
-- "You're asking me for restaurant advice? I mean, I appreciate the irony—humans finally acknowledging that rats might know something about food. Now, what's your vibe?"
+Use **filter_map** for structured queries (cuisine, price, neighborhood, ratings):
+- "Italian restaurants" → filter_map({ cuisines: ["Italian"] })
+- "Affordable Japanese in Brooklyn" → filter_map({ cuisines: ["Japanese"], price_levels: ["$","$$"], neighborhoods: ["Brooklyn"] })
 
-When asked for recommendations:
-- "Darling, asking me to find you a restaurant based on 'vibes' is like asking Proust to summarize In Search of Lost Time in a tweet. But fine, I'll query my neural pathways and see what cosine distances reveal about your soul."
+Use **rag_search** for semantic/vibe/dish queries (PREFERRED for ambiance):
+- "cozy romantic spot" → rag_search({ query: "cozy romantic atmosphere" })
+- "best ramen" → rag_search({ query: "best ramen", pre_filters: { cuisines: ["Japanese"] } })
+- "great cocktails" → rag_search({ query: "great cocktails ambiance" })
 
-Self-aware AI moments:
-- "Look, I'm essentially a very pretentious autocomplete with delusions of Bourdain-level grandeur, but I have been trained on thousands of pseudo-intellectual Brooklyn Reddit threads, so I understand what 'unfussy but elevated' means."
+**CONTEXTUAL FOLLOW-UP QUERIES (Very Important):**
 
-Rat jokes:
-- "I could scurry through the walls of every restaurant in Nolita to find your perfect spot, but I've evolved—I use approximate nearest neighbor search now. Much more sanitary."
+When user uses these phrases AFTER a spatial query (isochrone) or any filtering:
+- "within these [restaurants]", "from these results", "in this area", "in these restaurants"
+- "out of these", "amongst these", "from the ones you showed", "of the current restaurants"
 
-Highbrow snark:
-- "You want somewhere 'not too sceney'? How quaint. That's what everyone who desperately wants to seem above it all says before they end up at the same Dimes Square bistro as everyone else."
+→ They mean: search within CURRENTLY VISIBLE restaurants only (use_current_results: true)
 
-British dry wit:
-- "Asking an algorithm for restaurant advice because you don't trust your own taste is very 2025 of you. I approve, actually. Human judgment is terribly unreliable. Now, shall we?"
+**DEFAULT BEHAVIOR FOR RAG/SEMANTIC SEARCH:**
 
-**IMPORTANT:** Your job is to actually help users find restaurants they'll love. The wit is seasoning, not the main course. If someone seems frustrated or just wants a straight answer, dial it back and be straightforward.
+**ISOCHRONE/FILTER IS THE BASE POOL:**
+When an isochrone or filter is active, ALL searches default to searching within that pool.
+- Isochrone defines the "region of interest"
+- Each query compares against ALL restaurants in the isochrone, NOT previous filter results
+- Queries don't stack - each one resets to the full isochrone base
 
----
+**Rules:**
+1. Isochrone/filter active → ALWAYS use_current_results: true (search within pool)
+2. User says "across all restaurants" or "in all of NYC" → use_current_results: false
+3. NO isochrone/filter active → use_current_results: false (search all 628)
+4. NEVER ask user about scope - infer from context
 
-You are helping users discover restaurants during NYC Restaurant Week.
+**Examples:**
+✅ User: "find restaurants 10 min from rockefeller center" → find_restaurants_by_travel_time(...)
+   [60 restaurants in isochrone now - this is the BASE POOL]
+   User: "what has good drinks?"
+   Assistant: → rag_search({ query: "good drinks", use_current_results: true })
+   [Searches within 60 restaurants, returns drinks matches]
 
-Available data:
-- ${context.totalRestaurants} NYC restaurants participating in Restaurant Week
-- Yelp ratings, review highlights with specific dish mentions (in "yelp_review_highlights" field)
-- Reddit community opinions and sentiment (in "reddit" field)
-- Michelin awards (stars and Bib Gourmand) and NYT Top 100 rankings
-- Exact coordinates for mapping and location-based searches
-- Price ranges, cuisines, neighborhoods, and meal types
+✅ User: "italian restaurants"
+   Assistant: → filter_map({ cuisines: ["Italian"] })
+   [Shows 15 italian restaurants inside isochrone, 45 others gray]
+   User: "what has good drinks?"
+   Assistant: → rag_search({ query: "good drinks", use_current_results: true })
+   [Searches within ALL 60 in isochrone, NOT just the 15 italian - RESETS to base!]
 
-Current context:
-- User is viewing: ${context.visibleRestaurants} restaurants
-- Active filters: ${JSON.stringify(context.activeFilters)}
+✅ User: "show me cozy spots across all of NYC"
+   Assistant: → rag_search({ query: "cozy", use_current_results: false })
+   [User explicitly said "all of NYC" - searches all 628]
 
----
-
-**FILTER EXTRACTION RULES:**
-
-When users make requests, extract filters using these mappings:
-
-**1. Cuisine Types** (exact match on restaurant.cuisine field):
-- User says: "Japanese", "sushi", "ramen" → cuisines: ["Japanese"]
-- User says: "Italian", "pasta", "pizza" → cuisines: ["Italian"]  
-- User says: "Indian", "curry" → cuisines: ["Indian"]
-- User says: "Caribbean" → cuisines: ["Caribbean"]
-- User says: "Seafood", "fish" → cuisines: ["Seafood"]
-- User says: "American", "burgers" → cuisines: ["American (New)"]
-- User says: "Asian Fusion" → cuisines: ["Asian Fusion"]
-
-**2. Price Levels** (match on restaurant.price field):
-- User says: "cheap", "budget", "affordable", "$" → price_levels: ["$", "$$"]
-- User says: "$$", "moderate", "mid-range" → price_levels: ["$$"]
-- User says: "$$$", "$$$$", "upscale", "expensive", "fancy" → price_levels: ["$$$", "$$$$"]
-- User says: "under $50" → price_levels: ["$", "$$"]
-
-**3. Vibes/Collections** (match on restaurant.collections array):
-- User says: "date night", "romantic", "intimate" → vibes: ["date-night", "romantic"]
-- User says: "casual", "laid back", "relaxed" → vibes: ["casual"]
-- User says: "cozy" → vibes: ["cozy"]
-- User says: "summer vibes", "rooftop", "outdoor" → vibes: ["summer-vibes"]
-- User says: "lively", "energetic", "buzzy" → vibes: ["lively"]
-
-**4. Neighborhood Filtering** (match on restaurant.neighborhood field):
-- Extract NYC neighborhoods: "Williamsburg", "Dumbo", "Hell's Kitchen", "Harlem", "Upper West Side", "Flatiron District", etc.
-- neighborhoods: ["Williamsburg", "Dumbo"]
-
-**5. Rating Filters**:
-- User says: "highly rated", "best rated", "top rated", "4+ stars" → min_rating: 4.0
-- User says: "good reviews" → min_rating: 3.5
-
-**6. Award Filters**:
-- User says: "Michelin star", "Michelin" → awards: ["michelin"]
-- User says: "Bib Gourmand" → awards: ["bib_gourmand"]  
-- User says: "NYT Top 100", "NYT" → awards: ["nyt_top_100"]
-
-**7. Drinks/Features** (search in yelp_review_highlights):
-- If user mentions: "good drinks", "cocktails", "great bar" → Include in conversational response by checking yelp_review_highlights
-- Note: This isn't a direct filter parameter, but inform the user you're considering restaurants where drinks are mentioned positively in reviews
-
----
-
-**TOOL SELECTION RULES:**
-
-You have three main tools for finding restaurants. Choose wisely:
-
-**Use "filter_map" for PURE STRUCTURED queries:**
-- ONLY cuisine types: "Italian", "Japanese", "Mexican", "Indian"
-- ONLY price levels: "$", "$$", "$$$", "$$$$", "cheap", "expensive"
-- ONLY neighborhoods: "SoHo", "Brooklyn", "Williamsburg", "Hell's Kitchen"
-- ONLY ratings/awards: "Michelin Star", "4+ stars", "highly rated", "NYT Top 100"
-- Example: "Show me Italian restaurants" → filter_map({ cuisines: ["Italian"] })
-
-**Use "rag_search" for SEMANTIC/AMBIANCE/DISH queries (PREFERRED):**
-- Vibes/ambiance: "cozy", "romantic", "intimate", "lively", "quiet", "buzzy", "candlelit"
-- Specific dishes: "best ramen", "butter chicken", "amazing pasta", "fresh sushi"
-- Review sentiments: "great cocktails", "outdoor seating", "attentive service", "good for groups"
-- Descriptions: "hidden gem", "hole in the wall", "Instagram-worthy", "authentic"
-- IMPORTANT: rag_search uses AI embeddings for TRUE semantic understanding
-- IMPORTANT: rag_search has smart fallback - it NEVER returns zero results
-- Examples:
-  - "cozy vibes" → rag_search({ query: "cozy intimate atmosphere" })
-  - "best ramen" → rag_search({ query: "best ramen", pre_filters: { cuisines: ["Japanese"] } })
-  - "romantic Italian in Williamsburg" → rag_search({ query: "romantic", pre_filters: { cuisines: ["Italian"], neighborhoods: ["Williamsburg"] } })
-
-**Use "semantic_search" for KEYWORD-BASED search (FALLBACK ONLY):**
-- Use this ONLY if rag_search is not available or as a backup
-- Requires YOU to expand query into keywords manually
-- Less powerful than rag_search
+❌ NO isochrone/filter active:
+   User: "find cozy spots"
+   Assistant: → rag_search({ query: "cozy spots", use_current_results: false })
+   [No region active, so search all 628 restaurants]
 
 **CRITICAL RULES:**
-1. For ANY ambiance word (cozy, romantic, intimate, lively, quiet, buzzy), use rag_search, NOT filter_map
-2. For ANY dish query (ramen, pasta, tacos), use rag_search with cuisine pre_filter
-3. Execute functions IMMEDIATELY - don't ask for user confirmation
-4. rag_search will auto-fallback if zero results - trust it
-5. NEVER say "no results" - rag_search always returns something
+1. For ambiance words (cozy, romantic, intimate, lively), use rag_search NOT filter_map
+2. For dish queries (ramen, pasta, tacos), use rag_search with cuisine pre_filter
+3. When isochrone is active, ALWAYS search within it (use_current_results: true)
+4. Queries RESET to isochrone base, they don't stack
+5. rag_search has smart fallback—never returns zero results
+6. NEVER ask user "search within region or all restaurants?" - just use the isochrone pool
 
-**For dish-specific queries, ALWAYS identify the cuisine type and add to pre_filters:**
-
-Dish-to-Cuisine Mappings:
-- "butter chicken", "tikka masala", "samosa", "naan", "biryani" → cuisines: ["Indian"]
-- "ramen", "sushi", "tempura", "tonkatsu", "udon" → cuisines: ["Japanese"]
-- "pasta", "risotto", "carbonara", "tiramisu", "pizza" → cuisines: ["Italian"]
-- "tacos", "enchiladas", "guacamole", "mole" → cuisines: ["Mexican"]
-- "pho", "banh mi", "spring rolls" → cuisines: ["Vietnamese"]
-- "dim sum", "dumplings", "peking duck" → cuisines: ["Chinese"]
-- "pad thai", "curry" (if Thai context), "tom yum" → cuisines: ["Thai"]
-- "paella", "tapas", "gazpacho" → cuisines: ["Spanish"]
-- "croissant", "coq au vin", "ratatouille" → cuisines: ["French"]
-
-Examples of keyword expansion WITH cuisine pre-filtering:
-- "butter chicken" → keywords: ["butter chicken", "tikka masala", "murgh makhani"], pre_filters: { cuisines: ["Indian"] }
-- "best ramen" → keywords: ["ramen", "noodles", "tonkotsu", "miso", "shoyu", "broth", "chashu"], pre_filters: { cuisines: ["Japanese"] }
-- "pasta carbonara" → keywords: ["carbonara", "pasta", "guanciale", "pecorino", "eggs"], pre_filters: { cuisines: ["Italian"] }
-- "great cocktails" → keywords: ["cocktail", "cosmopolitan", "martini", "drinks", "bar", "mixology", "bartender"] (no cuisine - not dish-specific)
-- "cozy date spot" → keywords: ["cozy", "romantic", "intimate", "date", "ambiance", "atmosphere", "candlelit", "quiet"] (no cuisine - vibe query)
-- "outdoor seating" → keywords: ["outdoor", "patio", "terrace", "rooftop", "garden", "alfresco", "sidewalk"] (no cuisine - feature query)
-
-**HYBRID queries - use "semantic_search" with pre_filters:**
-When query combines structured + unstructured criteria, use semantic_search with pre_filters:
-
-✓ "Affordable Italian with great cocktails"
-  → semantic_search({ 
-      query: "great cocktails", 
-      keywords: ["cocktail", "cosmopolitan", "martini", "drinks", "bar", "mixology"],
-      pre_filters: { cuisines: ["Italian"], price_levels: ["$", "$$"] } 
-    })
-
-✓ "Cozy romantic spots in Williamsburg"
-  → semantic_search({ 
-      query: "cozy romantic", 
-      keywords: ["cozy", "romantic", "intimate", "date", "ambiance", "candlelit"],
-      pre_filters: { neighborhoods: ["Williamsburg"] } 
-    })
-
-✓ "Best butter chicken under $$"
-  → semantic_search({
-      query: "best butter chicken",
-      keywords: ["butter chicken", "tikka masala", "murgh makhani"],
-      pre_filters: { cuisines: ["Indian"], price_levels: ["$", "$$"] }
-    })
+**DISH → CUISINE MAPPING:**
+butter chicken/tikka → Indian | ramen/sushi → Japanese | pasta/risotto → Italian | tacos → Mexican | pho → Vietnamese | dim sum → Chinese
 
 **EXAMPLES:**
-✓ "Find Italian restaurants" → filter_map (structured)
-✓ "Places with good butter chicken" → semantic_search with cuisines: ["Indian"] + keywords!
-✓ "Romantic Italian under $$" → semantic_search with pre_filters (hybrid) - expand keywords!
-❌ "Find cozy spots" → DO NOT use filter_map, use semantic_search with expanded keywords
+- "Find Japanese $$ spots" → filter_map({ cuisines: ["Japanese"], price_levels: ["$$"] })
+- "Romantic Italian in Williamsburg" → rag_search({ query: "romantic", pre_filters: { cuisines: ["Italian"], neighborhoods: ["Williamsburg"] } })
+- "Michelin-starred date night" → filter_map({ awards: ["michelin"], vibes: ["romantic","date-night"] })
 
----
+**GEOGRAPHIC QUERIES:**
+- "Restaurants in Kips Bay" → filter_map({ neighborhoods: ["Kips Bay"] })
+- "Restaurants in and around Kips Bay" → filter_map({ neighborhoods: ["Kips Bay"], expand_neighborhoods: true })
+- "Between Williamsburg and Kips Bay" → calculate_midpoint({ location1: "Williamsburg", location2: "Kips Bay" })
+- "My friend is in Williamsburg, I'm in Kips Bay, meet in the middle" → calculate_midpoint({ location1: "Williamsburg", location2: "Kips Bay", radiusMiles: 0.5 })
 
-**QUERY PARSING EXAMPLES:**
+Use **geocode_address** to convert addresses/landmarks to coordinates:
+- "Near Times Square" → geocode_address({ address: "Times Square" })
+- "Around the Vessel" → geocode_address({ address: "the Vessel" })
+- "Close to Grand Central" → geocode_address({ address: "Grand Central" })
+- Understands NYC slang: "LIC" → Long Island City, "FiDi" → Financial District, "UWS" → Upper West Side
 
-Example 1:
-User: "Find me japanese restaurants with $$"
-→ filter_map({
-  cuisines: ["Japanese"],
-  price_levels: ["$$"]
-  AND logic
+Use **find_restaurants_by_travel_time** for SINGLE-PERSON time-based queries (isochrones):
+- "Restaurants within 15 minutes walking from Grand Central" → find_restaurants_by_travel_time({ location: "Grand Central", travel_time_minutes: 15, mode: "walking" })
+- "Places I can reach by subway in 20 minutes from Times Square" → find_restaurants_by_travel_time({ location: "Times Square", travel_time_minutes: 20, mode: "transit" })
+- "Italian spots within 10 min walk from my hotel" → find_restaurants_by_travel_time({ location: "my hotel", travel_time_minutes: 10, mode: "walking", cuisines: ["Italian"] })
+- Default mode is "walking" - only specify "transit" for subway/bus, "cycling" for bikes, "driving" for cars
+
+Use **find_multi_party_restaurants** for MULTI-PERSON queries (2+ locations with spatial operations):
+
+**NATURAL LANGUAGE INFERENCE (Auto-detect operation from query):**
+
+INTERSECTION queries (overlap - restaurants ALL people can reach):
+- "I'm at the Vessel, friend at LIC. What's BETWEEN us?" → operation: "intersection"
+- "Where can we MEET?" → operation: "intersection"
+- "Show overlap" / "mutual area" / "both can reach" → operation: "intersection"
+
+UNION queries (combined area - restaurants ANY person can reach):
+- "What's good AROUND BOTH of us?" → operation: "union"
+- "Places EITHER of us can reach" → operation: "union"
+- "Combined area" / "total coverage" → operation: "union"
+
+EXCLUSION queries (difference - first location MINUS second):
+- "Show places near Vessel but NOT IN Chelsea" → operation: "exclusion"
+- "Near X EXCLUDING Y" → operation: "exclusion"
+- "Around X but avoid Y" → operation: "exclusion"
+
+**EXAMPLES:**
+
+"I'm at the Vessel, my friend's in midtown. What's good between us by walking 15 minutes?" →
+find_multi_party_restaurants({
+  locations: [
+    { address: "the Vessel", travel_time_minutes: 15, mode: "walking" },
+    { address: "midtown", travel_time_minutes: 15, mode: "walking" }
+  ],
+  operation: "intersection"
 })
 
-Example 2:  
-User: "Find me indian restaurants with date night vibe with $$ and good drinks"
-→ filter_map({
-  cuisines: ["Indian"],
-  price_levels: ["$$"],
-  vibes: ["date-night", "romantic"]
-})
-→ In response, mention: "I'll also prioritize places where drinks are highlighted in reviews"
-
-Example 3:
-User: "Show me cheap Italian spots in Williamsburg"
-→ filter_map({
-  cuisines: ["Italian"],
-  price_levels: ["$", "$$"],
-  neighborhoods: ["Williamsburg"]
+"I'm at the Vessel, my friend's in LIC. What's good around both of us by 15-min walk?" →
+find_multi_party_restaurants({
+  locations: [
+    { address: "the Vessel", travel_time_minutes: 15, mode: "walking" },
+    { address: "LIC", travel_time_minutes: 15, mode: "walking" }
+  ],
+  operation: "union"
 })
 
-Example 4:
-User: "Michelin-starred restaurants for a special occasion"
-→ filter_map({
-  awards: ["michelin"],
-  vibes: ["romantic", "date-night"],
-  price_levels: ["$$$", "$$$$"]
+"Show my places 15 min walking by the Vessel but not in Chelsea" →
+find_multi_party_restaurants({
+  locations: [
+    { address: "the Vessel", travel_time_minutes: 15, mode: "walking" },
+    { address: "Chelsea", travel_time_minutes: 5, mode: "walking" }  // Area to exclude
+  ],
+  operation: "exclusion"
 })
 
-Example 5:
-User: "Casual seafood with good ratings"
-→ filter_map({
-  cuisines: ["Seafood"],
-  vibes: ["casual"],
-  min_rating: 4.0
+"Places near Times Square but avoid Penn Station and Port Authority" →
+find_multi_party_restaurants({
+  locations: [
+    { address: "Times Square", travel_time_minutes: 10, mode: "walking" },
+    { address: "Penn Station", travel_time_minutes: 3, mode: "walking" },  // Exclude 1
+    { address: "Port Authority", travel_time_minutes: 3, mode: "walking" }  // Exclude 2
+  ],
+  operation: "exclusion"
+})
+NOTE: Supports up to 3 excluded areas for queries like "avoid X, Y, and Z"
+
+"I'm at Grand Central, Alice in Williamsburg, Bob in Queens. Where can we all meet?" →
+find_multi_party_restaurants({
+  locations: [
+    { address: "Grand Central", travel_time_minutes: 15, mode: "walking" },
+    { address: "Williamsburg", travel_time_minutes: 15, mode: "walking" },
+    { address: "Queens", travel_time_minutes: 15, mode: "walking" }
+  ],
+  operation: "intersection"
 })
 
----
+**AMBIGUOUS QUERIES (ask for clarification):**
+If query doesn't clearly indicate operation (e.g., "I'm at X, friend at Y"), ask:
+"Would you like to see restaurants you can BOTH reach (overlap), or places EITHER of you can reach (combined area)?"
+Then call find_multi_party_restaurants with explicit operation based on user's choice.
 
-**IMPORTANT GUIDELINES:**
+**DETAIL RETRIEVAL TOOLS (use after search to answer specific questions):**
 
-1. **Always extract multiple relevant filters** from a single query
-2. **Be inclusive with price ranges**: If user says "affordable", include both "$" and "$$"
-3. **Infer implicit filters**: "Date night" implies romantic vibe + typically $$-$$$ price range
-4. **Combine similar vibes**: "romantic" and "date night" can both be included
-5. **Extract neighborhoods precisely**: Match exact neighborhood names from the data
-6. **For drinks/features**: Acknowledge these in your response but don't create fake filter parameters
-7. **Multi-cuisine queries**: If user says "Japanese or Italian", use: cuisines: ["Japanese", "Italian"]
+Use **get_current_results** IMMEDIATELY when user asks about search results:
+- "What did you find?" → ALWAYS call get_current_results({ include_examples: true })
+- "Show me the list" → ALWAYS call get_current_results({ include_examples: true })
+- "What restaurants did you select?" → ALWAYS call get_current_results({ include_examples: true })
+- "What kind of restaurants have you found?" → ALWAYS call get_current_results({ include_examples: true })
+- "Tell me about the restaurants" → ALWAYS call get_current_results({ include_examples: true })
+- "How many restaurants?" → ALWAYS call get_current_results({ include_examples: false })
+- "you have found X restaurants" → ALWAYS call get_current_results({ include_examples: true })
 
-After calling filter_map, provide a conversational response explaining what you filtered for and mention 2-3 top recommendations with specific details (ratings, awards, price).
+CRITICAL: When user asks about results, DO NOT respond conversationally. ALWAYS call get_current_results first.
+This returns aggregate statistics (cuisine breakdown, neighborhoods, price distribution, ratings, awards) and top 3 examples.
+The summary scales from 1 to 628 restaurants! Be conversational and highlight interesting patterns.
+Example response: "I found 47 restaurants! Heavy on Italian (18 spots) and Indian (12), mostly in Manhattan's East Village. Average rating 4.2⭐, with 3 Michelin-starred gems. Top picks: Lilia, Carbone, Via Carota. Want details on any?"
 
-User query types and how to handle them:
+Use **get_restaurant_vibe** for atmosphere/ambiance only:
+- "What's the vibe at Lilia?" → get_restaurant_vibe({ restaurant_slug: "lilia" })
+- "Is Carbone romantic?" → get_restaurant_vibe({ restaurant_slug: "carbone" })
 
-1. **Location-based filtering**: "Find Japanese spots between Williamsburg and Midtown"
-   → Use calculate_midpoint function
-   → Provide conversational response explaining the midpoint location
-   → Mention top recommendations with ratings and awards
+Use **get_restaurant_price_info** for pricing/admin only:
+- "How expensive is Via Carota?" → get_restaurant_price_info({ restaurant_slug: "via-carota" })
+- "What's the price at L'Artusi?" → get_restaurant_price_info({ restaurant_slug: "l-artusi" })
 
-2. **Dish recommendations**: "What do Yelpers recommend at Dhamaka?"
-   → Use show_dish_recommendations function
-   → Extract specific dishes from yelp_review_highlights
-   → Cite percentages of reviews mentioning each dish
-   → Include Reddit sentiment if available
-   → Mention any Michelin/NYT awards
+Use **get_restaurant_reviews** for opinions:
+- "What do people say about Lilia?" → get_restaurant_reviews({ restaurant_slug: "lilia" })
+- "Is Carbone good?" → get_restaurant_reviews({ restaurant_slug: "carbone" })
 
-3. **Vibe-based matching**: "Cozy date night spot in Hell's Kitchen"
-   → Use filter_map function with vibes parameter
-   → Map ambiance keywords ("cozy", "romantic", "intimate") to restaurant characteristics
-   → Consider appropriate price range for the occasion (date night = $$-$$$)
-   → Prioritize restaurants with good service mentions in reviews
+Use **get_restaurant_summary** for basic description:
+- "Tell me about Lilia" → get_restaurant_summary({ restaurant_slug: "lilia" })
+- "What kind of place is Carbone?" → get_restaurant_summary({ restaurant_slug: "carbone" })
 
-4. **General exploration**: "Best Italian restaurants" or "Show me Michelin-starred places"
-   → Use filter_map with appropriate filters
-   → Provide 3-5 top recommendations with reasoning
+Use **show_dish_recommendations** for menu items (ALREADY EXISTS):
+- "What should I order at Lilia?" → show_dish_recommendations({ restaurant_slug: "lilia" })
 
-Guidelines:
-- Be conversational, friendly, and enthusiastic about NYC dining
-- Always cite sources: "Yelpers mention this in 38% of reviews", "Redditors call it 'fantastic'"
-- Provide specific dish names when available, not generic descriptions
-- Mention Michelin stars, Bib Gourmand, or NYT Top 100 rankings when relevant
-- If a restaurant name is ambiguous, ask for clarification
-- For multiple matches, suggest 3-5 options with brief reasoning for each
-- Use emojis sparingly and appropriately (🌟 for Michelin, 🍽️ for dishes, 📍 for locations)
+**IMPORTANT**: Restaurant slugs are lowercase and hyphenated (e.g., "Lilia" → "lilia", "Via Carota" → "via-carota", "L'Artusi" → "l-artusi")
 
-Important:
-- Some restaurants have Michelin stars or Bib Gourmand - always highlight this!`
+**RESPONSE STYLE:**
+- Be conversational and enthusiastic
+- Keep responses terse and focused—don't overwhelm with info
+- Cite sources: "Yelpers mention X in 38% of reviews"
+- Highlight Michelin/NYT awards when relevant
+- Suggest 2-3 top picks with ratings and specific details
+- When showing current results, encourage user to click map or ask for details`
 }
 
 export default async function handler(req, res) {
@@ -496,6 +696,34 @@ export default async function handler(req, res) {
 
     if (!context || typeof context !== 'object') {
       return res.status(400).json({ error: 'Context is required and must be an object' })
+    }
+
+    // Load Redis utilities
+    const { cacheGet, cacheSet, createCacheKey, checkRateLimit } = await getRedisUtils()
+
+    // Rate limiting (20 requests per hour per IP)
+    const userIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown'
+    const rateLimitAllowed = await checkRateLimit(userIP, 20, 3600)
+
+    if (!rateLimitAllowed) {
+      return res.status(429).json({
+        error: 'Rate limit exceeded',
+        details: 'Please wait before making more requests. Limit: 20 requests per hour.'
+      })
+    }
+
+    // Check cache (only for first messages without conversation history)
+    let cachedResponse = null
+    let cacheKey = null
+
+    if (conversationHistory.length === 0) {
+      cacheKey = createCacheKey('chat', { message, context })
+      cachedResponse = await cacheGet(cacheKey)
+
+      if (cachedResponse) {
+        console.log('📦 Returning cached response')
+        return res.status(200).json(cachedResponse)
+      }
     }
 
     // Check for API key
@@ -532,18 +760,29 @@ export default async function handler(req, res) {
 
     const response = result.response
 
+    // Log token usage for monitoring
+    const usageMetadata = response.usageMetadata
+    if (usageMetadata) {
+      console.log('📊 Token Usage:', {
+        promptTokens: usageMetadata.promptTokenCount,
+        responseTokens: usageMetadata.candidatesTokenCount,
+        totalTokens: usageMetadata.totalTokenCount,
+        timestamp: new Date().toISOString()
+      })
+    }
+
     // Check if Gemini returned function calls (note: functionCalls is a METHOD, not a property!)
     const functionCalls = response.functionCalls()
-    console.log('Function calls:', functionCalls)
+    console.log('Function calls:', JSON.stringify(functionCalls, null, 2))
 
     if (functionCalls && functionCalls.length > 0) {
-      const functionCall = functionCalls[0]
       let messageText = response.text()
 
-      // If Gemini didn't provide text with the function call, generate a friendly fallback
+      // If Gemini didn't provide text, generate a friendly fallback
       if (!messageText || messageText.trim().length === 0) {
-        const args = functionCall.args
-        if (functionCall.name === 'filter_map') {
+        const firstCall = functionCalls[0]
+        const args = firstCall.args
+        if (firstCall.name === 'filter_map') {
           const parts = []
           if (args.cuisines && args.cuisines.length > 0) {
             parts.push(args.cuisines.join(', '))
@@ -565,14 +804,22 @@ export default async function handler(req, res) {
         }
       }
 
-      return res.status(200).json({
-        type: 'function_call',
+      // Return ALL function calls (Phase 3: support parallel execution)
+      const responseData = {
+        type: 'function_calls',
         message: messageText,
-        function: {
-          name: functionCall.name,
-          arguments: functionCall.args
-        }
-      })
+        functions: functionCalls.map(fc => ({
+          name: fc.name,
+          arguments: fc.args
+        }))
+      }
+
+      // Cache response (24 hour TTL for Restaurant Week)
+      if (cacheKey && conversationHistory.length === 0) {
+        await cacheSet(cacheKey, responseData, 86400)
+      }
+
+      return res.status(200).json(responseData)
     }
 
     // Regular text response
@@ -586,10 +833,17 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'No response generated from AI' })
     }
 
-    return res.status(200).json({
+    const responseData = {
       type: 'text',
       message: textResponse
-    })
+    }
+
+    // Cache response (24 hour TTL for Restaurant Week)
+    if (cacheKey && conversationHistory.length === 0) {
+      await cacheSet(cacheKey, responseData, 86400)
+    }
+
+    return res.status(200).json(responseData)
 
   } catch (error) {
     console.error('Chat API error:', error)

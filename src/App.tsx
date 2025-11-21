@@ -18,6 +18,15 @@ function App() {
   const [favoritesActive, setFavoritesActive] = useState(false)
   const mapInstanceRef = useRef<mapboxgl.Map | null>(null)
 
+  // Callback ref for map reset function (will be set by Map component)
+  const mapResetRef = useRef<(() => void) | null>(null)
+
+  // Highlighted restaurant IDs (for pink markers when searching/isochrone)
+  const [highlightedRestaurantIds, setHighlightedRestaurantIds] = useState<Set<string>>(new Set())
+
+  // Isochrone region slugs (defines which restaurants are inside active isochrone polygon)
+  const [isochroneRegionSlugs, setIsochroneRegionSlugs] = useState<string[] | null>(null)
+
   useEffect(() => {
     // Load restaurants from imported data
     setRestaurants(restaurantData as Restaurant[])
@@ -83,7 +92,7 @@ function App() {
     // Apply search filter
     if (searchTerm.trim()) {
       filtered = filtered.filter(restaurant =>
-        restaurant.name.toLowerCase().includes(searchTerm.toLowerCase())
+        restaurant.name && restaurant.name.toLowerCase().includes(searchTerm.toLowerCase())
       )
     }
 
@@ -97,7 +106,7 @@ function App() {
 
     // Apply favorites filter first
     if (favoritesActive) {
-      filtered = filtered.filter(restaurant => favorites.includes(restaurant.name))
+      filtered = filtered.filter(restaurant => restaurant.name && favorites.includes(restaurant.name))
     }
 
     // Apply active filters
@@ -113,7 +122,7 @@ function App() {
                 restaurant.cuisine.toLowerCase().includes(value.toLowerCase())
               )
             case 'Meal Types':
-              return values.some(meal => restaurant.meal_types.includes(meal))
+              return restaurant.meal_types && values.some(meal => restaurant.meal_types.includes(meal))
             case 'Price':
               // Prefer v2 `price` if present, otherwise fall back to `price_range`
               return values.includes((restaurant as any).price ?? restaurant.price_range)
@@ -127,7 +136,7 @@ function App() {
             }
             case 'Collections':
             case 'Vibes':
-              return values.some(collection => restaurant.collections.includes(collection))
+              return restaurant.collections && values.some(collection => restaurant.collections.includes(collection))
             case 'Badges': {
               // OR logic: match if restaurant has ANY of the selected badges
               return values.some((badge) => {
@@ -135,8 +144,10 @@ function App() {
                   case 'michelin':
                     return restaurant.michelin_award && ['ONE_STAR', 'TWO_STARS', 'THREE_STARS'].includes(restaurant.michelin_award)
                   case 'bib':
+                  case 'bib_gourmand':  // Support both formats
                     return restaurant.michelin_award === 'BIB_GOURMAND'
                   case 'nyt':
+                  case 'nyt_top_100':  // Support both formats
                     return Boolean(restaurant.nyttop100_rank)
                   default:
                     return false
@@ -148,7 +159,7 @@ function App() {
               const highlights = restaurant.yelp_review_highlights?.toLowerCase() || ''
               if (!highlights) return false
               // Match if ANY keyword is found in the highlights
-              return values.some(keyword => highlights.includes(keyword.toLowerCase()))
+              return values.some(keyword => keyword && highlights.includes(keyword.toLowerCase()))
             }
             case 'Semantic Search Results': {
               // Filter to only show restaurants that match the slugs from semantic search
@@ -184,7 +195,29 @@ function App() {
     return filtered
   }
 
+  const handleIsochroneRegion = (slugs: string[] | null) => {
+    setIsochroneRegionSlugs(slugs)
+    // When isochrone is set, initially highlight ALL restaurants in region
+    if (slugs) {
+      setHighlightedRestaurantIds(new Set(slugs))
+    }
+  }
+
   const handleFilterChange = (filterType: string, values: string[]) => {
+    // Special case: "Semantic Search Results" means highlight, not filter
+    if (filterType === 'Semantic Search Results') {
+      // If isochrone region is active, scope highlights to that region only
+      if (isochroneRegionSlugs) {
+        const regionSet = new Set(isochroneRegionSlugs)
+        const scopedValues = values.filter(slug => regionSet.has(slug))
+        setHighlightedRestaurantIds(new Set(scopedValues))
+      } else {
+        setHighlightedRestaurantIds(new Set(values))
+      }
+      return
+    }
+
+    // All other filters work normally (hide restaurants)
     setActiveFilters(prevFilters => {
       const newFilters = { ...prevFilters }
       if (values.length === 0) {
@@ -216,6 +249,13 @@ function App() {
     setSearchTerm('')
     setSelectedRestaurant(null)
     setFavoritesActive(false)
+    setHighlightedRestaurantIds(new Set())  // Clear highlights
+    setIsochroneRegionSlugs(null)  // Clear isochrone region
+
+    // Also reset map state (isochrones, view) if the callback is available
+    if (mapResetRef.current) {
+      mapResetRef.current()
+    }
   }
 
   const handleMapFocus = (restaurantIds: string[]) => {
@@ -258,7 +298,7 @@ function App() {
     // Apply search filter
     if (searchTerm.trim()) {
       filtered = filtered.filter(restaurant =>
-        restaurant.name.toLowerCase().includes(searchTerm.toLowerCase())
+        restaurant.name && restaurant.name.toLowerCase().includes(searchTerm.toLowerCase())
       )
     }
 
@@ -301,6 +341,11 @@ function App() {
           onFilterChange={handleFilterChange}
           allRestaurants={restaurants}
           selectedRestaurant={selectedRestaurant}
+          onResetAll={handleResetAll}
+          mapResetRef={mapResetRef}
+          highlightedIds={highlightedRestaurantIds}
+          onIsochroneRegion={handleIsochroneRegion}
+          isochroneRegionSlugs={isochroneRegionSlugs}
         />
 
         {/* Restaurant Card Overlay - Bottom Right */}

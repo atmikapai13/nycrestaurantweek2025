@@ -18,10 +18,12 @@
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
     "@pinecone-database/pinecone": "^3.0.3",
+    "@turf/turf": "^7.3.0",
     "@types/mapbox-gl": "^3.4.1",
     "mapbox-gl": "^3.13.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "redis": "^4.7.0"
   },
   "devDependencies": {
     "@types/node": "^24.9.2",

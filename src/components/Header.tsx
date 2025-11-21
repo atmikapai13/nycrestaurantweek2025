@@ -21,15 +21,15 @@ export default function Header() {
             >
               Atmika Pai
             </a>
-            {' | Contributions by '}
+            {' (Contributions by '}
             <a
-              href="https://www.fultonring.com/"
+              href="https://marauders.earth/"
               target="_blank"
               rel="noopener noreferrer"
               className="nyc-credits-link"
               style={{ color: 'white', textDecoration: 'none' }}
             >
-              Fulton Ring (Pre-seed Startup)
+              Marauders.Earth)
             </a>
           </div>
         </div>

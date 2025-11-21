@@ -27,12 +27,16 @@ export interface GeminiMessage {
 }
 
 export interface ChatResponse {
-  type: 'text' | 'function_call'
+  type: 'text' | 'function_call' | 'function_calls'
   message: string
   function?: {
     name: string
     arguments: Record<string, any>
   }
+  functions?: Array<{
+    name: string
+    arguments: Record<string, any>
+  }>
 }
 
 export async function sendChatMessage(

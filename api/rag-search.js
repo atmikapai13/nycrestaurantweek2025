@@ -5,6 +5,29 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
+// Redis utilities - will be loaded lazily
+let redisUtils = null
+async function getRedisUtils() {
+  if (redisUtils) return redisUtils
+
+  try {
+    const redisModule = await import('./lib/redis.js')
+    redisUtils = {
+      cacheGet: redisModule.cacheGet,
+      cacheSet: redisModule.cacheSet,
+      createCacheKey: redisModule.createCacheKey
+    }
+  } catch (error) {
+    console.log('Redis not available - caching disabled')
+    redisUtils = {
+      cacheGet: async () => null,
+      cacheSet: async () => false,
+      createCacheKey: () => ''
+    }
+  }
+  return redisUtils
+}
+
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
@@ -100,6 +123,9 @@ function loadRestaurantData(pineconeMatches, filters = {}) {
 
     // Apply cuisine filter (partial matching)
     if (filters.cuisines && filters.cuisines.length > 0) {
+      if (!restaurant.cuisine) {
+        return null // Skip restaurants without cuisine data
+      }
       const matchesCuisine = filters.cuisines.some(cuisine =>
         restaurant.cuisine.toLowerCase().includes(cuisine.toLowerCase())
       )
@@ -110,6 +136,9 @@ function loadRestaurantData(pineconeMatches, filters = {}) {
 
     // Apply neighborhood filter (partial matching)
     if (filters.neighborhoods && filters.neighborhoods.length > 0) {
+      if (!restaurant.neighborhood) {
+        return null // Skip restaurants without neighborhood data
+      }
       const matchesNeighborhood = filters.neighborhoods.some(neighborhood =>
         restaurant.neighborhood.toLowerCase().includes(neighborhood.toLowerCase())
       )
@@ -251,7 +280,7 @@ function calculateKeywordBoost(query, restaurant) {
   const name = (restaurant.name || '').toLowerCase()
   const summary = (restaurant.summary || '').toLowerCase()
   const reviews = (restaurant.yelp_review_highlights || '').toLowerCase()
-  const collections = (restaurant.collections || []).map(c => c.toLowerCase())
+  const collections = (restaurant.collections || []).filter(c => c).map(c => c.toLowerCase())
 
   queryTerms.forEach(term => {
     // Name matches (5x weight - highest priority)
@@ -371,14 +400,26 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { query, pre_filters = {}, top_k = 20 } = req.body
+    const { query, pre_filters = {}, top_k = 20, restaurant_ids = null } = req.body
 
     // Validation
     if (!query || typeof query !== 'string') {
       return res.status(400).json({ error: 'Query is required and must be a string' })
     }
 
-    console.log('RAG Search Request:', { query, pre_filters, top_k })
+    console.log('RAG Search Request:', { query, pre_filters, top_k, restaurant_ids_count: restaurant_ids?.length || 'all' })
+
+    // Load Redis utilities
+    const { cacheGet, cacheSet, createCacheKey } = await getRedisUtils()
+
+    // Check cache for this exact query + filters combination
+    const cacheKey = createCacheKey('rag', { query, pre_filters, top_k })
+    const cachedResult = await cacheGet(cacheKey)
+
+    if (cachedResult) {
+      console.log('📦 Returning cached RAG results')
+      return res.status(200).json(cachedResult)
+    }
 
     // Step 1: Generate query embedding
     console.log('Generating query embedding...')
@@ -402,7 +443,17 @@ export default async function handler(req, res) {
     }
 
     // Step 4: Load full restaurant data and apply local filters (cuisine, neighborhood)
-    const matchedRestaurants = loadRestaurantData(pineconeMatches, pre_filters)
+    let matchedRestaurants = loadRestaurantData(pineconeMatches, pre_filters)
+
+    // Step 4.5: Filter by restaurant_ids if provided (contextual search)
+    if (restaurant_ids && restaurant_ids.length > 0) {
+      const idSet = new Set(restaurant_ids)
+      const beforeCount = matchedRestaurants.length
+      matchedRestaurants = matchedRestaurants.filter(match =>
+        idSet.has(match.restaurant.slug)
+      )
+      console.log(`🎯 Filtered to ${matchedRestaurants.length} restaurants from provided ${restaurant_ids.length} IDs (before: ${beforeCount})`)
+    }
 
     // Step 5: Apply keyword boost to refine ranking
     const boostedResults = matchedRestaurants.map(match => {
@@ -435,15 +486,21 @@ export default async function handler(req, res) {
 
     console.log(`Returning ${results.length} results (after local filtering + keyword boost)`)
 
-    // Return results
-    return res.status(200).json({
+    // Prepare response
+    const responseData = {
       query,
       total_results: results.length,
       results,
       overall_explanation: overallExplanation,
       fallback: fallbackInfo,
       filters_applied: pre_filters
-    })
+    }
+
+    // Cache results (1 hour TTL - semantic results can evolve)
+    await cacheSet(cacheKey, responseData, 3600)
+
+    // Return results
+    return res.status(200).json(responseData)
 
   } catch (error) {
     console.error('RAG Search error:', error)

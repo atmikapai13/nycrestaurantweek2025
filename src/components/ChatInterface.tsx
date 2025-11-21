@@ -1,11 +1,116 @@
 import { useState, useRef, useEffect } from 'react'
 import { sendChatMessage, type GeminiMessage } from '../services/chatService'
 import type { Restaurant } from '../types/restaurant'
+import { API_CONFIG } from '../config/features'
+import { calculateTrueMidpoint, getNeighborhoodCenter, findRestaurantsWithinRadius, expandNeighborhoodSearch, filterRestaurantsByPolygon, intersectPolygons, unionPolygons, excludePolygon } from '../utils/geospatial'
+import { getIsochrone } from '../services/isochroneService'
+import type { IsochroneLayer } from './Map'
 import './ChatInterface.css'
 
 interface Message {
   role: 'user' | 'assistant'
   content: string
+}
+
+/**
+ * Computes aggregate metadata from restaurant array for intelligent summaries
+ * Performance: O(n) single pass, ~5-10ms for 628 restaurants
+ */
+function computeResultMetadata(restaurants: Restaurant[]) {
+  if (restaurants.length === 0) {
+    return {
+      total_count: 0,
+      message: "No restaurants match your current filters."
+    }
+  }
+
+  const metadata: Record<string, any> = {
+    total_count: restaurants.length,
+    cuisine_breakdown: {} as Record<string, number>,
+    top_cuisines: [] as string[],
+    borough_breakdown: {} as Record<string, number>,
+    top_neighborhoods: [] as string[],
+    price_breakdown: { "$": 0, "$$": 0, "$$$": 0, "$$$$": 0 },
+    avg_rating: 0,
+    rating_range: [5, 0] as [number, number],
+    michelin_count: 0,
+    michelin_types: [] as string[],
+    nyt_count: 0,
+    collections_present: [] as string[],
+    has_awards: false
+  }
+
+  let totalRating = 0
+  let ratingCount = 0
+  const neighborhoodCounts: Record<string, number> = {}
+  const collectionSet = new Set<string>()
+  const michelinSet = new Set<string>()
+
+  // Single pass through restaurants
+  restaurants.forEach(r => {
+    // Cuisine
+    if (r.cuisine) {
+      metadata.cuisine_breakdown[r.cuisine] = (metadata.cuisine_breakdown[r.cuisine] || 0) + 1
+    }
+
+    // Borough
+    if (r.borough) {
+      metadata.borough_breakdown[r.borough] = (metadata.borough_breakdown[r.borough] || 0) + 1
+    }
+
+    // Neighborhood
+    if (r.neighborhood) {
+      neighborhoodCounts[r.neighborhood] = (neighborhoodCounts[r.neighborhood] || 0) + 1
+    }
+
+    // Price
+    if (r.price && r.price in metadata.price_breakdown) {
+      metadata.price_breakdown[r.price as keyof typeof metadata.price_breakdown]++
+    }
+
+    // Rating
+    if (r.yelp_rating && r.yelp_rating > 0) {
+      totalRating += r.yelp_rating
+      ratingCount++
+      metadata.rating_range[0] = Math.min(metadata.rating_range[0], r.yelp_rating)
+      metadata.rating_range[1] = Math.max(metadata.rating_range[1], r.yelp_rating)
+    }
+
+    // Awards
+    if (r.michelin_award) {
+      metadata.michelin_count++
+      michelinSet.add(r.michelin_award)
+      metadata.has_awards = true
+    }
+
+    if (r.nyttop100_rank) {
+      metadata.nyt_count++
+      metadata.has_awards = true
+    }
+
+    // Collections
+    r.collections?.forEach(c => collectionSet.add(c))
+  })
+
+  // Compute derived fields
+  metadata.avg_rating = ratingCount > 0 ? Math.round((totalRating / ratingCount) * 10) / 10 : 0
+
+  // Top 3 cuisines
+  metadata.top_cuisines = Object.entries(metadata.cuisine_breakdown)
+    .sort(([, a], [, b]) => (b as number) - (a as number))
+    .slice(0, 3)
+    .map(([cuisine]) => cuisine)
+
+  // Top 3 neighborhoods
+  metadata.top_neighborhoods = Object.entries(neighborhoodCounts)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 3)
+    .map(([hood]) => hood)
+
+  metadata.michelin_types = Array.from(michelinSet)
+  metadata.collections_present = Array.from(collectionSet)
+
+  return metadata
 }
 
 interface ChatInterfaceProps {
@@ -15,6 +120,11 @@ interface ChatInterfaceProps {
   onRestaurantSelect: (restaurant: Restaurant) => void
   onMapFocus?: (restaurantIds: string[]) => void
   selectedRestaurant?: Restaurant | null
+  onIsochroneUpdate?: (polygon: any) => void
+  onIsochroneLayersUpdate?: (layers: IsochroneLayer[]) => void
+  onResetAll?: () => void
+  isochroneRegionSlugs?: string[] | null
+  onIsochroneRegion?: (slugs: string[] | null) => void
 }
 
 export default function ChatInterface({
@@ -23,7 +133,12 @@ export default function ChatInterface({
   onFilterChange,
   onRestaurantSelect,
   onMapFocus,
-  selectedRestaurant
+  selectedRestaurant,
+  onIsochroneUpdate,
+  onIsochroneLayersUpdate,
+  onResetAll,
+  isochroneRegionSlugs,
+  onIsochroneRegion
 }: ChatInterfaceProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([
@@ -36,6 +151,16 @@ export default function ChatInterface({
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [lastSelectedRestaurant, setLastSelectedRestaurant] = useState<string | null>(null)
+
+  // Phase 3: Polygon cache for multi-party spatial operations
+  const [polygonCache, setPolygonCache] = useState<Record<string, {
+    polygon: any
+    metadata: {
+      location: string
+      mode?: string
+      travel_time?: number
+    }
+  }>>({})
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -126,8 +251,12 @@ export default function ChatInterface({
         await handleFunctionCall(response.function)
 
         // Generate a helpful message based on the function call
+        // Skip generic message for tools that add their own custom messages in handleFunctionCall
+        const toolsWithCustomMessages = ['find_restaurants_by_travel_time', 'geocode', 'calculate_midpoint', 'find_multi_party_restaurants']
+        const skipGenericMessage = toolsWithCustomMessages.includes(response.function.name)
+
         let helpfulMessage = response.message
-        if (helpfulMessage === 'Processing your request...') {
+        if (!skipGenericMessage && helpfulMessage === 'Processing your request...') {
           // Generate a better message based on the filters applied
           const args = response.function.arguments
           const parts = []
@@ -170,10 +299,53 @@ export default function ChatInterface({
         // Update conversation history with all three messages
         setConversationHistory([...historyWithUserMessage, modelFunctionCall, functionResponse])
 
-        setMessages(prev => [...prev, {
-          role: 'assistant',
-          content: helpfulMessage
-        }])
+        // Only add generic message if the tool doesn't add its own
+        if (!skipGenericMessage) {
+          setMessages(prev => [...prev, {
+            role: 'assistant',
+            content: helpfulMessage
+          }])
+        }
+      } else if (response.type === 'function_calls' && response.functions) {
+        // DEPRECATED: Old multi-function sequential handler
+        // This code path should not be triggered anymore since multi-party queries
+        // now use the single find_multi_party_restaurants tool.
+        // Keeping for backward compatibility with older conversation history.
+        console.warn('⚠️ DEPRECATED: Multi-function sequential handler triggered. This should not happen with new queries.')
+        console.log(`🔷 Executing ${response.functions.length} function calls sequentially (legacy mode)`)
+
+        // Execute all functions sequentially
+        for (const func of response.functions) {
+          console.log(`⚡ Executing function: ${func.name}`)
+          await handleFunctionCall(func)
+        }
+
+        // Build conversation history with all function calls and responses
+        const modelFunctionCalls: GeminiMessage = {
+          role: 'model',
+          parts: response.functions.map(f => ({
+            functionCall: {
+              name: f.name,
+              args: f.arguments
+            }
+          }))
+        }
+
+        const functionResponses: GeminiMessage = {
+          role: 'function',
+          parts: response.functions.map(f => ({
+            functionResponse: {
+              name: f.name,
+              response: {
+                success: true,
+                message: 'Executed successfully'
+              }
+            }
+          }))
+        }
+
+        setConversationHistory([...historyWithUserMessage, modelFunctionCalls, functionResponses])
+
       } else {
         // Regular text response
         const modelTextResponse: GeminiMessage = {
@@ -205,42 +377,176 @@ export default function ChatInterface({
   const handleFunctionCall = async (func: { name: string, arguments: any }) => {
     console.log('Function call:', func)
 
-    switch (func.name) {
-      case 'filter_map': {
-        if (func.arguments.cuisines && func.arguments.cuisines.length > 0) {
-          onFilterChange('Cuisine', func.arguments.cuisines)
-        }
-        if (func.arguments.price_levels && func.arguments.price_levels.length > 0) {
-          onFilterChange('Price', func.arguments.price_levels)
-        }
-        if (func.arguments.vibes && func.arguments.vibes.length > 0) {
-          onFilterChange('Vibes', func.arguments.vibes)
-        }
-        if (func.arguments.min_rating) {
-          onFilterChange('Yelp Rating', [func.arguments.min_rating.toString()])
-        }
-        if (func.arguments.awards && func.arguments.awards.length > 0) {
-          onFilterChange('Badges', func.arguments.awards)
-        }
+    try {
+      switch (func.name) {
+        case 'filter_map': {
+          // NEW APPROACH: Calculate matching restaurants and highlight them (instead of filtering)
+          // IMPORTANT: If isochrone is active, start with isochrone base (not previous filter results)
+          let matchingRestaurants = isochroneRegionSlugs
+            ? allRestaurants.filter(r => isochroneRegionSlugs.includes(r.slug))
+            : allRestaurants
 
-        // Handle neighborhoods with map focus
-        if (func.arguments.neighborhoods && func.arguments.neighborhoods.length > 0) {
-          const matchingRestaurants = allRestaurants.filter(r =>
-            func.arguments.neighborhoods.some((n: string) =>
-              r.neighborhood.toLowerCase().includes(n.toLowerCase())
+          // Apply cuisine filter
+          if (func.arguments.cuisines && func.arguments.cuisines.length > 0) {
+            matchingRestaurants = matchingRestaurants.filter(r =>
+              r.cuisine && func.arguments.cuisines.some((c: string) =>
+                r.cuisine.toLowerCase().includes(c.toLowerCase())
+              )
             )
-          )
-          if (onMapFocus && matchingRestaurants.length > 0) {
-            onMapFocus(matchingRestaurants.map(r => r.slug))
           }
-        }
 
-        // Handle semantic features (search in yelp_review_highlights)
-        if (func.arguments.semantic_features && func.arguments.semantic_features.length > 0) {
-          onFilterChange('Semantic Features', func.arguments.semantic_features)
+          // Apply price filter
+          if (func.arguments.price_levels && func.arguments.price_levels.length > 0) {
+            matchingRestaurants = matchingRestaurants.filter(r => {
+              const restaurantPrice = (r as any).price ?? r.price_range
+              return func.arguments.price_levels.includes(restaurantPrice)
+            })
+          }
+
+          // Apply vibes/collections filter
+          if (func.arguments.vibes && func.arguments.vibes.length > 0) {
+            matchingRestaurants = matchingRestaurants.filter(r =>
+              r.collections && func.arguments.vibes.some((vibe: string) =>
+                r.collections.includes(vibe)
+              )
+            )
+          }
+
+          // Apply rating filter
+          if (func.arguments.min_rating) {
+            const minRating = parseFloat(func.arguments.min_rating)
+            matchingRestaurants = matchingRestaurants.filter(r =>
+              typeof (r as any).yelp_rating === 'number' && (r as any).yelp_rating >= minRating
+            )
+          }
+
+          // Apply awards/badges filter
+          if (func.arguments.awards && func.arguments.awards.length > 0) {
+            matchingRestaurants = matchingRestaurants.filter(r => {
+              return func.arguments.awards.some((badge: string) => {
+                switch (badge) {
+                  case 'michelin':
+                    return r.michelin_award && ['ONE_STAR', 'TWO_STARS', 'THREE_STARS'].includes(r.michelin_award)
+                  case 'bib':
+                  case 'bib_gourmand':
+                    return r.michelin_award === 'BIB_GOURMAND'
+                  case 'nyt':
+                  case 'nyt_top_100':
+                    return Boolean(r.nyttop100_rank)
+                  default:
+                    return false
+                }
+              })
+            })
+          }
+
+          // Apply neighborhood filter
+          if (func.arguments.neighborhoods && func.arguments.neighborhoods.length > 0) {
+            const expand = func.arguments.expand_neighborhoods || false
+            let neighborhoodsToSearch = func.arguments.neighborhoods
+
+            // If "around" or "nearby" query, expand to adjacent neighborhoods
+            if (expand) {
+              neighborhoodsToSearch = func.arguments.neighborhoods.flatMap((n: string) =>
+                expandNeighborhoodSearch(n)
+              )
+              console.log(`Expanded neighborhoods:`, neighborhoodsToSearch)
+            }
+
+            matchingRestaurants = matchingRestaurants.filter(r =>
+              r.neighborhood && neighborhoodsToSearch.some((n: string) =>
+                r.neighborhood.toLowerCase().includes(n.toLowerCase())
+              )
+            )
+
+            // Also focus map on these results
+            if (onMapFocus && matchingRestaurants.length > 0) {
+              onMapFocus(matchingRestaurants.map(r => r.slug))
+            }
+          }
+
+          // Apply semantic features filter
+          if (func.arguments.semantic_features && func.arguments.semantic_features.length > 0) {
+            matchingRestaurants = matchingRestaurants.filter(r => {
+              const highlights = r.yelp_review_highlights?.toLowerCase() || ''
+              return highlights && func.arguments.semantic_features.some((keyword: string) =>
+                keyword && highlights.includes(keyword.toLowerCase())
+              )
+            })
+          }
+
+          // HIGHLIGHT the matching restaurants (instead of filtering)
+          const matchingSlugs = matchingRestaurants.map(r => r.slug)
+          onFilterChange('Semantic Search Results', matchingSlugs)
+
+          // NO map movement for filter_map (user controls view)
+          console.log(`✨ Highlighting ${matchingSlugs.length} restaurants out of ${allRestaurants.length} total`)
+
+          // GENERATE SUMMARY OUTPUT (like get_current_results)
+          const metadata = computeResultMetadata(matchingRestaurants)
+
+          // Get top 3 examples (sorted by rating)
+          const sorted = matchingRestaurants.slice().sort((a, b) => (b.yelp_rating || 0) - (a.yelp_rating || 0))
+          const examples = sorted.slice(0, 3).map(r => r.name)
+
+          // Format summary message
+          let summaryParts: string[] = []
+          summaryParts.push(`Found ${metadata.total_count} restaurant${metadata.total_count === 1 ? '' : 's'}`)
+
+          // Cuisine breakdown
+          if (metadata.top_cuisines && metadata.top_cuisines.length > 0) {
+            const cuisineDetails = metadata.top_cuisines
+              .map((cuisine: string) => `${cuisine} (${metadata.cuisine_breakdown[cuisine]})`)
+              .join(', ')
+            summaryParts.push(`Cuisines: ${cuisineDetails}`)
+          }
+
+          // Borough breakdown
+          if (Object.keys(metadata.borough_breakdown).length > 0) {
+            const boroughDetails = Object.entries(metadata.borough_breakdown)
+              .sort(([, a], [, b]) => (b as number) - (a as number))
+              .map(([borough, count]) => `${borough} (${count})`)
+              .join(', ')
+            summaryParts.push(`Locations: ${boroughDetails}`)
+          }
+
+          // Price distribution
+          const priceEntries = Object.entries(metadata.price_breakdown).filter(([, count]) => (count as number) > 0)
+          if (priceEntries.length > 0) {
+            const priceDetails = priceEntries.map(([price, count]) => `${price} (${count})`).join(', ')
+            summaryParts.push(`Price distribution: ${priceDetails}`)
+          }
+
+          // Average rating
+          if (metadata.avg_rating > 0) {
+            summaryParts.push(`Average rating: ${metadata.avg_rating}⭐`)
+          }
+
+          // Awards
+          const awardsList: string[] = []
+          if (metadata.michelin_count > 0) {
+            awardsList.push(`${metadata.michelin_count} Michelin-starred`)
+          }
+          if (metadata.nyt_count > 0) {
+            awardsList.push(`${metadata.nyt_count} NYT Top 100`)
+          }
+          if (awardsList.length > 0) {
+            summaryParts.push(`Awards: ${awardsList.join(', ')}`)
+          }
+
+          // Top examples
+          if (examples.length > 0) {
+            summaryParts.push(`Top-rated: ${examples.join(', ')}`)
+          }
+
+          const summaryMessage = summaryParts.join('\n')
+          setMessages(prev => [...prev, {
+            role: 'assistant',
+            content: `${summaryMessage}\n\nWant to learn more about any of these? Tap on a restaurant or ask me questions!`
+          }])
+
+          break
         }
-        break
-      }
 
       case 'show_dish_recommendations': {
         // Find and select restaurant
@@ -257,19 +563,41 @@ export default function ChatInterface({
       }
 
       case 'calculate_midpoint': {
-        // Find restaurants in both neighborhoods
-        const { location1, location2, cuisines, price_levels } = func.arguments
+        // Calculate true geographic midpoint between two locations
+        const { location1, location2, cuisines, price_levels, radiusMiles } = func.arguments
 
-        let matchingRestaurants = allRestaurants.filter(r => {
-          const inLocation1 = r.neighborhood.toLowerCase().includes(location1.toLowerCase())
-          const inLocation2 = r.neighborhood.toLowerCase().includes(location2.toLowerCase())
-          return inLocation1 || inLocation2
-        })
+        // Get coordinates for both locations
+        const coords1 = getNeighborhoodCenter(location1, allRestaurants)
+        const coords2 = getNeighborhoodCenter(location2, allRestaurants)
+
+        if (!coords1 || !coords2) {
+          console.error(`Could not find coordinates for ${location1} or ${location2}`)
+          setMessages(prev => [...prev, {
+            role: 'assistant',
+            content: `I couldn't find the locations "${location1}" or "${location2}". Could you try different neighborhood names?`
+          }])
+          break
+        }
+
+        // Calculate true midpoint and find restaurants
+        // Default radius: 1 mile for better coverage
+        const radius = radiusMiles || 1.0
+        const { midpoint, restaurants: midpointRestaurants } = calculateTrueMidpoint(
+          coords1,
+          coords2,
+          allRestaurants,
+          radius
+        )
+
+        console.log(`Midpoint between ${location1} and ${location2}:`, midpoint)
+        console.log(`Found ${midpointRestaurants.length} restaurants within ${radius} miles of midpoint`)
 
         // Apply additional filters
+        let filtered = midpointRestaurants
+
         if (cuisines && cuisines.length > 0) {
-          matchingRestaurants = matchingRestaurants.filter(r =>
-            cuisines.some((c: string) => r.cuisine.toLowerCase().includes(c.toLowerCase()))
+          filtered = filtered.filter(r =>
+            r.cuisine && cuisines.some((c: string) => r.cuisine.toLowerCase().includes(c.toLowerCase()))
           )
           onFilterChange('Cuisine', cuisines)
         }
@@ -278,29 +606,1061 @@ export default function ChatInterface({
           onFilterChange('Price', price_levels)
         }
 
-        if (onMapFocus && matchingRestaurants.length > 0) {
-          onMapFocus(matchingRestaurants.map(r => r.slug))
+        if (filtered.length === 0) {
+          setMessages(prev => [...prev, {
+            role: 'assistant',
+            content: `I found the midpoint, but no restaurants match your criteria within ${radius} miles. Try expanding your search radius or removing some filters.`
+          }])
+        } else {
+          // Focus map on results
+          if (onMapFocus) {
+            onMapFocus(filtered.slice(0, 20).map(r => r.slug))
+          }
         }
         break
       }
 
       case 'semantic_search': {
-        // Call the semantic search API - must await since it's async
-        await handleSemanticSearch(func.arguments)
+        // Extract use_current_results (default: true)
+        const { use_current_results = true, ...searchArgs } = func.arguments
+
+        // Get restaurant IDs: use isochrone region if active, otherwise current filtered set
+        const restaurant_ids = use_current_results
+          ? (isochroneRegionSlugs && isochroneRegionSlugs.length > 0 ? isochroneRegionSlugs : restaurants.map(r => r.slug))
+          : null
+
+        console.log('Semantic search restaurant_ids:', {
+          isochroneActive: isochroneRegionSlugs && isochroneRegionSlugs.length > 0,
+          isochroneCount: isochroneRegionSlugs?.length || 0,
+          restaurantsCount: restaurants.length,
+          finalCount: restaurant_ids?.length || 'all'
+        })
+
+        // Call the semantic search API
+        await handleSemanticSearch({
+          ...searchArgs,
+          restaurant_ids
+        })
         break
       }
 
-      case 'rag_search': {
-        // Call the RAG search API - must await since it's async
-        await handleRagSearch(func.arguments)
-        break
+        case 'rag_search': {
+          // Extract use_current_results (default: true)
+          const { use_current_results = true, ...ragArgs } = func.arguments
+
+          // Get restaurant IDs: use isochrone region if active, otherwise current filtered set
+          const restaurant_ids = use_current_results
+            ? (isochroneRegionSlugs && isochroneRegionSlugs.length > 0 ? isochroneRegionSlugs : restaurants.map(r => r.slug))
+            : null
+
+          console.log('RAG search restaurant_ids:', {
+            isochroneActive: isochroneRegionSlugs && isochroneRegionSlugs.length > 0,
+            isochroneCount: isochroneRegionSlugs?.length || 0,
+            restaurantsCount: restaurants.length,
+            finalCount: restaurant_ids?.length || 'all'
+          })
+
+          // Call the RAG search API
+          await handleRagSearch({
+            ...ragArgs,
+            restaurant_ids
+          })
+          break
+        }
+
+        case 'get_current_results': {
+          const { include_examples = true } = func.arguments
+
+          // Compute aggregate metadata from visible restaurants
+          const metadata = computeResultMetadata(restaurants)
+
+          // Get top 3 examples (sorted by rating)
+          let examples: string[] = []
+          if (include_examples && restaurants.length > 0) {
+            const sorted = restaurants.slice().sort((a, b) => (b.yelp_rating || 0) - (a.yelp_rating || 0))
+            examples = sorted.slice(0, 3).map(r => r.name)
+          }
+
+          // Format metadata into a structured summary message
+          let summaryParts: string[] = []
+
+          // Total count
+          summaryParts.push(`Found ${metadata.total_count} restaurant${metadata.total_count === 1 ? '' : 's'}`)
+
+          // Cuisine breakdown
+          if (metadata.top_cuisines && metadata.top_cuisines.length > 0) {
+            const cuisineDetails = metadata.top_cuisines
+              .map((cuisine: string) => `${cuisine} (${metadata.cuisine_breakdown[cuisine]})`)
+              .join(', ')
+            summaryParts.push(`Cuisines: ${cuisineDetails}`)
+          }
+
+          // Borough breakdown
+          if (Object.keys(metadata.borough_breakdown).length > 0) {
+            const boroughDetails = Object.entries(metadata.borough_breakdown)
+              .sort(([, a], [, b]) => (b as number) - (a as number))
+              .map(([borough, count]) => `${borough} (${count})`)
+              .join(', ')
+            summaryParts.push(`Locations: ${boroughDetails}`)
+          }
+
+          // Top neighborhoods
+          if (metadata.top_neighborhoods && metadata.top_neighborhoods.length > 0) {
+            summaryParts.push(`Top neighborhoods: ${metadata.top_neighborhoods.join(', ')}`)
+          }
+
+          // Price distribution
+          const priceEntries = Object.entries(metadata.price_breakdown).filter(([, count]) => (count as number) > 0)
+          if (priceEntries.length > 0) {
+            const priceDetails = priceEntries.map(([price, count]) => `${price} (${count})`).join(', ')
+            summaryParts.push(`Price distribution: ${priceDetails}`)
+          }
+
+          // Average rating
+          if (metadata.avg_rating > 0) {
+            summaryParts.push(`Average rating: ${metadata.avg_rating}⭐`)
+          }
+
+          // Awards
+          const awards: string[] = []
+          if (metadata.michelin_count > 0) {
+            awards.push(`${metadata.michelin_count} Michelin-starred`)
+          }
+          if (metadata.nyt_count > 0) {
+            awards.push(`${metadata.nyt_count} NYT Top 100`)
+          }
+          if (awards.length > 0) {
+            summaryParts.push(`Awards: ${awards.join(', ')}`)
+          }
+
+          // Top examples
+          if (examples.length > 0) {
+            summaryParts.push(`Top-rated: ${examples.join(', ')}`)
+          }
+
+          const summaryMessage = summaryParts.join('\n')
+
+          setMessages(prev => [...prev, {
+            role: 'assistant',
+            content: `${summaryMessage}\n\nWant to learn more about any of these? Tap on a restaurant or ask me questions!`
+          }])
+          break
+        }
+
+        case 'get_restaurant_vibe': {
+          const restaurant = allRestaurants.find(r => r.slug === func.arguments.restaurant_slug)
+
+          if (!restaurant) {
+            setMessages(prev => [...prev, {
+              role: 'assistant',
+              content: `I couldn't find that restaurant. Could you try another name?`
+            }])
+            break
+          }
+
+          const vibeText = restaurant.yelp_review_highlights || 'No vibe information available for this restaurant.'
+          const response = `**${restaurant.name}** vibe:\n\n${vibeText}`
+
+          // Focus map on this restaurant
+          if (onMapFocus) {
+            onMapFocus([restaurant.slug])
+          }
+
+          setMessages(prev => [...prev, {
+            role: 'assistant',
+            content: response
+          }])
+          break
+        }
+
+        case 'get_restaurant_price_info': {
+          const restaurant = allRestaurants.find(r => r.slug === func.arguments.restaurant_slug)
+
+          if (!restaurant) {
+            setMessages(prev => [...prev, {
+              role: 'assistant',
+              content: `I couldn't find that restaurant. Could you try another name?`
+            }])
+            break
+          }
+
+          let response = `**${restaurant.name}** pricing & info:\n\n`
+          response += `💰 **Price**: ${restaurant.price || 'Not specified'}\n`
+          response += `📍 **Neighborhood**: ${restaurant.neighborhood || 'Not specified'}\n`
+          if (restaurant.address) response += `📮 **Address**: ${restaurant.address}\n`
+          if (restaurant.telephone) response += `📞 **Phone**: ${restaurant.telephone}\n`
+
+          // Focus map on this restaurant
+          if (onMapFocus) {
+            onMapFocus([restaurant.slug])
+          }
+
+          setMessages(prev => [...prev, {
+            role: 'assistant',
+            content: response
+          }])
+          break
+        }
+
+        case 'get_restaurant_reviews': {
+          const restaurant = allRestaurants.find(r => r.slug === func.arguments.restaurant_slug)
+
+          if (!restaurant) {
+            setMessages(prev => [...prev, {
+              role: 'assistant',
+              content: `I couldn't find that restaurant. Could you try another name?`
+            }])
+            break
+          }
+
+          let response = `**${restaurant.name}** reviews:\n\n`
+
+          if (restaurant.yelp_review_highlights) {
+            response += `**Yelp reviewers say:**\n${restaurant.yelp_review_highlights}\n\n`
+          }
+
+          if (restaurant.reddit) {
+            response += `**Redditors say:**\n${restaurant.reddit}\n`
+          } else if (!restaurant.yelp_review_highlights) {
+            response += `No reviews available for this restaurant.`
+          } else {
+            response += `No Reddit mentions found.`
+          }
+
+          // Focus map on this restaurant
+          if (onMapFocus) {
+            onMapFocus([restaurant.slug])
+          }
+
+          setMessages(prev => [...prev, {
+            role: 'assistant',
+            content: response
+          }])
+          break
+        }
+
+        case 'get_restaurant_summary': {
+          const restaurant = allRestaurants.find(r => r.slug === func.arguments.restaurant_slug)
+
+          if (!restaurant) {
+            setMessages(prev => [...prev, {
+              role: 'assistant',
+              content: `I couldn't find that restaurant. Could you try another name?`
+            }])
+            break
+          }
+
+          let response = `**${restaurant.name}**\n\n`
+          response += `🍽️ **Cuisine**: ${restaurant.cuisine || 'Not specified'}\n`
+          response += `📍 **Location**: ${restaurant.neighborhood || 'Not specified'}\n`
+          response += `⭐ **Rating**: ${restaurant.yelp_rating || 'No rating'}\n\n`
+
+          if (restaurant.summary) {
+            response += `${restaurant.summary}`
+          } else {
+            response += `No description available.`
+          }
+
+          // Add awards if present
+          if (restaurant.michelin_award || restaurant.nyttop100_rank) {
+            response += `\n\n🏆 **Awards**: `
+            const awards = []
+            if (restaurant.michelin_award) awards.push(restaurant.michelin_award)
+            if (restaurant.nyttop100_rank) awards.push(`NYT Top 100 #${restaurant.nyttop100_rank}`)
+            response += awards.join(', ')
+          }
+
+          // Focus map on this restaurant
+          if (onMapFocus) {
+            onMapFocus([restaurant.slug])
+          }
+
+          setMessages(prev => [...prev, {
+            role: 'assistant',
+            content: response
+          }])
+          break
+        }
+
+        case 'geocode_address': {
+          try {
+            const response = await fetch(`${API_CONFIG.API_URL}/geocode`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ address: func.arguments.address })
+            })
+
+            if (!response.ok) {
+              const errorData = await response.json().catch(() => ({}))
+              throw new Error(errorData.message || 'Geocoding failed')
+            }
+
+            const data = await response.json()
+
+            if (data.coordinates) {
+              const [lon, lat] = data.coordinates
+
+              // Find restaurants near this location (within ~0.5 miles)
+              const nearbyRestaurants = allRestaurants.filter(r => {
+                if (!r.latitude || !r.longitude) return false
+                const distance = Math.sqrt(
+                  Math.pow((r.longitude - lon) * 69, 2) +
+                  Math.pow((r.latitude - lat) * 69, 2)
+                )
+                return distance <= 0.5 // ~0.5 miles radius
+              })
+
+              // Focus map on geocoded location
+              if (onMapFocus && nearbyRestaurants.length > 0) {
+                onMapFocus(nearbyRestaurants.slice(0, 20).map(r => r.slug))
+              }
+
+              // Automatically call get_current_results to show restaurant summary
+              // instead of showing coordinates
+              if (nearbyRestaurants.length > 0) {
+                // Compute metadata for nearby restaurants
+                const metadata = computeResultMetadata(nearbyRestaurants)
+
+                // Get top 3 examples
+                const sorted = nearbyRestaurants.slice().sort((a, b) => (b.yelp_rating || 0) - (a.yelp_rating || 0))
+                const examples = sorted.slice(0, 3).map(r => r.name)
+
+                // Format summary
+                let summaryParts: string[] = []
+                summaryParts.push(`Found ${metadata.total_count} restaurant${metadata.total_count === 1 ? '' : 's'} near ${data.formatted_address}`)
+
+                if (metadata.top_cuisines && metadata.top_cuisines.length > 0) {
+                  const cuisineDetails = metadata.top_cuisines
+                    .map((cuisine: string) => `${cuisine} (${metadata.cuisine_breakdown[cuisine]})`)
+                    .join(', ')
+                  summaryParts.push(`Cuisines: ${cuisineDetails}`)
+                }
+
+                if (metadata.avg_rating > 0) {
+                  summaryParts.push(`Average rating: ${metadata.avg_rating}⭐`)
+                }
+
+                const awards: string[] = []
+                if (metadata.michelin_count > 0) {
+                  awards.push(`${metadata.michelin_count} Michelin-starred`)
+                }
+                if (metadata.nyt_count > 0) {
+                  awards.push(`${metadata.nyt_count} NYT Top 100`)
+                }
+                if (awards.length > 0) {
+                  summaryParts.push(`Awards: ${awards.join(', ')}`)
+                }
+
+                if (examples.length > 0) {
+                  summaryParts.push(`Top-rated: ${examples.join(', ')}`)
+                }
+
+                const summaryMessage = summaryParts.join('\n')
+
+                setMessages(prev => [...prev, {
+                  role: 'assistant',
+                  content: `${summaryMessage}\n\nTap on a restaurant for details or ask me anything!`
+                }])
+              } else {
+                setMessages(prev => [...prev, {
+                  role: 'assistant',
+                  content: `Found "${data.formatted_address}" but no restaurants nearby (within 0.5 miles). Try a different location or expand your search radius?`
+                }])
+              }
+            } else {
+              setMessages(prev => [...prev, {
+                role: 'assistant',
+                content: `Couldn't find location "${func.arguments.address}". Could you try a different address or neighborhood?`
+              }])
+            }
+          } catch (error) {
+            console.error('Geocoding error:', error)
+            setMessages(prev => [...prev, {
+              role: 'assistant',
+              content: `Sorry, I had trouble finding that location. ${error instanceof Error ? error.message : 'Please try again.'}`
+            }])
+          }
+          break
+        }
+
+        case 'find_restaurants_by_travel_time': {
+          try {
+            const { location, travel_time_minutes, mode, cuisines, price_levels, min_rating, awards } = func.arguments
+
+            // Check for Geoapify free tier limits (transit only)
+            const isTransit = mode === 'transit'
+            const cappedTime = isTransit && travel_time_minutes > 15 ? 15 : travel_time_minutes
+            const wasLimited = isTransit && travel_time_minutes > 15
+
+            // Show warning if request was capped
+            if (wasLimited) {
+              setMessages(prev => [...prev, {
+                role: 'assistant',
+                content: `Heads up! Our free transit data is capped at 15 minutes (about 6.2 miles). I'll show you what's reachable in 15 minutes by subway/bus instead of ${travel_time_minutes}. For longer travel times, try "walking" or "cycling" mode! 🚇`
+              }])
+            }
+
+            // Get isochrone polygon
+            const isochroneResult = await getIsochrone({
+              location,
+              travel_time_minutes: cappedTime,
+              mode: mode || 'walking'
+            })
+
+            // Phase 3: Cache polygon for potential spatial operations
+            // Use current cache size to determine ID (before state update)
+            const currentCacheSize = Object.keys(polygonCache).length
+            const polygonId = `person${currentCacheSize + 1}`
+
+            // Create a synchronous reference for immediate use
+            const newCacheEntry = {
+              polygon: isochroneResult.polygon,
+              metadata: {
+                location,
+                mode: mode || 'walking',
+                travel_time: cappedTime
+              }
+            }
+
+            setPolygonCache(prev => ({
+              ...prev,
+              [polygonId]: newCacheEntry
+            }))
+            console.log(`💾 Cached polygon as "${polygonId}" for location: ${location}`)
+
+            // Filter restaurants by polygon
+            let restaurantsInArea = filterRestaurantsByPolygon(allRestaurants, isochroneResult.polygon)
+            console.log(`📍 Initial restaurants in ${cappedTime}min ${mode} radius: ${restaurantsInArea.length}`)
+
+            // Apply additional filters if specified
+            if (cuisines && cuisines.length > 0) {
+              const cuisineSet = new Set(cuisines.map((c: string) => c.toLowerCase()))
+              const beforeCount = restaurantsInArea.length
+              restaurantsInArea = restaurantsInArea.filter(r =>
+                r.cuisine && cuisineSet.has(r.cuisine.toLowerCase())
+              )
+              console.log(`🍽️  Cuisine filter [${cuisines.join(', ')}]: ${beforeCount} → ${restaurantsInArea.length}`)
+            }
+
+            if (price_levels && price_levels.length > 0) {
+              const priceLevelSet = new Set(price_levels)
+              const beforeCount = restaurantsInArea.length
+              restaurantsInArea = restaurantsInArea.filter(r =>
+                r.price && priceLevelSet.has(r.price)
+              )
+              console.log(`💰 Price filter [${price_levels.join(', ')}]: ${beforeCount} → ${restaurantsInArea.length}`)
+            }
+
+            if (min_rating && typeof min_rating === 'number') {
+              const beforeCount = restaurantsInArea.length
+              restaurantsInArea = restaurantsInArea.filter(r =>
+                r.yelp_rating && r.yelp_rating >= min_rating
+              )
+              console.log(`⭐ Rating filter [>= ${min_rating}]: ${beforeCount} → ${restaurantsInArea.length}`)
+            }
+
+            if (awards && awards.length > 0) {
+              const beforeCount = restaurantsInArea.length
+              console.log(`🏆 Attempting awards filter: ${JSON.stringify(awards)}`)
+
+              // Debug: Check what awards exist in the area
+              const awardsInArea = restaurantsInArea.filter(r => r.michelin_award || r.nyttop100_rank)
+              console.log(`   Found ${awardsInArea.length} restaurants with any awards in area`)
+              if (awardsInArea.length > 0) {
+                console.log(`   Sample awards:`, awardsInArea.slice(0, 3).map(r => ({
+                  name: r.name,
+                  michelin_award: r.michelin_award,
+                  nyttop100_rank: r.nyttop100_rank
+                })))
+              }
+
+              restaurantsInArea = restaurantsInArea.filter(r => {
+                // Check each award type
+                if (awards.includes('michelin') && r.michelin_award &&
+                    ['ONE_STAR', 'TWO_STARS', 'THREE_STARS'].includes(r.michelin_award)) {
+                  return true
+                }
+                if (awards.includes('bib_gourmand') && r.michelin_award === 'BIB_GOURMAND') {
+                  return true
+                }
+                if (awards.includes('nyt_top_100') && r.nyttop100_rank) {
+                  return true
+                }
+                return false
+              })
+              console.log(`🏆 Awards filter [${awards.join(', ')}]: ${beforeCount} → ${restaurantsInArea.length}`)
+            }
+
+            // Set isochrone region (defines the base pool for subsequent queries)
+            if (onIsochroneRegion) {
+              onIsochroneRegion(restaurantsInArea.map(r => r.slug))
+            }
+
+            // Focus map on filtered results
+            if (onMapFocus && restaurantsInArea.length > 0) {
+              onMapFocus(restaurantsInArea.map(r => r.slug))
+            }
+
+            // Phase 3: Build and display isochrone layer (supports multi-party visualization)
+            const colors = [
+              { fill: '#FF69B4', stroke: '#FF1493' },  // Pink - person1
+              { fill: '#4A90E2', stroke: '#2E5C8A' },  // Blue - person2
+              { fill: '#c81224', stroke: '#c81224' },  // Green - person3
+              { fill: '#E67E22', stroke: '#CA6F1E' },  // Orange - person4
+              { fill: '#1ABC9C', stroke: '#17A589' }   // Teal - person5
+            ]
+
+            // For single isochrone queries, always use the first color (pink)
+            const personIndex = 0
+            const color = colors[personIndex]
+
+            const isochroneLayer: IsochroneLayer = {
+              id: polygonId,
+              polygon: isochroneResult.polygon,
+              label: location,
+              color: color.fill,
+              strokeColor: color.stroke,
+              opacity: 0.2,
+              metadata: {
+                location,
+                mode: mode || 'walking',
+                travel_time: cappedTime
+              }
+            }
+
+            // Clear multi-layer state FIRST to prevent interference
+            if (onIsochroneLayersUpdate) {
+              onIsochroneLayersUpdate([])
+            }
+
+            // Then update single isochrone visualization
+            // Multi-isochrone visualization is handled by the function_calls handler
+            if (onIsochroneUpdate) {
+              onIsochroneUpdate(isochroneResult.polygon)
+            }
+
+            // Generate summary
+            if (restaurantsInArea.length > 0) {
+              const metadata = computeResultMetadata(restaurantsInArea)
+              const sorted = restaurantsInArea.slice().sort((a, b) => (b.yelp_rating || 0) - (a.yelp_rating || 0))
+              const examples = sorted.slice(0, 3).map(r => r.name)
+
+              let summaryParts: string[] = []
+
+              // Add travel time context (use capped time if it was limited)
+              const modeLabel = mode === 'walking' ? 'walk' : mode === 'cycling' ? 'bike ride' : mode === 'transit' ? 'transit' : 'drive'
+              const actualTime = cappedTime
+              summaryParts.push(`Found ${metadata.total_count} restaurant${metadata.total_count === 1 ? '' : 's'} within ${actualTime} min ${modeLabel} from ${location}`)
+
+              // Show fallback warning if approximate
+              if (isochroneResult.fallback) {
+                summaryParts.push(`⚠️ Using distance-based approximation (API limit reached)`)
+              }
+
+              if (metadata.top_cuisines && metadata.top_cuisines.length > 0) {
+                const cuisineDetails = metadata.top_cuisines
+                  .map((cuisine: string) => `${cuisine} (${metadata.cuisine_breakdown[cuisine]})`)
+                  .join(', ')
+                summaryParts.push(`Cuisines: ${cuisineDetails}`)
+              }
+
+              if (metadata.avg_rating > 0) {
+                summaryParts.push(`Average rating: ${metadata.avg_rating}⭐`)
+              }
+
+              const awards: string[] = []
+              if (metadata.michelin_count > 0) {
+                awards.push(`${metadata.michelin_count} Michelin-starred`)
+              }
+              if (metadata.nyt_count > 0) {
+                awards.push(`${metadata.nyt_count} NYT Top 100`)
+              }
+              if (awards.length > 0) {
+                summaryParts.push(`Awards: ${awards.join(', ')}`)
+              }
+
+              if (examples.length > 0) {
+                summaryParts.push(`Top-rated: ${examples.join(', ')}`)
+              }
+
+              const summaryMessage = summaryParts.join('\n')
+
+              setMessages(prev => [...prev, {
+                role: 'assistant',
+                content: `${summaryMessage}\n\nTap on a restaurant for details or ask me anything!`
+              }])
+            } else {
+              setMessages(prev => [...prev, {
+                role: 'assistant',
+                content: `No restaurants found within ${travel_time_minutes} min ${mode || 'walking'} from ${location}. Try expanding your time range or changing the transport mode?`
+              }])
+            }
+          } catch (error) {
+            console.error('Isochrone search error:', error)
+            setMessages(prev => [...prev, {
+              role: 'assistant',
+              content: `Sorry, I had trouble calculating travel times from that location. ${error instanceof Error ? error.message : 'Please try again.'}`
+            }])
+          }
+          break
+        }
+
+        case 'find_multi_party_restaurants': {
+          try {
+            const { locations, operation, cuisines, price_levels, min_rating, awards } = func.arguments
+
+            console.log(`🎯 Multi-party query: ${locations.length} locations, operation: ${operation}`)
+
+            // Color palette for individual isochrones
+            const colors = [
+              { fill: '#FF69B4', stroke: '#FF1493' },  // Pink - person1
+              { fill: '#4A90E2', stroke: '#2E5C8A' },  // Blue - person2
+              { fill: '#c81224', stroke: '#c81224' },  // Green - person3
+              { fill: '#E67E22', stroke: '#CA6F1E' },  // Orange - person4
+              { fill: '#1ABC9C', stroke: '#17A589' }   // Teal - person5
+            ]
+
+            // Color for result polygon
+            const resultColors = {
+              intersection: { fill: '#9B59B6', stroke: '#7D3C98' },  // Purple
+              union: { fill: '#E74C3C', stroke: '#C0392B' },         // Red
+              exclusion: { fill: '#F39C12', stroke: '#D68910' }      // Gold/Orange
+            }
+
+            // Step 1: Fetch all isochrones sequentially
+            const isochroneData: { polygon: any; location: string; mode: string; travel_time: number }[] = []
+
+            for (let i = 0; i < locations.length; i++) {
+              const loc = locations[i]
+              const locationName = loc.address
+              const travelTime = loc.travel_time_minutes
+              const mode = loc.mode || 'walking'
+
+              console.log(`📍 Fetching isochrone ${i + 1}/${locations.length}: ${locationName} (${travelTime}min ${mode})`)
+
+              try {
+                const isochroneResult = await getIsochrone({
+                  location: locationName,
+                  travel_time_minutes: travelTime,
+                  mode
+                })
+
+                isochroneData.push({
+                  polygon: isochroneResult.polygon,
+                  location: locationName,
+                  mode,
+                  travel_time: travelTime
+                })
+
+                console.log(`✅ Isochrone ${i + 1} fetched successfully`)
+              } catch (error) {
+                console.error(`❌ Failed to fetch isochrone for ${locationName}:`, error)
+                setMessages(prev => [...prev, {
+                  role: 'assistant',
+                  content: `Sorry, I couldn't get travel time data for "${locationName}". ${error instanceof Error ? error.message : 'Please try a different location.'}`
+                }])
+                return
+              }
+            }
+
+            // Step 2: Perform spatial operation
+            let resultPolygon = null
+            const polygons = isochroneData.map(d => d.polygon)
+
+            console.log(`🔷 Computing ${operation} on ${polygons.length} polygons`)
+
+            if (operation === 'intersection') {
+              resultPolygon = intersectPolygons(...polygons)
+            } else if (operation === 'union') {
+              resultPolygon = unionPolygons(...polygons)
+            } else if (operation === 'exclusion' && polygons.length >= 2) {
+              // Exclusion: base polygon MINUS all excluded areas (supports multiple exclusions)
+              resultPolygon = polygons[0]
+              for (let i = 1; i < polygons.length; i++) {
+                resultPolygon = excludePolygon(resultPolygon, polygons[i])
+                if (!resultPolygon) break  // Stop if exclusion results in empty polygon
+              }
+            }
+
+            // Check if operation resulted in empty polygon (no overlap)
+            if (!resultPolygon) {
+              const locationNames = isochroneData.map(d => d.location).join(' and ')
+              const operationLabel = operation === 'intersection' ? 'overlap between' : operation === 'union' ? 'union of' : 'exclusion from'
+
+              setMessages(prev => [...prev, {
+                role: 'assistant',
+                content: `The ${operationLabel} ${locationNames} returned no results${operation === 'intersection' ? ' (no overlap found)' : ''}.
+
+${operation === 'intersection' ? 'Would you like me to:\n• Show restaurants EITHER of you can reach (union)?\n• Increase travel time to 20 or 30 minutes?\n• Find the geographic midpoint between these locations?' : 'Try adjusting the travel times or locations.'}`
+              }])
+              return
+            }
+
+            // Step 3: Filter restaurants by result polygon
+            let restaurantsInArea = filterRestaurantsByPolygon(allRestaurants, resultPolygon)
+            console.log(`📍 Restaurants in ${operation} area: ${restaurantsInArea.length}`)
+
+            // Debug: Also check individual polygon counts
+            const countPoly1 = filterRestaurantsByPolygon(allRestaurants, polygons[0]).length
+            const countPoly2 = filterRestaurantsByPolygon(allRestaurants, polygons[1]).length
+            console.log(`   - ${isochroneData[0].location}: ${countPoly1} restaurants`)
+            console.log(`   - ${isochroneData[1].location}: ${countPoly2} restaurants`)
+            console.log(`   - ${operation} result: ${restaurantsInArea.length} restaurants`)
+
+            // Apply additional filters
+            if (cuisines && cuisines.length > 0) {
+              const cuisineSet = new Set(cuisines.map((c: string) => c.toLowerCase()))
+              const beforeCount = restaurantsInArea.length
+              restaurantsInArea = restaurantsInArea.filter(r =>
+                r.cuisine && cuisineSet.has(r.cuisine.toLowerCase())
+              )
+              console.log(`🍽️  Cuisine filter [${cuisines.join(', ')}]: ${beforeCount} → ${restaurantsInArea.length}`)
+            }
+
+            if (price_levels && price_levels.length > 0) {
+              const priceLevelSet = new Set(price_levels)
+              const beforeCount = restaurantsInArea.length
+              restaurantsInArea = restaurantsInArea.filter(r =>
+                r.price && priceLevelSet.has(r.price)
+              )
+              console.log(`💰 Price filter [${price_levels.join(', ')}]: ${beforeCount} → ${restaurantsInArea.length}`)
+            }
+
+            if (min_rating && typeof min_rating === 'number') {
+              const beforeCount = restaurantsInArea.length
+              restaurantsInArea = restaurantsInArea.filter(r =>
+                r.yelp_rating && r.yelp_rating >= min_rating
+              )
+              console.log(`⭐ Rating filter [>= ${min_rating}]: ${beforeCount} → ${restaurantsInArea.length}`)
+            }
+
+            if (awards && awards.length > 0) {
+              const beforeCount = restaurantsInArea.length
+              restaurantsInArea = restaurantsInArea.filter(r => {
+                if (awards.includes('michelin') && r.michelin_award &&
+                    ['ONE_STAR', 'TWO_STARS', 'THREE_STARS'].includes(r.michelin_award)) {
+                  return true
+                }
+                if (awards.includes('bib_gourmand') && r.michelin_award === 'BIB_GOURMAND') {
+                  return true
+                }
+                if (awards.includes('nyt_top_100') && r.nyttop100_rank) {
+                  return true
+                }
+                return false
+              })
+              console.log(`🏆 Awards filter [${awards.join(', ')}]: ${beforeCount} → ${restaurantsInArea.length}`)
+            }
+
+            // Step 4: Build visualization layers based on operation type
+            let allLayers: IsochroneLayer[] = []
+
+            if (operation === 'intersection' || operation === 'union') {
+              // For intersection/union: Show ONLY base layers (natural overlap creates purple)
+              // Base layers with previous opacity
+              allLayers = isochroneData.map((data, index) => ({
+                id: `person${index + 1}`,
+                polygon: data.polygon,
+                label: data.location,
+                color: colors[index % colors.length].fill,
+                strokeColor: colors[index % colors.length].stroke,
+                opacity: 0.20,  // Original opacity
+                metadata: {
+                  location: data.location,
+                  mode: data.mode,
+                  travel_time: data.travel_time
+                }
+              }))
+            } else if (operation === 'exclusion' && isochroneData.length >= 2) {
+              // For exclusion: Support multiple excluded areas (up to 3)
+              // Show result polygon (pink with holes) + gray dashed outlines of excluded areas
+
+              // Build list of excluded area names for label
+              const excludedNames = isochroneData.slice(1).map(d => d.location).join(', ')
+
+              // Result layer (base MINUS all excluded areas) - pink with actual cutouts
+              const resultLayer: IsochroneLayer = {
+                id: 'exclusion_result',
+                polygon: resultPolygon,
+                label: isochroneData[0].location,
+                color: colors[0].fill,  // Same pink as base area
+                strokeColor: colors[0].stroke,
+                opacity: 0.30,
+                metadata: {
+                  location: `${isochroneData[0].location} (excluding ${excludedNames})`
+                }
+              }
+
+              // Don't show excluded areas at all - the cutout in the result polygon is sufficient
+              const excludedLayers: IsochroneLayer[] = []
+
+              // Show result with holes + gray outlines of all excluded areas
+              allLayers = [resultLayer, ...excludedLayers]
+            }
+
+            // Step 5: Update map visualization
+            if (onIsochroneLayersUpdate) {
+              console.log(`📊 Updating map with ${allLayers.length} layers`)
+              allLayers.forEach(layer => {
+                console.log(`   Layer ${layer.id}: fill=${layer.color}, stroke=${layer.strokeColor}, opacity=${layer.opacity}`)
+              })
+              onIsochroneLayersUpdate(allLayers)
+            }
+
+            // Clear single isochrone state to prevent interference
+            if (onIsochroneUpdate) {
+              onIsochroneUpdate(null)
+            }
+
+            // Set isochrone region (defines the base pool for subsequent queries)
+            if (onIsochroneRegion) {
+              onIsochroneRegion(restaurantsInArea.map(r => r.slug))
+            }
+
+            // Step 6: Focus map on ONLY the restaurants in the result area
+            if (onMapFocus && restaurantsInArea.length > 0) {
+              console.log(`📍 Displaying ${restaurantsInArea.length} restaurants in ${operation} area`)
+              onMapFocus(restaurantsInArea.map(r => r.slug))
+            }
+
+            // Step 7: Auto-generate summary
+            if (restaurantsInArea.length > 0) {
+              const metadata = computeResultMetadata(restaurantsInArea)
+              const sorted = restaurantsInArea.slice().sort((a, b) => (b.yelp_rating || 0) - (a.yelp_rating || 0))
+              const examples = sorted.slice(0, 3).map(r => r.name)
+
+              let summaryParts: string[] = []
+
+              // Context-aware opening based on operation
+              const locationNames = isochroneData.map(d => d.location).join(' and ')
+              const operationLabel = operation === 'intersection'
+                ? `reachable by all from ${locationNames}`
+                : operation === 'union'
+                ? `reachable by any from ${locationNames}`
+                : `near ${isochroneData[0].location} excluding ${isochroneData[1].location}`
+
+              summaryParts.push(`Found ${metadata.total_count} restaurant${metadata.total_count === 1 ? '' : 's'} ${operationLabel}`)
+
+              if (metadata.top_cuisines && metadata.top_cuisines.length > 0) {
+                const cuisineDetails = metadata.top_cuisines
+                  .map((cuisine: string) => `${cuisine} (${metadata.cuisine_breakdown[cuisine]})`)
+                  .join(', ')
+                summaryParts.push(`Cuisines: ${cuisineDetails}`)
+              }
+
+              if (metadata.avg_rating > 0) {
+                summaryParts.push(`Average rating: ${metadata.avg_rating}⭐`)
+              }
+
+              const awardsList: string[] = []
+              if (metadata.michelin_count > 0) {
+                awardsList.push(`${metadata.michelin_count} Michelin-starred`)
+              }
+              if (metadata.nyt_count > 0) {
+                awardsList.push(`${metadata.nyt_count} NYT Top 100`)
+              }
+              if (awardsList.length > 0) {
+                summaryParts.push(`Awards: ${awardsList.join(', ')}`)
+              }
+
+              if (examples.length > 0) {
+                summaryParts.push(`Top-rated: ${examples.join(', ')}`)
+              }
+
+              const summaryMessage = summaryParts.join('\n')
+
+              setMessages(prev => [...prev, {
+                role: 'assistant',
+                content: `${summaryMessage}\n\nTap on a restaurant for details or ask me anything!`
+              }])
+            } else {
+              const locationNames = isochroneData.map(d => d.location).join(' and ')
+              setMessages(prev => [...prev, {
+                role: 'assistant',
+                content: `No restaurants found in the ${operation} area for ${locationNames}. Try expanding your time range or adjusting filters?`
+              }])
+            }
+
+          } catch (error) {
+            console.error('Multi-party restaurant search error:', error)
+            setMessages(prev => [...prev, {
+              role: 'assistant',
+              content: `Sorry, I had trouble with that multi-location search. ${error instanceof Error ? error.message : 'Please try again.'}`
+            }])
+          }
+          break
+        }
+
+        case 'spatial_operation': {
+          try {
+            const { operation, polygon_ids, label } = func.arguments
+
+            console.log(`🔷 Spatial operation: ${operation} on polygons:`, polygon_ids)
+
+            // Validate polygon IDs exist in cache
+            const missingIds = polygon_ids.filter((id: string) => !polygonCache[id])
+            if (missingIds.length > 0) {
+              setMessages(prev => [...prev, {
+                role: 'assistant',
+                content: `I don't have isochrone data for: ${missingIds.join(', ')}. Please generate isochrones for those locations first by asking something like "show me restaurants within 15 min walking from [location]".`
+              }])
+              break
+            }
+
+            // Retrieve polygons from cache
+            const polygons = polygon_ids.map((id: string) => polygonCache[id].polygon)
+
+            // Perform the spatial operation (reduce over all polygons)
+            let resultPolygon = null
+            if (operation === 'intersection') {
+              resultPolygon = polygons.reduce((acc: any, poly: any) => {
+                if (!acc) return poly
+                return intersectPolygons(acc, poly)
+              }, null)
+            } else if (operation === 'union') {
+              resultPolygon = polygons.reduce((acc: any, poly: any) => {
+                if (!acc) return poly
+                return unionPolygons(acc, poly)
+              }, null)
+            }
+
+            // Handle empty result (no overlap)
+            if (!resultPolygon) {
+              const locationNames = polygon_ids.map((id: string) => polygonCache[id].metadata.location).join(', ')
+              setMessages(prev => [...prev, {
+                role: 'assistant',
+                content: `The ${operation} of areas for ${locationNames} returned no results${operation === 'intersection' ? ' (no overlap)' : ''}.
+
+Would you like me to:
+• Show restaurants ANY of you can reach (union)?
+• Increase travel time to 20 or 30 minutes?
+• Find the geographic midpoint between these locations?`
+              }])
+              break
+            }
+
+            // Filter restaurants by result polygon
+            const restaurantsInArea = filterRestaurantsByPolygon(allRestaurants, resultPolygon)
+            console.log(`📍 Restaurants in ${operation} result: ${restaurantsInArea.length}`)
+
+            // Focus map on results
+            if (onMapFocus && restaurantsInArea.length > 0) {
+              onMapFocus(restaurantsInArea.slice(0, 50).map(r => r.slug))
+            }
+
+            // Build color palette for visualization
+            const colors = [
+              { fill: '#FF69B4', stroke: '#FF1493' },  // Pink
+              { fill: '#4A90E2', stroke: '#2E5C8A' },  // Blue
+              { fill: '#c81224', stroke: '#c81224' },  // Red 
+              { fill: '#E67E22', stroke: '#CA6F1E' },  // Orange
+              { fill: '#1ABC9C', stroke: '#17A589' }   // Teal
+            ]
+            const resultColor = operation === 'intersection'
+              ? { fill: '#9B59B6', stroke: '#7D3C98' }  // Purple for intersection
+              : { fill: '#017536', stroke: '#017536' }  // Green for union
+
+            // Build layer objects for visualization
+            const layers: IsochroneLayer[] = [
+              // Add base layers (person1, person2, etc.)
+              ...polygon_ids.map((id: string, index: number) => ({
+                id,
+                polygon: polygonCache[id].polygon,
+                label: polygonCache[id].metadata.location,
+                color: colors[index % colors.length].fill,
+                strokeColor: colors[index % colors.length].stroke,
+                opacity: 0.15
+              })),
+              // Add result layer on top
+              {
+                id: operation,
+                polygon: resultPolygon,
+                label: label || `${operation} result`,
+                color: resultColor.fill,
+                strokeColor: resultColor.stroke,
+                opacity: 0.25
+              }
+            ]
+
+            // Update map visualization
+            if (onIsochroneLayersUpdate) {
+              onIsochroneLayersUpdate(layers)
+            }
+
+            // Generate summary
+            const metadata = computeResultMetadata(restaurantsInArea)
+            const sorted = restaurantsInArea.slice().sort((a, b) => (b.yelp_rating || 0) - (a.yelp_rating || 0))
+            const examples = sorted.slice(0, 3).map(r => r.name)
+
+            const locationNames = polygon_ids.map((id: string) => polygonCache[id].metadata.location).join(' and ')
+            const operationLabel = operation === 'intersection' ? 'reachable by all from' : 'reachable by any from'
+
+            let summaryParts: string[] = []
+            summaryParts.push(`Found ${metadata.total_count} restaurant${metadata.total_count === 1 ? '' : 's'} ${operationLabel} ${locationNames}`)
+
+            if (metadata.top_cuisines && metadata.top_cuisines.length > 0) {
+              const cuisineDetails = metadata.top_cuisines
+                .map((cuisine: string) => `${cuisine} (${metadata.cuisine_breakdown[cuisine]})`)
+                .join(', ')
+              summaryParts.push(`Cuisines: ${cuisineDetails}`)
+            }
+
+            if (metadata.avg_rating > 0) {
+              summaryParts.push(`Average rating: ${metadata.avg_rating}⭐`)
+            }
+
+            const awards: string[] = []
+            if (metadata.michelin_count > 0) {
+              awards.push(`${metadata.michelin_count} Michelin-starred`)
+            }
+            if (metadata.nyt_count > 0) {
+              awards.push(`${metadata.nyt_count} NYT Top 100`)
+            }
+            if (awards.length > 0) {
+              summaryParts.push(`Awards: ${awards.join(', ')}`)
+            }
+
+            if (examples.length > 0) {
+              summaryParts.push(`Top-rated: ${examples.join(', ')}`)
+            }
+
+            const summaryMessage = summaryParts.join('\n')
+
+            setMessages(prev => [...prev, {
+              role: 'assistant',
+              content: `${summaryMessage}\n\nTap on a restaurant for details or ask me anything!`
+            }])
+
+          } catch (error) {
+            console.error('Spatial operation error:', error)
+            setMessages(prev => [...prev, {
+              role: 'assistant',
+              content: `Sorry, I had trouble with that spatial operation. ${error instanceof Error ? error.message : 'Please try again.'}`
+            }])
+          }
+          break
+        }
+
+        default:
+          console.warn(`Unknown function: ${func.name}`)
       }
+    } catch (error) {
+      console.error('Function execution error:', error)
+      throw new Error(`FUNCTION_INVOCATION_FAILED: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
   }
 
-  const handleSemanticSearch = async (args: { query: string, keywords?: string[], pre_filters?: any }) => {
+  const handleSemanticSearch = async (args: { query: string, keywords?: string[], pre_filters?: any, restaurant_ids?: string[] | null }) => {
     try {
       console.log('Calling semantic search API:', args)
+
+      // Show confirmation message if searching within filtered results
+      if (args.restaurant_ids && args.restaurant_ids.length > 0) {
+        setMessages(prev => [...prev, {
+          role: 'assistant',
+          content: `✓ Searching within ${args.restaurant_ids.length} restaurants in current area`
+        }])
+      }
 
       // Add timeout to fetch request
       const controller = new AbortController()
@@ -309,14 +1669,15 @@ export default function ChatInterface({
       // Build request body - only include keywords if provided
       const requestBody: any = {
         query: args.query,
-        pre_filters: args.pre_filters
+        pre_filters: args.pre_filters,
+        restaurant_ids: args.restaurant_ids
       }
 
       if (args.keywords && args.keywords.length > 0) {
         requestBody.keywords = args.keywords
       }
 
-      const response = await fetch('/api/semantic-search', {
+      const response = await fetch(`${API_CONFIG.API_URL}/semantic-search`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestBody),
@@ -381,15 +1742,23 @@ export default function ChatInterface({
     }
   }
 
-  const handleRagSearch = async (args: { query: string, pre_filters?: any, top_k?: number }) => {
+  const handleRagSearch = async (args: { query: string, pre_filters?: any, top_k?: number, restaurant_ids?: string[] | null }) => {
     try {
       console.log('Calling RAG search API:', args)
+
+      // Show confirmation message if searching within filtered results
+      if (args.restaurant_ids && args.restaurant_ids.length > 0) {
+        setMessages(prev => [...prev, {
+          role: 'assistant',
+          content: `✓ Searching within ${args.restaurant_ids.length} restaurants in current area`
+        }])
+      }
 
       // Add timeout to fetch request
       const controller = new AbortController()
       const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 second timeout
 
-      const response = await fetch('/api/rag-search', {
+      const response = await fetch(`${API_CONFIG.API_URL}/rag-search`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(args),
@@ -476,11 +1845,26 @@ export default function ChatInterface({
   }
 
   const handleClearHistory = () => {
+    // Clear chat state
     setConversationHistory([])
     setMessages([{
       role: 'assistant',
       content: 'Hey there! I\'m Remi, your friendly neighborhood food expert 🐀👨‍🍳 What kind of dining experience are you craving today?'
     }])
+    setPolygonCache({})
+
+    // Clear isochrone visualizations
+    if (onIsochroneUpdate) {
+      onIsochroneUpdate(null)
+    }
+    if (onIsochroneLayersUpdate) {
+      onIsochroneLayersUpdate([])
+    }
+
+    // Trigger full app reset (clears filters, resets map view)
+    if (onResetAll) {
+      onResetAll()
+    }
   }
 
   return (

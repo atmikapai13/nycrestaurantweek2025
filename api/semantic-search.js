@@ -15,7 +15,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { query, keywords, pre_filters } = req.body
+    const { query, keywords, pre_filters, restaurant_ids = null } = req.body
 
     // Validation
     if (!query || typeof query !== 'string') {
@@ -31,12 +31,21 @@ export default async function handler(req, res) {
     console.log('Semantic search for:', query)
     console.log('Keywords:', keywords || 'none (using fallback)')
     console.log('Pre-filters:', pre_filters)
+    console.log('Restaurant IDs filter:', restaurant_ids?.length || 'all')
 
     // Step 1: Pre-filter using traditional filters
     let candidates = restaurants
     if (pre_filters) {
       candidates = applyPreFilters(candidates, pre_filters)
       console.log(`Pre-filtered to ${candidates.length} restaurants`)
+    }
+
+    // Step 1.5: Filter by restaurant_ids if provided (contextual search)
+    if (restaurant_ids && restaurant_ids.length > 0) {
+      const idSet = new Set(restaurant_ids)
+      const beforeCount = candidates.length
+      candidates = candidates.filter(r => idSet.has(r.slug))
+      console.log(`🎯 Filtered to ${candidates.length} restaurants from provided ${restaurant_ids.length} IDs (before: ${beforeCount})`)
     }
 
     // Step 2: Score by keyword matches with field weighting OR fallback to exact phrase match
