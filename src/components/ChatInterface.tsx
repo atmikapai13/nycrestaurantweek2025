@@ -1,15 +1,23 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useImperativeHandle, forwardRef } from 'react'
 import { sendChatMessage, type GeminiMessage } from '../services/chatService'
 import type { Restaurant } from '../types/restaurant'
 import { API_CONFIG } from '../config/features'
 import { calculateTrueMidpoint, getNeighborhoodCenter, findRestaurantsWithinRadius, expandNeighborhoodSearch, filterRestaurantsByPolygon, intersectPolygons, unionPolygons, excludePolygon } from '../utils/geospatial'
 import { getIsochrone } from '../services/isochroneService'
 import type { IsochroneLayer } from './Map'
+import RestaurantCard from './RestaurantCard'
 import './ChatInterface.css'
 
 interface Message {
   role: 'user' | 'assistant'
   content: string
+  type?: 'text' | 'restaurant_card'
+  restaurant?: Restaurant
+}
+
+// Expose methods to parent component
+export interface ChatInterfaceHandle {
+  addRestaurantCard: (restaurant: Restaurant) => void
 }
 
 /**
@@ -113,6 +121,83 @@ function computeResultMetadata(restaurants: Restaurant[]) {
   return metadata
 }
 
+/**
+ * Formats restaurant results into a consistent summary format
+ * Used by all tools to ensure uniform output
+ */
+function formatResultsSummary(
+  restaurants: Restaurant[],
+  contextMessage: string,
+  options: {
+    includeExamples?: boolean
+    closingMessage?: string
+  } = {}
+): string {
+  const {
+    includeExamples = true,
+    closingMessage = "If you want to learn more, click on a restaurant with a pink marker or ask me questions."
+  } = options
+
+  const metadata = computeResultMetadata(restaurants)
+
+  // Get top 3 examples (sorted by rating)
+  let examples: string[] = []
+  if (includeExamples && restaurants.length > 0) {
+    const sorted = restaurants.slice().sort((a, b) => (b.yelp_rating || 0) - (a.yelp_rating || 0))
+    examples = sorted.slice(0, 3).map(r => r.name)
+  }
+
+  // Start with context message
+  let summary = contextMessage
+
+  // Add top-rated examples immediately after context
+  if (examples.length > 0) {
+    summary += ` Top-rated restaurants are ${examples.join(', ')}.`
+  }
+
+  // Build breakdown section
+  let breakdownParts: string[] = []
+
+  // Average rating
+  if (metadata.avg_rating > 0) {
+    breakdownParts.push(`Average rating: ${metadata.avg_rating}⭐`)
+  }
+
+  // Price distribution
+  const priceEntries = Object.entries(metadata.price_breakdown).filter(([, count]) => (count as number) > 0)
+  if (priceEntries.length > 0) {
+    const priceDetails = priceEntries.map(([price, count]) => `${count} ${price}`).join(', ')
+    breakdownParts.push(`Price distribution: ${priceDetails}`)
+  }
+
+  // Cuisines
+  if (metadata.top_cuisines && metadata.top_cuisines.length > 0) {
+    breakdownParts.push(`Top Cuisines: ${metadata.top_cuisines.join(', ')}`)
+  }
+
+  // Awards
+  const awards: string[] = []
+  if (metadata.michelin_count > 0) {
+    awards.push(`${metadata.michelin_count} Michelin-starred`)
+  }
+  if (metadata.nyt_count > 0) {
+    awards.push(`${metadata.nyt_count} NYT Top 100`)
+  }
+  if (awards.length > 0) {
+    breakdownParts.push(`Awards: ${awards.join(', ')}`)
+  }
+
+  // Add breakdown if there are details
+  if (breakdownParts.length > 0) {
+    summary += `\n\nHere's a further breakdown:\n• ${breakdownParts.join('\n• ')}`
+  }
+
+  // Add closing message
+  summary += `\n\n${closingMessage}`
+
+  return summary
+}
+
 interface ChatInterfaceProps {
   restaurants: Restaurant[]
   allRestaurants: Restaurant[]
@@ -125,9 +210,13 @@ interface ChatInterfaceProps {
   onResetAll?: () => void
   isochroneRegionSlugs?: string[] | null
   onIsochroneRegion?: (slugs: string[] | null) => void
+  favorites?: string[]
+  onToggleFavorite?: (restaurantName: string) => void
+  favoritesActive?: boolean
+  onFavoritesToggle?: () => void
 }
 
-export default function ChatInterface({
+const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
   restaurants,
   allRestaurants,
   onFilterChange,
@@ -138,19 +227,35 @@ export default function ChatInterface({
   onIsochroneLayersUpdate,
   onResetAll,
   isochroneRegionSlugs,
-  onIsochroneRegion
-}: ChatInterfaceProps) {
-  const [isOpen, setIsOpen] = useState(false)
+  onIsochroneRegion,
+  favorites = [],
+  onToggleFavorite,
+  favoritesActive = false,
+  onFavoritesToggle
+}, ref) => {
+  // Random welcome message selection
+  const welcomeMessages = [
+    'Welcome to NYC Eats, your local eatery guide. You\'re in New York, where the only real sin is eating somewhere forgettable. Give me a neighborhood, a mood, or a friend you\'re meeting halfway—I\'ll point you toward the right places.',
+    'Welcome to NYC Eats. I\'m here to help you find the sort of restaurant that lingers — the way a good Barolo does. Give me a neighborhood or a mood, and I\'ll pour you a shortlist worth considering.'
+  ]
+
+  // Quick-start suggestions for new users
+  const suggestions = [
+    "Quick lunch within 10 min walk of Soho with price point of $$",
+    "Restaurants between my friend who is in Midtown and me in Murray Hill within 15 min walking distance?",
+    "How do you work?"
+  ]
+
+  // Chat is always open now (no toggle)
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: 'Welcome! I\'m Remi, your rodent sommelier of the NYC dining scene. Yes, I\'m aware of the irony—a rat recommending restaurants. But unlike my cousins in the subway, I\'ve been vector-embedded with thousands of Yelp reviews and have a rather refined palate for semantic similarity. What are we looking for today?'
+      content: welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)]
     }
   ])
   const [conversationHistory, setConversationHistory] = useState<GeminiMessage[]>([])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [lastSelectedRestaurant, setLastSelectedRestaurant] = useState<string | null>(null)
 
   // Phase 3: Polygon cache for multi-party spatial operations
   const [polygonCache, setPolygonCache] = useState<Record<string, {
@@ -164,6 +269,13 @@ export default function ChatInterface({
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
+  // Mobile drawer state
+  const [drawerHeight, setDrawerHeight] = useState<10 | 35 | 90>(35)
+  const [isDragging, setIsDragging] = useState(false)
+  const [dragStartY, setDragStartY] = useState(0)
+  const [dragStartHeight, setDragStartHeight] = useState(30)
+  const drawerRef = useRef<HTMLDivElement>(null)
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
@@ -173,38 +285,94 @@ export default function ChatInterface({
   }, [messages])
 
   useEffect(() => {
-    if (isOpen && inputRef.current) {
+    // Auto-focus input on mount
+    if (inputRef.current) {
       inputRef.current.focus()
     }
-  }, [isOpen])
+  }, [])
 
-  // Detect when user selects a restaurant on the map
-  useEffect(() => {
-    if (selectedRestaurant && selectedRestaurant.name !== lastSelectedRestaurant) {
-      setLastSelectedRestaurant(selectedRestaurant.name)
+  // Expose addRestaurantCard method to parent via ref
+  const addRestaurantCard = (restaurant: Restaurant) => {
+    setMessages(prev => [...prev, {
+      role: 'assistant',
+      content: '',
+      type: 'restaurant_card',
+      restaurant
+    }])
+  }
 
-      // Generate a message about the selected restaurant
-      const highlights = selectedRestaurant.yelp_review_highlights
-      const reddit = selectedRestaurant.reddit
+  useImperativeHandle(ref, () => ({
+    addRestaurantCard
+  }))
 
-      let message = `Oh, you selected ${selectedRestaurant.name}! `
+  // Convert URLs in text to clickable links
+  const linkifyText = (text: string): string => {
+    // First, handle URLs with protocol (http:// or https://)
+    let result = text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" style="color: #FF69B4; text-decoration: underline;">$1</a>')
 
-      if (highlights) {
-        message += `Here's what Yelpers have to say: ${highlights}`
-      } else {
-        message += `This is a ${selectedRestaurant.cuisine} restaurant in ${selectedRestaurant.neighborhood}.`
+    // Then, handle URLs without protocol (like buymeacoffee.com/atmikapai)
+    // Match domain.tld/path but avoid matching already-linked URLs
+    result = result.replace(/(?<!href="|">)(?:^|\s)((?:www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\/[^\s<]*)?)/g, (match, url, offset) => {
+      // Check if this URL is already inside an href attribute
+      const beforeMatch = result.substring(0, offset)
+      if (beforeMatch.lastIndexOf('<a') > beforeMatch.lastIndexOf('</a>')) {
+        return match // Already inside a link tag
       }
+      return match.replace(url, `<a href="https://${url}" target="_blank" rel="noopener noreferrer" style="color: #FF69B4; text-decoration: underline;">${url}</a>`)
+    })
 
-      if (reddit) {
-        message += `\n\nRedditors say: ${reddit}`
-      }
+    return result
+  }
 
-      setMessages(prev => [...prev, {
-        role: 'assistant',
-        content: message
-      }])
+  // Mobile drawer touch handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setIsDragging(true)
+    setDragStartY(e.touches[0].clientY)
+    setDragStartHeight(drawerHeight)
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging) return
+
+    const currentY = e.touches[0].clientY
+    const deltaY = dragStartY - currentY // Positive when dragging up
+    const viewportHeight = window.innerHeight
+    const deltaPercent = (deltaY / viewportHeight) * 100
+
+    // Calculate new height
+    const newHeight = dragStartHeight + deltaPercent
+
+    // Clamp between 10 and 100
+    const clampedHeight = Math.max(10, Math.min(100, newHeight))
+
+    // Update to nearest valid state
+    if (clampedHeight < 22) {
+      setDrawerHeight(10)
+    } else if (clampedHeight < 62) {
+      setDrawerHeight(35)
+    } else {
+      setDrawerHeight(90)
     }
-  }, [selectedRestaurant, lastSelectedRestaurant])
+  }
+
+  const handleTouchEnd = () => {
+    setIsDragging(false)
+    // Snap logic is already handled in handleTouchMove
+  }
+
+  const handleSuggestionClick = (suggestionText: string) => {
+    // Set input field and trigger send
+    setInput(suggestionText)
+    // Trigger send on next tick to ensure input state is updated
+    setTimeout(async () => {
+      await handleSend()
+    }, 10)
+  }
+
+  const handleRestaurantSuggestionClick = (suggestionText: string, slug: string) => {
+    // Add user message and trigger chat
+    handleSuggestionClick(suggestionText)
+  }
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return
@@ -422,22 +590,39 @@ export default function ChatInterface({
 
           // Apply awards/badges filter
           if (func.arguments.awards && func.arguments.awards.length > 0) {
+            const beforeAwardsCount = matchingRestaurants.length
+            console.log(`🏆 Awards filter requested: ${JSON.stringify(func.arguments.awards)}`)
+
+            // Debug: Show what awards exist in current results
+            const awardsInResults = matchingRestaurants.filter(r => r.michelin_award || r.nyttop100_rank)
+            console.log(`   Restaurants with any awards in pool: ${awardsInResults.length}`)
+            if (awardsInResults.length > 0) {
+              console.log(`   Sample:`, awardsInResults.slice(0, 5).map(r => ({
+                name: r.name,
+                michelin_award: r.michelin_award,
+                nyttop100_rank: r.nyttop100_rank
+              })))
+            }
+
             matchingRestaurants = matchingRestaurants.filter(r => {
               return func.arguments.awards.some((badge: string) => {
                 switch (badge) {
                   case 'michelin':
                     return r.michelin_award && ['ONE_STAR', 'TWO_STARS', 'THREE_STARS'].includes(r.michelin_award)
                   case 'bib':
+                  case 'bib_goumand':
                   case 'bib_gourmand':
                     return r.michelin_award === 'BIB_GOURMAND'
                   case 'nyt':
                   case 'nyt_top_100':
                     return Boolean(r.nyttop100_rank)
                   default:
+                    console.log(`   ⚠️ Unknown badge type: "${badge}"`)
                     return false
                 }
               })
             })
+            console.log(`🏆 Awards filter result: ${beforeAwardsCount} → ${matchingRestaurants.length}`)
           }
 
           // Apply neighborhood filter
@@ -459,8 +644,9 @@ export default function ChatInterface({
               )
             )
 
-            // Also focus map on these results
-            if (onMapFocus && matchingRestaurants.length > 0) {
+            // Only animate/zoom when no isochrone is active
+            // When isochrone is active, map stays still - only highlights change
+            if (!isochroneRegionSlugs && onMapFocus && matchingRestaurants.length > 0) {
               onMapFocus(matchingRestaurants.map(r => r.slug))
             }
           }
@@ -482,67 +668,17 @@ export default function ChatInterface({
           // NO map movement for filter_map (user controls view)
           console.log(`✨ Highlighting ${matchingSlugs.length} restaurants out of ${allRestaurants.length} total`)
 
-          // GENERATE SUMMARY OUTPUT (like get_current_results)
+          // GENERATE SUMMARY OUTPUT using shared formatter
           const metadata = computeResultMetadata(matchingRestaurants)
+          const contextMessage = `I found ${metadata.total_count} restaurant${metadata.total_count === 1 ? '' : 's'}.`
 
-          // Get top 3 examples (sorted by rating)
-          const sorted = matchingRestaurants.slice().sort((a, b) => (b.yelp_rating || 0) - (a.yelp_rating || 0))
-          const examples = sorted.slice(0, 3).map(r => r.name)
+          const summary = formatResultsSummary(matchingRestaurants, contextMessage, {
+            closingMessage: "Want to learn more about any of these? Tap on a restaurant or ask me questions!"
+          })
 
-          // Format summary message
-          let summaryParts: string[] = []
-          summaryParts.push(`Found ${metadata.total_count} restaurant${metadata.total_count === 1 ? '' : 's'}`)
-
-          // Cuisine breakdown
-          if (metadata.top_cuisines && metadata.top_cuisines.length > 0) {
-            const cuisineDetails = metadata.top_cuisines
-              .map((cuisine: string) => `${cuisine} (${metadata.cuisine_breakdown[cuisine]})`)
-              .join(', ')
-            summaryParts.push(`Cuisines: ${cuisineDetails}`)
-          }
-
-          // Borough breakdown
-          if (Object.keys(metadata.borough_breakdown).length > 0) {
-            const boroughDetails = Object.entries(metadata.borough_breakdown)
-              .sort(([, a], [, b]) => (b as number) - (a as number))
-              .map(([borough, count]) => `${borough} (${count})`)
-              .join(', ')
-            summaryParts.push(`Locations: ${boroughDetails}`)
-          }
-
-          // Price distribution
-          const priceEntries = Object.entries(metadata.price_breakdown).filter(([, count]) => (count as number) > 0)
-          if (priceEntries.length > 0) {
-            const priceDetails = priceEntries.map(([price, count]) => `${price} (${count})`).join(', ')
-            summaryParts.push(`Price distribution: ${priceDetails}`)
-          }
-
-          // Average rating
-          if (metadata.avg_rating > 0) {
-            summaryParts.push(`Average rating: ${metadata.avg_rating}⭐`)
-          }
-
-          // Awards
-          const awardsList: string[] = []
-          if (metadata.michelin_count > 0) {
-            awardsList.push(`${metadata.michelin_count} Michelin-starred`)
-          }
-          if (metadata.nyt_count > 0) {
-            awardsList.push(`${metadata.nyt_count} NYT Top 100`)
-          }
-          if (awardsList.length > 0) {
-            summaryParts.push(`Awards: ${awardsList.join(', ')}`)
-          }
-
-          // Top examples
-          if (examples.length > 0) {
-            summaryParts.push(`Top-rated: ${examples.join(', ')}`)
-          }
-
-          const summaryMessage = summaryParts.join('\n')
           setMessages(prev => [...prev, {
             role: 'assistant',
-            content: `${summaryMessage}\n\nWant to learn more about any of these? Tap on a restaurant or ask me questions!`
+            content: summary
           }])
 
           break
@@ -590,7 +726,7 @@ export default function ChatInterface({
         )
 
         console.log(`Midpoint between ${location1} and ${location2}:`, midpoint)
-        console.log(`Found ${midpointRestaurants.length} restaurants within ${radius} miles of midpoint`)
+        console.log(`I found ${midpointRestaurants.length} restaurants within ${radius} miles of midpoint`)
 
         // Apply additional filters
         let filtered = midpointRestaurants
@@ -624,9 +760,9 @@ export default function ChatInterface({
         // Extract use_current_results (default: true)
         const { use_current_results = true, ...searchArgs } = func.arguments
 
-        // Get restaurant IDs: use isochrone region if active, otherwise current filtered set
+        // Get restaurant IDs: use isochrone region if active, otherwise full restaurant set
         const restaurant_ids = use_current_results
-          ? (isochroneRegionSlugs && isochroneRegionSlugs.length > 0 ? isochroneRegionSlugs : restaurants.map(r => r.slug))
+          ? (isochroneRegionSlugs && isochroneRegionSlugs.length > 0 ? isochroneRegionSlugs : allRestaurants.map(r => r.slug))
           : null
 
         console.log('Semantic search restaurant_ids:', {
@@ -648,9 +784,9 @@ export default function ChatInterface({
           // Extract use_current_results (default: true)
           const { use_current_results = true, ...ragArgs } = func.arguments
 
-          // Get restaurant IDs: use isochrone region if active, otherwise current filtered set
+          // Get restaurant IDs: use isochrone region if active, otherwise full restaurant set
           const restaurant_ids = use_current_results
-            ? (isochroneRegionSlugs && isochroneRegionSlugs.length > 0 ? isochroneRegionSlugs : restaurants.map(r => r.slug))
+            ? (isochroneRegionSlugs && isochroneRegionSlugs.length > 0 ? isochroneRegionSlugs : allRestaurants.map(r => r.slug))
             : null
 
           console.log('RAG search restaurant_ids:', {
@@ -671,78 +807,16 @@ export default function ChatInterface({
         case 'get_current_results': {
           const { include_examples = true } = func.arguments
 
-          // Compute aggregate metadata from visible restaurants
           const metadata = computeResultMetadata(restaurants)
+          const contextMessage = `I found ${metadata.total_count} restaurant${metadata.total_count === 1 ? '' : 's'} for you.`
 
-          // Get top 3 examples (sorted by rating)
-          let examples: string[] = []
-          if (include_examples && restaurants.length > 0) {
-            const sorted = restaurants.slice().sort((a, b) => (b.yelp_rating || 0) - (a.yelp_rating || 0))
-            examples = sorted.slice(0, 3).map(r => r.name)
-          }
-
-          // Format metadata into a structured summary message
-          let summaryParts: string[] = []
-
-          // Total count
-          summaryParts.push(`Found ${metadata.total_count} restaurant${metadata.total_count === 1 ? '' : 's'}`)
-
-          // Cuisine breakdown
-          if (metadata.top_cuisines && metadata.top_cuisines.length > 0) {
-            const cuisineDetails = metadata.top_cuisines
-              .map((cuisine: string) => `${cuisine} (${metadata.cuisine_breakdown[cuisine]})`)
-              .join(', ')
-            summaryParts.push(`Cuisines: ${cuisineDetails}`)
-          }
-
-          // Borough breakdown
-          if (Object.keys(metadata.borough_breakdown).length > 0) {
-            const boroughDetails = Object.entries(metadata.borough_breakdown)
-              .sort(([, a], [, b]) => (b as number) - (a as number))
-              .map(([borough, count]) => `${borough} (${count})`)
-              .join(', ')
-            summaryParts.push(`Locations: ${boroughDetails}`)
-          }
-
-          // Top neighborhoods
-          if (metadata.top_neighborhoods && metadata.top_neighborhoods.length > 0) {
-            summaryParts.push(`Top neighborhoods: ${metadata.top_neighborhoods.join(', ')}`)
-          }
-
-          // Price distribution
-          const priceEntries = Object.entries(metadata.price_breakdown).filter(([, count]) => (count as number) > 0)
-          if (priceEntries.length > 0) {
-            const priceDetails = priceEntries.map(([price, count]) => `${price} (${count})`).join(', ')
-            summaryParts.push(`Price distribution: ${priceDetails}`)
-          }
-
-          // Average rating
-          if (metadata.avg_rating > 0) {
-            summaryParts.push(`Average rating: ${metadata.avg_rating}⭐`)
-          }
-
-          // Awards
-          const awards: string[] = []
-          if (metadata.michelin_count > 0) {
-            awards.push(`${metadata.michelin_count} Michelin-starred`)
-          }
-          if (metadata.nyt_count > 0) {
-            awards.push(`${metadata.nyt_count} NYT Top 100`)
-          }
-          if (awards.length > 0) {
-            summaryParts.push(`Awards: ${awards.join(', ')}`)
-          }
-
-          // Top examples
-          if (examples.length > 0) {
-            summaryParts.push(`Top-rated: ${examples.join(', ')}`)
-          }
-
-          const summaryMessage = summaryParts.join('\n')
+          const summary = formatResultsSummary(restaurants, contextMessage, {
+            includeExamples: include_examples
+          })
 
           setMessages(prev => [...prev, {
             role: 'assistant',
-            content: `${summaryMessage}\n\nWant to learn more about any of these? Tap on a restaurant or ask me questions!`
+            content: summary
           }])
           break
         }
@@ -813,23 +887,70 @@ export default function ChatInterface({
             break
           }
 
-          let response = `**${restaurant.name}** reviews:\n\n`
+          let response = ''
 
           if (restaurant.yelp_review_highlights) {
-            response += `**Yelp reviewers say:**\n${restaurant.yelp_review_highlights}\n\n`
+            // Add line breaks for better readability
+            let formatted = restaurant.yelp_review_highlights
+              .replace(/\. Additionally,/g, '.\n\nAdditionally,')
+              .replace(/\. (\d+\.?\d*% of)/g, '.\n\n$1')
+            response += formatted
           }
 
           if (restaurant.reddit) {
-            response += `**Redditors say:**\n${restaurant.reddit}\n`
+            response += `\n\n${restaurant.reddit}`
           } else if (!restaurant.yelp_review_highlights) {
-            response += `No reviews available for this restaurant.`
-          } else {
-            response += `No Reddit mentions found.`
+            response = `No reviews available for this restaurant.`
           }
 
-          // Focus map on this restaurant
-          if (onMapFocus) {
-            onMapFocus([restaurant.slug])
+          setMessages(prev => [...prev, {
+            role: 'assistant',
+            content: response
+          }])
+          break
+        }
+
+        case 'get_restaurant_reddit': {
+          const restaurant = allRestaurants.find(r => r.slug === func.arguments.restaurant_slug)
+
+          if (!restaurant) {
+            setMessages(prev => [...prev, {
+              role: 'assistant',
+              content: `I couldn't find that restaurant. Could you try another name?`
+            }])
+            break
+          }
+
+          const response = restaurant.reddit || `No Reddit mentions available for this restaurant.`
+
+          setMessages(prev => [...prev, {
+            role: 'assistant',
+            content: response
+          }])
+          break
+        }
+
+        case 'get_restaurant_yelp_review': {
+          const restaurant = allRestaurants.find(r => r.slug === func.arguments.restaurant_slug)
+
+          if (!restaurant) {
+            setMessages(prev => [...prev, {
+              role: 'assistant',
+              content: `I couldn't find that restaurant. Could you try another name?`
+            }])
+            break
+          }
+
+          let response = ''
+
+          if (restaurant.yelp_review_highlights) {
+            // Add line breaks for better readability
+            let formatted = restaurant.yelp_review_highlights
+              .replace(/\. Additionally,/g, '.\n\nAdditionally,')
+              .replace(/\. (\d+\.?\d*% of)/g, '.\n\n$1')
+            response = formatted
+          } else {
+            response = `No Yelp review highlights available for this restaurant.`
           }
 
           setMessages(prev => [...prev, {
@@ -850,34 +971,17 @@ export default function ChatInterface({
             break
           }
 
-          let response = `**${restaurant.name}**\n\n`
-          response += `🍽️ **Cuisine**: ${restaurant.cuisine || 'Not specified'}\n`
-          response += `📍 **Location**: ${restaurant.neighborhood || 'Not specified'}\n`
-          response += `⭐ **Rating**: ${restaurant.yelp_rating || 'No rating'}\n\n`
-
-          if (restaurant.summary) {
-            response += `${restaurant.summary}`
-          } else {
-            response += `No description available.`
-          }
-
-          // Add awards if present
-          if (restaurant.michelin_award || restaurant.nyttop100_rank) {
-            response += `\n\n🏆 **Awards**: `
-            const awards = []
-            if (restaurant.michelin_award) awards.push(restaurant.michelin_award)
-            if (restaurant.nyttop100_rank) awards.push(`NYT Top 100 #${restaurant.nyttop100_rank}`)
-            response += awards.join(', ')
-          }
-
           // Focus map on this restaurant
           if (onMapFocus) {
             onMapFocus([restaurant.slug])
           }
 
+          // Show restaurant card instead of text summary
           setMessages(prev => [...prev, {
             role: 'assistant',
-            content: response
+            content: '',
+            type: 'restaurant_card',
+            restaurant
           }])
           break
         }
@@ -911,7 +1015,8 @@ export default function ChatInterface({
               })
 
               // Focus map on geocoded location
-              if (onMapFocus && nearbyRestaurants.length > 0) {
+              // Only animate/zoom when no isochrone is active - otherwise map stays still
+              if (!isochroneRegionSlugs && onMapFocus && nearbyRestaurants.length > 0) {
                 onMapFocus(nearbyRestaurants.slice(0, 20).map(r => r.slug))
               }
 
@@ -927,7 +1032,7 @@ export default function ChatInterface({
 
                 // Format summary
                 let summaryParts: string[] = []
-                summaryParts.push(`Found ${metadata.total_count} restaurant${metadata.total_count === 1 ? '' : 's'} near ${data.formatted_address}`)
+                summaryParts.push(`I found ${metadata.total_count} restaurant${metadata.total_count === 1 ? '' : 's'} near ${data.formatted_address}`)
 
                 if (metadata.top_cuisines && metadata.top_cuisines.length > 0) {
                   const cuisineDetails = metadata.top_cuisines
@@ -964,7 +1069,7 @@ export default function ChatInterface({
               } else {
                 setMessages(prev => [...prev, {
                   role: 'assistant',
-                  content: `Found "${data.formatted_address}" but no restaurants nearby (within 0.5 miles). Try a different location or expand your search radius?`
+                  content: `I found "${data.formatted_address}" but no restaurants nearby (within 0.5 miles). Try a different location or expand your search radius?`
                 }])
               }
             } else {
@@ -1065,7 +1170,7 @@ export default function ChatInterface({
 
               // Debug: Check what awards exist in the area
               const awardsInArea = restaurantsInArea.filter(r => r.michelin_award || r.nyttop100_rank)
-              console.log(`   Found ${awardsInArea.length} restaurants with any awards in area`)
+              console.log(`   I found ${awardsInArea.length} restaurants with any awards in area`)
               if (awardsInArea.length > 0) {
                 console.log(`   Sample awards:`, awardsInArea.slice(0, 3).map(r => ({
                   name: r.name,
@@ -1092,14 +1197,16 @@ export default function ChatInterface({
             }
 
             // Set isochrone region (defines the base pool for subsequent queries)
+            // This also sets highlightedRestaurantIds to all restaurants in the area
             if (onIsochroneRegion) {
               onIsochroneRegion(restaurantsInArea.map(r => r.slug))
+              console.log(`📍 Set isochrone region with ${restaurantsInArea.length} restaurants`)
             }
 
-            // Focus map on filtered results
-            if (onMapFocus && restaurantsInArea.length > 0) {
-              onMapFocus(restaurantsInArea.map(r => r.slug))
-            }
+            // NOTE: We intentionally do NOT call onMapFocus here.
+            // onIsochroneRegion already sets the highlighted restaurants correctly.
+            // Calling onMapFocus would trigger handleFilterChange with stale state,
+            // causing a race condition that overwrites the correct highlights.
 
             // Phase 3: Build and display isochrone layer (supports multi-party visualization)
             const colors = [
@@ -1142,52 +1249,23 @@ export default function ChatInterface({
             // Generate summary
             if (restaurantsInArea.length > 0) {
               const metadata = computeResultMetadata(restaurantsInArea)
-              const sorted = restaurantsInArea.slice().sort((a, b) => (b.yelp_rating || 0) - (a.yelp_rating || 0))
-              const examples = sorted.slice(0, 3).map(r => r.name)
-
-              let summaryParts: string[] = []
-
-              // Add travel time context (use capped time if it was limited)
               const modeLabel = mode === 'walking' ? 'walk' : mode === 'cycling' ? 'bike ride' : mode === 'transit' ? 'transit' : 'drive'
               const actualTime = cappedTime
-              summaryParts.push(`Found ${metadata.total_count} restaurant${metadata.total_count === 1 ? '' : 's'} within ${actualTime} min ${modeLabel} from ${location}`)
+
+              const contextMessage = `I found ${metadata.total_count} restaurant${metadata.total_count === 1 ? '' : 's'} within ${actualTime} min ${modeLabel} from ${location}.`
+
+              let summary = formatResultsSummary(restaurantsInArea, contextMessage, {
+                closingMessage: "Tap on a restaurant for details or ask me anything!"
+              })
 
               // Show fallback warning if approximate
               if (isochroneResult.fallback) {
-                summaryParts.push(`⚠️ Using distance-based approximation (API limit reached)`)
+                summary = `⚠️ Using distance-based approximation (API limit reached)\n\n${summary}`
               }
-
-              if (metadata.top_cuisines && metadata.top_cuisines.length > 0) {
-                const cuisineDetails = metadata.top_cuisines
-                  .map((cuisine: string) => `${cuisine} (${metadata.cuisine_breakdown[cuisine]})`)
-                  .join(', ')
-                summaryParts.push(`Cuisines: ${cuisineDetails}`)
-              }
-
-              if (metadata.avg_rating > 0) {
-                summaryParts.push(`Average rating: ${metadata.avg_rating}⭐`)
-              }
-
-              const awards: string[] = []
-              if (metadata.michelin_count > 0) {
-                awards.push(`${metadata.michelin_count} Michelin-starred`)
-              }
-              if (metadata.nyt_count > 0) {
-                awards.push(`${metadata.nyt_count} NYT Top 100`)
-              }
-              if (awards.length > 0) {
-                summaryParts.push(`Awards: ${awards.join(', ')}`)
-              }
-
-              if (examples.length > 0) {
-                summaryParts.push(`Top-rated: ${examples.join(', ')}`)
-              }
-
-              const summaryMessage = summaryParts.join('\n')
 
               setMessages(prev => [...prev, {
                 role: 'assistant',
-                content: `${summaryMessage}\n\nTap on a restaurant for details or ask me anything!`
+                content: summary
               }])
             } else {
               setMessages(prev => [...prev, {
@@ -1413,23 +1491,20 @@ ${operation === 'intersection' ? 'Would you like me to:\n• Show restaurants EI
             }
 
             // Set isochrone region (defines the base pool for subsequent queries)
+            // This also sets highlightedRestaurantIds to all restaurants in the area
             if (onIsochroneRegion) {
               onIsochroneRegion(restaurantsInArea.map(r => r.slug))
+              console.log(`📍 Set isochrone region with ${restaurantsInArea.length} restaurants in ${operation} area`)
             }
 
-            // Step 6: Focus map on ONLY the restaurants in the result area
-            if (onMapFocus && restaurantsInArea.length > 0) {
-              console.log(`📍 Displaying ${restaurantsInArea.length} restaurants in ${operation} area`)
-              onMapFocus(restaurantsInArea.map(r => r.slug))
-            }
+            // NOTE: We intentionally do NOT call onMapFocus here.
+            // onIsochroneRegion already sets the highlighted restaurants correctly.
+            // Calling onMapFocus would trigger handleFilterChange with stale state,
+            // causing a race condition that overwrites the correct highlights.
 
             // Step 7: Auto-generate summary
             if (restaurantsInArea.length > 0) {
               const metadata = computeResultMetadata(restaurantsInArea)
-              const sorted = restaurantsInArea.slice().sort((a, b) => (b.yelp_rating || 0) - (a.yelp_rating || 0))
-              const examples = sorted.slice(0, 3).map(r => r.name)
-
-              let summaryParts: string[] = []
 
               // Context-aware opening based on operation
               const locationNames = isochroneData.map(d => d.location).join(' and ')
@@ -1439,39 +1514,15 @@ ${operation === 'intersection' ? 'Would you like me to:\n• Show restaurants EI
                 ? `reachable by any from ${locationNames}`
                 : `near ${isochroneData[0].location} excluding ${isochroneData[1].location}`
 
-              summaryParts.push(`Found ${metadata.total_count} restaurant${metadata.total_count === 1 ? '' : 's'} ${operationLabel}`)
+              const contextMessage = `I found ${metadata.total_count} restaurant${metadata.total_count === 1 ? '' : 's'} ${operationLabel}.`
 
-              if (metadata.top_cuisines && metadata.top_cuisines.length > 0) {
-                const cuisineDetails = metadata.top_cuisines
-                  .map((cuisine: string) => `${cuisine} (${metadata.cuisine_breakdown[cuisine]})`)
-                  .join(', ')
-                summaryParts.push(`Cuisines: ${cuisineDetails}`)
-              }
-
-              if (metadata.avg_rating > 0) {
-                summaryParts.push(`Average rating: ${metadata.avg_rating}⭐`)
-              }
-
-              const awardsList: string[] = []
-              if (metadata.michelin_count > 0) {
-                awardsList.push(`${metadata.michelin_count} Michelin-starred`)
-              }
-              if (metadata.nyt_count > 0) {
-                awardsList.push(`${metadata.nyt_count} NYT Top 100`)
-              }
-              if (awardsList.length > 0) {
-                summaryParts.push(`Awards: ${awardsList.join(', ')}`)
-              }
-
-              if (examples.length > 0) {
-                summaryParts.push(`Top-rated: ${examples.join(', ')}`)
-              }
-
-              const summaryMessage = summaryParts.join('\n')
+              const summary = formatResultsSummary(restaurantsInArea, contextMessage, {
+                closingMessage: "Tap on a restaurant for details or ask me anything!"
+              })
 
               setMessages(prev => [...prev, {
                 role: 'assistant',
-                content: `${summaryMessage}\n\nTap on a restaurant for details or ask me anything!`
+                content: summary
               }])
             } else {
               const locationNames = isochroneData.map(d => d.location).join(' and ')
@@ -1486,156 +1537,6 @@ ${operation === 'intersection' ? 'Would you like me to:\n• Show restaurants EI
             setMessages(prev => [...prev, {
               role: 'assistant',
               content: `Sorry, I had trouble with that multi-location search. ${error instanceof Error ? error.message : 'Please try again.'}`
-            }])
-          }
-          break
-        }
-
-        case 'spatial_operation': {
-          try {
-            const { operation, polygon_ids, label } = func.arguments
-
-            console.log(`🔷 Spatial operation: ${operation} on polygons:`, polygon_ids)
-
-            // Validate polygon IDs exist in cache
-            const missingIds = polygon_ids.filter((id: string) => !polygonCache[id])
-            if (missingIds.length > 0) {
-              setMessages(prev => [...prev, {
-                role: 'assistant',
-                content: `I don't have isochrone data for: ${missingIds.join(', ')}. Please generate isochrones for those locations first by asking something like "show me restaurants within 15 min walking from [location]".`
-              }])
-              break
-            }
-
-            // Retrieve polygons from cache
-            const polygons = polygon_ids.map((id: string) => polygonCache[id].polygon)
-
-            // Perform the spatial operation (reduce over all polygons)
-            let resultPolygon = null
-            if (operation === 'intersection') {
-              resultPolygon = polygons.reduce((acc: any, poly: any) => {
-                if (!acc) return poly
-                return intersectPolygons(acc, poly)
-              }, null)
-            } else if (operation === 'union') {
-              resultPolygon = polygons.reduce((acc: any, poly: any) => {
-                if (!acc) return poly
-                return unionPolygons(acc, poly)
-              }, null)
-            }
-
-            // Handle empty result (no overlap)
-            if (!resultPolygon) {
-              const locationNames = polygon_ids.map((id: string) => polygonCache[id].metadata.location).join(', ')
-              setMessages(prev => [...prev, {
-                role: 'assistant',
-                content: `The ${operation} of areas for ${locationNames} returned no results${operation === 'intersection' ? ' (no overlap)' : ''}.
-
-Would you like me to:
-• Show restaurants ANY of you can reach (union)?
-• Increase travel time to 20 or 30 minutes?
-• Find the geographic midpoint between these locations?`
-              }])
-              break
-            }
-
-            // Filter restaurants by result polygon
-            const restaurantsInArea = filterRestaurantsByPolygon(allRestaurants, resultPolygon)
-            console.log(`📍 Restaurants in ${operation} result: ${restaurantsInArea.length}`)
-
-            // Focus map on results
-            if (onMapFocus && restaurantsInArea.length > 0) {
-              onMapFocus(restaurantsInArea.slice(0, 50).map(r => r.slug))
-            }
-
-            // Build color palette for visualization
-            const colors = [
-              { fill: '#FF69B4', stroke: '#FF1493' },  // Pink
-              { fill: '#4A90E2', stroke: '#2E5C8A' },  // Blue
-              { fill: '#c81224', stroke: '#c81224' },  // Red 
-              { fill: '#E67E22', stroke: '#CA6F1E' },  // Orange
-              { fill: '#1ABC9C', stroke: '#17A589' }   // Teal
-            ]
-            const resultColor = operation === 'intersection'
-              ? { fill: '#9B59B6', stroke: '#7D3C98' }  // Purple for intersection
-              : { fill: '#017536', stroke: '#017536' }  // Green for union
-
-            // Build layer objects for visualization
-            const layers: IsochroneLayer[] = [
-              // Add base layers (person1, person2, etc.)
-              ...polygon_ids.map((id: string, index: number) => ({
-                id,
-                polygon: polygonCache[id].polygon,
-                label: polygonCache[id].metadata.location,
-                color: colors[index % colors.length].fill,
-                strokeColor: colors[index % colors.length].stroke,
-                opacity: 0.15
-              })),
-              // Add result layer on top
-              {
-                id: operation,
-                polygon: resultPolygon,
-                label: label || `${operation} result`,
-                color: resultColor.fill,
-                strokeColor: resultColor.stroke,
-                opacity: 0.25
-              }
-            ]
-
-            // Update map visualization
-            if (onIsochroneLayersUpdate) {
-              onIsochroneLayersUpdate(layers)
-            }
-
-            // Generate summary
-            const metadata = computeResultMetadata(restaurantsInArea)
-            const sorted = restaurantsInArea.slice().sort((a, b) => (b.yelp_rating || 0) - (a.yelp_rating || 0))
-            const examples = sorted.slice(0, 3).map(r => r.name)
-
-            const locationNames = polygon_ids.map((id: string) => polygonCache[id].metadata.location).join(' and ')
-            const operationLabel = operation === 'intersection' ? 'reachable by all from' : 'reachable by any from'
-
-            let summaryParts: string[] = []
-            summaryParts.push(`Found ${metadata.total_count} restaurant${metadata.total_count === 1 ? '' : 's'} ${operationLabel} ${locationNames}`)
-
-            if (metadata.top_cuisines && metadata.top_cuisines.length > 0) {
-              const cuisineDetails = metadata.top_cuisines
-                .map((cuisine: string) => `${cuisine} (${metadata.cuisine_breakdown[cuisine]})`)
-                .join(', ')
-              summaryParts.push(`Cuisines: ${cuisineDetails}`)
-            }
-
-            if (metadata.avg_rating > 0) {
-              summaryParts.push(`Average rating: ${metadata.avg_rating}⭐`)
-            }
-
-            const awards: string[] = []
-            if (metadata.michelin_count > 0) {
-              awards.push(`${metadata.michelin_count} Michelin-starred`)
-            }
-            if (metadata.nyt_count > 0) {
-              awards.push(`${metadata.nyt_count} NYT Top 100`)
-            }
-            if (awards.length > 0) {
-              summaryParts.push(`Awards: ${awards.join(', ')}`)
-            }
-
-            if (examples.length > 0) {
-              summaryParts.push(`Top-rated: ${examples.join(', ')}`)
-            }
-
-            const summaryMessage = summaryParts.join('\n')
-
-            setMessages(prev => [...prev, {
-              role: 'assistant',
-              content: `${summaryMessage}\n\nTap on a restaurant for details or ask me anything!`
-            }])
-
-          } catch (error) {
-            console.error('Spatial operation error:', error)
-            setMessages(prev => [...prev, {
-              role: 'assistant',
-              content: `Sorry, I had trouble with that spatial operation. ${error instanceof Error ? error.message : 'Please try again.'}`
             }])
           }
           break
@@ -1701,8 +1602,14 @@ Would you like me to:
       console.log('Semantic search results:', data.results.length, 'restaurants')
       console.log('Keywords used:', data.keywords)
 
+      // Highlight semantic search results with pink markers
+      if (data.results.length > 0) {
+        onFilterChange('Semantic Search Results', data.results.map((r: any) => r.slug))
+      }
+
       // Focus map on the ranked results
-      if (onMapFocus && data.results.length > 0) {
+      // Only animate/zoom when no isochrone is active - otherwise map stays still
+      if (!isochroneRegionSlugs && onMapFocus && data.results.length > 0) {
         onMapFocus(data.results.map((r: any) => r.slug))
       }
 
@@ -1783,9 +1690,14 @@ Would you like me to:
       console.log('Fallback info:', data.fallback)
       console.log('Overall explanation:', data.overall_explanation)
 
+      // Highlight RAG results with pink markers
+      if (data.results.length > 0) {
+        onFilterChange('Semantic Search Results', data.results.map((r: any) => r.slug))
+      }
+
       // Focus map on the top 7-8 RAG results to avoid decision fatigue
-      // RAG returns pre-filtered results, so we just focus the map without changing UI filters
-      if (onMapFocus && data.results.length > 0) {
+      // Only animate/zoom when no isochrone is active - otherwise map stays still
+      if (!isochroneRegionSlugs && onMapFocus && data.results.length > 0) {
         const topResults = data.results.slice(0, 8) // Only show top 8 on map
         onMapFocus(topResults.map((r: any) => r.slug))
       }
@@ -1849,7 +1761,7 @@ Would you like me to:
     setConversationHistory([])
     setMessages([{
       role: 'assistant',
-      content: 'Hey there! I\'m Remi, your friendly neighborhood food expert 🐀👨‍🍳 What kind of dining experience are you craving today?'
+      content: welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)]
     }])
     setPolygonCache({})
 
@@ -1869,83 +1781,173 @@ Would you like me to:
 
   return (
     <div className="chat-interface">
-      {/* Remi button - always visible */}
-      <button
-        className={`chat-remi-button ${isOpen ? 'chat-open' : ''}`}
-        onClick={() => setIsOpen(!isOpen)}
-        aria-label="Toggle chat with Remi"
+      {/* Chat panel - always visible */}
+      <div
+        ref={drawerRef}
+        className={`chat-bubble drawer-${drawerHeight}`}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
-        <img src="/remi.png" alt="Remi" />
-      </button>
-
-      {/* Chat bubble - appears when open */}
-      {isOpen && (
-        <div className="chat-bubble">
-          <div className="chat-header">
-            <span className="chat-title">Chat with Remi</span>
-            <button
-              className="clear-history-button"
-              onClick={handleClearHistory}
-              title="Clear conversation history"
-              aria-label="Clear conversation history"
-            >
-              ↺
-            </button>
-          </div>
-          <div className="chat-messages">
-            {messages.map((msg, idx) => (
-              <div key={idx} className={`chat-message ${msg.role}`}>
-                {msg.role === 'assistant' && (
-                  <div className="message-avatar">
-                    <img src="/remi.png" alt="Remi" />
-                  </div>
-                )}
-                <div className="message-bubble">
-                  {msg.content}
-                </div>
-                {msg.role === 'user' && (
-                  <div className="message-avatar">
-                    <img src="/user_bot.png" alt="You" />
-                  </div>
-                )}
-              </div>
-            ))}
-            {isLoading && (
-              <div className="chat-message assistant">
-                <div className="message-avatar">
-                  <img src="/remi.png" alt="Remi" />
-                </div>
-                <div className="message-bubble typing">
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                </div>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
-
-          <div className="chat-input-container">
-            <input
-              ref={inputRef}
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="Ask me about restaurants..."
-              disabled={isLoading}
-              className="chat-input"
-            />
-            <button
-              onClick={handleSend}
-              disabled={isLoading || !input.trim()}
-              className="chat-send-button"
-            >
-              ➤
-            </button>
-          </div>
+        {/* Drag handle - mobile only */}
+        <div className="drawer-handle">
+          <div className="drawer-handle-bar"></div>
         </div>
-      )}
+        {/* Messages */}
+        <div className="chat-messages">
+          {messages.map((msg, idx) => (
+            <div key={idx} className={`chat-message ${msg.role}`}>
+              {msg.role === 'assistant' ? (
+                msg.type === 'restaurant_card' && msg.restaurant ? (
+                  // Restaurant card: avatar outside the card (desktop only)
+                  <div className="restaurant-card-message">
+                    <div className="message-avatar-outside desktop-only">
+                      <img src="/chatbot2.png" alt="Chatbot" />
+                    </div>
+                    <div className="restaurant-card-content">
+                      <div className="restaurant-card-wrapper">
+                        <RestaurantCard
+                          restaurant={msg.restaurant}
+                          isFavorited={favorites.includes(msg.restaurant.name)}
+                          onToggleFavorite={onToggleFavorite ? () => onToggleFavorite(msg.restaurant!.name) : undefined}
+                        />
+                      </div>
+                      {/* Suggestion Buttons - Outside the card */}
+                      <div className="restaurant-suggestions">
+                        {msg.restaurant!.yelp_review_highlights && msg.restaurant!.yelp_review_highlights.length > 0 && (
+                          <button
+                            className="restaurant-suggestion-btn"
+                            onClick={() => handleRestaurantSuggestionClick(`Yelp review highlights of ${msg.restaurant!.name}?`, msg.restaurant!.slug)}
+                          >
+                            Yelp Review Highlights?
+                          </button>
+                        )}
+                        {msg.restaurant!.reddit && msg.restaurant!.reddit.trim() !== '' && (
+                          <button
+                            className="restaurant-suggestion-btn"
+                            onClick={() => handleRestaurantSuggestionClick(`Redditors' takes on ${msg.restaurant!.name}?`, msg.restaurant!.slug)}
+                          >
+                            Redditors' Takes?
+                          </button>
+                        )}
+                        {msg.restaurant!.opentable_id && msg.restaurant!.opentable_id.trim() !== '' && (
+                          <a
+                            href={`https://www.opentable.com/restaurant/profile/${msg.restaurant!.opentable_id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="restaurant-suggestion-btn restaurant-suggestion-link"
+                          >
+                            Make a Reservation?
+                          </a>
+                        )}
+                        {msg.restaurant!.latitude && msg.restaurant!.longitude && (
+                          <a
+                            href={`https://www.google.com/maps/search/?api=1&query=${msg.restaurant!.latitude},${msg.restaurant!.longitude}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="restaurant-suggestion-btn restaurant-suggestion-link"
+                          >
+                            Open in Google Maps?
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  // Regular text message: avatar inside bubble (desktop only)
+                  <div className="message-bubble">
+                    <div className="message-avatar-inside desktop-only">
+                      <img src="/chatbot2.png" alt="Chatbot" />
+                    </div>
+                    <div className="message-content" dangerouslySetInnerHTML={{ __html: linkifyText(msg.content) }} />
+                  </div>
+                )
+              ) : (
+                <div className="message-bubble user-bubble" dangerouslySetInnerHTML={{ __html: linkifyText(msg.content) }} />
+              )}
+            </div>
+          ))}
+
+          {/* Quick-start suggestions - show only after welcome message */}
+          {messages.length === 1 && (
+            <div className="suggestions-container">
+              {suggestions.map((suggestion, idx) => (
+                <button
+                  key={idx}
+                  className="suggestion-pill"
+                  onClick={() => handleSuggestionClick(suggestion)}
+                >
+                  {suggestion}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {isLoading && (
+            <div className="chat-message assistant">
+              <div className="message-bubble">
+                <div className="message-avatar-inside">
+                  <img src="/chatbot2.png" alt="Chatbot" />
+                </div>
+                <div className="message-content typing-content">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+              </div>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* Input */}
+        <div className="chat-input-container">
+          {/* Favorites Heart Button - Left side */}
+          <button
+            onClick={onFavoritesToggle}
+            className={`chat-favorites-button ${favoritesActive ? 'active' : ''}`}
+            title={favoritesActive ? 'Show all restaurants' : 'Show favorites only'}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill={favoritesActive ? "#FF69B4" : "none"} stroke="#FF69B4" strokeWidth="2">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+            {favorites.length > 0 && (
+              <span className="favorites-count">{favorites.length}</span>
+            )}
+          </button>
+          <input
+            ref={inputRef}
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyPress={handleKeyPress}
+            placeholder="Ask me about restaurants..."
+            disabled={isLoading}
+            className="chat-input"
+          />
+          <button
+            onClick={handleSend}
+            disabled={isLoading || !input.trim()}
+            className="chat-send-button"
+          >
+            ➤
+          </button>
+          <button
+            onClick={handleClearHistory}
+            className="chat-clear-button"
+            title="Reset Chat"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+              <path d="M21 3v5h-5" />
+              <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+              <path d="M3 21v-5h5" />
+            </svg>
+          </button>
+        </div>
+      </div>
     </div>
   )
-}
+})
+
+export default ChatInterface

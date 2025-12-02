@@ -1,9 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import './App.css'
-import Header from './components/Header'
+import FloatingHeader from './components/FloatingHeader'
 import Map from './components/Map'
-import Filters from './components/Filters'
-import RestaurantCard from './components/RestaurantCard'
 import type { Restaurant } from './types/restaurant'
 import restaurantData from './data/FinalData.json'
 
@@ -23,6 +21,9 @@ function App() {
 
   // Highlighted restaurant IDs (for pink markers when searching/isochrone)
   const [highlightedRestaurantIds, setHighlightedRestaurantIds] = useState<Set<string>>(new Set())
+
+  // Store previous highlights when favorites mode is activated (to restore when deactivated)
+  const previousHighlightedIdsRef = useRef<Set<string>>(new Set())
 
   // Isochrone region slugs (defines which restaurants are inside active isochrone polygon)
   const [isochroneRegionSlugs, setIsochroneRegionSlugs] = useState<string[] | null>(null)
@@ -55,12 +56,20 @@ function App() {
     const newFavorites = favorites.includes(restaurantName)
       ? favorites.filter(name => name !== restaurantName)
       : [...favorites, restaurantName]
-    
+
     setFavorites(newFavorites)
     localStorage.setItem('restaurantFavorites', JSON.stringify(newFavorites))
-    
+
     // Update URL hash with favorites
     updateFavoritesHash(newFavorites)
+
+    // If favorites mode is active, update the highlights
+    if (favoritesActive) {
+      const favoriteSlugs = newFavorites
+        .map(name => restaurants.find(r => r.name === name)?.slug)
+        .filter((slug): slug is string => slug !== undefined)
+      setHighlightedRestaurantIds(new Set(favoriteSlugs))
+    }
   }
 
   const updateFavoritesHash = (favoriteNames: string[]) => {
@@ -82,7 +91,26 @@ function App() {
   }
 
   const handleFavoritesToggle = () => {
-    setFavoritesActive(!favoritesActive)
+    const newFavoritesActive = !favoritesActive
+    setFavoritesActive(newFavoritesActive)
+
+    if (newFavoritesActive) {
+      // Save current highlights before switching to favorites view
+      previousHighlightedIdsRef.current = new Set(highlightedRestaurantIds)
+
+      // Show favorite restaurants with pink markers
+      if (favorites.length > 0) {
+        const favoriteSlugs = favorites
+          .map(name => restaurants.find(r => r.name === name)?.slug)
+          .filter((slug): slug is string => slug !== undefined)
+        setHighlightedRestaurantIds(new Set(favoriteSlugs))
+      } else {
+        setHighlightedRestaurantIds(new Set())
+      }
+    } else {
+      // Restore previous highlights when favorites mode is deactivated
+      setHighlightedRestaurantIds(previousHighlightedIdsRef.current)
+    }
   }
 
   const handleSearch = (searchTerm: string) => {
@@ -104,10 +132,7 @@ function App() {
   const applyFilters = (restaurantsToFilter: Restaurant[]) => {
     let filtered = restaurantsToFilter
 
-    // Apply favorites filter first
-    if (favoritesActive) {
-      filtered = filtered.filter(restaurant => restaurant.name && favorites.includes(restaurant.name))
-    }
+    // Note: Favorites no longer filter - they highlight with pink markers instead
 
     // Apply active filters
     Object.entries(activeFilters).forEach(([filterType, values]) => {
@@ -199,7 +224,13 @@ function App() {
     setIsochroneRegionSlugs(slugs)
     // When isochrone is set, initially highlight ALL restaurants in region
     if (slugs) {
-      setHighlightedRestaurantIds(new Set(slugs))
+      const newHighlights = new Set(slugs)
+      // If favorites mode is active, store in ref instead of displaying
+      if (favoritesActive) {
+        previousHighlightedIdsRef.current = newHighlights
+      } else {
+        setHighlightedRestaurantIds(newHighlights)
+      }
     }
   }
 
@@ -207,12 +238,21 @@ function App() {
     // Special case: "Semantic Search Results" means highlight, not filter
     if (filterType === 'Semantic Search Results') {
       // If isochrone region is active, scope highlights to that region only
+      let newHighlights: Set<string>
       if (isochroneRegionSlugs) {
         const regionSet = new Set(isochroneRegionSlugs)
         const scopedValues = values.filter(slug => regionSet.has(slug))
-        setHighlightedRestaurantIds(new Set(scopedValues))
+        newHighlights = new Set(scopedValues)
       } else {
-        setHighlightedRestaurantIds(new Set(values))
+        newHighlights = new Set(values)
+      }
+
+      // If favorites mode is active, store in ref instead of displaying
+      // (will be restored when favorites mode is turned off)
+      if (favoritesActive) {
+        previousHighlightedIdsRef.current = newHighlights
+      } else {
+        setHighlightedRestaurantIds(newHighlights)
       }
       return
     }
@@ -250,6 +290,7 @@ function App() {
     setSelectedRestaurant(null)
     setFavoritesActive(false)
     setHighlightedRestaurantIds(new Set())  // Clear highlights
+    previousHighlightedIdsRef.current = new Set()  // Clear saved highlights
     setIsochroneRegionSlugs(null)  // Clear isochrone region
 
     // Also reset map state (isochrones, view) if the callback is available
@@ -305,31 +346,14 @@ function App() {
     // Apply all filters
     filtered = applyFilters(filtered)
     setFilteredRestaurants(filtered)
-  }, [activeFilters, legendFilters, searchTerm, restaurants, favorites, favoritesActive])
+  }, [activeFilters, legendFilters, searchTerm, restaurants])
 
   return (
     <div className="app">
-      {/* Header */}
-      <Header />
+      {/* Floating Header - Top Left */}
+      <FloatingHeader />
 
-      {/* Filter Bar - Top, 80% width, centered */}
-      <div className="filter-bar-container">
-        <div className="filter-bar">
-          <Filters 
-            onSearch={handleSearch}
-            onFilterChange={handleFilterChange}
-            restaurantCount={filteredRestaurants.length}
-            allRestaurants={restaurants}
-            onResetAll={handleResetAll}
-            onRestaurantSelect={handleRestaurantSelect}
-            favorites={favorites}
-            onFavoritesToggle={handleFavoritesToggle}
-            favoritesActive={favoritesActive}
-          />
-        </div>
-      </div>
-
-      {/* Map Section - Full width with padding */}
+      {/* Full Screen Map */}
       <div className="map-section">
         <Map
           restaurants={filteredRestaurants}
@@ -338,6 +362,7 @@ function App() {
           onLegendFilterChange={handleLegendToggle}
           totalRestaurants={restaurants.length}
           favorites={favorites}
+          onToggleFavorite={toggleFavorite}
           onFilterChange={handleFilterChange}
           allRestaurants={restaurants}
           selectedRestaurant={selectedRestaurant}
@@ -346,19 +371,11 @@ function App() {
           highlightedIds={highlightedRestaurantIds}
           onIsochroneRegion={handleIsochroneRegion}
           isochroneRegionSlugs={isochroneRegionSlugs}
+          favoritesActive={favoritesActive}
+          onFavoritesToggle={handleFavoritesToggle}
         />
 
-        {/* Restaurant Card Overlay - Bottom Right */}
-        {selectedRestaurant && (
-          <div className="restaurant-card-overlay">
-            <RestaurantCard
-              restaurant={selectedRestaurant}
-              onClose={() => setSelectedRestaurant(null)}
-              isFavorited={favorites.includes(selectedRestaurant.name)}
-              onToggleFavorite={() => toggleFavorite(selectedRestaurant.name)}
-            />
-          </div>
-        )}
+        {/* Restaurant Card now appears in chat when clicking markers */}
       </div>
 
 

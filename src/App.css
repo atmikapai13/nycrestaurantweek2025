@@ -1,43 +1,29 @@
 .app {
+  width: 100vw;
   height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background-color: white;
-}
-
-
-
-/* Filter Bar Container */
-.filter-bar-container {
-  display: flex;
-  justify-content: center;
-  padding: 1rem 0;
-  background-color: white;
-  flex-shrink: 0;
-}
-
-.filter-bar {
-  width: 100%;
-  max-width: 1150px;
-}
-
-/* Map Section */
-.map-section {
-  flex: 1;
   position: relative;
-  display: flex;
-  justify-content: center;
-  padding-bottom: 2rem;
+  overflow: hidden;
+}
+
+/* Map Section - Full Screen */
+.map-section {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .map-wrapper {
   position: relative;
-  height: 100%;
   width: 100%;
-  max-width: 1150px;
+  height: 100%;
 }
 
 .map-container {
+  width: 100%;
   height: 100%;
 }
 
@@ -84,7 +70,7 @@
 .map-legend {
   position: absolute;
   top: 2%;
-  left: 1%;
+  right: 1%;
   background: rgba(255, 255, 255, 0.9);
   border-radius: 4px;
   padding: clamp(6px, 1vw, 12px) clamp(10px, 1.5vw, 20px);
@@ -127,62 +113,38 @@
   display: none !important;
 }
 
-/* Responsive Design */
-@media (min-width: 1400px) {
-  .filter-bar {
-    width: 90%;
-    max-width: none;
-  }
-  
-  .map-wrapper {
-    width: 90%;
-    max-width: none;
-  }
+/* Attribution Overlay */
+.map-attribution {
+  position: absolute;
+  bottom: 4px;
+  left: 10px;
+  z-index: 100;
+  font-size: 11px;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
+.map-attribution a {
+  color: #0078a8;
+  text-decoration: none;
+}
+
+.map-attribution a:hover {
+  text-decoration: underline;
+}
+
+.map-attribution-separator {
+  margin: 0 2px;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
-  .app {
-    flex-direction: column;
-  }
-
-  .filter-bar {
-    width: 95%;
-  }
-  
-  .filter-bar-container {
-    order: 1;
-    flex-shrink: 0;
-    padding: 0.5rem 0;
-  }
-  
-  .map-section {
-    flex-direction: column;
-    height: auto;
-    padding-bottom: 0;
-    order: 2;
-  }
-
-  .map-wrapper {
-    width: 100% !important;
-    height: 60vh;
-    order: 3;
-  }
-
   .restaurant-card-overlay {
-    position: static !important;
-    align-items: center;
-    width: 95% !important;
-    margin-top: 8px;
-    margin-bottom: 8px;
-    right: auto;
-    bottom: auto;
-    left: auto;
-    z-index: auto;
-    display: block;
-    order: 2;
-    max-width: none;
-    margin-left: auto;
-    margin-right: auto;
+    left: 10px;
+    bottom: 10px;
+    max-width: calc(100vw - 20px);
   }
 
   /* Mobile legend adjustments */
@@ -193,7 +155,6 @@
 
   .map-legend h4 {
     font-size: 11px;
-    
   }
 
   .legend-item {

@@ -1,17 +1,19 @@
-/* Chat Interface Container */
+/* Chat Interface Container - Left Side */
 .chat-interface {
   position: absolute;
-  top: 10px;
-  right: 20px;
-  z-index: 1000;
+  top: 80px; /* Below floating header */
+  left: 20px;
+  bottom: 10px; /* Above attribution */
+  z-index: 900;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  gap: 0px;
+  width: 35%;
+  min-width: 320px;
+  max-width: 500px;
 }
 
-/* Remi Button */
-.chat-remi-button {
+/* Chatbot Button */
+.chat-bot-button {
   width: 60px;
   height: 60px;
   border: none;
@@ -23,7 +25,7 @@
   overflow: visible;
 }
 
-.chat-remi-button img {
+.chat-bot-button img {
   width: 100%;
   height: 100%;
   object-fit: contain;
@@ -31,20 +33,21 @@
   border-radius: 0;
 }
 
-.chat-remi-button:hover {
+.chat-bot-button:hover {
   transform: scale(1.05);
 }
 
-/* Chat Bubble Container */
+/* Chat Panel Container - Transparent background */
 .chat-bubble {
-  width: 350px;
-  max-height: 450px;
-  background: rgba(255, 255, 255, 0.50);
-  backdrop-filter: blur(3px) saturate(180%);
-  -webkit-backdrop-filter: blur(3px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -62,14 +65,9 @@
   }
 }
 
-/* Chat Header */
+/* Chat Header - Hidden since we have floating header */
 .chat-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.1);
+  display: none;
 }
 
 .chat-title {
@@ -102,25 +100,20 @@
 .chat-messages {
   flex: 1;
   overflow-y: auto;
-  padding: 20px;
+  padding: 10px 8px 10px 0;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  max-height: 400px;
+}
+
+/* Hide scrollbar but keep scroll functionality */
+.chat-messages {
+  -ms-overflow-style: none;  /* IE/Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 
 .chat-messages::-webkit-scrollbar {
-  width: 6px;
-}
-
-.chat-messages::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 10px;
-}
-
-.chat-messages::-webkit-scrollbar-thumb {
-  background: #ff9ec2;
-  border-radius: 10px;
+  display: none;  /* Chrome, Safari, Opera */
 }
 
 /* Individual Message */
@@ -152,8 +145,8 @@
 
 /* Message Avatar */
 .message-avatar {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
@@ -162,8 +155,7 @@
 }
 
 .chat-message.assistant .message-avatar {
-  background: transparent;
-  border: none;
+  display: none; /* Avatar is now inside the bubble */
 }
 
 .chat-message.user .message-avatar {
@@ -181,27 +173,204 @@
   transform: scale(1.3);
 }
 
-/* Message Bubble */
+/* Message Bubble - Glassmorphism (matching restaurant card) */
 .message-bubble {
-  max-width: 260px;
-  padding: 12px 16px;
-  border-radius: 18px;
-  font-size: 12px;
-  line-height: 1.5;
+  max-width: 100%;
+  padding: 8px 12px;
+  border-radius: 16px;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1.4;
   word-wrap: break-word;
   white-space: pre-wrap;
+
+  /* Glassmorphism matching restaurant card */
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(3px) saturate(100%);
+  -webkit-backdrop-filter: blur(3px) saturate(100%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: none;
+
+  color: #333;
 }
 
 .chat-message.assistant .message-bubble {
-  background: linear-gradient(135deg, #ff9ec2 0%, #ffb3d1 100%);
-  color: #fff;
   border-bottom-left-radius: 4px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 10px;
 }
 
 .chat-message.user .message-bubble {
-  background: #f0f0f0;
-  color: #333;
   border-bottom-right-radius: 4px;
+}
+
+/* User bubble - dark background for distinction from assistant */
+.user-bubble {
+  display: block !important;
+  background: rgba(36, 36, 36, 0.7) !important;
+  color: #f5f5f5 !important;
+  width: 90%;
+}
+
+/* Avatar inside bubble for assistant messages */
+.message-avatar-inside {
+  width: 40px;
+  height: 40px;
+  min-width: 35px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: transparent;
+  flex-shrink: 0;
+}
+
+.message-avatar-inside img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Message content wrapper */
+.message-content {
+  flex: 1;
+}
+
+/* Restaurant card message - avatar outside the card */
+.restaurant-card-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+}
+
+.message-avatar-outside {
+  width: 40px;
+  height: 40px;
+  min-width: 35px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: transparent;
+  flex-shrink: 0;
+}
+
+.message-avatar-outside img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.restaurant-card-wrapper {
+  flex: 1;
+  min-width: 0;
+}
+
+.restaurant-card-wrapper .restaurant-card {
+  width: 85%;
+  margin: 0;
+  border-radius: 16px;
+}
+
+.restaurant-card-wrapper .restaurant-card .restaurant-name {
+  font-size: 14px;
+}
+
+.restaurant-card-wrapper .restaurant-card .restaurant-tags {
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-bottom: 3px;
+}
+
+.restaurant-card-wrapper .restaurant-card .restaurant-tags .tag {
+  font-size: 9px;
+  padding: 2px 6px;
+}
+
+.restaurant-card-wrapper .restaurant-card .restaurant-description {
+  font-size: 10px;
+  line-height: 1.3;
+  margin-bottom: 3px;
+}
+
+/* Hide close button in chat cards, but keep heart visible */
+.restaurant-card-wrapper .restaurant-card .restaurant-card-close {
+  display: none;
+}
+
+/* Restaurant card content wrapper - for card + suggestions */
+.restaurant-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Restaurant Suggestions - Outside the card */
+.restaurant-suggestions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  
+  width: 85%;
+}
+
+.restaurant-suggestion-btn {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(3px) saturate(100%);
+  border: 1px solid rgba(160, 160, 160, 0.3);
+  -webkit-backdrop-filter: blur(3px) saturate(100%);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 8px;
+  font-weight: 400;
+  font-style: italic;
+  color: #333;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: none;
+  text-decoration: none;
+  display: block;
+}
+
+.restaurant-suggestion-btn:hover {
+  background: rgba(242, 61, 150, 0.6);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.restaurant-suggestion-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Typing indicator inside bubble */
+.typing-content {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.typing-content span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #999;
+  opacity: 0.7;
+  animation: typing 1.4s infinite;
+}
+
+.typing-content span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-content span:nth-child(3) {
+  animation-delay: 0.4s;
 }
 
 /* Typing Indicator */
@@ -241,43 +410,93 @@
   }
 }
 
-/* Input Container */
+/* Suggestion Pills */
+.suggestions-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 4px 12px 4px;
+  margin-top: -3px;
+}
+
+.suggestion-pill {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(3px) saturate(80%);
+  -webkit-backdrop-filter: blur(3px) saturate(100%);
+  border: 1px solid rgba(160, 160, 160, 0.3);
+  border-radius: 12px;
+  padding: 8px 14px;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  font-style: italic;
+  color: #333;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  max-width: 80%;
+  font-style: italic;
+}
+
+.suggestion-pill:hover {
+  background: rgba(242, 61, 150, 0.6);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.suggestion-pill:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* Input Container - Glassmorphism */
 .chat-input-container {
   display: flex;
-  gap: 8px;
-  padding: 16px;
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
-  background: transparent;
-
+  gap: 6px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px) saturate(180%);
+  -webkit-backdrop-filter: blur(10px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 20px;
+  box-shadow: none;
+  margin-top: auto;
+  margin-bottom: 15px;
 }
 
 .chat-input {
   flex: 1;
-  padding: 12px 16px;
-  border: 1px solid #e0e0e0;
-  border-radius: 20px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 12px;
   font-size: 14px;
   outline: none;
-  transition: border-color 0.2s ease;
+  background: transparent;
+  transition: background-color 0.2s ease;
 }
 
 .chat-input:focus {
-  border-color: #ff9ec2;
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .chat-input:disabled {
-  background: #f5f5f5;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
+.chat-input::placeholder {
+  color: #999;
+}
+
 .chat-send-button {
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   border: none;
-  background: linear-gradient(135deg, #ff9ec2 0%, #ff6b9d 100%);
+  background: linear-gradient(135deg, #6e6e6e 0%, #404040 100%);
   color: #fff;
-  font-size: 18px;
+  font-size: 14px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -296,24 +515,192 @@
   cursor: not-allowed;
 }
 
-/* Responsive */
+/* Clear/Refresh Button */
+.chat-clear-button {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.6);
+  color: #666;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.chat-clear-button:hover {
+  background: rgba(255, 255, 255, 0.9);
+  transform: scale(1.05);
+  color: #333;
+}
+
+/* Favorites Heart Button */
+.chat-favorites-button {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.chat-favorites-button:hover {
+  background: rgba(255, 255, 255, 0.9);
+  transform: scale(1.05);
+}
+
+.chat-favorites-button.active {
+  background: rgba(255, 105, 180, 0.15);
+}
+
+.chat-favorites-button .favorites-count {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #FF69B4;
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+}
+
+/* Drag Handle - Mobile Only */
+.drawer-handle {
+  display: none;
+}
+
+/* Desktop-only elements */
+.desktop-only {
+  display: block;
+}
+
+/* Responsive - Mobile Drawer */
 @media (max-width: 768px) {
   .chat-interface {
-    top: 10px;
-    right: 10px;
+    position: fixed;
+    top: unset;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    min-width: unset;
+    max-width: none;
+    z-index: 1000;
   }
 
-  .chat-remi-button {
+  .chat-bubble {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.50);
+    backdrop-filter: blur(3px) saturate(180%);
+    -webkit-backdrop-filter: blur(3px) saturate(180%);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+    transition: height 0.3s ease;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Drawer height states */
+  .drawer-10 {
+    height: 10vh;
+  }
+
+  .drawer-35 {
+    height: 35vh;
+  }
+
+  .drawer-90 {
+    height: 90vh;
+  }
+
+  /* Drag handle visible on mobile */
+  .drawer-handle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px 0 8px 0;
+    cursor: grab;
+    touch-action: none;
+  }
+
+  .drawer-handle:active {
+    cursor: grabbing;
+  }
+
+  .drawer-handle-bar {
+    width: 60px;
+    height: 4px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 2px;
+  }
+
+  /* Adjust chat messages for drawer */
+  .chat-messages {
+    overflow-y: auto;
+    padding: 10px 16px 0px 16px;
+    margin: 0;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .drawer-10 .chat-messages {
+    display: none;
+  }
+
+  .drawer-35 .chat-messages {
+    max-height: calc(35vh - 100px);
+  }
+
+  .drawer-90 .chat-messages {
+    max-height: calc(90vh - 100px);
+  }
+
+  .chat-bot-button {
     width: 30px;
     height: 30px;
   }
 
-  .chat-bubble {
-    width: calc(100vw - 40px);
-    max-width: 380px;
+  .message-bubble {
+    font-size: 12px;
   }
 
-  .message-bubble {
-    max-width: 200px;
+  .chat-input-container {
+    padding: 5px 2px;
+    width: 95%;
+    margin: 0 auto;
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  /* Hide chatbot avatars on mobile */
+  .desktop-only {
+    display: none !important;
+  }
+
+  /* Restaurant card full width on mobile */
+  .restaurant-card-wrapper {
+    width: 97%;
   }
 }

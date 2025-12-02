@@ -117,7 +117,7 @@ export default function Filters({ onSearch, onFilterChange, allRestaurants = [],
       <div className="filters-header">
         <h2 className="filters-title">Browse restaurants</h2>
         <div className="filters-subrow">
-          <p className="filters-instructions">To learn more about restaurant offerings, tap on a pin in the map or chat with Remi, the restaurant concierge:</p>
+          <p className="filters-instructions">To learn more about restaurant offerings, tap on a pin in the map or chat with the concierge:</p>
         </div>
       </div>
     

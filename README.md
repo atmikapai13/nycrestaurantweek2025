@@ -9,11 +9,12 @@ It has since evolved into a sandbox for next-generation conversational geospatia
 ## Features
 
 - 🗺️ Interactive Mapbox map showing 628+ participating restaurants
-- 🤖 AI chatbot (Remi) powered by Google Gemini for natural language restaurant search
+- 🤖 AI chatbot powered by Google Gemini for natural language restaurant search
 - 🔍 Multi-criteria filtering (cuisine, price, vibes, ratings, awards)
 - ⭐ Michelin stars, Bib Gourmand, and NYT Top 100 restaurant highlights
 - 📝 Yelp review highlights and Reddit community opinions
-- ❤️ Favorites system with shareable URLs
+- ❤️ Favorites system with shareable URLs and independent highlight mode
+- 🎯 Smart marker highlighting: pink markers show search/filter results while keeping all restaurants visible
 - 📱 Responsive design for mobile and desktop
 
 ## Architecture Overview
@@ -122,7 +123,7 @@ nycrestaurantweek2025/
 
 ### Architecture: Function Calling Pattern
 
-Remi uses **Gemini's Function Calling** feature - a structured way for AI to execute actions. The backend **never sends restaurant data** to Gemini. Instead, Gemini receives conversation history and returns **function calls** that the frontend executes locally.
+The chatbot uses **Gemini's Function Calling** feature - a structured way for AI to execute actions. The backend **never sends restaurant data** to Gemini. Instead, Gemini receives conversation history and returns **function calls** that the frontend executes locally.
 
 ### Flow Diagram
 
@@ -229,14 +230,14 @@ Remi uses **Gemini's Function Calling** feature - a structured way for AI to exe
    - ✅ **Speed**: Local filtering is instant
    - ✅ **Offline-capable**: Static data works without API
 
-## Available Tools (10 Total)
+## Available Tools (13 Total)
 
-Gemini has access to 10 function tools it can call based on user queries. These tools are executed **client-side** by the frontend.
+Gemini has access to 13 function tools it can call based on user queries. These tools are executed **client-side** by the frontend.
 
-### 🔍 Search & Filter Tools (4)
+### 🔍 Search & Filter Tools (3)
 
 #### 1. `filter_map`
-**Purpose**: Multi-criteria restaurant filtering
+**Purpose**: Multi-criteria restaurant filtering with smart highlighting
 **Parameters**:
 - `cuisines`: Array of cuisine types (e.g., `["Japanese", "Italian"]`)
 - `price_levels`: Array of price points (`["$", "$$", "$$$", "$$$$"]`)
@@ -245,6 +246,9 @@ Gemini has access to 10 function tools it can call based on user queries. These 
 - `vibes`: Array of collection tags (`["date-night", "romantic", "cozy"]`)
 - `awards`: Array of awards (`["michelin", "bib_gourmand", "nyt_top_100"]`)
 - `min_rating`: Minimum Yelp rating (0-5)
+- `semantic_features`: Array of keywords to search in review highlights
+
+**Behavior**: Highlights matching restaurants with pink markers while keeping all restaurants visible. Respects active isochrone regions.
 
 **Example**:
 ```javascript
@@ -257,35 +261,15 @@ filter_map({
 })
 ```
 
-#### 2. `calculate_midpoint`
-**Purpose**: Find restaurants at geographic midpoint between two locations
-**Parameters**:
-- `location1`: Neighborhood name (e.g., `"Williamsburg"`)
-- `location2`: Neighborhood name (e.g., `"Kips Bay"`)
-- `radiusMiles`: Search radius from midpoint (default: 1.0 mile)
-- `cuisines`: Optional cuisine filters
-- `price_levels`: Optional price filters
-
-**Example**:
-```javascript
-calculate_midpoint({
-  location1: "Williamsburg",
-  location2: "Kips Bay",
-  radiusMiles: 1.0
-})
-```
-
-**How it works**:
-- Calculates true geographic midpoint using Turf.js
-- Finds restaurants within radius of midpoint
-- Sorts by "balance score" (equal distance from both locations)
-
-#### 3. `semantic_search`
+#### 2. `semantic_search`
 **Purpose**: Unstructured keyword-based search in reviews
 **Parameters**:
 - `query`: Search query
 - `keywords`: Array of keywords to search for
 - `pre_filters`: Optional filters (cuisine, price, etc.)
+- `use_current_results`: Boolean - scope to isochrone region if active (default: true)
+
+**Behavior**: Highlights matching restaurants with pink markers while keeping all restaurants visible
 
 **Example**:
 ```javascript
@@ -296,12 +280,15 @@ semantic_search({
 })
 ```
 
-#### 4. `rag_search`
+#### 3. `rag_search`
 **Purpose**: AI-powered semantic search using vector embeddings (Pinecone)
 **Parameters**:
 - `query`: Natural language query
 - `pre_filters`: Optional filters
 - `top_k`: Number of results (default: 20)
+- `use_current_results`: Boolean - scope to isochrone region if active (default: true)
+
+**Behavior**: Highlights matching restaurants with pink markers while keeping all restaurants visible. Works seamlessly within active isochrone regions.
 
 **Example**:
 ```javascript
@@ -334,14 +321,14 @@ rag_search({
 get_current_results({ include_examples: true })
 
 // Returns summary:
-// "Found 47 restaurants
-//  Cuisines: Italian (18), Indian (12), Japanese (9)
-//  Locations: Manhattan (35), Brooklyn (10), Queens (2)
-//  Top neighborhoods: East Village, Williamsburg, West Village
-//  Price distribution: $ (5), $$ (20), $$$ (18), $$$$ (4)
+// "I've found 47 restaurants for you. Top-rated restaurants are Lilia, Carbone, Via Carota!
+//  Here's a further breakdown:
+//  Top Cuisines: Italian, Indian, Japanese
+//  Top Neighborhoods: East Village, Williamsburg, West Village
+//  Price distribution: 5 $, 20 $$, 18 $$$, 4 $$$$
 //  Average rating: 4.2⭐
 //  Awards: 3 Michelin-starred
-//  Top-rated: Lilia, Carbone, Via Carota"
+// If you want to learn more, click on a restaurant with a pink marker or ask me questions.
 ```
 
 #### 6. `show_dish_recommendations`
@@ -404,6 +391,118 @@ get_restaurant_summary({ restaurant_slug: "l-artusi" })
 
 ---
 
+### 🗺️ Geospatial Tools (5)
+
+#### 11. `calculate_midpoint`
+**Purpose**: Find restaurants at the TRUE geographic midpoint between two NYC locations using simple radius search (API-free)
+**Parameters**:
+- `location1`: Neighborhood name (e.g., `"Williamsburg"`)
+- `location2`: Neighborhood name (e.g., `"Kips Bay"`)
+- `radiusMiles`: Search radius from midpoint (default: 1.0 mile)
+- `cuisines`: Optional cuisine filters
+- `price_levels`: Optional price filters
+
+**How it works**:
+- Calculates true geographic midpoint using Turf.js
+- Finds restaurants within radius of midpoint
+- Sorts by "balance score" (equal distance from both locations)
+- No API calls - uses client-side Turf.js only
+
+**Example**:
+```javascript
+calculate_midpoint({
+  location1: "Williamsburg",
+  location2: "Kips Bay",
+  radiusMiles: 1.0,
+  cuisines: ["Italian"]
+})
+```
+
+#### 12. `geocode_address`
+**Purpose**: Convert NYC addresses, landmarks, or POIs to coordinates for spatial queries. Understands NYC slang (LIC, FiDi, UWS, etc.).
+**Parameters**:
+- `address`: NYC address, landmark, neighborhood, or POI (e.g., "Times Square", "123 Broadway Brooklyn", "LIC", "the Vessel")
+
+**Example**:
+```javascript
+geocode_address({ address: "Times Square" })
+geocode_address({ address: "LIC" })  // Expands to "Long Island City"
+```
+
+#### 13. `find_restaurants_by_travel_time`
+**Purpose**: Find restaurants within X minutes of travel time from a location using isochrones (travel-time polygons). Supports walking, cycling, transit (subway/bus), and driving modes.
+**Parameters**:
+- `location`: Starting location (address, landmark, or neighborhood)
+- `travel_time_minutes`: Maximum travel time (5-60 minutes)
+- `mode`: Transportation mode (`walking`, `cycling`, `transit`, `driving`). Default: `walking`
+- `cuisines`: Optional cuisine filters
+- `price_levels`: Optional price filters
+- `min_rating`: Optional minimum Yelp rating
+- `awards`: Optional award filters
+
+**Example**:
+```javascript
+find_restaurants_by_travel_time({
+  location: "Grand Central",
+  travel_time_minutes: 15,
+  mode: "walking"
+})
+
+find_restaurants_by_travel_time({
+  location: "Times Square",
+  travel_time_minutes: 20,
+  mode: "transit",
+  cuisines: ["Italian"],
+  min_rating: 4.0
+})
+```
+
+#### 14. `find_multi_party_restaurants`
+**Purpose**: Find restaurants reachable by multiple people from different locations. Auto-detects spatial operation from natural language: "between us" = intersection, "around both" = union, "not in X" = exclusion. Supports 2+ locations.
+**Parameters**:
+- `locations`: Array of location objects, each with:
+  - `address`: NYC address, landmark, or neighborhood
+  - `travel_time_minutes`: Travel time in minutes
+  - `mode`: Transportation mode (optional, defaults to walking)
+- `operation`: Spatial operation (`intersection`, `union`, `exclusion`)
+- `cuisines`: Optional cuisine filters
+- `price_levels`: Optional price filters
+- `min_rating`: Optional minimum rating
+- `awards`: Optional award filters
+
+**Example**:
+```javascript
+// Find overlap (restaurants BOTH can reach)
+find_multi_party_restaurants({
+  locations: [
+    { address: "the Vessel", travel_time_minutes: 15, mode: "walking" },
+    { address: "LIC", travel_time_minutes: 15, mode: "walking" }
+  ],
+  operation: "intersection"
+})
+
+// Find combined area (restaurants EITHER can reach)
+find_multi_party_restaurants({
+  locations: [
+    { address: "Grand Central", travel_time_minutes: 10 },
+    { address: "Penn Station", travel_time_minutes: 10 }
+  ],
+  operation: "union",
+  cuisines: ["Japanese"]
+})
+
+// Exclude an area
+find_multi_party_restaurants({
+  locations: [
+    { address: "Times Square", travel_time_minutes: 15, mode: "walking" },
+    { address: "Penn Station", travel_time_minutes: 5, mode: "walking" }
+  ],
+  operation: "exclusion"
+})
+```
+
+---
+
 ### Tool Selection Logic
 
 Gemini decides which tool to call based on:
@@ -418,23 +517,30 @@ Gemini decides which tool to call based on:
 - "What's the vibe?" → `get_restaurant_vibe`
 - "Between Brooklyn and Manhattan" → `calculate_midpoint`
 - "Romantic date night spot" → `rag_search` (semantic)
+- "Near Times Square" → `geocode_address`
+- "Restaurants within 15 min walk from Grand Central" → `find_restaurants_by_travel_time`
+- "I'm at the Vessel, friend at LIC, what's between us?" → `find_multi_party_restaurants`
 
 ## Example Queries
 
 ```
 "Find Japanese restaurants with $$"
-→ Filters: cuisines=["Japanese"], price_levels=["$$"]
+→ filter_map({ cuisines: ["Japanese"], price_levels: ["$$"] })
 
 "Show me Michelin-starred date night spots"
-→ Filters: awards=["michelin"], vibes=["date-night", "romantic"]
+→ filter_map({ awards: ["michelin"], vibes: ["date-night", "romantic"] })
 
 "Italian restaurants in Williamsburg with great pasta"
-→ Filters: cuisines=["Italian"], neighborhoods=["Williamsburg"],
-          semantic_features=["pasta"]
+→ rag_search({ query: "great pasta", pre_filters: { cuisines: ["Italian"], neighborhoods: ["Williamsburg"] } })
 
-"Affordable seafood with outdoor seating"
-→ Filters: cuisines=["Seafood"], price_levels=["$", "$$"],
-          semantic_features=["outdoor"]
+"Restaurants within 15 minutes walking from Grand Central"
+→ find_restaurants_by_travel_time({ location: "Grand Central", travel_time_minutes: 15, mode: "walking" })
+
+"I'm at the Vessel, my friend's in LIC. What's good between us?"
+→ find_multi_party_restaurants({ locations: [...], operation: "intersection" })
+
+"Show places near Times Square but avoid Penn Station"
+→ find_multi_party_restaurants({ locations: [...], operation: "exclusion" })
 ```
 
 ## Data Schema
@@ -598,16 +704,16 @@ For production deployments with 500+ users:
 - [ ] User reviews and ratings
 - [ ] Dish photo gallery
 - [ ] Restaurant comparison tool
-- [x] Transit-time-based midpoint calculations (In Progress - Phase 2)
+- [x] Transit-time-based isochrone calculations
 - [ ] Push notifications for favorite restaurants
 
 ---
 
 ## Development Progress
 
-### 📅 Current Status: Geospatial Enhancement - Phase 2 (60% Complete)
+### 📅 Current Status: Geospatial Features Complete
 
-Last updated: 2025-11-19
+Last updated: 2025-11-23
 
 ---
 
@@ -615,70 +721,36 @@ Last updated: 2025-11-19
 
 **Implementation Date:** 2025-11-19
 
-#### New Files Created (3)
-1. **`/src/utils/nycSlang.ts`** - NYC abbreviation dictionary
-   - 70+ slang terms (LIC → Long Island City, FiDi → Financial District, etc.)
-
-2. **`/api/lib/geoapifyClient.js`** - Shared Geoapify HTTP client
-   - NYC bounding box filtering, error handling for rate limits
-
-3. **`/api/geocode.js`** - Forward geocoding endpoint
-   - Geoapify API integration, 7-day Redis cache, fallback to neighborhood centroids
-
 #### Features Delivered
-- ✅ Forward geocoding (address → coordinates)
-- ✅ NYC slang support, bounding box filtering
-- ✅ Auto-displays restaurant summary after geocoding
-- ✅ Improved `get_current_results` function calling
-
-#### Example Queries
-```
-"Find restaurants near Times Square"
-→ Shows summary with cuisines, ratings, top picks
-
-"Show me spots around LIC"
-→ Expands to "Long Island City", shows results
-```
+- ✅ Forward geocoding (address → coordinates) via Geoapify API
+- ✅ NYC slang support (70+ terms: LIC, FiDi, UWS, etc.)
+- ✅ NYC bounding box filtering
+- ✅ 7-day Redis cache for geocode results
+- ✅ Fallback to neighborhood centroids
 
 ---
 
-### 🚧 **IN PROGRESS - Phase 2: Hybrid Isochrone System (60% Complete)**
+### ✅ **COMPLETED - Phase 2: Hybrid Isochrone System**
 
-**Implementation Date:** 2025-11-19
-
-#### New Files Created (2)
-1. **`/src/services/isochroneService.ts`** - Hybrid isochrone routing
-   - Mapbox for walking/cycling (100K/month free)
-   - Geoapify for transit (3K credits/day free)
-   - Turf.js fallback when quotas exceeded
-
-2. **`/api/isochrone.js`** - Isochrone backend endpoint
-   - 24-hour Redis cache, fallback to circular approximation
-
-#### Files Modified
-- **`/src/utils/geospatial.ts`** - Added polygon filtering utilities
-- **`/api/chat.js`** - Added `find_restaurants_by_travel_time` tool
+**Implementation Date:** 2025-11-19 – 2025-11-23
 
 #### Features Delivered
-- ✅ Hybrid isochrone service (Mapbox + Geoapify)
-- ✅ Polygon filtering utilities (point-in-polygon, intersection, union)
-- ✅ Tool definition with system prompt examples
+- ✅ Hybrid isochrone service (Mapbox for walking/cycling, Geoapify for transit)
+- ✅ Single-person travel-time queries (`find_restaurants_by_travel_time`)
+- ✅ Multi-party spatial queries (`find_multi_party_restaurants`)
+- ✅ Spatial operations: intersection (overlap), union (combined), exclusion (difference)
+- ✅ Polygon visualization on map with clear button
+- ✅ Point-in-polygon filtering for restaurant results
+- ✅ 24-hour Redis cache for isochrone results
+- ✅ Turf.js fallback when API quotas exceeded
 
-#### Example Queries (Will work after frontend integration)
+#### Example Queries
 ```
 "Restaurants within 15 minutes walking from Grand Central"
 "Places I can reach by subway in 20 minutes from Times Square"
-"Italian spots within 10 min walk from my hotel"
+"I'm at the Vessel, friend at LIC, what's between us?"
+"Show places near Times Square but avoid Penn Station"
 ```
-
-#### Remaining Work (40%)
-1. Add isochrone handler to ChatInterface.tsx (~50 lines)
-2. Add polygon visualization to Map.tsx (~80 lines)
-   - Pink fill (#FF1493, 20% opacity)
-   - Pink outline (2px width)
-   - Clear polygon button
-
-**Estimated Time:** 1-2 hours
 
 ---
 
@@ -692,39 +764,6 @@ Last updated: 2025-11-19
 
 **With caching:** ~230 credits/day total (13x under free tier limit)
 **Monthly cost:** $0 (within all free tiers)
-
----
-
-### 🐛 **Known Issues & Debugging**
-
-1. **Turf.js Import**: Backend may need CommonJS `require()` instead of ES6 `import`
-2. **Mapbox Token**: Verify `VITE_MAPBOX_TOKEN` in `.env.local`
-3. **Type Errors**: Check `computeResultMetadata()` type consistency
-4. **GeoJSON Formats**: May need normalization between Mapbox/Geoapify responses
-
----
-
-### 📝 **File Inventory**
-
-**New Files (6):** 903 total lines added
-- `src/utils/nycSlang.ts`, `src/services/isochroneService.ts`
-- `api/lib/geoapifyClient.js`, `api/geocode.js`, `api/isochrone.js`
-
-**Modified Files (3):**
-- `api/chat.js` (+65 lines) - 2 new tools
-- `src/components/ChatInterface.tsx` (+100 lines) - Geocoding handler
-- `src/utils/geospatial.ts` (+59 lines) - Polygon utilities
-
----
-
-### 🎯 **Next Session Goals**
-
-1. Complete Phase 2 frontend integration
-2. Test walking & transit isochrones
-3. Fix any TypeScript/runtime errors
-4. Verify pink polygon rendering
-
-**Estimated Time to Phase 2 Completion:** 2-3 hours
 
 ---
 

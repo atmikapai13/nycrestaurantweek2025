@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import type { Restaurant } from '../types/restaurant'
-import ChatInterface from './ChatInterface'
+import ChatInterface, { type ChatInterfaceHandle } from './ChatInterface'
 
 // Set your Mapbox access token
 mapboxgl.accessToken = "pk.eyJ1IjoiYXRtaWthcGFpMTMiLCJhIjoiY21idHR4eTJpMDdhMjJsb20zNmZheTZ6ayJ9.d_bQSBzesyiCUMA-YHRoIA"
@@ -32,6 +32,7 @@ interface MapProps {
   onLegendFilterChange: (filterType: string) => void
   totalRestaurants: number
   favorites: string[]
+  onToggleFavorite?: (restaurantName: string) => void
   onFilterChange: (filterType: string, values: string[]) => void
   allRestaurants: Restaurant[]
   onMapFocus?: (restaurantIds: string[]) => void
@@ -42,14 +43,17 @@ interface MapProps {
   highlightedIds?: Set<string>
   onIsochroneRegion?: (slugs: string[] | null) => void
   isochroneRegionSlugs?: string[] | null
+  favoritesActive?: boolean
+  onFavoritesToggle?: () => void
 }
 
-export default function Map({ restaurants, onRestaurantSelect, activeFilters, onLegendFilterChange, favorites, onFilterChange, allRestaurants, onMapFocus, selectedRestaurant, onIsochroneLayersUpdate, onResetAll, mapResetRef, highlightedIds, onIsochroneRegion, isochroneRegionSlugs }: MapProps) {
+export default function Map({ restaurants, onRestaurantSelect, activeFilters, onLegendFilterChange, favorites, onToggleFavorite, onFilterChange, allRestaurants, onMapFocus, selectedRestaurant, onIsochroneLayersUpdate, onResetAll, mapResetRef, highlightedIds, onIsochroneRegion, isochroneRegionSlugs, favoritesActive, onFavoritesToggle }: MapProps) {
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<mapboxgl.Map | null>(null)
   const markers = useRef<mapboxgl.Marker[]>([])
   const markerElements = useRef<HTMLDivElement[]>([])
   const currentZoom = useRef<number>(10.0)
+  const chatInterfaceRef = useRef<ChatInterfaceHandle>(null)
 
   // Backward compatible: keep single polygon state for existing isochrone queries
   const [isochronePolygon, setIsochronePolygon] = useState<any>(null)
@@ -63,11 +67,16 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
     setIsochronePolygon(null)
     setIsochroneLayers([])
 
-    // Reset map to default NYC view
+    // Detect mobile viewport
+    const isMobile = window.innerWidth <= 768
+
+    // Reset map to default view (mobile or desktop)
     if (map.current) {
       map.current.flyTo({
-        center: [-73.979545, 40.744293], // NYC coordinates
-        zoom: 10.0,
+        center: isMobile ? [-73.985, 39.705] : [-74.017, 40.743],
+        zoom: isMobile ? 10.0 : 12.4,
+        pitch: isMobile ? 45 : 45,
+        bearing: 0,
         duration: 1000
       })
     }
@@ -109,9 +118,12 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
         }
       })
 
-      // Fit map to bounds with padding
+      // Fit map to bounds with responsive padding
+      const isMobileView = window.innerWidth <= 768
       map.current.fitBounds(bounds, {
-        padding: { top: 100, bottom: 100, left: 100, right: 100 },
+        padding: isMobileView
+          ? { top: 80, bottom: 280, left: 20, right: 20 }  // Mobile: pad bottom for drawer
+          : { top: 100, bottom: 100, left: 200, right: 100 }, // Desktop: pad left for chat panel
         maxZoom: 14
       })
     }
@@ -165,12 +177,30 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
   useEffect(() => {
     if (!mapContainer.current) return
 
+    // Detect mobile viewport
+    const isMobile = window.innerWidth <= 768
+
+    // Mobile-specific viewport: shifted south to account for 40% drawer at bottom
+    const mobileCenter: [number, number] = [-73.990, 40.715] // Shifted south to show lower Manhattan
+    const mobileZoom = 11.8
+    const mobilePitch = 45
+    const mobileBearing = 0
+
+    // Desktop viewport
+    const desktopCenter: [number, number] = [-74.014, 40.737]
+    const desktopZoom = 12.58
+    const desktopPitch = 45
+    const desktopBearing = 0
+
     // Initialize map
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/atmikapai13/cmhdmnool00ai01qw6qz79zqu', // Custom style
-      center: [-73.979545, 40.744293], // NYC coordinates
-      zoom: 10.0
+      center: isMobile ? mobileCenter : desktopCenter,
+      zoom: isMobile ? mobileZoom : desktopZoom,
+      pitch: isMobile ? mobilePitch : desktopPitch,
+      bearing: isMobile ? mobileBearing : desktopBearing,
+      customAttribution: '© <a href="https://atmikapai.dev/" target="_blank">Atmika Pai</a> © <a href="https://marauders.earth/" target="_blank">Marauders.Earth</a> © <a href="https://www.fultonring.com/" target="_blank">Fulton Ring</a>'
     })
 
     // Load custom pattern and configure map style
@@ -297,8 +327,11 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
 
           // Only fitBounds if we actually added coordinates
           if (!bounds.isEmpty()) {
+            const isMobileView = window.innerWidth <= 768
             mapInstance.fitBounds(bounds, {
-              padding: { top: 100, bottom: 100, left: 100, right: 100 },
+              padding: isMobileView
+                ? { top: 80, bottom: 280, left: 20, right: 20 }  // Mobile: pad bottom for drawer (35vh ≈ 280px)
+                : { top: 100, bottom: 100, left: 700, right: 100 }, // Desktop: pad left for chat panel
               maxZoom: 14
             })
           }
@@ -434,9 +467,13 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
           }
         })
 
+        // Fit bounds with responsive padding
         if (!bounds.isEmpty()) {
+          const isMobileView = window.innerWidth <= 768
           mapInstance.fitBounds(bounds, {
-            padding: { top: 100, bottom: 100, left: 100, right: 100 },
+            padding: isMobileView
+              ? { top: 80, bottom: 280, left: 20, right: 20 }  // Mobile: pad bottom for drawer (35vh ≈ 280px)
+              : { top: 100, bottom: 100, left: 700, right: 100 }, // Desktop: pad left for chat panel
             maxZoom: 14
           })
         }
@@ -465,7 +502,7 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
         // SIMPLE COLOR LOGIC: Pink if highlighted, black otherwise
         const isHighlighted = highlightedIds?.has(restaurant.slug)
         const markerColor = isHighlighted ? '#FF69B4' : '#7c7c7c'
-        const markerSize = isHighlighted ? '10px' : '8px'  // Pink markers larger
+        const markerSize = isHighlighted ? '10px' : '6px'  // Pink markers larger
 
         // Create marker wrapper for larger click area
         const markerWrapper = document.createElement('div')
@@ -497,9 +534,11 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
           .setLngLat([restaurant.longitude, restaurant.latitude])
           .addTo(map.current!)
 
-        // Add click handler to the wrapper
+        // Add click handler to the wrapper - show restaurant card in chat
         markerWrapper.addEventListener('click', () => {
-          onRestaurantSelect(restaurant)
+          if (chatInterfaceRef.current) {
+            chatInterfaceRef.current.addRestaurantCard(restaurant)
+          }
         })
 
         markers.current.push(marker)
@@ -540,8 +579,9 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
   return (
     <div className="map-wrapper">
       <div ref={mapContainer} className="map-container" />
-      {/* Chat/Remy Interface (now inside map, overlays map region only) */}
+      {/* Chat Interface (overlays map region) */}
       <ChatInterface
+        ref={chatInterfaceRef}
         restaurants={restaurants}
         allRestaurants={allRestaurants}
         onFilterChange={onFilterChange}
@@ -553,6 +593,10 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
         onResetAll={onResetAll}
         isochroneRegionSlugs={isochroneRegionSlugs}
         onIsochroneRegion={onIsochroneRegion}
+        favorites={favorites}
+        onToggleFavorite={onToggleFavorite}
+        favoritesActive={favoritesActive}
+        onFavoritesToggle={onFavoritesToggle}
       />
       {/* Map Legend */}
       <div className="map-legend">

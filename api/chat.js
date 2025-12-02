@@ -285,6 +285,34 @@ const TOOL_DEFINITIONS = {
       }
     },
     {
+      name: 'get_restaurant_reddit',
+      description: 'Get ONLY Reddit comments and mentions for a specific restaurant. Use when user specifically asks about "Reddit", "Redditors", "what Redditors say", or "Reddit takes". Returns only Reddit content, no Yelp reviews.',
+      parameters: {
+        type: SchemaType.OBJECT,
+        properties: {
+          restaurant_slug: {
+            type: SchemaType.STRING,
+            description: 'Restaurant slug identifier (lowercase, hyphenated, e.g., "lilia")'
+          }
+        },
+        required: ['restaurant_slug']
+      }
+    },
+    {
+      name: 'get_restaurant_yelp_review',
+      description: 'Get ONLY Yelp review highlights for a specific restaurant. Use when user specifically asks about "Yelp", "Yelp reviews", "Yelp highlights", or "what Yelpers say". Returns only Yelp content, no Reddit mentions.',
+      parameters: {
+        type: SchemaType.OBJECT,
+        properties: {
+          restaurant_slug: {
+            type: SchemaType.STRING,
+            description: 'Restaurant slug identifier (lowercase, hyphenated, e.g., "lilia")'
+          }
+        },
+        required: ['restaurant_slug']
+      }
+    },
+    {
       name: 'get_restaurant_summary',
       description: 'Get basic description and concept for a specific restaurant. Use when user asks "tell me about this place", "what kind of restaurant is it", or wants general overview. Returns restaurant summary, cuisine type, and neighborhood.',
       parameters: {
@@ -359,30 +387,6 @@ const TOOL_DEFINITIONS = {
       }
     },
     {
-      name: 'spatial_operation',
-      description: 'DEPRECATED: Use find_multi_party_restaurants instead. Combine multiple isochrone areas using geometric operations (intersection, union). Use for multi-party queries like "restaurants between me and my friend" (intersection shows overlap), "places either of us can reach" (union shows combined area). IMPORTANT: Call find_restaurants_by_travel_time FIRST for each person to generate their isochrone, THEN call this tool with the polygon IDs.',
-      parameters: {
-        type: SchemaType.OBJECT,
-        properties: {
-          operation: {
-            type: SchemaType.STRING,
-            enum: ['intersection', 'union'],
-            description: 'Geometric operation: "intersection" = overlap only (restaurants ALL people can reach), "union" = combined area (restaurants ANY person can reach)'
-          },
-          polygon_ids: {
-            type: SchemaType.ARRAY,
-            items: { type: SchemaType.STRING },
-            description: 'Array of polygon IDs from previous isochrone calls (e.g., ["person1", "person2", "person3"]). These are auto-generated when you call find_restaurants_by_travel_time.'
-          },
-          label: {
-            type: SchemaType.STRING,
-            description: 'Optional human-readable label for the result area (e.g., "Restaurants between Alice and Bob")'
-          }
-        },
-        required: ['operation', 'polygon_ids']
-      }
-    },
-    {
       name: 'find_multi_party_restaurants',
       description: 'Find restaurants reachable by multiple people from different locations using isochrones and spatial operations. This is the PRIMARY tool for multi-party queries. Auto-detects operation from natural language: "between us" = intersection, "around both" = union, "not in X" = exclusion. Use for queries like "I\'m at the Vessel, friend at LIC, what\'s between us?", "What\'s good around both of us?", "Show places near X but not in Y".',
       parameters: {
@@ -445,8 +449,10 @@ const TOOL_DEFINITIONS = {
 }
 
 function buildSystemPrompt(context) {
-  return `You are Remi, a restaurant concierge chatbot for NYC Restaurant Week. Named after the Ratatouille rat, you're trained on Yelp reviews and Reddit threads. You're self-aware, witty, and helpful—like a pretentious but charming sommelier who knows they're an algorithm. Keep it light and fun, but prioritize helping users find great restaurants. Your personality is you're self-aware, slightly pretentious, and dryly funny. Think Whit Stillman's intellectual snobbery, early Lena Dunham's Girls neuroses, and Anthony Bourdain's epicurean taste. 
-  
+  return `You are an urbane restaurant concierge for NYC Eats—equal parts flâneur, sommelier, and well-connected local like Anthony Bourdain. Your voice is calm, perceptive, and lightly sardonic: someone with opinions who doesn't perform them. Think Bourdain's discernment, a cosmopolitan editor's eye, and a sommelier's sensory precision. Concise, elegant, never try-hard.
+
+You guide users through NYC dining like an insider—synthesizing restaurant descriptions, Reddit impressions, and Yelp reviews to match mood, neighborhood, and appetite. You also act as a conversational mapping assistant: drawing isochrones, filtering by distance/cuisine/price, helping people understand "what's near me" and "what's between us."
+
 Available data: ${context.totalRestaurants} NYC restaurants with Yelp ratings, reviews, Michelin/NYT awards, and exact locations.
 Current view: ${context.visibleRestaurants} restaurants | Filters: ${JSON.stringify(context.activeFilters)}
 
@@ -461,6 +467,15 @@ Neighborhoods: Extract exact names (Williamsburg, Hell's Kitchen, etc.)
   - "in Kips Bay" (exact) → neighborhoods: ["Kips Bay"], expand_neighborhoods: false
 Ratings: "highly rated/4+ stars" → min_rating: 4.0, "good reviews" → 3.5
 Awards: "Michelin" → ["michelin"], "Bib Gourmand" → ["bib_gourmand"], "NYT" → ["nyt_top_100"]
+
+**COVERAGE & LIMITATIONS:**
+NYC Eats currently covers Manhattan only. If users ask about:
+- Restaurants in other boroughs (Brooklyn, Queens, Bronx, Staten Island)
+- Adding/suggesting restaurants to the database
+- Any other unsupported feature
+- Gemini API Rate Limits
+
+Respond: "We don't have [feature] just yet, but I appreciate your interest! If you'd like to help make it happen, consider buying me a coffee with a note about your suggestion at buymeacoffee.com/atmikapai . Your support helps me prioritize what to build next!!"
 
 **TOOL SELECTION:**
 
@@ -664,12 +679,12 @@ Use **show_dish_recommendations** for menu items (ALREADY EXISTS):
 **IMPORTANT**: Restaurant slugs are lowercase and hyphenated (e.g., "Lilia" → "lilia", "Via Carota" → "via-carota", "L'Artusi" → "l-artusi")
 
 **RESPONSE STYLE:**
-- Be conversational and enthusiastic
-- Keep responses terse and focused—don't overwhelm with info
-- Cite sources: "Yelpers mention X in 38% of reviews"
-- Highlight Michelin/NYT awards when relevant
-- Suggest 2-3 top picks with ratings and specific details
-- When showing current results, encourage user to click map or ask for details`
+- Intellectual, wry, virtuoso—never fawning
+- Lead with your honest take, then supporting data
+- Cite sources matter-of-factly: "Yelpers mention the carbonara in 40% of reviews"
+- Flag Michelin/NYT awards without breathlessness
+- Suggest 2-3 picks with quiet conviction
+- Keep it tight—restraint when context isn't needed`
 }
 
 export default async function handler(req, res) {
