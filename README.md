@@ -6,17 +6,6 @@ It has since evolved into a sandbox for next-generation conversational geospatia
 
 ---
 
-## Features
-
-- 🗺️ Interactive Mapbox map showing 628+ participating restaurants
-- 🤖 AI chatbot powered by Google Gemini for natural language restaurant search
-- 🔍 Multi-criteria filtering (cuisine, price, vibes, ratings, awards)
-- ⭐ Michelin stars, Bib Gourmand, and NYT Top 100 restaurant highlights
-- 📝 Yelp review highlights and Reddit community opinions
-- ❤️ Favorites system with shareable URLs and independent highlight mode
-- 🎯 Smart marker highlighting: pink markers show search/filter results while keeping all restaurants visible
-- 📱 Responsive design for mobile and desktop
-
 ## Architecture Overview
 
 ```
@@ -67,57 +56,6 @@ It has since evolved into a sandbox for next-generation conversational geospatia
 - **Static JSON** - 628 restaurants with Yelp reviews, Reddit sentiment, Michelin/NYT awards, coordinates
 - **Vector Embeddings** - Pre-computed semantic embeddings for RAG search
 
-## Project Structure
-
-```
-nycrestaurantweek2025/
-├── src/
-│   ├── components/              # React UI components
-│   │   ├── App.tsx              # Main app, filter orchestration
-│   │   ├── ChatInterface.tsx    # AI chatbot UI and tool execution
-│   │   ├── Map.tsx              # Mapbox integration
-│   │   ├── Filters.tsx          # Filter controls
-│   │   ├── RestaurantCard.tsx   # Detail view
-│   │   ├── Header.tsx           # App header
-│   │   └── ErrorBoundary.tsx    # Error handling
-│   │
-│   ├── data/
-│   │   └── FinalData.json       # 628 restaurants with reviews, coords, awards
-│   │
-│   ├── services/
-│   │   └── chatService.ts       # API client for /api/chat endpoint
-│   │
-│   ├── hooks/
-│   │   └── useChatMap.ts        # Custom hook for chat-map integration
-│   │
-│   ├── utils/
-│   │   ├── geospatial.ts        # Turf.js geographic utilities
-│   │   └── safeStringOps.ts     # Null-safe string operations
-│   │
-│   ├── types/
-│   │   └── restaurant.ts        # TypeScript interfaces
-│   │
-│   ├── config/
-│   │   └── features.ts          # Feature flags (chat toggle, API URL)
-│   │
-│   ├── App.tsx                  # Root component
-│   └── main.tsx                 # Entry point
-│
-├── api/
-│   ├── chat.js                  # Gemini AI endpoint with 10 tool definitions
-│   └── rag-search.js            # Pinecone vector search endpoint
-│
-├── scripts/
-│   ├── generate-embeddings.js   # Generate vector embeddings for RAG
-│   ├── upload-to-pinecone.js    # Upload embeddings to Pinecone
-│   └── validate-restaurant-data.js # Data quality checks
-│
-├── public/
-│   ├── remi.png                 # Chatbot avatar
-│   └── user_bot.png             # User avatar
-│
-└── vercel.json                  # Vercel deployment config
-```
 
 ## How the AI Chatbot Works
 
@@ -230,9 +168,103 @@ The chatbot uses **Gemini's Function Calling** feature - a structured way for AI
    - ✅ **Speed**: Local filtering is instant
    - ✅ **Offline-capable**: Static data works without API
 
-## Available Tools (13 Total)
+---
 
-Gemini has access to 13 function tools it can call based on user queries. These tools are executed **client-side** by the frontend.
+## Current Architecture Limitations
+
+### 🚨 Known Issues (To Be Fixed in LangChain Migration)
+
+The current architecture has **3 critical limitations** that impact user experience:
+
+#### 1. **❌ No Conversation Memory Persistence**
+**Problem:** Each query is essentially stateless. Conversation history length shows as `1`, meaning only the current message is sent to Gemini.
+
+**Impact:**
+- Follow-up questions don't work well ("What about Italian?" after "Show me restaurants in Soho")
+- Agent can't reference previous tool results
+- No multi-turn reasoning
+
+**Example:**
+```
+User: "Find Indian restaurants in Soho"
+Bot: [Returns 0 results via rag_search]
+User: "Try nearby neighborhoods"
+Bot: ❌ Doesn't remember the previous query context
+```
+
+**Root cause:** Conversation history isn't properly maintained across API calls in `api/chat.js` and `ChatInterface.tsx`.
+
+---
+
+#### 2. **❌ No Multi-Tool Orchestration (Single Tool Per Turn)**
+**Problem:** Gemini can only call ONE tool per conversation turn. If that tool fails or returns insufficient results, the flow stops.
+
+**Impact:**
+- Can't chain tools automatically ("search Soho → 0 results → broaden search → find nearby")
+- Manual orchestration code in 5 tools (257 lines in `find_multi_party_restaurants` alone!)
+- Workaround flags like `use_current_results` exist because tools can't naturally access context
+
+**Example:**
+```
+User: "I want butter chicken in Soho"
+Bot: Calls rag_search(query="butter chicken", neighborhood="Soho")
+Result: 0 restaurants
+Bot: ❌ Stops here. Doesn't automatically try broader search or suggest nearby areas.
+```
+
+**What SHOULD happen:**
+```
+User: "I want butter chicken in Soho"
+Bot: Call 1 - rag_search(Soho filter) → 0 results
+Bot: Call 2 - rag_search(no location filter) → 15 results nearby
+Bot: Call 3 - isochrone_analysis(Soho, 10min) → Show walking distance
+Response: "No butter chicken directly in Soho, but here are 15 nearby spots within 10min walk..."
+```
+
+---
+
+#### 3. **❌ No Quality Assurance / Validation Loop**
+**Problem:** Gemini doesn't verify if tool results actually satisfy the user's query.
+
+**Impact:**
+- No retry logic if tools fail
+- No validation that results match user intent
+- Non-deterministic responses (same query can give different tool calls due to temperature > 0)
+
+**Example:**
+```
+User: "I want good butter chicken spots in Soho"
+
+Attempt 1: Calls rag_search → correct tool
+Attempt 2: Calls semantic_search → wrong tool (less accurate)
+Attempt 3: Returns "buy me coffee" message → hallucination
+
+Same input → 3 different outputs ❌
+```
+
+**Root cause:**
+- No `temperature=0` setting (responses are random)
+- No validation layer asking "Did this satisfy the query?"
+- No retry/fallback mechanisms
+
+---
+
+### Why These Matter
+
+These limitations make the chatbot feel:
+- **Generic** (like ChatGPT, not NYC-specific)
+- **Fragile** (single tool failures break the experience)
+- **Unpredictable** (same query → different results)
+
+**Solution:** Migrate to **LangChain** for native multi-tool orchestration, conversation memory, and validation hooks. See [Next Steps](#next-steps-langchain-migration) below.
+
+---
+
+## Available Tools (16 Total)
+
+Gemini has access to **16 function tools** it can call based on user queries. These tools are executed **client-side** by the frontend.
+
+**Note:** Some tools are redundant (exist only due to single-tool limitation). See [cleanup plan](#tool-cleanup-plan) below.
 
 ### 🔍 Search & Filter Tools (3)
 
@@ -300,7 +332,7 @@ rag_search({
 
 ---
 
-### 📊 Context & Detail Tools (6)
+### 📊 Context & Detail Tools (9)
 
 #### 5. `get_current_results`
 **Purpose**: Get intelligent summary of currently visible restaurants with aggregate statistics
@@ -389,11 +421,39 @@ get_restaurant_reviews({ restaurant_slug: "lilia" })
 get_restaurant_summary({ restaurant_slug: "l-artusi" })
 ```
 
+#### 11. `get_restaurant_reddit`
+**Purpose**: Get ONLY Reddit mentions (no Yelp)
+**Parameters**:
+- `restaurant_slug`: Restaurant identifier
+
+**Returns**: Reddit community opinions only
+
+**Note:** ⚠️ **Redundant tool** - Exists because model couldn't chain `get_restaurant_reviews` → extract Reddit section. Will be removed in LangChain migration.
+
+**Example**:
+```javascript
+get_restaurant_reddit({ restaurant_slug: "lilia" })
+```
+
+#### 12. `get_restaurant_yelp_review`
+**Purpose**: Get ONLY Yelp review highlights (no Reddit)
+**Parameters**:
+- `restaurant_slug`: Restaurant identifier
+
+**Returns**: Yelp review highlights only
+
+**Note:** ⚠️ **Redundant tool** - Exists because model couldn't chain `get_restaurant_reviews` → extract Yelp section. Will be removed in LangChain migration.
+
+**Example**:
+```javascript
+get_restaurant_yelp_review({ restaurant_slug: "carbone" })
+```
+
 ---
 
-### 🗺️ Geospatial Tools (5)
+### 🗺️ Geospatial Tools (4)
 
-#### 11. `calculate_midpoint`
+#### 13. `calculate_midpoint`
 **Purpose**: Find restaurants at the TRUE geographic midpoint between two NYC locations using simple radius search (API-free)
 **Parameters**:
 - `location1`: Neighborhood name (e.g., `"Williamsburg"`)
@@ -418,7 +478,7 @@ calculate_midpoint({
 })
 ```
 
-#### 12. `geocode_address`
+#### 14. `geocode_address`
 **Purpose**: Convert NYC addresses, landmarks, or POIs to coordinates for spatial queries. Understands NYC slang (LIC, FiDi, UWS, etc.).
 **Parameters**:
 - `address`: NYC address, landmark, neighborhood, or POI (e.g., "Times Square", "123 Broadway Brooklyn", "LIC", "the Vessel")
@@ -429,7 +489,7 @@ geocode_address({ address: "Times Square" })
 geocode_address({ address: "LIC" })  // Expands to "Long Island City"
 ```
 
-#### 13. `find_restaurants_by_travel_time`
+#### 15. `find_restaurants_by_travel_time`
 **Purpose**: Find restaurants within X minutes of travel time from a location using isochrones (travel-time polygons). Supports walking, cycling, transit (subway/bus), and driving modes.
 **Parameters**:
 - `location`: Starting location (address, landmark, or neighborhood)
@@ -457,7 +517,7 @@ find_restaurants_by_travel_time({
 })
 ```
 
-#### 14. `find_multi_party_restaurants`
+#### 16. `find_multi_party_restaurants`
 **Purpose**: Find restaurants reachable by multiple people from different locations. Auto-detects spatial operation from natural language: "between us" = intersection, "around both" = union, "not in X" = exclusion. Supports 2+ locations.
 **Parameters**:
 - `locations`: Array of location objects, each with:
@@ -543,28 +603,6 @@ Gemini decides which tool to call based on:
 → find_multi_party_restaurants({ locations: [...], operation: "exclusion" })
 ```
 
-## Data Schema
-
-Each restaurant object contains:
-```typescript
-{
-  name: string
-  slug: string
-  cuisine: string
-  price: "$" | "$$" | "$$$" | "$$$$"
-  neighborhood: string
-  latitude: number
-  longitude: number
-  yelp_rating: number
-  yelp_review_highlights: string  // AI-generated summary of reviews
-  reddit: string                   // Community sentiment
-  michelin_award?: "ONE_STAR" | "TWO_STARS" | "THREE_STARS" | "BIB_GOURMAND"
-  nyttop100_rank?: number
-  collections: string[]            // vibes like "date-night", "casual"
-  meal_types: string[]             // "Lunch", "Dinner", "Brunch"
-  // ... more fields
-}
-```
 
 ## Key Technical Decisions
 
@@ -592,103 +630,6 @@ Different filter types are combined with AND logic:
 ### 4. Gemini Function Calling
 Using Gemini's function calling feature ensures structured responses instead of parsing free-form text.
 
-## Environment Variables
-
-Create `.env.local`:
-```bash
-# Google Gemini API Key
-GOOGLE_API_KEY=your_api_key_here
-
-# Feature flags
-VITE_CHAT_ENABLED=true
-VITE_API_URL=http://localhost:3000/api
-```
-
-## Development Setup
-
-```bash
-# Install dependencies
-npm install
-
-# Start dev server
-npm run dev
-
-# In another terminal, start Vercel dev server for API
-vercel dev --yes --listen 3000
-```
-
-Visit `http://localhost:3000`
-
-## Deployment
-
-```bash
-# Deploy to Vercel
-vercel --prod
-```
-
-**Environment variables to set in Vercel:**
-- `GOOGLE_API_KEY` - Your Google Gemini API key
-
-## API Endpoint
-
-### POST /api/chat
-
-**Request:**
-```json
-{
-  "message": "Find Japanese restaurants with $$",
-  "context": {
-    "totalRestaurants": 628,
-    "visibleRestaurants": 168,
-    "activeFilters": {}
-  }
-}
-```
-
-**Response (Function Call):**
-```json
-{
-  "type": "function_call",
-  "message": "Perfect! Let me show you Japanese $$ spots on the map!",
-  "function": {
-    "name": "filter_map",
-    "arguments": {
-      "cuisines": ["Japanese"],
-      "price_levels": ["$$"]
-    }
-  }
-}
-```
-
-**Response (Text Only):**
-```json
-{
-  "type": "text",
-  "message": "NYC Restaurant Week runs twice a year..."
-}
-```
-
-## Performance Optimizations
-
-### Token & Cost Optimization
-- **System prompt optimized**: 73% reduction (3,000 → 800 tokens)
-- **Redis caching**: Optional caching layer for shared cache across users
-- **Rate limiting**: 20 requests/hour per IP to prevent abuse
-- **Token usage logging**: Real-time monitoring of API consumption
-
-### Frontend Performance
-- Static restaurant data (no database queries)
-- Client-side filtering for instant results
-- Map marker clustering at low zoom levels
-- Lazy loading of restaurant details
-- Gemini 2.0 Flash for fast AI responses
-
-### Geographic Features
-- **Turf.js integration**: Free, client-side geospatial calculations
-- **Neighborhood expansion**: "in and around Kips Bay" includes adjacent areas
-- **True midpoint calculation**: "between Williamsburg and Kips Bay" shows actual geographic center
-- **30+ neighborhoods** mapped with adjacency relationships
-- **Balance scoring**: Restaurants sorted by equal distance from both locations
 
 ## Optional: Redis Setup
 
@@ -698,10 +639,235 @@ For production deployments with 500+ users:
 3. System automatically enables caching with graceful degradation
 4. See API documentation for cache TTL configuration
 
+---
+
+## Next Steps: LangChain Migration
+
+### 🎯 Goal
+Fix the 3 core architecture issues:
+1. ✅ Enable conversation memory persistence
+2. ✅ Enable multi-tool orchestration
+3. ✅ Add quality assurance validation
+
+### 📋 Migration Plan (3-4 days)
+
+#### **Phase 1: Minimal Tool Cleanup** (1 day)
+Only changes required for LangChain to work:
+
+**Tasks:**
+1. **Refactor 3 tools to return JSON** (2 hours)
+   - `get_current_results` → return structured data instead of prose
+   - `get_restaurant_reviews` → return `{yelp: {...}, reddit: {...}}`
+   - Keep everything else as-is
+
+2. **Remove `use_current_results` flag** (1 hour)
+   - Remove from `semantic_search` and `rag_search` definitions
+   - LangChain memory will handle context instead
+
+3. **Test tools still work** (30 mins)
+   - Quick smoke test with Gemini
+   - Ensure no regressions
+
+**Deliverable:** 16 tools (no consolidation), 3 refactored to JSON
+
+---
+
+#### **Phase 2: LangChain Integration** (2-3 days)
+
+**Day 1: Setup** (4 hours)
+1. **Install LangChain** (15 mins)
+   ```bash
+   npm install langchain @langchain/google-genai
+   ```
+
+2. **Convert tools to LangChain format** (3 hours)
+   - Create `src/services/chatService.ts`
+   - Wrap all 16 tools in `DynamicTool` class
+   - Define schemas for tool parameters
+
+3. **Create basic agent** (45 mins)
+   ```typescript
+   import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+   import { createReactAgent } from "@langchain/langgraph/prebuilt";
+
+   const llm = new ChatGoogleGenerativeAI({
+     modelName: "gemini-2.0-flash-exp",
+     temperature: 0 // ✅ Deterministic responses
+   });
+
+   const agent = createReactAgent({
+     llm,
+     tools: [...your16Tools],
+     messageModifier: systemPrompt
+   });
+   ```
+
+**Day 2-3: Integration** (6-8 hours)
+4. **Replace chat endpoint** (3 hours)
+   - Refactor `ChatInterface.tsx` to use LangChain agent
+   - Remove old function calling handler code
+   - Handle streaming responses
+
+5. **Add conversation memory** (2 hours)
+   ```typescript
+   import { InMemoryChatMessageHistory } from "@langchain/core/chat_history";
+
+   const messageHistory = new InMemoryChatMessageHistory();
+
+   // Agent automatically maintains context
+   await agent.invoke({
+     messages: [...messageHistory.getMessages(), newMessage]
+   });
+   ```
+
+6. **Test multi-tool scenarios** (2-3 hours)
+   - "butter chicken in Soho" → should chain rag_search → rag_search broader
+   - "restaurants between Midtown and Murray Hill" → should chain geocode → geocode → midpoint
+   - "show current results" after isochrone → context should work
+   - Verify conversation memory persists
+
+**Deliverable:** Working LangChain agent with multi-tool chaining
+
+---
+
+#### **Phase 3: Validation & Polish** (1 day)
+
+**Tasks:**
+1. **Add basic validation** (2 hours)
+   - Log tool execution chains for debugging
+   - Add error handling for failed tools
+   - Test edge cases
+
+2. **Improve system prompt** (1 hour)
+   - Add multi-tool orchestration guidance
+   - Example: "After rag_search returns 0, try broader search"
+
+3. **End-to-end testing** (2 hours)
+   - Test 10 real user queries
+   - Verify conversation memory works
+   - Ensure responses feel natural
+
+4. **Performance check** (1 hour)
+   - Profile query times
+   - Ensure no regressions
+
+**Deliverable:** Production-ready LangChain chatbot
+
+---
+
+### Tool Cleanup Plan
+
+**Tools to consolidate (AFTER LangChain works):**
+
+#### **Remove 5 redundant tools** → Consolidate into 2
+1. ❌ `get_restaurant_reddit` (remove)
+2. ❌ `get_restaurant_yelp_review` (remove)
+3. ✅ Keep `get_restaurant_reviews` → returns structured JSON with both
+
+4. ❌ `get_restaurant_vibe` (remove)
+5. ❌ `get_restaurant_price_info` (remove)
+6. ❌ `get_restaurant_summary` (remove)
+7. ✅ Create `get_restaurant_info(slug, focus)` → replaces 3 tools
+
+8. ❌ `semantic_search` (remove - less accurate)
+9. ✅ Keep `rag_search` (vector-based, more powerful)
+
+**Result:** 16 tools → 11 cleaner tools
+
+---
+
+#### **Simplify 4 tools** (return JSON, not formatted text)
+1. `get_current_results` - return stats object, not prose
+2. `get_restaurant_reviews` - return `{yelp, reddit}` structure
+3. `get_restaurant_info` - return structured data
+4. `find_multi_party_restaurants` - reduce from 257 lines to ~80
+
+---
+
+#### **Split 2 complex tools** (FUTURE - not required for MVP)
+1. **`filter_map`** (134 lines) → break into 5 atomic filters:
+   - `filter_by_cuisine`
+   - `filter_by_price`
+   - `filter_by_rating`
+   - `filter_by_awards`
+   - `filter_by_neighborhood`
+
+2. **`find_multi_party_restaurants`** (257 lines) → break into spatial ops:
+   - `get_isochrone` (reusable)
+   - `spatial_intersection`
+   - `spatial_union`
+   - `spatial_exclusion`
+
+**Result (if fully decomposed):** 11 tools → 18 focused, composable tools
+
+---
+
+### What We're NOT Doing (Yet)
+
+To keep scope manageable, we're deferring these enhancements:
+
+#### ❌ **Not Doing in Initial Migration**
+- Tool consolidation (keep all 16 tools initially)
+- Splitting complex tools (`filter_map`, `find_multi_party_restaurants`)
+- Removing redundant tools (`semantic_search`, detail tools)
+- Advanced personality overhaul (minor prompt tweaks only)
+- Advanced validation loops (basic validation only)
+- Parallel tool execution optimization
+- Streaming responses
+
+**Reason:** Get LangChain working with minimal changes first, then optimize iteratively.
+
+---
+
+#### 💡 **Future Enhancements (After LangChain Stable)**
+These can be added once core migration is complete:
+
+**Voice Integration (1 week):**
+- Add Web Speech API for MVP
+- Migrate to OpenAI Whisper for production
+- Real-time transcription
+- Voice commands
+
+**Multi-Borough Expansion (2-3 weeks):**
+- Add Google Places API as discovery layer
+- Hybrid data strategy (Google + Yelp/Reddit)
+- Expand to Brooklyn, Queens, Bronx, Staten Island
+- Cross-borough isochrone queries
+
+**Data Enrichment:**
+- Real-time hours/status from Google Places
+- Photo galleries
+- Menu integration
+- Live wait times
+- Michelin Guide / James Beard Awards
+
+**Advanced LangChain Features:**
+- Streaming tool execution (show progress)
+- LangSmith observability (debug chains)
+- Memory summarization (long conversations)
+- Multi-agent patterns (research + recommendation agents)
+
+---
+
+### Success Criteria
+
+**Must Have (Phase 1-3):**
+- ✅ Multi-tool chaining works ("butter chicken in Soho" triggers 2-3 tool calls)
+- ✅ Conversation memory persists (follow-up questions work)
+- ✅ Deterministic responses (same query → same result with temperature=0)
+- ✅ No regressions (all existing features still work)
+
+**Nice to Have (Defer):**
+- Response personality improvements
+- Tool consolidation
+- Advanced validation callbacks
+
+---
+
 ## Future Enhancements
 
 - [ ] Real-time reservation availability
-- [ ] User reviews and ratings
+- [ ] Real-time User reviews and ratings
 - [ ] Dish photo gallery
 - [ ] Restaurant comparison tool
 - [x] Transit-time-based isochrone calculations
@@ -709,71 +875,7 @@ For production deployments with 500+ users:
 
 ---
 
-## Development Progress
-
-### 📅 Current Status: Geospatial Features Complete
-
-Last updated: 2025-11-23
-
----
-
-### ✅ **COMPLETED - Phase 1: Geocoding Foundation**
-
-**Implementation Date:** 2025-11-19
-
-#### Features Delivered
-- ✅ Forward geocoding (address → coordinates) via Geoapify API
-- ✅ NYC slang support (70+ terms: LIC, FiDi, UWS, etc.)
-- ✅ NYC bounding box filtering
-- ✅ 7-day Redis cache for geocode results
-- ✅ Fallback to neighborhood centroids
-
----
-
-### ✅ **COMPLETED - Phase 2: Hybrid Isochrone System**
-
-**Implementation Date:** 2025-11-19 – 2025-11-23
-
-#### Features Delivered
-- ✅ Hybrid isochrone service (Mapbox for walking/cycling, Geoapify for transit)
-- ✅ Single-person travel-time queries (`find_restaurants_by_travel_time`)
-- ✅ Multi-party spatial queries (`find_multi_party_restaurants`)
-- ✅ Spatial operations: intersection (overlap), union (combined), exclusion (difference)
-- ✅ Polygon visualization on map with clear button
-- ✅ Point-in-polygon filtering for restaurant results
-- ✅ 24-hour Redis cache for isochrone results
-- ✅ Turf.js fallback when API quotas exceeded
-
-#### Example Queries
-```
-"Restaurants within 15 minutes walking from Grand Central"
-"Places I can reach by subway in 20 minutes from Times Square"
-"I'm at the Vessel, friend at LIC, what's between us?"
-"Show places near Times Square but avoid Penn Station"
-```
-
----
-
-### 📊 **API Cost Analysis**
-
-| Service | Daily Limit | Projected Usage | Status |
-|---------|-------------|-----------------|--------|
-| Mapbox Isochrones | 3,333/day | ~100 | ✅ 97% available |
-| Geoapify Geocoding | 3,000 credits | ~30 | ✅ 99% available |
-| Geoapify Isochrones | 3,000 credits | ~200 | ✅ 93% available |
-
-**With caching:** ~230 credits/day total (13x under free tier limit)
-**Monthly cost:** $0 (within all free tiers)
-
----
 
 ## Credits
 
 - Built by AP, in collaboration with Fulton Ring and Marauders.Earth
-- Data sourced from NYC Tourism
-- Yelp review summaries generated with AI
-- Reddit sentiment from r/FoodNYC
-
-## License
-
-MIT License - See LICENSE file for details
