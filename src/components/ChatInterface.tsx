@@ -235,15 +235,16 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
 }, ref) => {
   // Random welcome message selection
   const welcomeMessages = [
-    'Welcome to NYC Eats, your local eatery guide. You\'re in New York, where the only real sin is eating somewhere forgettable. Give me a neighborhood, a mood, or a friend you\'re meeting halfway—I\'ll point you toward the right places.',
-    'Welcome to NYC Eats. I\'m here to help you find the sort of restaurant that lingers — the way a good Barolo does. Give me a neighborhood or a mood, and I\'ll pour you a shortlist worth considering.'
+    'Welcome to NYC Eats! I\'m Remi, your rodent sommelier of the NYC dining scene. Unlike my cousins in the subway, I\'ve been vector-embedded with thousands of Yelp reviews and have a rather refined palate for semantic similarity. What are we looking for today?',
+    'Welcome to NYC Eats! I\'m Remi, your rodent sommelier of the NYC dining scene. You\'re in New York, where the only real sin is eating somewhere forgettable. Give me a neighborhood, a mood, or a friend you\'re meeting halfway—I\'ll point you toward the right places.',
+    'Welcome to NYC Eats! I\'m Remi, your rodent sommelier of the NYC dining scene. I\'m here to help you find the sort of restaurant that lingers — the way a good Barolo does. Give me a neighborhood or a mood, and I\'ll pour you a shortlist worth considering.'
   ]
 
   // Quick-start suggestions for new users
   const suggestions = [
-    "Quick lunch within 10 min walk of Soho with price point of $$",
+    "A quick lunch with a price point of $$ and within 10 min walk of Soho?",
     "Restaurants between my friend who is in Midtown and me in Murray Hill within 15 min walking distance?",
-    "How do you work?"
+    "Remi, do share, how do you work?"
   ]
 
   // Chat is always open now (no toggle)
@@ -1802,7 +1803,7 @@ ${operation === 'intersection' ? 'Would you like me to:\n• Show restaurants EI
                   // Restaurant card: avatar outside the card (desktop only)
                   <div className="restaurant-card-message">
                     <div className="message-avatar-outside desktop-only">
-                      <img src="/chatbot2.png" alt="Chatbot" />
+                      <img src="/chatbot4.png" alt="Chatbot" />
                     </div>
                     <div className="restaurant-card-content">
                       <div className="restaurant-card-wrapper">
@@ -1857,7 +1858,7 @@ ${operation === 'intersection' ? 'Would you like me to:\n• Show restaurants EI
                   // Regular text message: avatar inside bubble (desktop only)
                   <div className="message-bubble">
                     <div className="message-avatar-inside desktop-only">
-                      <img src="/chatbot2.png" alt="Chatbot" />
+                      <img src="/chatbot4.png" alt="Chatbot" />
                     </div>
                     <div className="message-content" dangerouslySetInnerHTML={{ __html: linkifyText(msg.content) }} />
                   </div>
@@ -1887,7 +1888,7 @@ ${operation === 'intersection' ? 'Would you like me to:\n• Show restaurants EI
             <div className="chat-message assistant">
               <div className="message-bubble">
                 <div className="message-avatar-inside">
-                  <img src="/chatbot2.png" alt="Chatbot" />
+                  <img src="/chatbot4.png" alt="Chatbot" />
                 </div>
                 <div className="message-content typing-content">
                   <span></span>
