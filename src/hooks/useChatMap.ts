@@ -4,7 +4,6 @@ import type { Restaurant } from '../types/restaurant'
 
 interface ChatMapActions {
   focusOnRestaurants: (restaurantIds: string[]) => void
-  resetFocus: () => void
   flyToRestaurant: (restaurant: Restaurant) => void
 }
 
@@ -22,13 +21,20 @@ export function useChatMap(
 
     if (focusedRestaurants.length === 0) return
 
+    // Common padding logic
+    const isMobile = window.innerWidth <= 768
+    const padding = isMobile
+      ? { top: 80, bottom: 280, left: 20, right: 20 }
+      : { top: 100, bottom: 100, left: 700, right: 100 }
+
     // If single restaurant, fly to it
     if (focusedRestaurants.length === 1) {
       const restaurant = focusedRestaurants[0]
       map.flyTo({
         center: [restaurant.longitude!, restaurant.latitude!],
         zoom: 14,
-        duration: 1500
+        duration: 1500,
+        padding
       })
     } else {
       // If multiple restaurants, fit bounds to show all
@@ -47,32 +53,27 @@ export function useChatMap(
       ]
 
       map.fitBounds(bounds, {
-        padding: 80,
+        padding,
         duration: 1500,
         maxZoom: 13
       })
     }
   }, [map, restaurants])
 
-  const resetFocus = useCallback(() => {
-    if (!map) return
-    // Reset to NYC overview
-    map.flyTo({
-      center: [-73.9712, 40.7831],
-      zoom: 11,
-      duration: 1500
-    })
-  }, [map])
-
   const flyToRestaurant = useCallback((restaurant: Restaurant) => {
     if (!map || !restaurant.latitude || !restaurant.longitude) return
+
+    const isMobile = window.innerWidth <= 768
 
     map.flyTo({
       center: [restaurant.longitude, restaurant.latitude],
       zoom: 15,
-      duration: 1500
+      duration: 1500,
+      padding: isMobile
+        ? { top: 80, bottom: 280, left: 20, right: 20 }
+        : { top: 100, bottom: 100, left: 700, right: 100 }
     })
   }, [map])
 
-  return { focusOnRestaurants, resetFocus, flyToRestaurant }
+  return { focusOnRestaurants, flyToRestaurant }
 }

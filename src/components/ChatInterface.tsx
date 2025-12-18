@@ -242,10 +242,21 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
 
   // Quick-start suggestions for new users
   const suggestions = [
-    "A quick lunch with a price point of $$ and within 10 min walk of Soho?",
-    "Restaurants between my friend who is in Midtown and me in Murray Hill within 15 min walking distance?",
-    "Remi, do share, how do you work?"
+    "I'm in Soho, hunting for a great $$ date spot I can reach in under 15 min transit. What's on the menu, Remi?",
+    "My friend is in Midtown, I'm in Murray Hill — what's some restaurants in between us within a short 10 min walk?",
+    "Remi, surprise me — give me three places that nail ambiance without being stuffy."
   ]
+
+  // Meta-learning suggestions shown after buy-me-coffee messages
+  const metaLearningSuggestions = [
+    "How do you work, Remi?",
+    "What was the genesis of this project?"
+  ]
+
+  // Helper function to detect buy-me-coffee messages
+  const isBuyMeCoffeeMessage = (content: string): boolean => {
+    return content.toLowerCase().includes('buymeacoffee.com/atmikapai');
+  }
 
   // Chat is always open now (no toggle)
   const [messages, setMessages] = useState<Message[]>([
@@ -257,6 +268,10 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
   const [conversationHistory, setConversationHistory] = useState<GeminiMessage[]>([])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  // Store visible restaurants from last response for state persistence
+  const [lastVisibleRestaurants, setLastVisibleRestaurants] = useState<Restaurant[]>([])
+  // Store isochrone params from last response for state persistence
+  const [lastIsochroneParams, setLastIsochroneParams] = useState<any>(null)
 
   // Phase 3: Polygon cache for multi-party spatial operations
   const [polygonCache, setPolygonCache] = useState<Record<string, {
@@ -275,6 +290,8 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
   const [isDragging, setIsDragging] = useState(false)
   const [dragStartY, setDragStartY] = useState(0)
   const [dragStartHeight, setDragStartHeight] = useState(30)
+  const [pendingQuery, setPendingQuery] = useState<string | null>(null)
+  const [showResetConfirmation, setShowResetConfirmation] = useState(false)
   const drawerRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
@@ -306,12 +323,25 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
     addRestaurantCard
   }))
 
-  // Convert URLs in text to clickable links
+  // Convert markdown and URLs in text to HTML
   const linkifyText = (text: string): string => {
-    // First, handle URLs with protocol (http:// or https://)
-    let result = text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" style="color: #FF69B4; text-decoration: underline;">$1</a>')
+    let result = text
 
-    // Then, handle URLs without protocol (like buymeacoffee.com/atmikapai)
+    // First, handle markdown list items (must be done before bold/italic)
+    // Convert markdown list items: "* item" or "- item" → bullet point
+    result = result.replace(/^[\*\-]\s+(.+)$/gm, '• $1')
+
+    // Then, handle markdown formatting
+    // Bold: **text** → <strong>text</strong>
+    result = result.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+
+    // Italic: *text* → <em>text</em> (but not if it's part of **)
+    result = result.replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, '<em>$1</em>')
+
+    // Then, handle URLs with protocol (http:// or https://)
+    result = result.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" style="color: #FF69B4; text-decoration: underline;">$1</a>')
+
+    // Finally, handle URLs without protocol (like buymeacoffee.com/atmikapai)
     // Match domain.tld/path but avoid matching already-linked URLs
     result = result.replace(/(?<!href="|">)(?:^|\s)((?:www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\/[^\s<]*)?)/g, (match, url, offset) => {
       // Check if this URL is already inside an href attribute
@@ -362,12 +392,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
   }
 
   const handleSuggestionClick = (suggestionText: string) => {
-    // Set input field and trigger send
-    setInput(suggestionText)
-    // Trigger send on next tick to ensure input state is updated
-    setTimeout(async () => {
-      await handleSend()
-    }, 10)
+    handleSend(suggestionText)
   }
 
   const handleRestaurantSuggestionClick = (suggestionText: string, slug: string) => {
@@ -375,10 +400,38 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
     handleSuggestionClick(suggestionText)
   }
 
-  const handleSend = async () => {
-    if (!input.trim() || isLoading) return
+  const handleSend = async (textOverride?: string | React.MouseEvent | unknown) => {
+    const userMessage = typeof textOverride === 'string' ? textOverride : input.trim()
 
-    const userMessage = input.trim()
+    if (!userMessage || isLoading) return
+
+    // Check if query conflicts with active isochrone
+    if (isochroneRegionSlugs && isochroneRegionSlugs.length > 0) {
+      const breakoutPhrases = [
+        'across all of nyc',
+        'across nyc',
+        'all of nyc',
+        'everywhere in nyc',
+        'citywide',
+        'all restaurants',
+        'throughout nyc',
+        'anywhere in nyc'
+      ];
+
+      const lowerMessage = userMessage.toLowerCase();
+      const hasBreakoutIntent = breakoutPhrases.some(phrase =>
+        lowerMessage.includes(phrase)
+      );
+
+      if (hasBreakoutIntent) {
+        // Show confirmation dialog
+        setPendingQuery(userMessage);
+        setShowResetConfirmation(true);
+        setInput(''); // Clear input
+        return; // Don't send yet
+      }
+    }
+
     setInput('')
     setMessages(prev => [...prev, { role: 'user', content: userMessage }])
     setIsLoading(true)
@@ -400,11 +453,203 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
       const response = await sendChatMessage(userMessage, {
         totalRestaurants: allRestaurants.length,
         visibleRestaurants: restaurants.length,
-        activeFilters: {}
+        activeFilters: {},
+        // Pass visible restaurants from previous turn for state persistence
+        visible_restaurants: lastVisibleRestaurants,
+        // Pass isochrone params from previous turn for state persistence
+        isochrone_params: lastIsochroneParams
       }, historyWithUserMessage)
       console.log('Chat response:', response)
 
-      // Handle function calls first
+      console.log('Chat response:', response)
+
+      // NEW: Handle Backend Agent Response (LangGraph)
+      if (response.visible_restaurants || response.response) {
+        const agentMessage = response.response || response.message || "Here are the results.";
+
+        // Store visible restaurants for next turn (state persistence)
+        if (response.visible_restaurants && Array.isArray(response.visible_restaurants)) {
+          setLastVisibleRestaurants(response.visible_restaurants);
+          console.log(`💾 Stored ${response.visible_restaurants.length} restaurants for next query`);
+        }
+
+        // Store isochrone params for next turn (state persistence)
+        if (response.isochrone_params) {
+          setLastIsochroneParams(response.isochrone_params);
+          console.log(`💾 Stored isochrone params for next query:`, response.isochrone_params);
+
+          // Trigger map filtering for multi-party isochrones
+          // This hides restaurants outside the polygon boundaries
+          if (response.isochrone_params.allRestaurantSlugs &&
+            response.isochrone_params.allRestaurantSlugs.length > 0) {
+            onIsochroneRegion?.(response.isochrone_params.allRestaurantSlugs);
+            console.log(`🗺️ Applied multi-party isochrone filtering: ${response.isochrone_params.allRestaurantSlugs.length} restaurants`);
+          }
+        }
+
+        // 1. Execute Map Actions from Agent (New Visual Tools)
+        if (response.map_actions && response.map_actions.length > 0) {
+          const mapActions = response.map_actions
+          console.log(`🗺️ Executing ${mapActions.length} map actions from agent`)
+
+          mapActions.forEach((action: any) => {
+            switch (action.mapAction) {
+              case 'showIsochrone':
+                if (onIsochroneUpdate && action.polygon) {
+                  console.log("📍 Show isochrone on map:", action.polygon);
+                  onIsochroneUpdate(action.polygon);
+
+                  // NEW: Set isochrone region (all restaurants in polygon)
+                  if (onIsochroneRegion && action.allRestaurantSlugs) {
+                    console.log(`📍 Setting isochrone region: ${action.allRestaurantSlugs.length} restaurants`);
+                    onIsochroneRegion(action.allRestaurantSlugs);
+                  }
+                }
+                break;
+
+              case 'showIsochroneLayer':
+                // Multi-layer isochrones (for meeting points)
+                if (onIsochroneLayersUpdate && action.polygon) {
+                  console.log(`📍 Show isochrone layer: ${action.label} (${action.color})`);
+                  // Collect all layers and update at once (only on first occurrence)
+                  if (!mapActions.find((a: any, i: number) =>
+                    a.mapAction === 'showIsochroneLayer' &&
+                    mapActions.indexOf(action) > i
+                  )) {
+                    const colorMap: Record<string, { fill: string, stroke: string, opacity: number }> = {
+                      'pink': { fill: '#FF1493', stroke: '#FF69B4', opacity: 0.2 },
+                      'blue': { fill: '#1E90FF', stroke: '#4169E1', opacity: 0.2 },
+                      'purple': { fill: '#8B008B', stroke: '#9932CC', opacity: 0.0 }
+                    };
+
+                    const layers = mapActions
+                      .filter((a: any) => a.mapAction === 'showIsochroneLayer')
+                      .map((a: any) => {
+                        const colors = colorMap[a.color] || colorMap['purple'];
+                        return {
+                          id: a.layerId,
+                          polygon: a.polygon,
+                          label: a.label,
+                          color: colors.fill,
+                          strokeColor: colors.stroke,
+                          opacity: colors.opacity,
+                          metadata: {
+                            location: a.label
+                          }
+                        };
+                      });
+                    console.log(`📍 Updating isochrone layers:`, layers);
+                    onIsochroneLayersUpdate(layers);
+                  }
+                }
+                break;
+
+              case 'highlightRestaurants':
+                if (action.slugs && action.slugs.length > 0) {
+                  // NEW: Check if this is "all restaurants" (no actual filtering)
+                  const isochroneAction = response.map_actions?.find(
+                    (a: any) => a.mapAction === 'showIsochrone'
+                  );
+
+                  const isFullRegion = isochroneAction?.allRestaurantSlugs &&
+                    action.slugs.length === isochroneAction.allRestaurantSlugs.length;
+
+                  if (isFullRegion) {
+                    console.log(`📍 No filtering - showing all ${action.slugs.length} restaurants as grey`);
+                    onFilterChange('Semantic Search Results', []);  // Clear highlights → grey
+                  } else {
+                    console.log(`📍 Filtering active - highlighting ${action.slugs.length} restaurants`);
+                    onFilterChange('Semantic Search Results', action.slugs);  // Highlight pink
+                  }
+                }
+                break;
+
+              case 'fitBounds':
+                // Fit map to show all polygons (for meeting points)
+                if (onMapFocus && action.polygons) {
+                  console.log(`📍 Fitting map bounds to ${action.polygons.length} polygons`);
+                  // Extract all restaurant slugs from visible results
+                  if (response.visible_restaurants && response.visible_restaurants.length > 0) {
+                    const slugs = response.visible_restaurants.map((r: any) => r.slug);
+                    onMapFocus(slugs);
+                  }
+                }
+                break;
+
+              case 'focusView':
+                if (onMapFocus && action.target) {
+                  if (action.target.type === 'slugs') {
+                    console.log(`📍 Focusing map on ${action.target.slugs.length} restaurants`);
+                    onMapFocus(action.target.slugs);
+                  } else if (action.target.type === 'coordinates') {
+                    console.log(`📍 Focusing map on coordinates: [${action.target.lng}, ${action.target.lat}]`);
+                    // TODO: Add coordinate-based focus (need new callback)
+                  }
+                }
+                break;
+            }
+          });
+        }
+
+        // Check if any map action is a reset (from reset_search tool)
+        if (response.map_actions && response.map_actions.some((a: any) => a.mapAction === 'reset_all')) {
+          console.log('🧹 Agent requested full reset via map action')
+          handleClearHistory()
+          return // Stop processing
+        }
+
+        // 2. FALLBACK: Legacy behavior if no map actions (backward compatibility)
+        if (!response.map_actions || response.map_actions.length === 0) {
+          // Handle Isochrone Updates
+          if (response.isochrone_data && onIsochroneUpdate) {
+            console.log("📍 Updating isochrone from agent (legacy):", response.isochrone_data);
+            onIsochroneUpdate(response.isochrone_data.polygon);
+
+            // CRITICAL: Set isochrone region to filter visible restaurants
+            if (response.visible_restaurants && response.visible_restaurants.length > 0 && onIsochroneRegion) {
+              const slugs = response.visible_restaurants.map((r: any) => r.slug);
+              console.log(`📍 Setting isochrone region with ${slugs.length} restaurants from backend`);
+              onIsochroneRegion(slugs);
+            }
+          }
+
+          // Handle Visible Restaurants (Pink Markers)
+          if (response.visible_restaurants && response.visible_restaurants.length > 0) {
+            console.log(`📍 Updating map with ${response.visible_restaurants.length} restaurants from agent (legacy)`);
+            const slugs = response.visible_restaurants.map((r: any) => r.slug);
+
+            // Only call onFilterChange if NOT an isochrone query
+            // (isochrone queries already set the region above)
+            if (!response.isochrone_data) {
+              onFilterChange('Semantic Search Results', slugs);
+            }
+
+            // Map focusing removed - tools should explicitly control map behavior via map_actions
+            // Legacy auto-focus caused unwanted map movement for read-only tools like get_current_results
+          } else if (response.visible_restaurants && response.visible_restaurants.length === 0) {
+            // If agent explicitly returned empty list (and we aren't just chatting)
+            if (response.tool_calls && (response.tool_calls.includes('filter_restaurants') || response.tool_calls.includes('semantic_search'))) {
+              onFilterChange('Semantic Search Results', []);
+            }
+          }
+        }
+
+        // 3. Add Assistant Message
+        setMessages(prev => [...prev, {
+          role: 'assistant',
+          content: agentMessage
+        }]);
+
+        // Add to history
+        setConversationHistory([...historyWithUserMessage, {
+          role: 'model',
+          parts: [{ text: agentMessage }]
+        }]);
+
+        return; // Stop processing legacy logic
+      }
+
+      // Handle function calls first (Legacy / Direct Gemini)
       if (response.type === 'function_call' && response.function) {
         // Add model's function call to history
         const modelFunctionCall: GeminiMessage = {
@@ -468,11 +713,18 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
         // Update conversation history with all three messages
         setConversationHistory([...historyWithUserMessage, modelFunctionCall, functionResponse])
 
+        // Check if this was a reset_search tool call
+        if (response.function.name === 'reset_search') {
+          console.log('🧹 Agent triggered reset - clearing session')
+          handleClearHistory()
+          return // Stop processing
+        }
+
         // Only add generic message if the tool doesn't add its own
         if (!skipGenericMessage) {
           setMessages(prev => [...prev, {
             role: 'assistant',
-            content: helpfulMessage
+            content: helpfulMessage || ''
           }])
         }
       } else if (response.type === 'function_calls' && response.functions) {
@@ -527,7 +779,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
 
         setMessages(prev => [...prev, {
           role: 'assistant',
-          content: response.message
+          content: response.message || ''
         }])
       }
 
@@ -542,6 +794,26 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
       setIsLoading(false)
     }
   }
+
+  const handleConfirmReset = async () => {
+    setShowResetConfirmation(false);
+
+    if (pendingQuery) {
+      // Clear isochrone and filters first
+      await handleClearHistory();
+
+      // Then send the query after a short delay to ensure state is cleared
+      setTimeout(() => {
+        handleSend(pendingQuery);
+        setPendingQuery(null);
+      }, 100);
+    }
+  };
+
+  const handleCancelReset = () => {
+    setShowResetConfirmation(false);
+    setPendingQuery(null);
+  };
 
   const handleFunctionCall = async (func: { name: string, arguments: any }) => {
     console.log('Function call:', func)
@@ -685,101 +957,101 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
           break
         }
 
-      case 'show_dish_recommendations': {
-        // Find and select restaurant
-        const restaurant = allRestaurants.find(
-          r => r.slug === func.arguments.restaurant_slug
-        )
-        if (restaurant) {
-          onRestaurantSelect(restaurant)
-          if (onMapFocus) {
-            onMapFocus([restaurant.slug])
+        case 'show_dish_recommendations': {
+          // Find and select restaurant
+          const restaurant = allRestaurants.find(
+            r => r.slug === func.arguments.restaurant_slug
+          )
+          if (restaurant) {
+            onRestaurantSelect(restaurant)
+            if (onMapFocus) {
+              onMapFocus([restaurant.slug])
+            }
           }
-        }
-        break
-      }
-
-      case 'calculate_midpoint': {
-        // Calculate true geographic midpoint between two locations
-        const { location1, location2, cuisines, price_levels, radiusMiles } = func.arguments
-
-        // Get coordinates for both locations
-        const coords1 = getNeighborhoodCenter(location1, allRestaurants)
-        const coords2 = getNeighborhoodCenter(location2, allRestaurants)
-
-        if (!coords1 || !coords2) {
-          console.error(`Could not find coordinates for ${location1} or ${location2}`)
-          setMessages(prev => [...prev, {
-            role: 'assistant',
-            content: `I couldn't find the locations "${location1}" or "${location2}". Could you try different neighborhood names?`
-          }])
           break
         }
 
-        // Calculate true midpoint and find restaurants
-        // Default radius: 1 mile for better coverage
-        const radius = radiusMiles || 1.0
-        const { midpoint, restaurants: midpointRestaurants } = calculateTrueMidpoint(
-          coords1,
-          coords2,
-          allRestaurants,
-          radius
-        )
+        case 'calculate_midpoint': {
+          // Calculate true geographic midpoint between two locations
+          const { location1, location2, cuisines, price_levels, radiusMiles } = func.arguments
 
-        console.log(`Midpoint between ${location1} and ${location2}:`, midpoint)
-        console.log(`I found ${midpointRestaurants.length} restaurants within ${radius} miles of midpoint`)
+          // Get coordinates for both locations
+          const coords1 = getNeighborhoodCenter(location1, allRestaurants)
+          const coords2 = getNeighborhoodCenter(location2, allRestaurants)
 
-        // Apply additional filters
-        let filtered = midpointRestaurants
-
-        if (cuisines && cuisines.length > 0) {
-          filtered = filtered.filter(r =>
-            r.cuisine && cuisines.some((c: string) => r.cuisine.toLowerCase().includes(c.toLowerCase()))
-          )
-          onFilterChange('Cuisine', cuisines)
-        }
-
-        if (price_levels && price_levels.length > 0) {
-          onFilterChange('Price', price_levels)
-        }
-
-        if (filtered.length === 0) {
-          setMessages(prev => [...prev, {
-            role: 'assistant',
-            content: `I found the midpoint, but no restaurants match your criteria within ${radius} miles. Try expanding your search radius or removing some filters.`
-          }])
-        } else {
-          // Focus map on results
-          if (onMapFocus) {
-            onMapFocus(filtered.slice(0, 20).map(r => r.slug))
+          if (!coords1 || !coords2) {
+            console.error(`Could not find coordinates for ${location1} or ${location2}`)
+            setMessages(prev => [...prev, {
+              role: 'assistant',
+              content: `I couldn't find the locations "${location1}" or "${location2}". Could you try different neighborhood names?`
+            }])
+            break
           }
+
+          // Calculate true midpoint and find restaurants
+          // Default radius: 1 mile for better coverage
+          const radius = radiusMiles || 1.0
+          const { midpoint, restaurants: midpointRestaurants } = calculateTrueMidpoint(
+            coords1,
+            coords2,
+            allRestaurants,
+            radius
+          )
+
+          console.log(`Midpoint between ${location1} and ${location2}:`, midpoint)
+          console.log(`I found ${midpointRestaurants.length} restaurants within ${radius} miles of midpoint`)
+
+          // Apply additional filters
+          let filtered = midpointRestaurants
+
+          if (cuisines && cuisines.length > 0) {
+            filtered = filtered.filter(r =>
+              r.cuisine && cuisines.some((c: string) => r.cuisine.toLowerCase().includes(c.toLowerCase()))
+            )
+            onFilterChange('Cuisine', cuisines)
+          }
+
+          if (price_levels && price_levels.length > 0) {
+            onFilterChange('Price', price_levels)
+          }
+
+          if (filtered.length === 0) {
+            setMessages(prev => [...prev, {
+              role: 'assistant',
+              content: `I found the midpoint, but no restaurants match your criteria within ${radius} miles. Try expanding your search radius or removing some filters.`
+            }])
+          } else {
+            // Focus map on results
+            if (onMapFocus) {
+              onMapFocus(filtered.slice(0, 20).map(r => r.slug))
+            }
+          }
+          break
         }
-        break
-      }
 
-      case 'semantic_search': {
-        // Extract use_current_results (default: true)
-        const { use_current_results = true, ...searchArgs } = func.arguments
+        case 'semantic_search': {
+          // Extract use_current_results (default: true)
+          const { use_current_results = true, ...searchArgs } = func.arguments
 
-        // Get restaurant IDs: use isochrone region if active, otherwise full restaurant set
-        const restaurant_ids = use_current_results
-          ? (isochroneRegionSlugs && isochroneRegionSlugs.length > 0 ? isochroneRegionSlugs : allRestaurants.map(r => r.slug))
-          : null
+          // Get restaurant IDs: use isochrone region if active, otherwise full restaurant set
+          const restaurant_ids = use_current_results
+            ? (isochroneRegionSlugs && isochroneRegionSlugs.length > 0 ? isochroneRegionSlugs : allRestaurants.map(r => r.slug))
+            : null
 
-        console.log('Semantic search restaurant_ids:', {
-          isochroneActive: isochroneRegionSlugs && isochroneRegionSlugs.length > 0,
-          isochroneCount: isochroneRegionSlugs?.length || 0,
-          restaurantsCount: restaurants.length,
-          finalCount: restaurant_ids?.length || 'all'
-        })
+          console.log('Semantic search restaurant_ids:', {
+            isochroneActive: isochroneRegionSlugs && isochroneRegionSlugs.length > 0,
+            isochroneCount: isochroneRegionSlugs?.length || 0,
+            restaurantsCount: restaurants.length,
+            finalCount: restaurant_ids?.length || 'all'
+          })
 
-        // Call the semantic search API
-        await handleSemanticSearch({
-          ...searchArgs,
-          restaurant_ids
-        })
-        break
-      }
+          // Call the semantic search API
+          await handleSemanticSearch({
+            ...searchArgs,
+            restaurant_ids
+          })
+          break
+        }
 
         case 'rag_search': {
           // Extract use_current_results (default: true)
@@ -1183,7 +1455,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
               restaurantsInArea = restaurantsInArea.filter(r => {
                 // Check each award type
                 if (awards.includes('michelin') && r.michelin_award &&
-                    ['ONE_STAR', 'TWO_STARS', 'THREE_STARS'].includes(r.michelin_award)) {
+                  ['ONE_STAR', 'TWO_STARS', 'THREE_STARS'].includes(r.michelin_award)) {
                   return true
                 }
                 if (awards.includes('bib_gourmand') && r.michelin_award === 'BIB_GOURMAND') {
@@ -1197,12 +1469,18 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
               console.log(`🏆 Awards filter [${awards.join(', ')}]: ${beforeCount} → ${restaurantsInArea.length}`)
             }
 
+
             // Set isochrone region (defines the base pool for subsequent queries)
             // This also sets highlightedRestaurantIds to all restaurants in the area
             if (onIsochroneRegion) {
-              onIsochroneRegion(restaurantsInArea.map(r => r.slug))
+              const slugsToSet = restaurantsInArea.map(r => r.slug)
+              console.log(`📍 CALLING onIsochroneRegion with ${slugsToSet.length} restaurant slugs:`, slugsToSet.slice(0, 5))
+              onIsochroneRegion(slugsToSet)
               console.log(`📍 Set isochrone region with ${restaurantsInArea.length} restaurants`)
+            } else {
+              console.warn('⚠️ onIsochroneRegion callback is not defined!')
             }
+
 
             // NOTE: We intentionally do NOT call onMapFocus here.
             // onIsochroneRegion already sets the highlighted restaurants correctly.
@@ -1253,7 +1531,11 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
               const modeLabel = mode === 'walking' ? 'walk' : mode === 'cycling' ? 'bike ride' : mode === 'transit' ? 'transit' : 'drive'
               const actualTime = cappedTime
 
-              const contextMessage = `I found ${metadata.total_count} restaurant${metadata.total_count === 1 ? '' : 's'} within ${actualTime} min ${modeLabel} from ${location}.`
+              // Build spatial awareness message
+              const polygonColor = "pink"
+              const spatialGuidance = `We found ${metadata.total_count} restaurant${metadata.total_count === 1 ? '' : 's'} reachable within a ${actualTime}-minute ${modeLabel} from your ${location} perch, represented by the ${polygonColor} polygon on the map.`
+
+              const contextMessage = spatialGuidance
 
               let summary = formatResultsSummary(restaurantsInArea, contextMessage, {
                 closingMessage: "Tap on a restaurant for details or ask me anything!"
@@ -1417,7 +1699,7 @@ ${operation === 'intersection' ? 'Would you like me to:\n• Show restaurants EI
               const beforeCount = restaurantsInArea.length
               restaurantsInArea = restaurantsInArea.filter(r => {
                 if (awards.includes('michelin') && r.michelin_award &&
-                    ['ONE_STAR', 'TWO_STARS', 'THREE_STARS'].includes(r.michelin_award)) {
+                  ['ONE_STAR', 'TWO_STARS', 'THREE_STARS'].includes(r.michelin_award)) {
                   return true
                 }
                 if (awards.includes('bib_gourmand') && r.michelin_award === 'BIB_GOURMAND') {
@@ -1507,15 +1789,15 @@ ${operation === 'intersection' ? 'Would you like me to:\n• Show restaurants EI
             if (restaurantsInArea.length > 0) {
               const metadata = computeResultMetadata(restaurantsInArea)
 
-              // Context-aware opening based on operation
+              // Context-aware opening based on operation with map guidance
               const locationNames = isochroneData.map(d => d.location).join(' and ')
-              const operationLabel = operation === 'intersection'
-                ? `reachable by all from ${locationNames}`
-                : operation === 'union'
-                ? `reachable by any from ${locationNames}`
-                : `near ${isochroneData[0].location} excluding ${isochroneData[1].location}`
+              const operationDescriptions: Record<string, string> = {
+                intersection: `reachable by all of you (shown in the purple overlap on the map where ${isochroneData.length} travel zones meet)`,
+                union: `reachable by anyone in your group (shown by the combined coverage area on the map)`,
+                exclusion: `near ${isochroneData[0].location} but avoiding ${isochroneData[1].location} (shown in pink with the exclusion zone removed)`
+              }
 
-              const contextMessage = `I found ${metadata.total_count} restaurant${metadata.total_count === 1 ? '' : 's'} ${operationLabel}.`
+              const contextMessage = `We found ${metadata.total_count} restaurant${metadata.total_count === 1 ? '' : 's'} ${operationDescriptions[operation]}.`
 
               const summary = formatResultsSummary(restaurantsInArea, contextMessage, {
                 closingMessage: "Tap on a restaurant for details or ask me anything!"
@@ -1560,7 +1842,7 @@ ${operation === 'intersection' ? 'Would you like me to:\n• Show restaurants EI
       if (args.restaurant_ids && args.restaurant_ids.length > 0) {
         setMessages(prev => [...prev, {
           role: 'assistant',
-          content: `✓ Searching within ${args.restaurant_ids.length} restaurants in current area`
+          content: `✓ Searching within ${args.restaurant_ids?.length || 0} restaurants in current area`
         }])
       }
 
@@ -1658,7 +1940,7 @@ ${operation === 'intersection' ? 'Would you like me to:\n• Show restaurants EI
       if (args.restaurant_ids && args.restaurant_ids.length > 0) {
         setMessages(prev => [...prev, {
           role: 'assistant',
-          content: `✓ Searching within ${args.restaurant_ids.length} restaurants in current area`
+          content: `✓ Searching within ${args.restaurant_ids?.length || 0} restaurants in current area`
         }])
       }
 
@@ -1757,16 +2039,26 @@ ${operation === 'intersection' ? 'Would you like me to:\n• Show restaurants EI
     }
   }
 
-  const handleClearHistory = () => {
-    // Clear chat state
+  const handleClearHistory = async () => {
+    // 1. Call backend to reset agent state
+    try {
+      await fetch(`${API_CONFIG.API_URL}/reset`, { method: 'POST' })
+      console.log('🧹 Backend agent state reset')
+    } catch (e) {
+      console.error('Failed to reset backend state:', e)
+    }
+
+    // 2. Clear chat state
     setConversationHistory([])
     setMessages([{
       role: 'assistant',
       content: welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)]
     }])
     setPolygonCache({})
+    setLastVisibleRestaurants([])  // Clear state persistence
+    setLastIsochroneParams(null)   // Clear isochrone state persistence
 
-    // Clear isochrone visualizations
+    // 3. Clear isochrone visualizations
     if (onIsochroneUpdate) {
       onIsochroneUpdate(null)
     }
@@ -1774,7 +2066,7 @@ ${operation === 'intersection' ? 'Would you like me to:\n• Show restaurants EI
       onIsochroneLayersUpdate([])
     }
 
-    // Trigger full app reset (clears filters, resets map view)
+    // 4. Trigger full app reset (clears filters, resets map view)
     if (onResetAll) {
       onResetAll()
     }
@@ -1856,11 +2148,28 @@ ${operation === 'intersection' ? 'Would you like me to:\n• Show restaurants EI
                   </div>
                 ) : (
                   // Regular text message: avatar inside bubble (desktop only)
-                  <div className="message-bubble">
-                    <div className="message-avatar-inside desktop-only">
-                      <img src="/chatbot4.png" alt="Chatbot" />
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
+                    <div className="message-bubble">
+                      <div className="message-avatar-inside desktop-only">
+                        <img src="/chatbot4.png" alt="Chatbot" />
+                      </div>
+                      <div className="message-content" dangerouslySetInnerHTML={{ __html: linkifyText(msg.content) }} />
                     </div>
-                    <div className="message-content" dangerouslySetInnerHTML={{ __html: linkifyText(msg.content) }} />
+
+                    {/* Meta-learning pills after buy-me-coffee messages */}
+                    {isBuyMeCoffeeMessage(msg.content) && (
+                      <div className="suggestions-container">
+                        {metaLearningSuggestions.map((suggestion, idx) => (
+                          <button
+                            key={idx}
+                            className="suggestion-pill"
+                            onClick={() => handleSuggestionClick(suggestion)}
+                          >
+                            {suggestion}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )
               ) : (
@@ -1887,7 +2196,7 @@ ${operation === 'intersection' ? 'Would you like me to:\n• Show restaurants EI
           {isLoading && (
             <div className="chat-message assistant">
               <div className="message-bubble">
-                <div className="message-avatar-inside">
+                <div className="message-avatar-inside desktop-only">
                   <img src="/chatbot4.png" alt="Chatbot" />
                 </div>
                 <div className="message-content typing-content">
@@ -1909,8 +2218,8 @@ ${operation === 'intersection' ? 'Would you like me to:\n• Show restaurants EI
             className={`chat-favorites-button ${favoritesActive ? 'active' : ''}`}
             title={favoritesActive ? 'Show all restaurants' : 'Show favorites only'}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill={favoritesActive ? "#FF69B4" : "none"} stroke="#FF69B4" strokeWidth="2">
-              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill={favoritesActive ? "#EB213E" : "none"} stroke="#EB213E" strokeWidth="2">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
             </svg>
             {favorites.length > 0 && (
               <span className="favorites-count">{favorites.length}</span>
@@ -1947,6 +2256,27 @@ ${operation === 'intersection' ? 'Would you like me to:\n• Show restaurants EI
           </button>
         </div>
       </div>
+
+      {/* Confirmation Dialog for "across all NYC" queries */}
+      {showResetConfirmation && (
+        <div className="confirmation-overlay">
+          <div className="confirmation-dialog">
+            <h3>Clear Location Filter?</h3>
+            <p>
+              This query will search across all of NYC, which will clear your current
+              location filter and all other filters. Do you want to continue?
+            </p>
+            <div className="confirmation-actions">
+              <button onClick={handleCancelReset} className="btn-secondary">
+                Cancel
+              </button>
+              <button onClick={handleConfirmReset} className="btn-primary">
+                Clear Filters & Search
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 })

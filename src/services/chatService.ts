@@ -9,6 +9,8 @@ export interface ChatContext {
   totalRestaurants: number
   visibleRestaurants: number
   activeFilters: Record<string, any>
+  visible_restaurants?: any[]
+  isochrone_params?: any  // Persist isochrone state across turns
 }
 
 export interface GeminiMessage {
@@ -27,8 +29,9 @@ export interface GeminiMessage {
 }
 
 export interface ChatResponse {
-  type: 'text' | 'function_call' | 'function_calls'
-  message: string
+  type?: 'text' | 'function_call' | 'function_calls'
+  message?: string
+  response?: string // Backend agent uses this
   function?: {
     name: string
     arguments: Record<string, any>
@@ -37,6 +40,13 @@ export interface ChatResponse {
     name: string
     arguments: Record<string, any>
   }>
+  // Backend Agent Data
+  visible_restaurants?: any[]
+  isochrone_data?: any
+  isochrone_params?: any  // Isochrone state from backend
+  current_filters?: any
+  tool_calls?: string[]
+  map_actions?: any[]
 }
 
 export async function sendChatMessage(

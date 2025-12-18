@@ -1,9 +1,11 @@
 /* Chat Interface Container - Left Side */
 .chat-interface {
   position: absolute;
-  top: 80px; /* Below floating header */
+  top: 80px;
+  /* Below floating header */
   left: 20px;
-  bottom: 10px; /* Above attribution */
+  bottom: 10px;
+  /* Above attribution */
   z-index: 900;
   display: flex;
   flex-direction: column;
@@ -59,6 +61,7 @@
     opacity: 0;
     transform: translateY(-20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -108,12 +111,15 @@
 
 /* Hide scrollbar but keep scroll functionality */
 .chat-messages {
-  -ms-overflow-style: none;  /* IE/Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE/Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 .chat-messages::-webkit-scrollbar {
-  display: none;  /* Chrome, Safari, Opera */
+  display: none;
+  /* Chrome, Safari, Opera */
 }
 
 /* Individual Message */
@@ -129,6 +135,7 @@
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -145,8 +152,8 @@
 
 /* Message Avatar */
 .message-avatar {
-  width: 60px;
-  height: 60px;
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
@@ -155,7 +162,8 @@
 }
 
 .chat-message.assistant .message-avatar {
-  display: none; /* Avatar is now inside the bubble */
+  display: none;
+  /* Avatar is now inside the bubble */
 }
 
 .chat-message.user .message-avatar {
@@ -217,8 +225,8 @@
 
 /* Avatar inside bubble for assistant messages */
 .message-avatar-inside {
-  width: 60px;
-  height: 60px;
+  width: 70px;
+  height: 70px;
   min-width: 35px;
   border-radius: 50%;
   overflow: hidden;
@@ -246,8 +254,8 @@
 }
 
 .message-avatar-outside {
-  width: 45px;
-  height: 45px;
+  width: 50px;
+  height: 50px;
   min-width: 35px;
   border-radius: 50%;
   overflow: hidden;
@@ -312,14 +320,14 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 6px;
-  
+
   width: 85%;
 }
 
 .restaurant-suggestion-btn {
   background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(3px) saturate(100%);
-  border: 1px solid rgba(160, 160, 160, 0.3);
+  border: 1px solid rgba(255, 3, 217, 0.3);
   -webkit-backdrop-filter: blur(3px) saturate(100%);
   border-radius: 8px;
   padding: 6px 10px;
@@ -400,10 +408,14 @@
 }
 
 @keyframes typing {
-  0%, 60%, 100% {
+
+  0%,
+  60%,
+  100% {
     transform: translateY(0);
     opacity: 0.7;
   }
+
   30% {
     transform: translateY(-10px);
     opacity: 1;
@@ -422,8 +434,8 @@
 .suggestion-pill {
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(3px) saturate(80%);
-  -webkit-backdrop-filter: blur(3px) saturate(100%);
-  border: 1px solid rgba(160, 160, 160, 0.3);
+  -webkit-backdrop-filter: blur(1px) saturate(100%);
+  border: 1px solid rgba(255, 3, 217, 0.3);
   border-radius: 12px;
   padding: 8px 14px;
   font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -567,7 +579,7 @@
   position: absolute;
   top: -4px;
   right: -4px;
-  background: #FF69B4;
+background: #EB213E;
   color: white;
   font-size: 10px;
   font-weight: 600;
@@ -703,4 +715,76 @@
   .restaurant-card-wrapper {
     width: 97%;
   }
+}
+
+/* Confirmation Dialog */
+.confirmation-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  backdrop-filter: blur(4px);
+}
+
+.confirmation-dialog {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.confirmation-dialog h3 {
+  margin: 0 0 12px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.confirmation-dialog p {
+  margin: 0 0 20px 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #666;
+}
+
+.confirmation-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.confirmation-actions button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secondary {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.btn-secondary:hover {
+  background: #e0e0e0;
+}
+
+.btn-primary {
+  background: #FF69B4;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #ff1493;
 }

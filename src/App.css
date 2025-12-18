@@ -69,22 +69,27 @@
 /* Map Legend Styles */
 .map-legend {
   position: absolute;
-  top: 2%;
-  right: 1%;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 4px;
-  padding: clamp(6px, 1vw, 12px) clamp(10px, 1.5vw, 20px);
+  top: 3%;
+  right: 2%;
+
+  border-radius: 6px;
+  padding: 6px 10px;
   z-index: 500;
   pointer-events: auto;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  font-size: clamp(7px, 1vw, 14px);
+  gap: 0px;
+  font-size: 11px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(3px) saturate(100%);
+  -webkit-backdrop-filter: blur(3px) saturate(100%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: none;
 }
 
 .map-legend h4 {
-  margin: 0;
-  font-size: clamp(7px, 1vw, 14px);
+  margin: 0 0 4px 0;
+  font-size: 12px;
   font-weight: 600;
   color: #333;
 }
@@ -93,7 +98,7 @@
   display: flex;
   align-items: center;
   margin: 0;
-  font-size: clamp(7px, 1vw, 14px);
+  font-size: 11px;
   color: #666;
   cursor: pointer;
 }
@@ -102,10 +107,17 @@
   border-radius: 50%;
   border: 1px solid white;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  margin-right: 8px;
+  margin-right: 6px;
   flex-shrink: 0;
-  width: clamp(10px, 1.2vw, 16px) !important;
-  height: clamp(10px, 1.2vw, 16px) !important;
+  width: clamp(8px, 1vw, 12px) !important;
+  height: clamp(8px, 1vw, 12px) !important;
+}
+
+.legend-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin-top: 2px;
 }
 
 /* Hide Mapbox logo */
@@ -147,18 +159,36 @@
     max-width: calc(100vw - 20px);
   }
 
-  /* Mobile legend adjustments */
+  /* Mobile legend adjustments - more compact */
   .map-legend {
-    font-size: 11px;
-    padding: 8px 12px;
+    font-size: 9px;
+    padding: 4px 8px;
+    position: absolute;
+    top: 8%;
+    right: 2%;
+    left: auto;
+    gap: 0px;
   }
 
   .map-legend h4 {
-    font-size: 11px;
+    font-size: 10px;
+    margin: 0 0 2px 0;
   }
 
   .legend-item {
-    font-size: 11px;
+    font-size: 9px;
+    margin: 0;
+  }
+
+  .legend-marker {
+    width: 8px !important;
+    height: 8px !important;
+    margin-right: 4px;
+  }
+
+  .legend-items {
+    gap: 0px;
+    margin-top: 1px;
   }
 }
 
@@ -250,12 +280,10 @@
     font-size: 12px;
     padding: 6px 12px;
   }
-  
+
   .pwa-install-banner {
     bottom: 10px;
     padding: 10px 16px;
     font-size: 13px;
   }
 }
-
-

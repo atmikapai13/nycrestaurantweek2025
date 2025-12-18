@@ -9,6 +9,7 @@
     "build": "tsc && vite build && cp CNAME dist/",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
+    "vercel-dev": "vercel dev",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist --nojekyll --no-history",
     "embeddings:generate": "node scripts/generate-embeddings.js",
@@ -23,7 +24,11 @@
     "mapbox-gl": "^3.13.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "redis": "^4.7.0"
+    "redis": "^4.7.0",
+    "@langchain/core": "^0.3.0",
+    "@langchain/google-genai": "^0.1.0",
+    "@langchain/langgraph": "^0.2.0",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/node": "^24.9.2",

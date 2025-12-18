@@ -47,12 +47,11 @@ interface MapProps {
   onFavoritesToggle?: () => void
 }
 
-export default function Map({ restaurants, onRestaurantSelect, activeFilters, onLegendFilterChange, favorites, onToggleFavorite, onFilterChange, allRestaurants, onMapFocus, selectedRestaurant, onIsochroneLayersUpdate, onResetAll, mapResetRef, highlightedIds, onIsochroneRegion, isochroneRegionSlugs, favoritesActive, onFavoritesToggle }: MapProps) {
+export default function Map({ restaurants, onRestaurantSelect, activeFilters, onLegendFilterChange, favorites, onToggleFavorite, onFilterChange, allRestaurants, onMapFocus: _onMapFocus, selectedRestaurant, onIsochroneLayersUpdate: _onIsochroneLayersUpdate, onResetAll, mapResetRef, highlightedIds, onIsochroneRegion, isochroneRegionSlugs, favoritesActive, onFavoritesToggle }: MapProps) {
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<mapboxgl.Map | null>(null)
   const markers = useRef<mapboxgl.Marker[]>([])
   const markerElements = useRef<HTMLDivElement[]>([])
-  const currentZoom = useRef<number>(10.0)
   const chatInterfaceRef = useRef<ChatInterfaceHandle>(null)
 
   // Backward compatible: keep single polygon state for existing isochrone queries
@@ -61,21 +60,33 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
   // New: multi-layer state for Phase 3 spatial operations
   const [isochroneLayers, setIsochroneLayers] = useState<IsochroneLayer[]>([])
 
+  // Track selected restaurant for purple marker indicator
+  const [selectedRestaurantSlug, setSelectedRestaurantSlug] = useState<string | null>(null)
+
   // Function to reset map state (isochrones and view)
   const resetMapView = () => {
     // Clear isochrone polygons
     setIsochronePolygon(null)
     setIsochroneLayers([])
 
+    // Clear selected restaurant
+    setSelectedRestaurantSlug(null)
+    console.log('🟣 Cleared selected restaurant')
+
     // Detect mobile viewport
     const isMobile = window.innerWidth <= 768
+
+    const center = isMobile ? [-73.990, 40.715] : [-74.014, 40.737]
+    const zoom = isMobile ? 11.8 : 12.58
+
+    console.log('🔄 Resetting map view:', { isMobile, center, zoom })
 
     // Reset map to default view (mobile or desktop)
     if (map.current) {
       map.current.flyTo({
-        center: isMobile ? [-73.985, 39.705] : [-74.017, 40.743],
-        zoom: isMobile ? 10.0 : 12.4,
-        pitch: isMobile ? 45 : 45,
+        center: center as [number, number],
+        zoom,
+        pitch: 45,
         bearing: 0,
         duration: 1000
       })
@@ -128,46 +139,53 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
       })
     }
   }
-  
+
   // Function to determine if device is mobile
   const isMobile = () => {
     return window.innerWidth <= 768 || 'ontouchstart' in window
   }
-  
+
   // Function to calculate marker size based on zoom level and device
   const getMarkerSize = (baseSize: number, zoom: number, isMobileDevice: boolean) => {
     let size = baseSize
-    
-    // Increase size on mobile devices when zoomed in
-    if (isMobile() && zoom >= 12) {
-      size *= 1.5
-    } else if (zoom >= 12) {
-      size *= 1.4 }
-    
+
+    // Increase size in mobile when zoomed in
+    if (isMobileDevice && zoom >= 12.5) {
+      size *= 1.6
+    } else if (zoom >= 12.0) {
+      size *= 1.4
+    }
+    // Increase size in desktop when zoomed in
+    if (!isMobileDevice && zoom >= 14.0) {
+      size *= 1.3
+    } else if (zoom >= 12.0) {
+      size *= 0.9
+    }
+
     return Math.round(size)
   }
-  
+
   // Function to update all marker sizes
   const updateMarkerSizes = () => {
     if (!map.current) return
-    
+
     const zoom = map.current.getZoom()
     const mobile = isMobile()
-    
-    markerElements.current.forEach((markerEl, index) => {
+
+    markerElements.current.forEach((markerEl) => {
       if (markerEl && markerEl.style) {
         // Get the base size from the marker's data attribute
-        const baseSize = parseInt(markerEl.getAttribute('data-base-size') || '8')
+        const baseSize = parseInt(markerEl.getAttribute('data-base-size') || '6')
         const newSize = getMarkerSize(baseSize, zoom, mobile)
-        
+
         // Update the inner marker size (the visual marker)
         markerEl.style.width = `${newSize}px`
         markerEl.style.height = `${newSize}px`
-        
+
         // Update the wrapper padding (the click area)
         const wrapper = markerEl.parentElement
         if (wrapper) {
-          const padding = mobile ? '10px' : '8px'
+          const padding = mobile ? '8px' : '6px'
           wrapper.style.padding = padding
         }
       }
@@ -203,34 +221,7 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
       customAttribution: '© <a href="https://atmikapai.dev/" target="_blank">Atmika Pai</a> © <a href="https://marauders.earth/" target="_blank">Marauders.Earth</a> © <a href="https://www.fultonring.com/" target="_blank">Fulton Ring</a>'
     })
 
-    // Load custom pattern and configure map style
-    map.current.on('load', () => {
-      const img = new Image(20, 20)
-      img.onload = () => {
-        if (map.current) {
-          map.current.addImage('red-dots-pattern', img)
-        }
-      }
-      img.src = '/patterns/red-dots.svg'
 
-      // Hide highway shields/signs for cleaner map
-      const style = map.current?.getStyle()
-      if (style && style.layers) {
-        // Log all layer IDs to debug
-        console.log('Map layers:', style.layers.map((l: any) => l.id))
-
-        style.layers.forEach((layer: any) => {
-          // Only hide layers with "shield" in the name (highway numbers)
-          // This preserves street names while removing route shields
-          if (layer.id.includes('shield') ||
-              layer.id.includes('road-number') ||
-              (layer.type === 'symbol' && layer.id.includes('motorway') && layer.id.includes('label'))) {
-            console.log('Hiding layer:', layer.id)
-            map.current?.setLayoutProperty(layer.id, 'visibility', 'none')
-          }
-        })
-      }
-    })
 
     // Add zoom event listener to update marker sizes
     map.current.on('zoom', () => {
@@ -400,45 +391,30 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
           data: layer.polygon
         })
 
-        // Check if this is an excluded area (uses pattern instead of solid fill)
-        const isExcluded = layer.metadata?.isDashed || false
-
-        if (isExcluded) {
-          // Excluded area - use red dot pattern fill, no outline
+        // Add fill layer with solid color
+        if (layer.opacity > 0) {
           mapInstance.addLayer({
             id: fillLayerId,
             type: 'fill',
             source: sourceId,
             paint: {
-              'fill-pattern': 'red-dots-pattern'
-            }
-          })
-        } else {
-          // Normal area - solid color fill with opacity
-          if (layer.opacity > 0) {
-            mapInstance.addLayer({
-              id: fillLayerId,
-              type: 'fill',
-              source: sourceId,
-              paint: {
-                'fill-color': layer.color,
-                'fill-opacity': layer.opacity
-              }
-            })
-          }
-
-          // Add outline for normal (non-excluded) layers
-          mapInstance.addLayer({
-            id: outlineLayerId,
-            type: 'line',
-            source: sourceId,
-            paint: {
-              'line-color': layer.strokeColor,
-              'line-width': 2,
-              'line-opacity': 0.4
+              'fill-color': layer.color,
+              'fill-opacity': layer.opacity
             }
           })
         }
+
+        // Add outline layer
+        mapInstance.addLayer({
+          id: outlineLayerId,
+          type: 'line',
+          source: sourceId,
+          paint: {
+            'line-color': layer.strokeColor,
+            'line-width': 2,
+            'line-opacity': 0.4
+          }
+        })
       })
 
       // Fit map bounds to ALL polygons
@@ -450,8 +426,8 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
             const geometry = layer.polygon.geometry || layer.polygon
 
             if (geometry.type === 'Polygon' && geometry.coordinates && geometry.coordinates[0]) {
-              geometry.coordinates[0].forEach((coord: [number, number]) => {
-                bounds.extend(coord)
+              geometry.coordinates[0].forEach((coord: any) => {
+                bounds.extend(coord as [number, number])
               })
             } else if (geometry.type === 'MultiPolygon' && geometry.coordinates) {
               geometry.coordinates.forEach((polygon: any) => {
@@ -496,13 +472,57 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
     markers.current = []
     markerElements.current = []
 
-    // Render ALL restaurants with coordinates
-    allRestaurants.forEach(restaurant => {
+    // Determine which restaurants to render based on mode
+    let restaurantsToRender: Restaurant[];
+
+    if (favoritesActive && highlightedIds && highlightedIds.size > 0) {
+      // Favorites mode: show ALL favorited restaurants (ignore isochrone filtering)
+      restaurantsToRender = allRestaurants.filter(r => highlightedIds.has(r.slug));
+    } else if (isochroneRegionSlugs) {
+      // Isochrone active: only show restaurants within isochrone boundary
+      restaurantsToRender = allRestaurants.filter(r => isochroneRegionSlugs.includes(r.slug));
+    } else {
+      // Default: show all restaurants
+      restaurantsToRender = allRestaurants;
+    }
+
+    console.log('🗺️ Map rendering:', {
+      totalRestaurants: allRestaurants.length,
+      isochroneActive: !!isochroneRegionSlugs,
+      isochroneRegionSlugs: isochroneRegionSlugs,
+      isochroneCount: isochroneRegionSlugs?.length || 0,
+      favoritesActive: favoritesActive,
+      restaurantsToRender: restaurantsToRender.length,
+      filtering: isochroneRegionSlugs ? 'FILTERING ENABLED' : favoritesActive ? 'FAVORITES ONLY' : 'SHOWING ALL RESTAURANTS'
+    });
+
+    // Render restaurants with coordinates
+    restaurantsToRender.forEach(restaurant => {
       if (restaurant.latitude && restaurant.longitude) {
-        // SIMPLE COLOR LOGIC: Pink if highlighted, black otherwise
+        // 4-TIER COLOR LOGIC: Purple (selected), Red (favorites mode), Pink (highlighted), Grey (rest)
         const isHighlighted = highlightedIds?.has(restaurant.slug)
-        const markerColor = isHighlighted ? '#FF69B4' : '#7c7c7c'
-        const markerSize = isHighlighted ? '10px' : '6px'  // Pink markers larger
+        const isSelected = selectedRestaurantSlug === restaurant.slug
+        const isFavoriteMode = favoritesActive && isHighlighted
+
+        let markerColor = '#7c7c7c'  // Default grey
+        let markerSize = '6px'       // Normal size
+        let zIndex = 1
+
+        if (isSelected) {
+          // Selected restaurant: purple marker, same size as pink/red
+          markerColor = '#8b4dfe'    // Purple
+          markerSize = '10px'
+          zIndex = 3                 // Highest layer (above pink/red)
+        } else if (isFavoriteMode) {
+          // Favorite mode active: red markers for favorites
+          markerColor = '#c81224'    // Red for favorites
+          markerSize = '10px'
+          zIndex = 2                 // Same layer as pink
+        } else if (isHighlighted) {
+          markerColor = '#FF69B4'    // Pink for matches
+          markerSize = '10px'        // Slightly bigger
+          zIndex = 2                 // Higher layer (in front of grey)
+        }
 
         // Create marker wrapper for larger click area
         const markerWrapper = document.createElement('div')
@@ -521,6 +541,7 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
         markerEl.style.backgroundColor = markerColor
         markerEl.style.border = '1px solid white'
         markerEl.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)'
+        markerEl.style.zIndex = zIndex.toString()
 
         // Add the marker to the wrapper
         markerWrapper.appendChild(markerEl)
@@ -536,6 +557,18 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
 
         // Add click handler to the wrapper - show restaurant card in chat
         markerWrapper.addEventListener('click', () => {
+          // If clicking already-selected restaurant, deselect it
+          if (selectedRestaurantSlug === restaurant.slug) {
+            console.log(`🟣 Deselecting restaurant: ${restaurant.name}`)
+            setSelectedRestaurantSlug(null)  // Clear selection
+            return
+          }
+
+          // Update selection state (triggers marker re-render)
+          setSelectedRestaurantSlug(restaurant.slug)
+          console.log(`🟣 Selected restaurant: ${restaurant.name}`)
+
+          // Add restaurant card to chat
           if (chatInterfaceRef.current) {
             chatInterfaceRef.current.addRestaurantCard(restaurant)
           }
@@ -548,33 +581,9 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
 
     // Update marker sizes after creating all markers
     updateMarkerSizes()
-  }, [allRestaurants, highlightedIds, onRestaurantSelect])
+  }, [allRestaurants, highlightedIds, onRestaurantSelect, isochroneRegionSlugs, selectedRestaurantSlug, favoritesActive])
 
-  const handleLegendClick = (filterType: string) => {
-    onLegendFilterChange(filterType)
-  }
 
-  // Calculate the count of restaurants that match the current legend filter
-  const legendFilteredRestaurants = restaurants.filter(restaurant => {
-    if (activeFilters.length === 0) return true // Show all if no filter active
-    
-    return activeFilters.some(filterType => {
-      switch (filterType) {
-        case 'michelin':
-          return restaurant.michelin_award && ['ONE_STAR', 'TWO_STARS', 'THREE_STARS'].includes(restaurant.michelin_award)
-        case 'bib':
-          return restaurant.michelin_award === 'BIB_GOURMAND'
-        case 'nyt':
-          return restaurant.nyttop100_rank
-        case 'regular':
-          return !restaurant.michelin_award && !restaurant.nyttop100_rank
-        case 'favorites':
-          return favorites.includes(restaurant.name)
-        default:
-          return false
-      }
-    })
-  })
 
   return (
     <div className="map-wrapper">
@@ -601,10 +610,30 @@ export default function Map({ restaurants, onRestaurantSelect, activeFilters, on
       {/* Map Legend */}
       <div className="map-legend">
         <h4 style={{ color: '#000000', margin: '0' }}>
-          {highlightedIds && highlightedIds.size > 0
-            ? `${highlightedIds.size} matching / ${allRestaurants.length} total`
-            : `${allRestaurants.length} Restaurants`}
+          Remi's picks
         </h4>
+        {/* Legend items */}
+        <div className="legend-items">
+          <div className="legend-item">
+            <div className="legend-marker" style={{ backgroundColor: '#7c7c7c', width: '6px', height: '6px' }}></div>
+            <span>
+              {isochroneRegionSlugs
+                ? `${isochroneRegionSlugs.length} in isochrone`
+                : `${allRestaurants.length} restaurants`}
+            </span>
+          </div>
+          {favoritesActive && highlightedIds && highlightedIds.size > 0 ? (
+            <div className="legend-item">
+              <div className="legend-marker" style={{ backgroundColor: '#c81224', width: '10px', height: '10px' }}></div>
+              <span>{highlightedIds.size} Favorites</span>
+            </div>
+          ) : highlightedIds && highlightedIds.size > 0 && (
+            <div className="legend-item">
+              <div className="legend-marker" style={{ backgroundColor: '#FF69B4', width: '10px', height: '10px' }}></div>
+              <span>{highlightedIds.size} fit your request</span>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

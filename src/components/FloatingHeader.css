@@ -26,7 +26,12 @@
 }
 
 .floating-header-title .live {
-  color:rgba(242, 61, 151, 0.875);
+  color: rgba(242, 61, 151, 0.875);
+}
+
+.floating-header-chatbot {
+  display: none;
+  /* Hidden on desktop */
 }
 
 /* Mobile responsive */
@@ -45,5 +50,14 @@
 
   .floating-header-title {
     font-size: 30px;
+  }
+
+  .floating-header-chatbot {
+    display: block;
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    filter: drop-shadow(0px 2px 6px rgba(0, 0, 0, 0.2));
+    margin-left: -10px;
   }
 }

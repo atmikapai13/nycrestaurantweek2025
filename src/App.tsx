@@ -32,7 +32,7 @@ function App() {
     // Load restaurants from imported data
     setRestaurants(restaurantData as Restaurant[])
     setFilteredRestaurants(restaurantData as Restaurant[])
-    
+
     // Check for favorites in URL hash first, then localStorage
     const hash = window.location.hash
     if (hash && hash.includes('favorites=')) {
@@ -83,7 +83,7 @@ function App() {
       const favoriteSlugs = favoriteNames
         .map(name => restaurantData.find(r => r.name === name)?.slug)
         .filter((slug): slug is string => slug !== undefined)
-      
+
       const favoritesParam = encodeURIComponent(favoriteSlugs.join(','))
       // Always use a clean hash format
       window.location.hash = `favorites=${favoritesParam}`
@@ -221,31 +221,19 @@ function App() {
   }
 
   const handleIsochroneRegion = (slugs: string[] | null) => {
-    setIsochroneRegionSlugs(slugs)
-    // When isochrone is set, initially highlight ALL restaurants in region
-    if (slugs) {
-      const newHighlights = new Set(slugs)
-      // If favorites mode is active, store in ref instead of displaying
-      if (favoritesActive) {
-        previousHighlightedIdsRef.current = newHighlights
-      } else {
-        setHighlightedRestaurantIds(newHighlights)
-      }
-    }
+    console.log(`🗺️ Setting isochrone region: ${slugs?.length || 0} restaurants`);
+    setIsochroneRegionSlugs(slugs);
+
+    // DON'T automatically highlight - let map actions control highlights
+    // This allows backend to distinguish "all in region" vs "filtered subset"
   }
 
   const handleFilterChange = (filterType: string, values: string[]) => {
     // Special case: "Semantic Search Results" means highlight, not filter
     if (filterType === 'Semantic Search Results') {
-      // If isochrone region is active, scope highlights to that region only
-      let newHighlights: Set<string>
-      if (isochroneRegionSlugs) {
-        const regionSet = new Set(isochroneRegionSlugs)
-        const scopedValues = values.filter(slug => regionSet.has(slug))
-        newHighlights = new Set(scopedValues)
-      } else {
-        newHighlights = new Set(values)
-      }
+      // Backend already scoped the slugs correctly via getScopedSearchPool()
+      // No need to re-scope here (avoids async state bugs)
+      const newHighlights = new Set(values)
 
       // If favorites mode is active, store in ref instead of displaying
       // (will be restored when favorites mode is turned off)
