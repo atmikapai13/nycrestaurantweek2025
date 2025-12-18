@@ -47,7 +47,7 @@ interface MapProps {
   onFavoritesToggle?: () => void
 }
 
-export default function Map({ restaurants, onRestaurantSelect, activeFilters, onLegendFilterChange, favorites, onToggleFavorite, onFilterChange, allRestaurants, onMapFocus: _onMapFocus, selectedRestaurant, onIsochroneLayersUpdate: _onIsochroneLayersUpdate, onResetAll, mapResetRef, highlightedIds, onIsochroneRegion, isochroneRegionSlugs, favoritesActive, onFavoritesToggle }: MapProps) {
+export default function Map({ restaurants, onRestaurantSelect, favorites, onToggleFavorite, onFilterChange, allRestaurants, onMapFocus: _onMapFocus, selectedRestaurant, onIsochroneLayersUpdate: _onIsochroneLayersUpdate, onResetAll, mapResetRef, highlightedIds, onIsochroneRegion, isochroneRegionSlugs, favoritesActive, onFavoritesToggle }: MapProps) {
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<mapboxgl.Map | null>(null)
   const markers = useRef<mapboxgl.Marker[]>([])

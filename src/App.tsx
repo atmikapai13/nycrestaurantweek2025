@@ -14,7 +14,6 @@ function App() {
   const [searchTerm, setSearchTerm] = useState('')
   const [favorites, setFavorites] = useState<string[]>([])
   const [favoritesActive, setFavoritesActive] = useState(false)
-  const mapInstanceRef = useRef<mapboxgl.Map | null>(null)
 
   // Callback ref for map reset function (will be set by Map component)
   const mapResetRef = useRef<(() => void) | null>(null)
@@ -113,21 +112,7 @@ function App() {
     }
   }
 
-  const handleSearch = (searchTerm: string) => {
-    setSearchTerm(searchTerm)
-    let filtered = restaurants
-
-    // Apply search filter
-    if (searchTerm.trim()) {
-      filtered = filtered.filter(restaurant =>
-        restaurant.name && restaurant.name.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    }
-
-    // Apply other filters
-    filtered = applyFilters(filtered)
-    setFilteredRestaurants(filtered)
-  }
+  
 
   const applyFilters = (restaurantsToFilter: Restaurant[]) => {
     let filtered = restaurantsToFilter
@@ -287,38 +272,7 @@ function App() {
     }
   }
 
-  const handleMapFocus = (restaurantIds: string[]) => {
-    // Focus map on these restaurants
-    if (mapInstanceRef.current && restaurantIds.length > 0) {
-      const focusedRestaurants = restaurants.filter(r =>
-        restaurantIds.includes(r.slug) && r.latitude && r.longitude
-      )
-
-      if (focusedRestaurants.length === 1) {
-        // Single restaurant - fly to it
-        const r = focusedRestaurants[0]
-        mapInstanceRef.current.flyTo({
-          center: [r.longitude!, r.latitude!],
-          zoom: 14,
-          duration: 1500
-        })
-      } else if (focusedRestaurants.length > 1) {
-        // Multiple restaurants - fit bounds
-        const coordinates = focusedRestaurants.map(r => [r.longitude!, r.latitude!])
-        const lngs = coordinates.map(c => c[0])
-        const lats = coordinates.map(c => c[1])
-
-        mapInstanceRef.current.fitBounds([
-          [Math.min(...lngs), Math.min(...lats)],
-          [Math.max(...lngs), Math.max(...lats)]
-        ], {
-          padding: 80,
-          duration: 1500,
-          maxZoom: 13
-        })
-      }
-    }
-  }
+  
 
   // Apply filters whenever activeFilters or legendFilters change
   useEffect(() => {

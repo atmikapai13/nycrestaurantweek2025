@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useImperativeHandle, forwardRef } from 're
 import { sendChatMessage, type GeminiMessage } from '../services/chatService'
 import type { Restaurant } from '../types/restaurant'
 import { API_CONFIG } from '../config/features'
-import { calculateTrueMidpoint, getNeighborhoodCenter, findRestaurantsWithinRadius, expandNeighborhoodSearch, filterRestaurantsByPolygon, intersectPolygons, unionPolygons, excludePolygon } from '../utils/geospatial'
+import { calculateTrueMidpoint, getNeighborhoodCenter, expandNeighborhoodSearch, filterRestaurantsByPolygon, intersectPolygons, unionPolygons, excludePolygon } from '../utils/geospatial'
 import { getIsochrone } from '../services/isochroneService'
 import type { IsochroneLayer } from './Map'
 import RestaurantCard from './RestaurantCard'
@@ -222,7 +222,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
   onFilterChange,
   onRestaurantSelect,
   onMapFocus,
-  selectedRestaurant,
   onIsochroneUpdate,
   onIsochroneLayersUpdate,
   onResetAll,

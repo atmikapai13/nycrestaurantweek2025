@@ -634,7 +634,7 @@ background: #EB213E;
 
   /* Drawer height states */
   .drawer-35 {
-    height: 40vh;
+    height: 35vh;
   }
 
   .drawer-80 {
@@ -676,7 +676,7 @@ background: #EB213E;
   }
 
   .drawer-35 .chat-messages {
-    max-height: calc(40vh - 100px);
+    max-height: calc(35vh - 100px);
   }
 
   .drawer-90 .chat-messages {
