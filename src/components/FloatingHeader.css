@@ -41,6 +41,7 @@
     left: 0px;
     padding: 8px 14px;
     gap: 8px;
+    align-items: flex-end;
   }
 
   .floating-header-logo {
@@ -54,13 +55,12 @@
 
   .floating-header-chatbot {
     display: block;
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     object-fit: contain;
     filter: drop-shadow(0px 2px 6px rgba(0, 0, 0, 0.2));
     margin-left: -10px;
     margin-right: -5px;
-    align-self: center;
-    margin-top: -2px;
+    margin-bottom: 14px;
   }
 }

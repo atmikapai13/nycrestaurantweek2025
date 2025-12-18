@@ -76,7 +76,7 @@ export default function Map({ restaurants, onRestaurantSelect, favorites, onTogg
     // Detect mobile viewport
     const isMobile = window.innerWidth <= 768
 
-    const center = isMobile ? [-73.998, 40.715] : [-74.014, 40.737]
+    const center = isMobile ? [-73.990, 40.705] : [-74.014, 40.737]
     const zoom = isMobile ? 11.8 : 12.58
 
     console.log('🔄 Resetting map view:', { isMobile, center, zoom })
@@ -199,7 +199,7 @@ export default function Map({ restaurants, onRestaurantSelect, favorites, onTogg
     const isMobile = window.innerWidth <= 768
 
     // Mobile-specific viewport: shifted south to account for 40% drawer at bottom
-    const mobileCenter: [number, number] = [-73.998, 40.705] // Shifted south to show lower Manhattan
+    const mobileCenter: [number, number] = [-73.990, 40.705] // Shifted south to show lower Manhattan
     const mobileZoom = 11.5
     const mobilePitch = 45
     const mobileBearing = 0

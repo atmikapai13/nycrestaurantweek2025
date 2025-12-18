@@ -282,6 +282,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
     }
   }>>({})
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const lastAssistantMessageRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
   // Mobile drawer state
@@ -293,8 +294,9 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
   const [showResetConfirmation, setShowResetConfirmation] = useState(false)
   const drawerRef = useRef<HTMLDivElement>(null)
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  const scrollToLastMessage = () => {
+    // Scroll to the TOP of the last assistant message for better UX
+    lastAssistantMessageRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
   // Auto-scroll only when Remi responds (not on page load or user messages)
@@ -311,7 +313,8 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
     if (messages.length > prevMessagesLengthRef.current) {
       const lastMessage = messages[messages.length - 1]
       if (lastMessage?.role === 'assistant') {
-        scrollToBottom()
+        // Small delay to ensure DOM is updated before scrolling
+        setTimeout(() => scrollToLastMessage(), 100)
       }
       prevMessagesLengthRef.current = messages.length
     }
@@ -2103,8 +2106,17 @@ ${operation === 'intersection' ? 'Would you like me to:\n• Show restaurants EI
         </div>
         {/* Messages */}
         <div className="chat-messages">
-          {messages.map((msg, idx) => (
-            <div key={idx} className={`chat-message ${msg.role}`}>
+          {messages.map((msg, idx) => {
+            // Check if this is the last assistant message for scroll ref
+            const isLastAssistantMessage = msg.role === 'assistant' &&
+              idx === messages.map((m, i) => m.role === 'assistant' ? i : -1).filter(i => i >= 0).pop()
+
+            return (
+            <div
+              key={idx}
+              className={`chat-message ${msg.role}`}
+              ref={isLastAssistantMessage ? lastAssistantMessageRef : null}
+            >
               {msg.role === 'assistant' ? (
                 msg.type === 'restaurant_card' && msg.restaurant ? (
                   // Restaurant card: avatar outside the card (desktop only)
@@ -2191,7 +2203,8 @@ ${operation === 'intersection' ? 'Would you like me to:\n• Show restaurants EI
                 <div className="message-bubble user-bubble" dangerouslySetInnerHTML={{ __html: linkifyText(msg.content) }} />
               )}
             </div>
-          ))}
+            )
+          })}
 
           {/* Quick-start suggestions - show only after welcome message */}
           {messages.length === 1 && (

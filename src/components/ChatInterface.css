@@ -109,7 +109,7 @@
   gap: 16px;
 }
 
-/* Hide scrollbar but keep scroll functionality */
+/* Hide scrollbar on desktop, show on mobile */
 .chat-messages {
   -ms-overflow-style: none;
   /* IE/Edge */
@@ -120,6 +120,34 @@
 .chat-messages::-webkit-scrollbar {
   display: none;
   /* Chrome, Safari, Opera */
+}
+
+/* Show scrollbar on mobile for better UX */
+@media (max-width: 768px) {
+  .chat-messages {
+    -ms-overflow-style: auto;
+    scrollbar-width: thin;
+    /* Firefox - thin scrollbar */
+  }
+
+  .chat-messages::-webkit-scrollbar {
+    display: block;
+    width: 4px;
+  }
+
+  .chat-messages::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 2px;
+  }
+
+  .chat-messages::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+  }
+
+  .chat-messages::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3);
+  }
 }
 
 /* Individual Message */

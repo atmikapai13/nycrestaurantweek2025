@@ -7,8 +7,8 @@ export interface Restaurant {
   summary: string;
   website?: string;
   image_url?: string;
-  meal_types: string[];
-  participation_weeks: string[];
+  meal_types?: string[];
+  participation_weeks?: string[];
   collections: string[];
   opentable_id?: string;
   menu_url?: string;
