@@ -298,10 +298,25 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
-  // Disabled auto-scroll to give user full control
-  // useEffect(() => {
-  //   scrollToBottom()
-  // }, [messages])
+  // Auto-scroll only when Remi responds (not on page load or user messages)
+  const prevMessagesLengthRef = useRef(messages.length)
+
+  useEffect(() => {
+    // Skip scroll on initial render/page load
+    if (prevMessagesLengthRef.current === 0 && messages.length > 0) {
+      prevMessagesLengthRef.current = messages.length
+      return
+    }
+
+    // Only scroll if messages increased AND last message is from assistant (Remi)
+    if (messages.length > prevMessagesLengthRef.current) {
+      const lastMessage = messages[messages.length - 1]
+      if (lastMessage?.role === 'assistant') {
+        scrollToBottom()
+      }
+      prevMessagesLengthRef.current = messages.length
+    }
+  }, [messages])
 
   useEffect(() => {
     // Auto-focus input on mount
@@ -2098,7 +2113,7 @@ ${operation === 'intersection' ? 'Would you like me to:\n• Show restaurants EI
                   // Restaurant card: avatar outside the card (desktop only)
                   <div className="restaurant-card-message">
                     <div className="message-avatar-outside desktop-only">
-                      <img src="/chatbot4.png" alt="Chatbot" />
+                      <img src="/remi.png" alt="remi" />
                     </div>
                     <div className="restaurant-card-content">
                       <div className="restaurant-card-wrapper">
@@ -2115,7 +2130,7 @@ ${operation === 'intersection' ? 'Would you like me to:\n• Show restaurants EI
                             className="restaurant-suggestion-btn"
                             onClick={() => handleRestaurantSuggestionClick(`Yelp review highlights of ${msg.restaurant!.name}?`, msg.restaurant!.slug)}
                           >
-                            Yelp Review Highlights?
+                            Read Yelp Reviews
                           </button>
                         )}
                         {msg.restaurant!.reddit && msg.restaurant!.reddit.trim() !== '' && (
@@ -2123,7 +2138,7 @@ ${operation === 'intersection' ? 'Would you like me to:\n• Show restaurants EI
                             className="restaurant-suggestion-btn"
                             onClick={() => handleRestaurantSuggestionClick(`Redditors' takes on ${msg.restaurant!.name}?`, msg.restaurant!.slug)}
                           >
-                            Redditors' Takes?
+                            Read Redditors' Takes
                           </button>
                         )}
                         {msg.restaurant!.opentable_id && msg.restaurant!.opentable_id.trim() !== '' && (
@@ -2133,7 +2148,7 @@ ${operation === 'intersection' ? 'Would you like me to:\n• Show restaurants EI
                             rel="noopener noreferrer"
                             className="restaurant-suggestion-btn restaurant-suggestion-link"
                           >
-                            Make a Reservation?
+                            ↗ Make a Reservation
                           </a>
                         )}
                         {msg.restaurant!.latitude && msg.restaurant!.longitude && (
@@ -2143,7 +2158,7 @@ ${operation === 'intersection' ? 'Would you like me to:\n• Show restaurants EI
                             rel="noopener noreferrer"
                             className="restaurant-suggestion-btn restaurant-suggestion-link"
                           >
-                            Open in Google Maps?
+                            ↗ Google Maps
                           </a>
                         )}
                       </div>
@@ -2154,7 +2169,7 @@ ${operation === 'intersection' ? 'Would you like me to:\n• Show restaurants EI
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
                     <div className="message-bubble">
                       <div className="message-avatar-inside desktop-only">
-                        <img src="/chatbot4.png" alt="Chatbot" />
+                        <img src="/remi.png" alt="remi" />
                       </div>
                       <div className="message-content" dangerouslySetInnerHTML={{ __html: linkifyText(msg.content) }} />
                     </div>
@@ -2200,7 +2215,7 @@ ${operation === 'intersection' ? 'Would you like me to:\n• Show restaurants EI
             <div className="chat-message assistant">
               <div className="message-bubble">
                 <div className="message-avatar-inside desktop-only">
-                  <img src="/chatbot4.png" alt="Chatbot" />
+                  <img src="/remi.png" alt="remi" />
                 </div>
                 <div className="message-content typing-content">
                   <span></span>

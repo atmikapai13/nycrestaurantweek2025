@@ -159,14 +159,14 @@
     max-width: calc(100vw - 20px);
   }
 
-  /* Mobile legend adjustments - more compact */
+  /* Mobile legend adjustments - left-aligned below NYC Eats header */
   .map-legend {
     font-size: 9px;
     padding: 4px 8px;
     position: absolute;
-    top: 8%;
-    right: 2%;
-    left: auto;
+    top: 85px;
+    left: 20px;
+    right: auto;
     gap: 0px;
   }
 

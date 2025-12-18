@@ -717,7 +717,21 @@ background: #EB213E;
 
   /* Restaurant card full width on mobile */
   .restaurant-card-wrapper {
-    width: 97%;
+    width: 100%;
+  }
+
+  .restaurant-card-wrapper .restaurant-card {
+    width: 100%;
+  }
+
+  /* Increase restaurant suggestion button font size on mobile */
+  .restaurant-suggestion-btn {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+
+  .restaurant-suggestions {
+    width: 100%;
   }
 }
 
