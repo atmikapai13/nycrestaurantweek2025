@@ -633,16 +633,12 @@ background: #EB213E;
   }
 
   /* Drawer height states */
-  .drawer-10 {
-    height: 10vh;
-  }
-
   .drawer-35 {
-    height: 35vh;
+    height: 40vh;
   }
 
-  .drawer-90 {
-    height: 90vh;
+  .drawer-80 {
+    height: 80vh;
   }
 
   /* Drag handle visible on mobile */
@@ -660,8 +656,8 @@ background: #EB213E;
   }
 
   .drawer-handle-bar {
-    width: 60px;
-    height: 4px;
+    width: 120px;
+    height: 5px;
     background: rgba(0, 0, 0, 0.3);
     border-radius: 2px;
   }
@@ -680,11 +676,11 @@ background: #EB213E;
   }
 
   .drawer-35 .chat-messages {
-    max-height: calc(35vh - 100px);
+    max-height: calc(40vh - 100px);
   }
 
   .drawer-90 .chat-messages {
-    max-height: calc(90vh - 100px);
+    max-height: calc(80vh - 100px);
   }
 
   .chat-bot-button {

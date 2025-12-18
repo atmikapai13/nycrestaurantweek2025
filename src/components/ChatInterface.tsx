@@ -286,7 +286,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
   const inputRef = useRef<HTMLInputElement>(null)
 
   // Mobile drawer state
-  const [drawerHeight, setDrawerHeight] = useState<10 | 35 | 90>(35)
+  const [drawerHeight, setDrawerHeight] = useState< 35 | 80>(35)
   const [isDragging, setIsDragging] = useState(false)
   const [dragStartY, setDragStartY] = useState(0)
   const [dragStartHeight, setDragStartHeight] = useState(30)
@@ -393,12 +393,10 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
     const clampedHeight = Math.max(10, Math.min(100, newHeight))
 
     // Update to nearest valid state
-    if (clampedHeight < 22) {
-      setDrawerHeight(10)
-    } else if (clampedHeight < 62) {
+    if (clampedHeight < 62) {
       setDrawerHeight(35)
     } else {
-      setDrawerHeight(90)
+      setDrawerHeight(80)
     }
   }
 
