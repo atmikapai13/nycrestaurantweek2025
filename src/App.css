@@ -154,6 +154,7 @@
 /* Responsive Design */
 @media (max-width: 768px) {
 
+
   .restaurant-card-overlay {
     left: 10px;
     bottom: 10px;
@@ -166,7 +167,7 @@
     padding: 4px 8px;
     position: absolute;
     top: 75px;
-    left: 55px;
+    left: 15px;
     right: auto;
     gap: 0px;
   }
