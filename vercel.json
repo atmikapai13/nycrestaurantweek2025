@@ -3,7 +3,27 @@
   "outputDirectory": "dist",
   "framework": "vite",
   "functions": {
-    "api/**/*.js": {
+    "api/chat.js": {
+      "memory": 1024,
+      "maxDuration": 10
+    },
+    "api/geocode.js": {
+      "memory": 1024,
+      "maxDuration": 10
+    },
+    "api/isochrone.js": {
+      "memory": 1024,
+      "maxDuration": 10
+    },
+    "api/semantic-search.js": {
+      "memory": 1024,
+      "maxDuration": 10
+    },
+    "api/rag-search.js": {
+      "memory": 1024,
+      "maxDuration": 10
+    },
+    "api/reset.js": {
       "memory": 1024,
       "maxDuration": 10
     }
