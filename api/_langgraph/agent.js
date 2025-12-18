@@ -4,7 +4,7 @@ import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { SystemMessage } from "@langchain/core/messages";
 import { AgentState } from "./state.js";
 import { tools } from "./tools.js";
-import { loadRestaurantData } from "../utils/dataLoader.js";
+import { loadRestaurantData } from "../_utils/dataLoader.js";
 
 /** 
  * Build comprehensive system prompt with context 

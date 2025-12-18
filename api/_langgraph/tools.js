@@ -4,10 +4,10 @@ import {
   loadRestaurantData,
   filterRestaurants as filterData,
   getRestaurantBySlug
-} from '../utils/dataLoader.js';
-import { performRagSearch } from '../lib/ragSearchLogic.js';
-import { geocodeAddress } from '../lib/geocodeLogic.js';
-import { generateIsochrone, generateMultiPartyIsochrone } from '../lib/isochroneLogic.js';
+} from '../_utils/dataLoader.js';
+import { performRagSearch } from '../_lib/ragSearchLogic.js';
+import { geocodeAddress } from '../_lib/geocodeLogic.js';
+import { generateIsochrone, generateMultiPartyIsochrone } from '../_lib/isochroneLogic.js';
 
 /**
  * ============================================================================
@@ -223,7 +223,7 @@ Use when user asks "tell me about [restaurant]" or "what's the vibe".`,
   }),
 
   func: async ({ restaurantSlug, detailType }) => {
-    const { getRestaurantByNameOrSlug } = await import('../utils/dataLoader.js');
+    const { getRestaurantByNameOrSlug } = await import('../_utils/dataLoader.js');
     const restaurant = getRestaurantByNameOrSlug(restaurantSlug);
 
     if (!restaurant) {

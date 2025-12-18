@@ -1,4 +1,4 @@
-import { geoapifyRequest, getNYCBoundingBox, getNYCCenter, isWithinNYC } from './lib/geoapifyClient.js'
+import { geoapifyRequest, getNYCBoundingBox, getNYCCenter, isWithinNYC } from './_lib/geoapifyClient.js'
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -27,7 +27,7 @@ async function getRedisUtils() {
   if (redisUtils) return redisUtils
 
   try {
-    const redisModule = await import('./lib/redis.js')
+    const redisModule = await import('./_lib/redis.js')
     redisUtils = {
       cacheGet: redisModule.cacheGet,
       cacheSet: redisModule.cacheSet,

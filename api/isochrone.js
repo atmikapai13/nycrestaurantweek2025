@@ -1,4 +1,4 @@
-import { geoapifyRequest, getNYCCenter, isWithinNYC } from './lib/geoapifyClient.js'
+import { geoapifyRequest, getNYCCenter, isWithinNYC } from './_lib/geoapifyClient.js'
 import * as turf from '@turf/turf'
 import fs from 'fs'
 import path from 'path'
@@ -28,7 +28,7 @@ async function getRedisUtils() {
   if (redisUtils) return redisUtils
 
   try {
-    const redisModule = await import('./lib/redis.js')
+    const redisModule = await import('./_lib/redis.js')
     redisUtils = {
       cacheGet: redisModule.cacheGet,
       cacheSet: redisModule.cacheSet,
