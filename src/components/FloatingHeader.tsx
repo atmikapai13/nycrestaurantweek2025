@@ -4,7 +4,7 @@ export default function FloatingHeader() {
   return (
     <div className="floating-header">
       <img
-        src="/remi_transparent.png"
+        src="/remi.png"
         alt="Remi"
         className="floating-header-chatbot"
       />
