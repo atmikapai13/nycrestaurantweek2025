@@ -298,9 +298,10 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
-  useEffect(() => {
-    scrollToBottom()
-  }, [messages])
+  // Disabled auto-scroll to give user full control
+  // useEffect(() => {
+  //   scrollToBottom()
+  // }, [messages])
 
   useEffect(() => {
     // Auto-focus input on mount
@@ -2078,12 +2079,14 @@ ${operation === 'intersection' ? 'Would you like me to:\n• Show restaurants EI
       <div
         ref={drawerRef}
         className={`chat-bubble drawer-${drawerHeight}`}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
       >
         {/* Drag handle - mobile only */}
-        <div className="drawer-handle">
+        <div
+          className="drawer-handle"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
           <div className="drawer-handle-bar"></div>
         </div>
         {/* Messages */}
