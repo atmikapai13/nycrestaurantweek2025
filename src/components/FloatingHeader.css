@@ -17,7 +17,7 @@
 
 .floating-header-title {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 40px;
+  font-size: 20px;
   font-weight: 400;
   color: #404040;
   letter-spacing: 0.5px;
@@ -44,23 +44,18 @@
     align-items: flex-end;
   }
 
-  .floating-header-logo {
-    width: 30px;
-    height: 30px;
-  }
-
   .floating-header-title {
-    font-size: 40px;
+    
+    font-size: 20px;
+    
+    
   }
 
   .floating-header-chatbot {
     display: block;
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     object-fit: contain;
     filter: drop-shadow(0px 2px 6px rgba(0, 0, 0, 0.2));
-    margin-left: -10px;
-    margin-right: -5px;
-    margin-bottom: 14px;
   }
 }

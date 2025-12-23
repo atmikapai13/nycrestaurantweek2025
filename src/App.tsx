@@ -14,6 +14,7 @@ function App() {
   const [searchTerm, setSearchTerm] = useState('')
   const [favorites, setFavorites] = useState<string[]>([])
   const [favoritesActive, setFavoritesActive] = useState(false)
+  const [awardsActive, setAwardsActive] = useState(false)
 
   // Callback ref for map reset function (will be set by Map component)
   const mapResetRef = useRef<(() => void) | null>(null)
@@ -112,7 +113,10 @@ function App() {
     }
   }
 
-  
+  const handleAwardsToggle = () => {
+    setAwardsActive(!awardsActive)
+    // No need to modify highlightedRestaurantIds - Map.tsx filtering handles it
+  }
 
   const applyFilters = (restaurantsToFilter: Restaurant[]) => {
     let filtered = restaurantsToFilter
@@ -261,7 +265,8 @@ function App() {
     setLegendFilters([])
     setSearchTerm('')
     setSelectedRestaurant(null)
-    setFavoritesActive(false)
+    // Don't reset favoritesActive - preserve favorites mode
+    setAwardsActive(false)
     setHighlightedRestaurantIds(new Set())  // Clear highlights
     previousHighlightedIdsRef.current = new Set()  // Clear saved highlights
     setIsochroneRegionSlugs(null)  // Clear isochrone region
@@ -292,9 +297,7 @@ function App() {
 
   return (
     <div className="app">
-      {/* Floating Header - Top Left */}
       <FloatingHeader />
-
       {/* Full Screen Map */}
       <div className="map-section">
         <Map
@@ -315,6 +318,8 @@ function App() {
           isochroneRegionSlugs={isochroneRegionSlugs}
           favoritesActive={favoritesActive}
           onFavoritesToggle={handleFavoritesToggle}
+          awardsActive={awardsActive}
+          onAwardsToggle={handleAwardsToggle}
         />
 
         {/* Restaurant Card now appears in chat when clicking markers */}

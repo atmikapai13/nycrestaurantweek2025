@@ -58,7 +58,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
         )}
       </div>
       {/* Restaurant Description */}
-      <p className="restaurant-description" style={{ fontSize: '12px' }}>{displayRestaurant.summary}</p>
+      <p className="restaurant-description" style={{ fontSize: '12px' }}>{displayRestaurant.summary}</p> 
 
       {/* Price and Yelp Rating */}
       {(displayRestaurant.yelp_rating || displayRestaurant.price) && (
@@ -67,7 +67,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
             <span className="price-info"><b>Price:</b> {displayRestaurant.price}</span>
           )}
           {displayRestaurant.yelp_rating && displayRestaurant.yelp_review_count && (
-            <span className="yelp-info"><b>Yelp:</b> {displayRestaurant.yelp_rating.toFixed(1)}⭐ ({displayRestaurant.yelp_review_count.toLocaleString()} Reviews)</span>
+            <span className="yelp-info"><b>Yelp:</b> {displayRestaurant.yelp_rating.toFixed(1)}✰ ({displayRestaurant.yelp_review_count.toLocaleString()} Reviews)</span>
           )}
         </div>
       )}
@@ -109,6 +109,30 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
         {displayRestaurant.yelp_url && (
           <a href={displayRestaurant.yelp_url} target="_blank" rel="noopener noreferrer" className="icon-link icon-yelp" title="Yelp">
             <img src="/yelp.png" alt="Yelp" style={{ width: '14px', height: '14px', objectFit: 'contain' }} />
+          </a>
+        )}
+        {displayRestaurant.latitude && displayRestaurant.longitude && (
+          <a
+            href={`https://www.google.com/maps/search/?api=1&query=${displayRestaurant.latitude},${displayRestaurant.longitude}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="icon-link"
+            title="Google Maps"
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+          </a>
+        )}
+        {displayRestaurant.opentable_id && displayRestaurant.opentable_id.trim() !== '' && (
+          <a
+            href={`https://www.opentable.com/restaurant/profile/${displayRestaurant.opentable_id}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="find-table-btn"
+          >
+            Find a Table
           </a>
         )}
       </div>

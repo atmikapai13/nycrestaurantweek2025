@@ -109,13 +109,14 @@ function applyFiltersManually(restaurants, { cuisines = [], priceLevels = [], ne
  */
 export const filterRestaurants = new DynamicStructuredTool({
   name: "filter_restaurants",
-  description: `Filter restaurants by multiple criteria. Returns metadata summary.
-Use for structured queries like "Japanese restaurants in Brooklyn" or "Michelin-starred places".`,
+  description: `Filter restaurants by cuisine, price, ratings, and awards. Returns metadata summary.
+Use for structured queries like "Japanese restaurants" or "Michelin-starred places".
+IMPORTANT: For neighborhood queries, use create_isochrone instead (neighborhood data is unreliable).`,
 
   schema: z.object({
     cuisines: z.array(z.string()).optional().describe("Cuisine types"),
     priceLevels: z.array(z.string()).optional().describe("Price: $, $$, $$$, $$$$"),
-    neighborhoods: z.array(z.string()).optional().describe("NYC neighborhoods"),
+    neighborhoods: z.array(z.string()).optional().describe("DEPRECATED: Use create_isochrone for neighborhood queries. This field has unreliable data."),
     minRating: z.number().optional().describe("Min Yelp rating (0-5)"),
     awards: z.array(z.string()).optional().describe("michelin, bib_gourmand, nyt_top_100"),
     scopeToIsochrone: z.boolean().default(true).describe("If true and isochrone exists: search within isochrone base list. If false: search all 628 restaurants. Filters are NOT stacked - each query searches the same base.")

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useMemo } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import type { Restaurant } from '../types/restaurant'
@@ -23,7 +23,13 @@ export interface IsochroneLayer {
   }
 }
 
-
+// Helper function to check if restaurant has any award
+const hasAnyAward = (restaurant: Restaurant): boolean => {
+  const hasMichelin = restaurant.michelin_award &&
+    ['ONE_STAR', 'TWO_STARS', 'THREE_STARS', 'BIB_GOURMAND'].includes(restaurant.michelin_award)
+  const hasNYT = Boolean(restaurant.nyttop100_rank && restaurant.nyttop100_rank !== '')
+  return hasMichelin || hasNYT
+}
 
 interface MapProps {
   restaurants: Restaurant[]
@@ -45,9 +51,11 @@ interface MapProps {
   isochroneRegionSlugs?: string[] | null
   favoritesActive?: boolean
   onFavoritesToggle?: () => void
+  awardsActive?: boolean
+  onAwardsToggle?: () => void
 }
 
-export default function Map({ restaurants, onRestaurantSelect, favorites, onToggleFavorite, onFilterChange, allRestaurants, onMapFocus: _onMapFocus, selectedRestaurant, onIsochroneLayersUpdate: _onIsochroneLayersUpdate, onResetAll, mapResetRef, highlightedIds, onIsochroneRegion, isochroneRegionSlugs, favoritesActive, onFavoritesToggle }: MapProps) {
+export default function Map({ restaurants, onRestaurantSelect, favorites, onToggleFavorite, onFilterChange, allRestaurants, onMapFocus: _onMapFocus, selectedRestaurant, onIsochroneLayersUpdate: _onIsochroneLayersUpdate, onResetAll, mapResetRef, highlightedIds, onIsochroneRegion, isochroneRegionSlugs, favoritesActive, onFavoritesToggle, awardsActive, onAwardsToggle }: MapProps) {
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<mapboxgl.Map | null>(null)
   const markers = useRef<mapboxgl.Marker[]>([])
@@ -475,9 +483,17 @@ export default function Map({ restaurants, onRestaurantSelect, favorites, onTogg
     // Determine which restaurants to render based on mode
     let restaurantsToRender: Restaurant[];
 
-    if (favoritesActive && highlightedIds && highlightedIds.size > 0) {
-      // Favorites mode: show ALL favorited restaurants (ignore isochrone filtering)
+    if (favoritesActive && awardsActive) {
+      // Both modes: OR logic (show favorites OR awards)
+      restaurantsToRender = allRestaurants.filter(r =>
+        (highlightedIds && highlightedIds.has(r.slug)) || hasAnyAward(r)
+      );
+    } else if (favoritesActive && highlightedIds && highlightedIds.size > 0) {
+      // Favorites mode only: show ALL favorited restaurants (ignore isochrone filtering)
       restaurantsToRender = allRestaurants.filter(r => highlightedIds.has(r.slug));
+    } else if (awardsActive) {
+      // Awards mode only: show award-winning restaurants
+      restaurantsToRender = allRestaurants.filter(r => hasAnyAward(r));
     } else if (isochroneRegionSlugs) {
       // Isochrone active: only show restaurants within isochrone boundary
       restaurantsToRender = allRestaurants.filter(r => isochroneRegionSlugs.includes(r.slug));
@@ -492,36 +508,48 @@ export default function Map({ restaurants, onRestaurantSelect, favorites, onTogg
       isochroneRegionSlugs: isochroneRegionSlugs,
       isochroneCount: isochroneRegionSlugs?.length || 0,
       favoritesActive: favoritesActive,
+      awardsActive: awardsActive,
       restaurantsToRender: restaurantsToRender.length,
-      filtering: isochroneRegionSlugs ? 'FILTERING ENABLED' : favoritesActive ? 'FAVORITES ONLY' : 'SHOWING ALL RESTAURANTS'
+      filtering: isochroneRegionSlugs
+        ? 'FILTERING ENABLED'
+        : favoritesActive
+          ? 'FAVORITES ONLY'
+          : awardsActive
+            ? 'AWARDS ONLY'
+            : 'SHOWING ALL RESTAURANTS'
     });
 
     // Render restaurants with coordinates
     restaurantsToRender.forEach(restaurant => {
       if (restaurant.latitude && restaurant.longitude) {
-        // 4-TIER COLOR LOGIC: Purple (selected), Red (favorites mode), Pink (highlighted), Grey (rest)
+        // 5-TIER COLOR LOGIC: Purple (selected), Red (favorites - always), Pink (highlighted), Orange (awards), Grey (rest)
         const isHighlighted = highlightedIds?.has(restaurant.slug)
         const isSelected = selectedRestaurantSlug === restaurant.slug
-        const isFavoriteMode = favoritesActive && isHighlighted
+        const isFavorite = favorites.includes(restaurant.name)
+        const isAwardWinner = hasAnyAward(restaurant)
 
         let markerColor = '#7c7c7c'  // Default grey
-        let markerSize = '6px'       // Normal size
+        let markerSize = '8px'       // Uniform size for all markers
         let zIndex = 1
 
         if (isSelected) {
-          // Selected restaurant: purple marker, same size as pink/red
+          // Selected restaurant: purple marker
           markerColor = '#8b4dfe'    // Purple
-          markerSize = '10px'
-          zIndex = 3                 // Highest layer (above pink/red)
-        } else if (isFavoriteMode) {
-          // Favorite mode active: red markers for favorites
+          zIndex = 3                 // Highest layer (above all others)
+        } else if (isFavorite) {
+          // Favorited restaurant: red marker (ALWAYS, not just when favorites mode active)
           markerColor = '#c81224'    // Red for favorites
-          markerSize = '10px'
           zIndex = 2                 // Same layer as pink
+        } else if (awardsActive && isAwardWinner) {
+          // Awards mode active: orange markers for award winners (takes priority over pink)
+          markerColor = '#FF9100'    // Orange for award winners
+          zIndex = 2                 // Same layer as pink/red
         } else if (isHighlighted) {
           markerColor = '#FF69B4'    // Pink for matches
-          markerSize = '10px'        // Slightly bigger
-          zIndex = 2                 // Higher layer (in front of grey)
+          zIndex = 2                 // Higher layer (in front of awards/grey)
+        } else if (isAwardWinner) {
+          markerColor = '#FF9100'    // Orange for award winners (when not in awards mode)
+          zIndex = 1.5               // Between grey and highlighted
         }
 
         // Create marker wrapper for larger click area
@@ -581,9 +609,21 @@ export default function Map({ restaurants, onRestaurantSelect, favorites, onTogg
 
     // Update marker sizes after creating all markers
     updateMarkerSizes()
-  }, [allRestaurants, highlightedIds, onRestaurantSelect, isochroneRegionSlugs, selectedRestaurantSlug, favoritesActive])
+  }, [allRestaurants, highlightedIds, onRestaurantSelect, isochroneRegionSlugs, selectedRestaurantSlug, favoritesActive, awardsActive])
 
+  // Calculate award winners count (respect isochrone if active)
+  const awardWinnersCount = useMemo(() => {
+    const pool = isochroneRegionSlugs
+      ? allRestaurants.filter(r => isochroneRegionSlugs.includes(r.slug))
+      : allRestaurants
 
+    return pool.filter(r => hasAnyAward(r)).length
+  }, [allRestaurants, isochroneRegionSlugs])
+
+  // Calculate favorites count (always show, even if 0)
+  const favoritesCount = useMemo(() => {
+    return favorites.length
+  }, [favorites])
 
   return (
     <div className="map-wrapper">
@@ -609,30 +649,61 @@ export default function Map({ restaurants, onRestaurantSelect, favorites, onTogg
       />
       {/* Map Legend */}
       <div className="map-legend">
-        <h4 style={{ color: '#000000', margin: '0' }}>
-          Remi's picks
-        </h4>
-        {/* Legend items */}
-        <div className="legend-items">
-          <div className="legend-item">
-            <div className="legend-marker" style={{ backgroundColor: '#7c7c7c', width: '6px', height: '6px' }}></div>
-            <span>
-              {isochroneRegionSlugs
-                ? `${isochroneRegionSlugs.length} in isochrone`
-                : `${allRestaurants.length} restaurants`}
-            </span>
+        <div className="legend-content">
+          <h4 style={{ color: '#000000', margin: '0' }}>
+            Remy's pickings
+          </h4>
+          {/* Legend items */}
+          <div className="legend-items">
+            <div className="legend-item">
+              <div className="legend-marker" style={{ backgroundColor: '#7c7c7c', width: '8px', height: '8px' }}></div>
+              <span>
+                {isochroneRegionSlugs
+                  ? `${isochroneRegionSlugs.length} in isochrone`
+                  : `${allRestaurants.length} restaurants`}
+              </span>
+            </div>
+
+            {/* match your taste - only show when not in favorites/awards mode */}
+            {highlightedIds && highlightedIds.size > 0 && !favoritesActive && !awardsActive && (
+              <div className="legend-item">
+                <div className="legend-marker" style={{ backgroundColor: '#FF69B4', width: '8px', height: '8px' }}></div>
+                <span>{highlightedIds.size} match your taste</span>
+              </div>
+            )}
+
+            {/* Award winners - clickable */}
+            {awardWinnersCount > 0 && (
+              <div
+                className="legend-item"
+                onClick={onAwardsToggle}
+                style={{
+                  cursor: 'pointer',
+                  fontWeight: awardsActive ? 600 : 400
+                }}
+              >
+                <div className="legend-marker" style={{ backgroundColor: '#FF9100', width: '8px', height: '8px' }}></div>
+                <span>
+                  {isochroneRegionSlugs
+                    ? `${awardWinnersCount} award-winners`
+                    : `${awardWinnersCount} award-winners`}
+                </span>
+              </div>
+            )}
+
+            {/* Favorites - ALWAYS visible, clickable */}
+            <div
+              className="legend-item"
+              onClick={onFavoritesToggle}
+              style={{
+                cursor: 'pointer',
+                fontWeight: favoritesActive ? 600 : 400
+              }}
+            >
+              <div className="legend-marker" style={{ backgroundColor: '#c81224', width: '8px', height: '8px' }}></div>
+              <span>{favoritesCount} favorited</span>
+            </div>
           </div>
-          {favoritesActive && highlightedIds && highlightedIds.size > 0 ? (
-            <div className="legend-item">
-              <div className="legend-marker" style={{ backgroundColor: '#c81224', width: '10px', height: '10px' }}></div>
-              <span>{highlightedIds.size} Favorites</span>
-            </div>
-          ) : highlightedIds && highlightedIds.size > 0 && (
-            <div className="legend-item">
-              <div className="legend-marker" style={{ backgroundColor: '#FF69B4', width: '10px', height: '10px' }}></div>
-              <span>{highlightedIds.size} fit your request</span>
-            </div>
-          )}
         </div>
       </div>
     </div>

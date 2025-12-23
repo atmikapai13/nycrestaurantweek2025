@@ -81,8 +81,9 @@
   z-index: 500;
   pointer-events: auto;
   display: flex;
-  flex-direction: column;
-  gap: 0px;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
   font-size: 11px;
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(3px) saturate(100%);
@@ -91,11 +92,24 @@
   box-shadow: none;
 }
 
+.legend-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+}
+
 .map-legend h4 {
   margin: 0 0 4px 0;
   font-size: 12px;
   font-weight: 600;
   color: #333;
+}
+
+.legend-remi-image {
+  height: 80px;
+  width: auto;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
 .legend-item {
@@ -165,20 +179,25 @@
     max-width: calc(100vw - 20px);
   }
 
-  /* Mobile legend adjustments - left-aligned below NYC Eats header */
+  /* Mobile legend adjustments - top-right aligned */
   .map-legend {
     font-size: 9px;
-    padding: 4px 8px;
+    padding: 5px;
     position: absolute;
-    top: 70px;
-    left: 8px;
-    right: auto;
-    gap: 0px;
+    top: 10px;
+    right: 10px;
+    gap: 6px;
+    flex-direction: row;
+    align-items: center;
   }
 
   .map-legend h4 {
     font-size: 10px;
     margin: 0 0 2px 0;
+  }
+
+  .legend-remi-image {
+    height: 60px;
   }
 
   .legend-item {
