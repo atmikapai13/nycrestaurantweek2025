@@ -53,8 +53,8 @@
 
   .floating-header-chatbot {
     display: block;
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     object-fit: contain;
     filter: drop-shadow(0px 2px 6px rgba(0, 0, 0, 0.2));
   }
