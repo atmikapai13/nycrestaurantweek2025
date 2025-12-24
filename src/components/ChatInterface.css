@@ -564,7 +564,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px 0 16px 0;
+    padding: 20px 0 10px 0;
     cursor: grab;
     touch-action: none;
   }
@@ -590,11 +590,11 @@
   }
 
   .drawer-40 .chat-messages {
-    max-height: calc(40vh - 100px);
+    max-height: calc(40vh - 110px);
   }
 
   .drawer-80 .chat-messages {
-    max-height: calc(80vh - 100px);
+    max-height: calc(80vh - 110px);
   }
 
   .message-bubble {
