@@ -24,7 +24,7 @@ export function useChatMap(
     // Common padding logic
     const isMobile = window.innerWidth <= 768
     const padding = isMobile
-      ? { top: 80, bottom: 280, left: 20, right: 20 }
+      ? { top: 80, bottom: 320, left: 20, right: 20 }  // Mobile: pad bottom for drawer (40vh ≈ 320px)
       : { top: 100, bottom: 100, left: 700, right: 100 }
 
     // If single restaurant, fly to it
@@ -70,7 +70,7 @@ export function useChatMap(
       zoom: 15,
       duration: 1500,
       padding: isMobile
-        ? { top: 80, bottom: 280, left: 20, right: 20 }
+        ? { top: 80, bottom: 320, left: 20, right: 20 }  // Mobile: pad bottom for drawer (40vh ≈ 320px)
         : { top: 100, bottom: 100, left: 700, right: 100 }
     })
   }, [map])

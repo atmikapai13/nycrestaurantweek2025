@@ -15,6 +15,7 @@ function App() {
   const [favorites, setFavorites] = useState<string[]>([])
   const [favoritesActive, setFavoritesActive] = useState(false)
   const [awardsActive, setAwardsActive] = useState(false)
+  const [highlightedActive, setHighlightedActive] = useState(false)
 
   // Callback ref for map reset function (will be set by Map component)
   const mapResetRef = useRef<(() => void) | null>(null)
@@ -62,14 +63,6 @@ function App() {
 
     // Update URL hash with favorites
     updateFavoritesHash(newFavorites)
-
-    // If favorites mode is active, update the highlights
-    if (favoritesActive) {
-      const favoriteSlugs = newFavorites
-        .map(name => restaurants.find(r => r.name === name)?.slug)
-        .filter((slug): slug is string => slug !== undefined)
-      setHighlightedRestaurantIds(new Set(favoriteSlugs))
-    }
   }
 
   const updateFavoritesHash = (favoriteNames: string[]) => {
@@ -91,30 +84,17 @@ function App() {
   }
 
   const handleFavoritesToggle = () => {
-    const newFavoritesActive = !favoritesActive
-    setFavoritesActive(newFavoritesActive)
-
-    if (newFavoritesActive) {
-      // Save current highlights before switching to favorites view
-      previousHighlightedIdsRef.current = new Set(highlightedRestaurantIds)
-
-      // Show favorite restaurants with pink markers
-      if (favorites.length > 0) {
-        const favoriteSlugs = favorites
-          .map(name => restaurants.find(r => r.name === name)?.slug)
-          .filter((slug): slug is string => slug !== undefined)
-        setHighlightedRestaurantIds(new Set(favoriteSlugs))
-      } else {
-        setHighlightedRestaurantIds(new Set())
-      }
-    } else {
-      // Restore previous highlights when favorites mode is deactivated
-      setHighlightedRestaurantIds(previousHighlightedIdsRef.current)
-    }
+    setFavoritesActive(!favoritesActive)
+    // No need to modify highlightedRestaurantIds - Map.tsx filtering handles it
   }
 
   const handleAwardsToggle = () => {
     setAwardsActive(!awardsActive)
+    // No need to modify highlightedRestaurantIds - Map.tsx filtering handles it
+  }
+
+  const handleHighlightedToggle = () => {
+    setHighlightedActive(!highlightedActive)
     // No need to modify highlightedRestaurantIds - Map.tsx filtering handles it
   }
 
@@ -223,14 +203,7 @@ function App() {
       // Backend already scoped the slugs correctly via getScopedSearchPool()
       // No need to re-scope here (avoids async state bugs)
       const newHighlights = new Set(values)
-
-      // If favorites mode is active, store in ref instead of displaying
-      // (will be restored when favorites mode is turned off)
-      if (favoritesActive) {
-        previousHighlightedIdsRef.current = newHighlights
-      } else {
-        setHighlightedRestaurantIds(newHighlights)
-      }
+      setHighlightedRestaurantIds(newHighlights)
       return
     }
 
@@ -267,6 +240,7 @@ function App() {
     setSelectedRestaurant(null)
     // Don't reset favoritesActive - preserve favorites mode
     setAwardsActive(false)
+    setHighlightedActive(false)
     setHighlightedRestaurantIds(new Set())  // Clear highlights
     previousHighlightedIdsRef.current = new Set()  // Clear saved highlights
     setIsochroneRegionSlugs(null)  // Clear isochrone region
@@ -320,6 +294,8 @@ function App() {
           onFavoritesToggle={handleFavoritesToggle}
           awardsActive={awardsActive}
           onAwardsToggle={handleAwardsToggle}
+          highlightedActive={highlightedActive}
+          onHighlightedToggle={handleHighlightedToggle}
         />
 
         {/* Restaurant Card now appears in chat when clicking markers */}

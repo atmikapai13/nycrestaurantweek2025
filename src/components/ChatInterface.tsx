@@ -241,15 +241,17 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
   const suggestions = [
     {
       label: "Near Me",
-      prompt: ["I'm in Soho, hunting for a great $$ spot I can reach in under 15 mins. What's on the menu, Remi?",
+      prompt: ["I'm in Soho, hunting for $$ spot I can reach in under 15 mins. What's on the menu, Remi?",
         "Any good italian places by 15 min transit from 46th and 7th ave?",
         "Any places with good drinks within 15 min of West Village?",
+        "Show me hole in the wall restaurants by Roosevelt Island Tramway with 4 rating or higher"
       ]
     },
     {
       label: "Between Us",
       prompt: ["My friend is in Midtown, I'm in Murray Hill — what's some restaurants in between us within a short 10 min transit?",
-        "I'm in Chelsea. Show me restaurants around the area excluding Hudson Yards, because it is a bit expensive."
+        "I'm in Chelsea. Show me restaurants around the area excluding Hudson Yards, because it is a bit expensive.",
+        "I'm in Greenwich village, and I can travel 15 minutes by subway. My friend is in Midtown. Find spots between us, Remy."
       ] 
     },
     {
@@ -257,7 +259,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
       prompt:["Remy, give me couple places that are good for date night and perhaps $$.",
         "Remy, show me award-winning restaurants at $$ or $$$ price point.",
         "Remy, find me a couple restaurants that are modest and cozy.",
-        "Remy, find me hole in the wall restaurants, and tell me what your definition is for that."
+        "Remy, find me hole in the wall restaurants, and tell me what's your definition for it."
       ]
     }
   ]
@@ -266,6 +268,18 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
   const metaLearningSuggestions = [
     "How do you work, Remy?",
     "What was the genesis of this project?"
+  ]
+
+  // Tips shown while loading
+  const tips = [
+    "Tap a restaurant on the map, then hit the heart to save it.",
+    "To get curated restaurant recommendations, stack queries in one prompt (e.g., Italian restaurants with 4★+).",
+    "Click legend items to see only certain restaurant types.",
+    "Ask 'find me a spot between us' when meeting a friend—Remy will find restaurants in the overlap zone.",
+    "Award-winning restaurants have orange markers on the map.",
+    "Hit refresh in chat to clear the map and start over.",
+    "Ask Remy about vibes and ambiance—he can search for 'cozy', 'romantic', 'lively', and more.",
+    "After a distance search, refine it by cuisine or rating (e.g., Italian, 4.5★+)."
   ]
 
   // Helper function to detect buy-me-coffee messages
@@ -283,6 +297,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
   const [conversationHistory, setConversationHistory] = useState<GeminiMessage[]>([])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [currentTip, setCurrentTip] = useState('')
   // Store visible restaurants from last response for state persistence
   const [lastVisibleRestaurants, setLastVisibleRestaurants] = useState<Restaurant[]>([])
   // Store isochrone params from last response for state persistence
@@ -292,13 +307,14 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
   const inputRef = useRef<HTMLInputElement>(null)
 
   // Mobile drawer state
-  const [drawerHeight, setDrawerHeight] = useState< 35 | 80>(35)
+  const [drawerHeight, setDrawerHeight] = useState< 40 | 80>(40)
   const [isDragging, setIsDragging] = useState(false)
   const [dragStartY, setDragStartY] = useState(0)
-  const [dragStartHeight, setDragStartHeight] = useState(30)
+  const [dragStartHeight, setDragStartHeight] = useState(40)
   const [pendingQuery, setPendingQuery] = useState<string | null>(null)
   const [showResetConfirmation, setShowResetConfirmation] = useState(false)
   const drawerRef = useRef<HTMLDivElement>(null)
+  const messagesContainerRef = useRef<HTMLDivElement>(null)
 
   const scrollToLastMessage = () => {
     // Scroll to the TOP of the last message for better UX
@@ -329,6 +345,19 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
       inputRef.current.focus()
     }
   }, [])
+
+  // Randomly show a tip when loading starts (60% chance)
+  useEffect(() => {
+    if (isLoading) {
+      const shouldShowTip = Math.random() < 0.6 // 60% chance to show a tip
+      if (shouldShowTip) {
+        const randomTip = tips[Math.floor(Math.random() * tips.length)]
+        setCurrentTip(randomTip)
+      } else {
+        setCurrentTip('') // Don't show a tip this time
+      }
+    }
+  }, [isLoading])
 
   // Expose addRestaurantCard method to parent via ref
   const addRestaurantCard = (restaurant: Restaurant) => {
@@ -397,9 +426,9 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
     // Clamp between 10 and 100
     const clampedHeight = Math.max(10, Math.min(100, newHeight))
 
-    // Update to nearest valid state
-    if (clampedHeight < 62) {
-      setDrawerHeight(35)
+    // Update to nearest valid state (40% or 80%)
+    if (clampedHeight < 60) {
+      setDrawerHeight(40)
     } else {
       setDrawerHeight(80)
     }
@@ -466,9 +495,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
     const historyWithUserMessage = [...trimmedHistory, userHistoryMessage]
 
     try {
-      console.log('Sending chat message:', userMessage)
-      console.log('Conversation history length:', historyWithUserMessage.length)
-
       const response = await sendChatMessage(userMessage, {
         totalRestaurants: allRestaurants.length,
         visibleRestaurants: restaurants.length,
@@ -478,7 +504,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
         // Pass isochrone params from previous turn for state persistence
         isochrone_params: lastIsochroneParams
       }, historyWithUserMessage)
-      console.log('Chat response:', response)
 
       // NEW: Handle Backend Agent Response (LangGraph)
       if (response.visible_restaurants || response.response) {
@@ -514,12 +539,26 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
               case 'showIsochrone':
                 if (onIsochroneUpdate && action.polygon) {
                   console.log("📍 Show isochrone on map:", action.polygon);
+
+                  // CRITICAL: Clear multi-layer isochrones before showing single isochrone
+                  // This prevents old multi-party isochrones from staying on the map
+                  if (onIsochroneLayersUpdate) {
+                    console.log("🧹 Clearing multi-layer isochrones before showing single isochrone");
+                    onIsochroneLayersUpdate([]);
+                  }
+
                   onIsochroneUpdate(action.polygon);
 
                   // NEW: Set isochrone region (all restaurants in polygon)
                   if (onIsochroneRegion && action.allRestaurantSlugs) {
                     console.log(`📍 Setting isochrone region: ${action.allRestaurantSlugs.length} restaurants`);
                     onIsochroneRegion(action.allRestaurantSlugs);
+                  }
+
+                  // Collapse drawer on mobile to focus on map visualization
+                  if (window.innerWidth <= 768) {
+                    setDrawerHeight(40);
+                    console.log("📱 Collapsed drawer to 40% for isochrone visualization");
                   }
                 }
                 break;
@@ -533,6 +572,13 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
                     a.mapAction === 'showIsochroneLayer' &&
                     mapActions.indexOf(action) > i
                   )) {
+                    // CRITICAL: Clear single isochrone before showing multi-layer isochrones
+                    // This prevents old single isochrones from staying on the map
+                    if (onIsochroneUpdate) {
+                      console.log("🧹 Clearing single isochrone before showing multi-layer isochrones");
+                      onIsochroneUpdate(null);
+                    }
+
                     const colorMap: Record<string, { fill: string, stroke: string, opacity: number }> = {
                       'pink': { fill: '#FF1493', stroke: '#FF69B4', opacity: 0.2 },
                       'blue': { fill: '#1E90FF', stroke: '#4169E1', opacity: 0.2 },
@@ -557,6 +603,12 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
                       });
                     console.log(`📍 Updating isochrone layers:`, layers);
                     onIsochroneLayersUpdate(layers);
+
+                    // Collapse drawer on mobile to focus on map visualization
+                    if (window.innerWidth <= 768) {
+                      setDrawerHeight(40);
+                      console.log("📱 Collapsed drawer to 40% for multi-layer isochrone visualization");
+                    }
                   }
                 }
                 break;
@@ -620,6 +672,13 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
           // Handle Isochrone Updates
           if (response.isochrone_data && onIsochroneUpdate) {
             console.log("📍 Updating isochrone from agent (legacy):", response.isochrone_data);
+
+            // CRITICAL: Clear multi-layer isochrones before showing single isochrone (legacy path)
+            if (onIsochroneLayersUpdate) {
+              console.log("🧹 Clearing multi-layer isochrones before showing single isochrone (legacy)");
+              onIsochroneLayersUpdate([]);
+            }
+
             onIsochroneUpdate(response.isochrone_data.polygon);
 
             // CRITICAL: Set isochrone region to filter visible restaurants
@@ -627,6 +686,12 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
               const slugs = response.visible_restaurants.map((r: any) => r.slug);
               console.log(`📍 Setting isochrone region with ${slugs.length} restaurants from backend`);
               onIsochroneRegion(slugs);
+            }
+
+            // Collapse drawer on mobile to focus on map visualization
+            if (window.innerWidth <= 768) {
+              setDrawerHeight(40);
+              console.log("📱 Collapsed drawer to 40% for isochrone visualization (legacy)");
             }
           }
 
@@ -771,7 +836,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
           <div className="drawer-handle-bar"></div>
         </div>
         {/* Messages */}
-        <div className="chat-messages">
+        <div ref={messagesContainerRef} className="chat-messages">
           {messages.map((msg, idx) => {
             // Check if this is the last message for scroll ref
             const isLastMessage = idx === messages.length - 1
@@ -836,7 +901,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
                         {/* Intro suggestions after first welcome message */}
                         {idx === 0 && (
                           <div className="intro-suggestions-wrapper">
-                            
+
                             <div className="suggestions-container">
                               {suggestions.map((suggestion, suggestionIdx) => (
                                 <button
@@ -853,23 +918,25 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
                             </div>
                           </div>
                         )}
+
+                        {/* Meta-learning pills after buy-me-coffee messages */}
+                        {isBuyMeCoffeeMessage(msg.content) && (
+                          <div className="intro-suggestions-wrapper">
+                            <div className="suggestions-container suggestions-container-vertical">
+                              {metaLearningSuggestions.map((suggestion, idx) => (
+                                <button
+                                  key={idx}
+                                  className="suggestion-pill"
+                                  onClick={() => handleSuggestionClick(suggestion)}
+                                >
+                                  {suggestion}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
-
-                    {/* Meta-learning pills after buy-me-coffee messages */}
-                    {isBuyMeCoffeeMessage(msg.content) && (
-                      <div className="suggestions-container">
-                        {metaLearningSuggestions.map((suggestion, idx) => (
-                          <button
-                            key={idx}
-                            className="suggestion-pill"
-                            onClick={() => handleSuggestionClick(suggestion)}
-                          >
-                            {suggestion}
-                          </button>
-                        ))}
-                      </div>
-                    )}
                   </div>
                 )
               ) : (
@@ -888,10 +955,17 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
                 <div className="message-avatar-mobile mobile-only">
                   <img src="/remi.png" alt="remi" />
                 </div>
-                <div className="message-content typing-content">
-                  <span></span>
-                  <span></span>
-                  <span></span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
+                  <div className="message-content typing-content">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                  {currentTip && (
+                    <div className="loading-tip">
+                      <span style={{ color: '#f63996', fontFamily: 'Times New Roman, serif', fontWeight: 'bold' }}>Tip:</span> {currentTip}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

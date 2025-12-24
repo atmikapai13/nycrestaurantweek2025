@@ -52,23 +52,20 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
       {/* Restaurant Tags */}
       <div className="restaurant-tags">
         <span className="tag tag-cuisine">{displayRestaurant.cuisine}</span>
-        <span className="tag tag-neighborhood">{displayRestaurant.neighborhood}</span>
+        {displayRestaurant.price && (
+          <span className="tag tag-price">{displayRestaurant.price}</span>
+        )}
         {displayRestaurant.nyttop100_rank && (
           <span className="tag tag-nyt-rank">NYT Rank {displayRestaurant.nyttop100_rank}</span>
         )}
       </div>
       {/* Restaurant Description */}
-      <p className="restaurant-description" style={{ fontSize: '12px' }}>{displayRestaurant.summary}</p> 
+      <p className="restaurant-description" style={{ fontSize: '12px' }}>{displayRestaurant.summary}</p>
 
-      {/* Price and Yelp Rating */}
-      {(displayRestaurant.yelp_rating || displayRestaurant.price) && (
+      {/* Yelp Rating */}
+      {displayRestaurant.yelp_rating && displayRestaurant.yelp_review_count && (
         <div className="yelp-price-row">
-          {displayRestaurant.price && (
-            <span className="price-info"><b>Price:</b> {displayRestaurant.price}</span>
-          )}
-          {displayRestaurant.yelp_rating && displayRestaurant.yelp_review_count && (
-            <span className="yelp-info"><b>Yelp:</b> {displayRestaurant.yelp_rating.toFixed(1)}✰ ({displayRestaurant.yelp_review_count.toLocaleString()} Reviews)</span>
-          )}
+          <span className="yelp-info"><b>Yelp:</b> {displayRestaurant.yelp_rating.toFixed(1)}★ ({displayRestaurant.yelp_review_count.toLocaleString()} Reviews)</span>
         </div>
       )}
 
@@ -125,9 +122,13 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
             </svg>
           </a>
         )}
-        {displayRestaurant.opentable_id && displayRestaurant.opentable_id.trim() !== '' && (
+        {(displayRestaurant.table_res || displayRestaurant.opentable_id) && (
           <a
-            href={`https://www.opentable.com/restaurant/profile/${displayRestaurant.opentable_id}`}
+            href={
+              displayRestaurant.table_res && displayRestaurant.table_res.trim() !== ''
+                ? displayRestaurant.table_res
+                : `https://www.opentable.com/restaurant/profile/${displayRestaurant.opentable_id}`
+            }
             target="_blank"
             rel="noopener noreferrer"
             className="find-table-btn"

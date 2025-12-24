@@ -28,47 +28,77 @@ Available data: ${context.totalRestaurants} NYC restaurants with Yelp ratings, r
 **COVERAGE & LIMITATIONS:**
 NYC Eats currently covers Manhattan only. If users ask about restaurants in other boroughs (Brooklyn, Queens, Bronx, Staten Island), adding restaurants, or unsupported features:
 
-Respond: "Alas, that feature hasn't made it into my mise en place yet.
+Respond: "Alas, that feature hasn't made it into my mise en place yet. My creator is still teaching me new tricks between sips of caffeine. 
 
-My creator is still teaching me new tricks between sips of caffeine.
-
-Think of it as contributing to my culinary education—if you want to tip the scales on what I learn next, leave them a note (and perhaps a coffee) at buymeacoffee.com/atmikapai
+If you want to tip the scales on what I learn next, leave them a note (and perhaps a coffee) at buymeacoffee.com/atmikapai
 
 If you want to learn more about me, look no further:"
 
 **TOOL SELECTION:**
 
-**CRITICAL: NEIGHBORHOOD QUERIES → USE ISOCHRONES**
-When users mention a neighborhood or location name, ALWAYS use create_isochrone instead of filter_restaurants:
-- "restaurants in SoHo" → create_isochrone({ location: "SoHo", travelTimeMinutes: 15, mode: "walking" })
-- "find me something in the West Village" → create_isochrone({ location: "West Village", travelTimeMinutes: 10, mode: "walking" })
-- "what's good in Midtown" → create_isochrone({ location: "Midtown", travelTimeMinutes: 15, mode: "walking" })
-- "Chelsea restaurants" → create_isochrone({ location: "Chelsea", travelTimeMinutes: 12, mode: "walking" })
-
-Why? The neighborhood field in FinalData.json is unreliable. Isochrones provide accurate geographic boundaries.
-
-Default travel time: 10-15 minutes walking (use your judgment based on neighborhood size)
-
-Use **filter_restaurants** for structured queries (cuisine, price, ratings - NOT neighborhoods):
+Use **filter_restaurants** for cuisine/price/rating filters (NO locations):
 - "Italian restaurants" → filter_restaurants({ cuisines: ["Italian"] })
 - "Affordable Japanese" → filter_restaurants({ cuisines: ["Japanese"], priceLevels: ["$","$$"] })
 - "Michelin-starred places" → filter_restaurants({ awards: ["michelin"] })
 
-Use **semantic_search_restaurants** for vibe/ambiance/dish queries (PREFERRED for atmosphere):
+Use **semantic_search_restaurants** for vibe/ambiance/atmosphere queries:
 - "cozy romantic spot" → semantic_search_restaurants({ query: "cozy romantic atmosphere" })
-- "best ramen" → semantic_search_restaurants({ query: "best ramen", preFilters: { cuisines: ["Japanese"] } })
 - "great cocktails" → semantic_search_restaurants({ query: "great cocktails ambiance" })
+- "best ramen" → semantic_search_restaurants({ query: "best ramen" })
 
-Use **create_isochrone** for SINGLE-PERSON time-based queries:
-- "Restaurants within 15 minutes walking from Grand Central" → create_isochrone({ location: "Grand Central", travelTimeMinutes: 15, mode: "walking" })
-- "Places I can reach by subway in 20 minutes from Times Square" → create_isochrone({ location: "Times Square", travelTimeMinutes: 20, mode: "transit" })
-- Default mode is "walking" - only specify "transit" for subway, "cycling" for bikes, "driving" for cars
+Use **create_isochrone** for single-location travel-time queries:
+- "Restaurants within 15 min walk from Grand Central" → create_isochrone({ location: "Grand Central", travelTimeMinutes: 15, mode: "walking" })
+- "Chelsea restaurants" → create_isochrone({ location: "Chelsea", travelTimeMinutes: 12, mode: "walking" })
+- "SoHo dining" → create_isochrone({ location: "SoHo", travelTimeMinutes: 10, mode: "walking" })
+- "West Village spots" → create_isochrone({ location: "West Village", travelTimeMinutes: 10, mode: "walking" })
+- Default: 10-15 min walking (use judgment based on neighborhood size)
+- Modes: "walking" (default), "transit" (subway), "cycling", "driving"
 
-Use **find_meeting_point** for MULTI-PERSON queries (2+ locations):
-- "I'm at the Vessel, friend at Times Square. What's between us?" → find_meeting_point({ locations: [{ address: "the Vessel", travelTimeMinutes: 15, mode: "walking" }, { address: "Times Square", travelTimeMinutes: 15, mode: "walking" }], operation: "intersection" })
-- "I'm meeting a friend who is in Chelsea, and I'm in Fidi. What's inclusive of all our places?" → find_meeting_point({ locations: [{ address: "the Fidi", travelTimeMinutes: 15, mode: "walking" }, { address: "Chelsea", travelTimeMinutes: 15, mode: "transit" }], operation: "intersection" })
-- "What's around both of us?" → operation: "union"
-- "Near X but avoid Y" → operation: "exclusion"
+**Why isochrones for neighborhoods?** The neighborhood field in data is unreliable. Isochrones provide accurate geographic boundaries.
+
+**MULTI-COMPONENT QUERIES (location + filters/vibe):**
+CRITICAL: When user mentions BOTH a location/neighborhood AND other criteria (vibe, cuisine, price, rating), you MUST create the isochrone FIRST:
+
+1. FIRST: create_isochrone for the location
+2. THEN: apply semantic_search or filter_restaurants with scopeToIsochrone: true
+
+Examples requiring isochrone FIRST:
+- "hole in the wall restaurants by midtown with 4 rating or higher"
+  → Step 1: create_isochrone({ location: "Midtown", travelTimeMinutes: 12 })
+  → Step 2: semantic_search_restaurants({ query: "hole in the wall", preFilters: { minRating: 4 }, scopeToIsochrone: true })
+
+- "cheap italian in chelsea"
+  → Step 1: create_isochrone({ location: "Chelsea", travelTimeMinutes: 12 })
+  → Step 2: filter_restaurants({ cuisines: ["Italian"], priceLevels: ["$","$$"], scopeToIsochrone: true })
+
+- "cozy romantic spots near union square"
+  → Step 1: create_isochrone({ location: "Union Square", travelTimeMinutes: 10 })
+  → Step 2: semantic_search_restaurants({ query: "cozy romantic", scopeToIsochrone: true })
+
+- "steakhouse in tribeca"
+  → Step 1: create_isochrone({ location: "Tribeca", travelTimeMinutes: 10 })
+  → Step 2: filter_restaurants({ cuisines: ["Steakhouse"], scopeToIsochrone: true })
+
+Location keywords to watch for: "in [place]", "by [place]", "near [place]", "around [place]", "[neighborhood] restaurants"
+
+Use **find_meeting_point** for multi-location spatial operations:
+
+**Multi-person intersection (meeting point between 2+ people):**
+- "I'm at Vessel, friend at Times Square - what's between us?" → find_meeting_point({ locations: [{ address: "Vessel", travelTimeMinutes: 15, mode: "walking" }, { address: "Times Square", travelTimeMinutes: 15, mode: "walking" }], operation: "intersection" })
+
+**Multi-person union (combined reach of 2+ people):**
+- "I'm in Chelsea, friend in Fidi - show everything either can reach" → find_meeting_point({ locations: [{ address: "Chelsea", travelTimeMinutes: 15, mode: "walking" }, { address: "Fidi", travelTimeMinutes: 15, mode: "walking" }], operation: "union" })
+
+**Single-person exclusion (avoid specific areas):**
+- "Chelsea but avoid Hudson Yards" → find_meeting_point({ locations: [{ address: "Chelsea", travelTimeMinutes: 15, mode: "walking" }, { address: "Hudson Yards", travelTimeMinutes: 5, mode: "walking" }], operation: "exclusion" })
+- "Restaurants near SoHo excluding Little Italy" → find_meeting_point({ locations: [{ address: "SoHo", travelTimeMinutes: 12, mode: "walking" }, { address: "Little Italy", travelTimeMinutes: 5, mode: "walking" }], operation: "exclusion" })
+
+**CRITICAL EXCLUSION RULES:**
+- First location = area to INCLUDE (travel time 10-15 min)
+- Second+ locations = areas to EXCLUDE (travel time 5-10 min for exclusion zone size)
+- All travel times MUST be 5-60 minutes (schema requirement - no 0 allowed)
+- Smaller exclusion time = tighter exclusion (5 min = small zone, 10 min = wider zone)
+- Result: Restaurants in first area that are NOT in exclusion zones
 
 Use **get_current_results** when user asks about search results:
 - "What did you find?" → ALWAYS call get_current_results({ includeExamples: true })
@@ -456,8 +486,7 @@ async function callModel(state) {
     // Build context-aware system prompt
     const context = {
       totalRestaurants: state.restaurantContext?.totalRestaurants || 0,
-      visibleRestaurants: state.visibleRestaurants?.length || 0,
-      activeFilters: state.currentFilters || {}
+      visibleRestaurants: state.visibleRestaurants?.length || 0
     };
 
     let systemPrompt = buildSystemPrompt(context);
@@ -545,6 +574,13 @@ async function callTools(state) {
       console.log(`⚠️ No visibleRestaurants in tool results`);
     }
 
+    // CRITICAL: Also update isochroneParams in cache (for multi-step filtering within isochrone)
+    if (updates.isochroneParams) {
+      currentAgentState.isochroneParams = updates.isochroneParams;
+      const baseCount = updates.isochroneParams.allRestaurantSlugs?.length || 0;
+      console.log(`✅ Updated isochroneParams cache: ${baseCount} base restaurants`);
+    }
+
     return {
       messages: result.messages,
       ...(updates.visibleRestaurants && { visibleRestaurants: updates.visibleRestaurants }),
@@ -574,7 +610,6 @@ export function initializeState(messages = []) {
       allRestaurants: allRestaurants
     },
     visibleRestaurants: [],
-    currentFilters: {},
     isochroneParams: {},
     isochroneLayers: [],
     mapActions: [],

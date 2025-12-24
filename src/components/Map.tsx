@@ -34,16 +34,11 @@ const hasAnyAward = (restaurant: Restaurant): boolean => {
 interface MapProps {
   restaurants: Restaurant[]
   onRestaurantSelect: (restaurant: Restaurant) => void
-  activeFilters: string[]
-  onLegendFilterChange: (filterType: string) => void
-  totalRestaurants: number
   favorites: string[]
   onToggleFavorite?: (restaurantName: string) => void
   onFilterChange: (filterType: string, values: string[]) => void
   allRestaurants: Restaurant[]
-  onMapFocus?: (restaurantIds: string[]) => void
   selectedRestaurant?: Restaurant | null
-  onIsochroneLayersUpdate?: (layers: IsochroneLayer[]) => void
   onResetAll?: () => void
   mapResetRef?: React.MutableRefObject<(() => void) | null>
   highlightedIds?: Set<string>
@@ -53,9 +48,30 @@ interface MapProps {
   onFavoritesToggle?: () => void
   awardsActive?: boolean
   onAwardsToggle?: () => void
+  highlightedActive?: boolean
+  onHighlightedToggle?: () => void
 }
 
-export default function Map({ restaurants, onRestaurantSelect, favorites, onToggleFavorite, onFilterChange, allRestaurants, onMapFocus: _onMapFocus, selectedRestaurant, onIsochroneLayersUpdate: _onIsochroneLayersUpdate, onResetAll, mapResetRef, highlightedIds, onIsochroneRegion, isochroneRegionSlugs, favoritesActive, onFavoritesToggle, awardsActive, onAwardsToggle }: MapProps) {
+export default function Map({
+  restaurants,
+  onRestaurantSelect,
+  favorites,
+  onToggleFavorite,
+  onFilterChange,
+  allRestaurants,
+  selectedRestaurant,
+  onResetAll,
+  mapResetRef,
+  highlightedIds,
+  onIsochroneRegion,
+  isochroneRegionSlugs,
+  favoritesActive,
+  onFavoritesToggle,
+  awardsActive,
+  onAwardsToggle,
+  highlightedActive,
+  onHighlightedToggle
+}: MapProps) {
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<mapboxgl.Map | null>(null)
   const markers = useRef<mapboxgl.Marker[]>([])
@@ -84,18 +100,38 @@ export default function Map({ restaurants, onRestaurantSelect, favorites, onTogg
     // Detect mobile viewport
     const isMobile = window.innerWidth <= 768
 
+    // Use EXACT same values as initial map setup (lines 212-221)
     const center = isMobile ? [-73.990, 40.705] : [-74.014, 40.737]
-    const zoom = isMobile ? 11.8 : 12.58
+    const zoom = isMobile ? 11.5 : 12.58  // Mobile: 11.5, Desktop: 12.58
+    const pitch = 45
+    const bearing = 0
 
     console.log('🔄 Resetting map view:', { isMobile, center, zoom })
 
     // Reset map to default view (mobile or desktop)
     if (map.current) {
-      map.current.flyTo({
-        center: center as [number, number],
-        zoom,
-        pitch: 45,
-        bearing: 0,
+      // Create a small bounding box around the center point
+      // This allows us to use fitBounds with padding (same as isochrone operations)
+      const lng = center[0]
+      const lat = center[1]
+      const offset = 0.05 // Small offset to create bounds (~5km)
+
+      const bounds = new mapboxgl.LngLatBounds(
+        [lng - offset, lat - offset], // Southwest
+        [lng + offset, lat + offset]  // Northeast
+      )
+
+      // Use fitBounds with padding to account for chat interface
+      // This matches the padding used in isochrone operations (lines 367-372)
+      // Force exact zoom level to match initial map setup
+      map.current.fitBounds(bounds, {
+        padding: isMobile
+          ? { top: 80, bottom: 320, left: 20, right: 20 }  // Mobile: pad bottom for drawer (40vh ≈ 320px)
+          : { top: 100, bottom: 100, left: 700, right: 100 }, // Desktop: pad left for chat panel
+        pitch,
+        bearing,
+        maxZoom: zoom,  // Force exact zoom level
+        minZoom: zoom,  // Force exact zoom level
         duration: 1000
       })
     }
@@ -141,7 +177,7 @@ export default function Map({ restaurants, onRestaurantSelect, favorites, onTogg
       const isMobileView = window.innerWidth <= 768
       map.current.fitBounds(bounds, {
         padding: isMobileView
-          ? { top: 80, bottom: 280, left: 20, right: 20 }  // Mobile: pad bottom for drawer
+          ? { top: 80, bottom: 320, left: 20, right: 20 }  // Mobile: pad bottom for drawer (40vh ≈ 320px)
           : { top: 100, bottom: 100, left: 200, right: 100 }, // Desktop: pad left for chat panel
         maxZoom: 14
       })
@@ -229,8 +265,6 @@ export default function Map({ restaurants, onRestaurantSelect, favorites, onTogg
       customAttribution: '© <a href="https://atmikapai.dev/" target="_blank">Atmika Pai</a> © <a href="https://marauders.earth/" target="_blank">Marauders.Earth</a> © <a href="https://www.fultonring.com/" target="_blank">Fulton Ring</a>'
     })
 
-
-
     // Add zoom event listener to update marker sizes
     map.current.on('zoom', () => {
       updateMarkerSizes()
@@ -259,7 +293,7 @@ export default function Map({ restaurants, onRestaurantSelect, favorites, onTogg
     const updatePolygon = () => {
       const mapInstance = map.current!
 
-      // Remove existing layers and source if they exist
+      // Remove existing single polygon layers and source if they exist
       if (mapInstance.getLayer(fillLayerId)) {
         mapInstance.removeLayer(fillLayerId)
       }
@@ -269,6 +303,26 @@ export default function Map({ restaurants, onRestaurantSelect, favorites, onTogg
       if (mapInstance.getSource(sourceId)) {
         mapInstance.removeSource(sourceId)
       }
+
+      // CRITICAL: Also clear multi-layer isochrones when showing single isochrone
+      // This ensures multi-layers are removed regardless of useEffect execution order
+      const existingLayers = mapInstance.getStyle().layers.filter((l: any) =>
+        l.id.startsWith('isochrone-') && (l.id.includes('-person') || l.id.includes('-exclusion') || l.id.includes('-intersection') || l.id.includes('-union'))
+      )
+      existingLayers.forEach((layer: any) => {
+        if (mapInstance.getLayer(layer.id)) {
+          mapInstance.removeLayer(layer.id)
+        }
+      })
+
+      const existingSources = Object.keys(mapInstance.getStyle().sources || {}).filter((s: string) =>
+        s.startsWith('isochrone-') && (s.includes('-person') || s.includes('-exclusion') || s.includes('-intersection') || s.includes('-union'))
+      )
+      existingSources.forEach((source: string) => {
+        if (mapInstance.getSource(source)) {
+          mapInstance.removeSource(source)
+        }
+      })
 
       // Add new polygon if provided
       if (isochronePolygon) {
@@ -329,7 +383,7 @@ export default function Map({ restaurants, onRestaurantSelect, favorites, onTogg
             const isMobileView = window.innerWidth <= 768
             mapInstance.fitBounds(bounds, {
               padding: isMobileView
-                ? { top: 80, bottom: 280, left: 20, right: 20 }  // Mobile: pad bottom for drawer (35vh ≈ 280px)
+                ? { top: 80, bottom: 320, left: 20, right: 20 }  // Mobile: pad bottom for drawer (40vh ≈ 320px)
                 : { top: 100, bottom: 100, left: 700, right: 100 }, // Desktop: pad left for chat panel
               maxZoom: 14
             })
@@ -456,7 +510,7 @@ export default function Map({ restaurants, onRestaurantSelect, favorites, onTogg
           const isMobileView = window.innerWidth <= 768
           mapInstance.fitBounds(bounds, {
             padding: isMobileView
-              ? { top: 80, bottom: 280, left: 20, right: 20 }  // Mobile: pad bottom for drawer (35vh ≈ 280px)
+              ? { top: 80, bottom: 320, left: 20, right: 20 }  // Mobile: pad bottom for drawer (40vh ≈ 320px)
               : { top: 100, bottom: 100, left: 700, right: 100 }, // Desktop: pad left for chat panel
             maxZoom: 14
           })
@@ -480,43 +534,40 @@ export default function Map({ restaurants, onRestaurantSelect, favorites, onTogg
     markers.current = []
     markerElements.current = []
 
-    // Determine which restaurants to render based on mode
+    // Determine which restaurants to render based on active modes
     let restaurantsToRender: Restaurant[];
 
-    if (favoritesActive && awardsActive) {
-      // Both modes: OR logic (show favorites OR awards)
-      restaurantsToRender = allRestaurants.filter(r =>
-        (highlightedIds && highlightedIds.has(r.slug)) || hasAnyAward(r)
-      );
-    } else if (favoritesActive && highlightedIds && highlightedIds.size > 0) {
-      // Favorites mode only: show ALL favorited restaurants (ignore isochrone filtering)
-      restaurantsToRender = allRestaurants.filter(r => highlightedIds.has(r.slug));
-    } else if (awardsActive) {
-      // Awards mode only: show award-winning restaurants
-      restaurantsToRender = allRestaurants.filter(r => hasAnyAward(r));
-    } else if (isochroneRegionSlugs) {
-      // Isochrone active: only show restaurants within isochrone boundary
-      restaurantsToRender = allRestaurants.filter(r => isochroneRegionSlugs.includes(r.slug));
+    // Check if any filter modes are active
+    const hasActiveFilters = favoritesActive || awardsActive || highlightedActive;
+    const hasHighlighted = highlightedIds && highlightedIds.size > 0;
+
+    // Determine base pool: if isochrone is active, scope to isochrone restaurants first
+    const basePool = isochroneRegionSlugs
+      ? allRestaurants.filter(r => isochroneRegionSlugs.includes(r.slug))
+      : allRestaurants;
+
+    if (hasActiveFilters) {
+      // Filter mode active: apply OR logic to base pool (respects isochrone if active)
+      restaurantsToRender = basePool.filter(r => {
+        if (highlightedActive && hasHighlighted && highlightedIds.has(r.slug)) return true;
+        if (awardsActive && hasAnyAward(r)) return true;
+        if (favoritesActive && favorites.includes(r.name)) return true;
+        return false;
+      });
     } else {
-      // Default: show all restaurants
-      restaurantsToRender = allRestaurants;
+      // No filter modes: show base pool (all restaurants or isochrone restaurants)
+      restaurantsToRender = basePool;
     }
 
     console.log('🗺️ Map rendering:', {
-      totalRestaurants: allRestaurants.length,
-      isochroneActive: !!isochroneRegionSlugs,
-      isochroneRegionSlugs: isochroneRegionSlugs,
-      isochroneCount: isochroneRegionSlugs?.length || 0,
-      favoritesActive: favoritesActive,
-      awardsActive: awardsActive,
-      restaurantsToRender: restaurantsToRender.length,
-      filtering: isochroneRegionSlugs
-        ? 'FILTERING ENABLED'
-        : favoritesActive
-          ? 'FAVORITES ONLY'
-          : awardsActive
-            ? 'AWARDS ONLY'
-            : 'SHOWING ALL RESTAURANTS'
+      total: allRestaurants.length,
+      rendering: restaurantsToRender.length,
+      isochrone: isochroneRegionSlugs?.length || 0,
+      modes: {
+        favorites: favoritesActive,
+        awards: awardsActive,
+        highlighted: highlightedActive
+      }
     });
 
     // Render restaurants with coordinates
@@ -609,7 +660,7 @@ export default function Map({ restaurants, onRestaurantSelect, favorites, onTogg
 
     // Update marker sizes after creating all markers
     updateMarkerSizes()
-  }, [allRestaurants, highlightedIds, onRestaurantSelect, isochroneRegionSlugs, selectedRestaurantSlug, favoritesActive, awardsActive])
+  }, [allRestaurants, highlightedIds, onRestaurantSelect, isochroneRegionSlugs, selectedRestaurantSlug, favoritesActive, awardsActive, highlightedActive])
 
   // Calculate award winners count (respect isochrone if active)
   const awardWinnersCount = useMemo(() => {
@@ -620,10 +671,14 @@ export default function Map({ restaurants, onRestaurantSelect, favorites, onTogg
     return pool.filter(r => hasAnyAward(r)).length
   }, [allRestaurants, isochroneRegionSlugs])
 
-  // Calculate favorites count (always show, even if 0)
+  // Calculate favorites count (respect isochrone if active)
   const favoritesCount = useMemo(() => {
-    return favorites.length
-  }, [favorites])
+    const pool = isochroneRegionSlugs
+      ? allRestaurants.filter(r => isochroneRegionSlugs.includes(r.slug))
+      : allRestaurants
+
+    return pool.filter(r => favorites.includes(r.name)).length
+  }, [allRestaurants, isochroneRegionSlugs, favorites])
 
   return (
     <div className="map-wrapper">
@@ -650,9 +705,12 @@ export default function Map({ restaurants, onRestaurantSelect, favorites, onTogg
       {/* Map Legend */}
       <div className="map-legend">
         <div className="legend-content">
-          <h4 style={{ color: '#000000', margin: '0' }}>
+          <h4 style={{ color: '#000000', margin: '0 0 -4px 0' }}>
             Remy's pickings
           </h4>
+          <p style={{ color: '#666', fontSize: '8px', margin: '0 0 0px 0', fontStyle: 'italic' }}>
+            Click to isolate:
+          </p>
           {/* Legend items */}
           <div className="legend-items">
             <div className="legend-item">
@@ -664,9 +722,16 @@ export default function Map({ restaurants, onRestaurantSelect, favorites, onTogg
               </span>
             </div>
 
-            {/* match your taste - only show when not in favorites/awards mode */}
-            {highlightedIds && highlightedIds.size > 0 && !favoritesActive && !awardsActive && (
-              <div className="legend-item">
+            {/* match your taste - clickable to filter to only highlighted restaurants */}
+            {highlightedIds && highlightedIds.size > 0 && (
+              <div
+                className="legend-item"
+                onClick={onHighlightedToggle}
+                style={{
+                  cursor: 'pointer',
+                  fontWeight: highlightedActive ? 600 : 400
+                }}
+              >
                 <div className="legend-marker" style={{ backgroundColor: '#FF69B4', width: '8px', height: '8px' }}></div>
                 <span>{highlightedIds.size} match your taste</span>
               </div>
@@ -683,11 +748,7 @@ export default function Map({ restaurants, onRestaurantSelect, favorites, onTogg
                 }}
               >
                 <div className="legend-marker" style={{ backgroundColor: '#FF9100', width: '8px', height: '8px' }}></div>
-                <span>
-                  {isochroneRegionSlugs
-                    ? `${awardWinnersCount} award-winners`
-                    : `${awardWinnersCount} award-winners`}
-                </span>
+                <span>{awardWinnersCount} award-winners</span>
               </div>
             )}
 
@@ -701,7 +762,7 @@ export default function Map({ restaurants, onRestaurantSelect, favorites, onTogg
               }}
             >
               <div className="legend-marker" style={{ backgroundColor: '#c81224', width: '8px', height: '8px' }}></div>
-              <span>{favoritesCount} favorited</span>
+              <span>{favoritesCount === 0 ? '0 favorited as of yet' : `${favoritesCount} favorited`}</span>
             </div>
           </div>
         </div>

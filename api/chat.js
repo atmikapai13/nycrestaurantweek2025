@@ -146,14 +146,6 @@ export default async function handler(req, res) {
       map_actions: finalState.mapActions || [] // Visual map actions to execute
     };
 
-    console.log(`✅ Response: ${response.visible_restaurants.length} restaurants, ${toolCalls.length} tool calls, ${response.map_actions.length} map actions`);
-    if (response.visible_restaurants.length > 0) {
-      console.log(`📍 Sample restaurant:`, JSON.stringify(response.visible_restaurants[0], null, 2));
-    }
-    if (response.map_actions.length > 0) {
-      console.log(`🗺️ Map actions:`, response.map_actions.map(a => a.mapAction).join(', '));
-    }
-
     // Return response
     return res.status(200).json(response);
 

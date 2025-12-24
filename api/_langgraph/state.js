@@ -34,10 +34,6 @@ export const AgentState = Annotation.Root({
     reducer: (_, newList) => newList,
     default: () => []
   }),
-  currentFilters: Annotation({
-    reducer: (current, update) => ({ ...current, ...update }),
-    default: () => ({})
-  }),
 
   //Spatial/Isochrone State
   isochroneParams: Annotation({

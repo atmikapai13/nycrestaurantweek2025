@@ -11,6 +11,7 @@ export interface Restaurant {
   participation_weeks?: string[];
   collections: string[];
   opentable_id?: string;
+  table_res?: string;
   menu_url?: string;
   primary_location?: string;
   // Coordinates (from 2restaurant_geocoder.py)
