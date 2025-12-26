@@ -551,8 +551,8 @@
   }
 
   /* Drawer height states */
-  .drawer-12 {
-    height: 12vh;
+  .drawer-8 {
+    height: 8vh;
   }
 
   .drawer-40 {
@@ -594,8 +594,12 @@
     min-height: 0;
   }
 
-  .drawer-12 .chat-messages {
-    max-height: calc(12vh - 100px);
+  .drawer-8 .chat-messages {
+    display: none;
+  }
+
+  .drawer-8 .chat-input-container {
+    display: none;
   }
 
   .drawer-40 .chat-messages {

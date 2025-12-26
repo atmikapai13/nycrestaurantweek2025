@@ -14,17 +14,28 @@ function normalizePolygonGeometry(feature) {
     return feature
   }
 
-  // If MultiPolygon, dissolve into single Polygon
+  // If MultiPolygon, convert to single Polygon by taking the largest polygon
   if (geometry.type === 'MultiPolygon') {
     try {
-      // Use turf.dissolve to merge all polygons into one
-      // For a single feature, this effectively converts MultiPolygon → Polygon
-      const dissolved = turf.dissolve(turf.featureCollection([feature]))
+      // Convert MultiPolygon coordinates to individual Polygon features
+      const polygons = geometry.coordinates.map((coords, index) =>
+        turf.polygon(coords, feature.properties || {})
+      )
 
-      if (dissolved.features && dissolved.features.length > 0) {
-        console.log('✅ Normalized MultiPolygon → Polygon')
-        return dissolved.features[0]
+      // Find the largest polygon by area
+      let largestPolygon = polygons[0]
+      let maxArea = turf.area(polygons[0])
+
+      for (let i = 1; i < polygons.length; i++) {
+        const area = turf.area(polygons[i])
+        if (area > maxArea) {
+          maxArea = area
+          largestPolygon = polygons[i]
+        }
       }
+
+      console.log(`✅ Normalized MultiPolygon → Polygon (took largest of ${polygons.length} polygons)`)
+      return largestPolygon
     } catch (error) {
       console.warn('⚠️ Failed to normalize MultiPolygon, returning original:', error.message)
     }
