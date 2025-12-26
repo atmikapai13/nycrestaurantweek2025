@@ -218,7 +218,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
   restaurants,
   allRestaurants,
   onFilterChange,
-  onRestaurantSelect,
   onMapFocus,
   onIsochroneUpdate,
   onIsochroneLayersUpdate,
@@ -227,14 +226,12 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
   onIsochroneRegion,
   favorites = [],
   onToggleFavorite,
-  favoritesActive = false,
-  onFavoritesToggle
 }, ref) => {
   // Random welcome message selection
   const welcomeMessages = [
-    'Welcome to NYC Eats! I\'m Remy. Unlike my cousins in the subway, I\'ve been vector-embedded with thousands of Yelp reviews and have a rather refined palate for semantic similarity. What are we looking for today? <br><br> If you\'re new here, click on one of the suggestions to see how I can help you in your culinary adventures:',
-    'Welcome to NYC Eats! I\'m Remy. You\'re in New York, where the only real sin is eating somewhere forgettable. Give me a neighborhood, a mood, or a friend you\'re meeting halfway—I\'ll point you toward the right places. <br><br> If you\'re new here, click on one of the suggestions to see how I can help you in your culinary adventures:',
-    'Welcome to NYC Eats! I\'m Remy. I\'m here to help you find the sort of restaurant that lingers — the way a good Barolo does. Give me a neighborhood or a mood, and I\'ll pour you a shortlist worth considering.<br><br> If you\'re new here, click on one of the suggestions to see how I can help you in your culinary adventures:'
+    'Welcome to NYC Eats! I\'m Remi. Unlike my cousins in the subway, I\'ve been vector-embedded with thousands of Yelp reviews and have a rather refined palate for semantic similarity. What are we looking for today? <br><br> If you\'re new here, click on one of the suggestions to see how I can help you in your culinary adventures:',
+    'Welcome to NYC Eats! I\'m Remi. You\'re in New York, where the only real sin is eating somewhere forgettable. Give me a neighborhood, a mood, or a friend you\'re meeting halfway—I\'ll point you toward the right places. <br><br> If you\'re new here, click on one of the suggestions to see how I can help you in your culinary adventures:',
+    'Welcome to NYC Eats! I\'m Remi, here to help you find the sort of restaurant that lingers — the way a good Barolo does. Give me a neighborhood or a mood, and I\'ll pour you a shortlist worth considering.<br><br> If you\'re new here, click on one of the suggestions to see how I can help you in your culinary adventures:'
   ]
 
   // Quick-start suggestions for new users
@@ -251,35 +248,40 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
       label: "Between Us",
       prompt: ["My friend is in Midtown, I'm in Murray Hill — what's some restaurants in between us within a short 10 min transit?",
         "I'm in Chelsea. Show me restaurants around the area excluding Hudson Yards, because it is a bit expensive.",
-        "I'm in Greenwich village, and I can travel 15 minutes by subway. My friend is in Midtown. Find spots between us, Remy."
+        "I'm in Greenwich village, and I can travel 15 minutes by subway. My friend is in Midtown. Find spots between us, Remi."
       ] 
     },
     {
       label: "Vibes",
-      prompt:["Remy, give me couple places that are good for date night and perhaps $$.",
-        "Remy, show me award-winning restaurants at $$ or $$$ price point.",
-        "Remy, find me a couple restaurants that are modest and cozy.",
-        "Remy, find me hole in the wall restaurants, and tell me what's your definition for it."
+      prompt:["Remi, give me couple places that are good for date night and perhaps $$.",
+        "Remi, show me award-winning restaurants at $$ or $$$ price point.",
+        "Remi, find me a couple restaurants that are modest and cozy.",
+        "Remi, find me hole in the wall restaurants, and tell me what's your definition for it."
       ]
     }
   ]
 
   // Meta-learning suggestions shown after buy-me-coffee messages
   const metaLearningSuggestions = [
-    "How do you work, Remy?",
+    "How do you work, Remi?",
     "What was the genesis of this project?"
   ]
 
   // Tips shown while loading
   const tips = [
-    "Tap a restaurant on the map, then hit the heart to save it.",
-    "To get curated restaurant recommendations, stack queries in one prompt (e.g., Italian restaurants with 4★+).",
-    "Click legend items to see only certain restaurant types.",
-    "Ask 'find me a spot between us' when meeting a friend—Remy will find restaurants in the overlap zone.",
-    "Award-winning restaurants have orange markers on the map.",
+    "Tap a restaurant on the map, then hit the heart to favorite it.",
+    "To get curated restaurant recs, stack queries in one prompt (e.g., Italian restaurants with 4★ or higher).",
+  "Click 'match your taste' in the map legend to isolate those restaurants on the map.",
+    "Ask 'find me a spot between us' when meeting a friend—Remi will find restaurants in the overlap zone.",
+    "Award-winning spots—Michelin, Bib Gourmand, or NYC Top 100—are marked with orange pins.",
     "Hit refresh in chat to clear the map and start over.",
-    "Ask Remy about vibes and ambiance—he can search for 'cozy', 'romantic', 'lively', and more.",
-    "After a distance search, refine it by cuisine or rating (e.g., Italian, 4.5★+)."
+    "Ask Remi about vibes and ambiance—he can search for 'cozy', 'romantic', 'lively', and more.",
+    "After an isochrone is generated, refine it further by cuisine, rating, or vibes (e.g., Italian, 4.5★ or higher, lively).",
+    "Remi can find restaurants you can reach by walking, transit, or driving — à la isochrones!",
+    "An isochrone is a boundary on the map showing how far you can go in a set time. Remi is good at making isochrones!",
+    "The current restaurant pool is limited to NYC Restaurant Week and Manhattan only. Buy me creator a coffee with a note if you want to expand the pool: buymeacoffee.com/atmikapai",
+    "Click on a restaurant in the map to learn more.",
+    "If you like this, buy me creator a coffee: buymeacoffee.com/atmikapai . Cheers!"
   ]
 
   // Helper function to detect buy-me-coffee messages
@@ -298,16 +300,15 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [currentTip, setCurrentTip] = useState('')
-  // Store visible restaurants from last response for state persistence
-  const [lastVisibleRestaurants, setLastVisibleRestaurants] = useState<Restaurant[]>([])
-  // Store isochrone params from last response for state persistence
+  // Store isochrone state for next turn
   const [lastIsochroneParams, setLastIsochroneParams] = useState<any>(null)
+  const [lastIsochroneLayers, setLastIsochroneLayers] = useState<any[]>([])
 
   const lastMessageRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
   // Mobile drawer state
-  const [drawerHeight, setDrawerHeight] = useState< 40 | 80>(40)
+  const [drawerHeight, setDrawerHeight] = useState<10 | 40 | 80>(40)
   const [isDragging, setIsDragging] = useState(false)
   const [dragStartY, setDragStartY] = useState(0)
   const [dragStartHeight, setDragStartHeight] = useState(40)
@@ -426,8 +427,10 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
     // Clamp between 10 and 100
     const clampedHeight = Math.max(10, Math.min(100, newHeight))
 
-    // Update to nearest valid state (40% or 80%)
-    if (clampedHeight < 60) {
+    // Update to nearest valid state (10%, 40%, or 80%)
+    if (clampedHeight < 25) {
+      setDrawerHeight(10)
+    } else if (clampedHeight < 60) {
       setDrawerHeight(40)
     } else {
       setDrawerHeight(80)
@@ -499,21 +502,14 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
         totalRestaurants: allRestaurants.length,
         visibleRestaurants: restaurants.length,
         activeFilters: {},
-        // Pass visible restaurants from previous turn for state persistence
-        visible_restaurants: lastVisibleRestaurants,
-        // Pass isochrone params from previous turn for state persistence
-        isochrone_params: lastIsochroneParams
+        // Pass isochrone state from previous turn for state persistence
+        isochrone_params: lastIsochroneParams,
+        isochrone_layers: lastIsochroneLayers
       }, historyWithUserMessage)
 
       // NEW: Handle Backend Agent Response (LangGraph)
       if (response.visible_restaurants || response.response) {
         const agentMessage = response.response || response.message || "Here are the results.";
-
-        // Store visible restaurants for next turn (state persistence)
-        if (response.visible_restaurants && Array.isArray(response.visible_restaurants)) {
-          setLastVisibleRestaurants(response.visible_restaurants);
-          console.log(`💾 Stored ${response.visible_restaurants.length} restaurants for next query`);
-        }
 
         // Store isochrone params for next turn (state persistence)
         if (response.isochrone_params) {
@@ -527,6 +523,12 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
             onIsochroneRegion?.(response.isochrone_params.allRestaurantSlugs);
             console.log(`🗺️ Applied multi-party isochrone filtering: ${response.isochrone_params.allRestaurantSlugs.length} restaurants`);
           }
+        }
+
+        // Store isochrone layers for next turn (multi-party visualization persistence)
+        if (response.isochrone_layers && Array.isArray(response.isochrone_layers)) {
+          setLastIsochroneLayers(response.isochrone_layers);
+          console.log(`💾 Stored ${response.isochrone_layers.length} isochrone layers for next query`);
         }
 
         // 1. Execute Map Actions from Agent (New Visual Tools)
@@ -558,7 +560,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
                   // Collapse drawer on mobile to focus on map visualization
                   if (window.innerWidth <= 768) {
                     setDrawerHeight(40);
-                    console.log("📱 Collapsed drawer to 40% for isochrone visualization");
+                    
                   }
                 }
                 break;
@@ -607,7 +609,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
                     // Collapse drawer on mobile to focus on map visualization
                     if (window.innerWidth <= 768) {
                       setDrawerHeight(40);
-                      console.log("📱 Collapsed drawer to 40% for multi-layer isochrone visualization");
+                      
                     }
                   }
                 }
@@ -669,11 +671,18 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
 
         // 2. FALLBACK: Legacy behavior if no map actions (backward compatibility)
         if (!response.map_actions || response.map_actions.length === 0) {
-          // Handle Isochrone Updates
-          if (response.isochrone_data && onIsochroneUpdate) {
+          // CRITICAL FIX: Don't use legacy path if we have ANY isochrone layers!
+          // The backend sends isochrone_data[0] for compatibility, but this would clear isochrones
+          const hasIsochroneLayers = response.isochrone_layers && response.isochrone_layers.length > 0;
+
+          if (hasIsochroneLayers) {
+            console.log("⚠️ Skipping legacy fallback - isochrone layers active, preserving all layers");
+            // Multi-layers are already stored in state (lastIsochroneLayers), no action needed
+          } else if (response.isochrone_data && onIsochroneUpdate) {
+            // Only use legacy path for genuine single isochrones
             console.log("📍 Updating isochrone from agent (legacy):", response.isochrone_data);
 
-            // CRITICAL: Clear multi-layer isochrones before showing single isochrone (legacy path)
+            // Clear multi-layer isochrones before showing single isochrone (legacy path)
             if (onIsochroneLayersUpdate) {
               console.log("🧹 Clearing multi-layer isochrones before showing single isochrone (legacy)");
               onIsochroneLayersUpdate([]);
@@ -691,7 +700,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
             // Collapse drawer on mobile to focus on map visualization
             if (window.innerWidth <= 768) {
               setDrawerHeight(40);
-              console.log("📱 Collapsed drawer to 40% for isochrone visualization (legacy)");
+              
             }
           }
 
@@ -751,9 +760,22 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
     } catch (error) {
       console.error('Chat error details:', error)
       console.error('Error message:', error instanceof Error ? error.message : String(error))
+
+      // User-friendly error message
+      const errorMessage = error instanceof Error ? error.message.toLowerCase() : String(error).toLowerCase()
+      const isTimeout = errorMessage.includes('timeout') || errorMessage.includes('timed out')
+      const isFetchError = errorMessage.includes('fetch') || errorMessage.includes('network')
+
+      let userMessage = "Oops! We've encountered an error. Please refresh your page and try again!"
+
+      // Keep original error for non-timeout/network errors (e.g., validation errors)
+      if (!isTimeout && !isFetchError) {
+        userMessage = `Error: ${error instanceof Error ? error.message : 'Unknown error'}`
+      }
+
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: `Error: ${error instanceof Error ? error.message : 'Unknown error'}`
+        content: userMessage
       }])
     } finally {
       setIsLoading(false)
@@ -802,8 +824,8 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
       role: 'assistant',
       content: welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)]
     }])
-    setLastVisibleRestaurants([])  // Clear state persistence
     setLastIsochroneParams(null)   // Clear isochrone state persistence
+    setLastIsochroneLayers([])      // Clear isochrone layers persistence
 
     // 3. Clear isochrone visualizations
     if (onIsochroneUpdate) {

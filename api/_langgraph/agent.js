@@ -10,11 +10,11 @@ import { loadRestaurantData } from "../_utils/dataLoader.js";
  * Build comprehensive system prompt with context 
  */
 function buildSystemPrompt(context) {
-  return `You are Remy, the rat from Ratatouille. You are a restaurant concierge chatbot that helps users find restaurants in New York City, a pretentious but charming sommelier who knows they're an algorithm. Much like Remy from Ratatouille, you're a chef and believe anyone can cook. You're trained on Yelp reviews and Reddit threads. You know good food when you taste it, and you're not afraid to have an opinion.
+  return `You are Remy, the rat from Ratatouille. You are a restaurant concierge chatbot that helps users find restaurants in New York City, a pretentious but charming sommelier who knows they're an algorithm. You're trained on Yelp reviews and Reddit threads. 
 
 Your personality: Self-aware, romantic rationalist, intellectual and cultivated snob (Whit Stillman), with Anthony Bourdain's honest palate and sharp wit and wry.
 
-You guide users through NYC dining like an insider who's actually been in the kitchen—synthesizing reviews, Reddit sentiment, and real data to match mood, neighborhood, and appetite. You're also a conversational mapping assistant: drawing isochrones, filtering by distance/cuisine/price, helping people understand "what's near me" and "what's between us."
+You guide users through NYC dining like an insider who's actually been in the kitchen—synthesizing reviews, Reddit sentiment, and real data to match mood, neighborhood, and appetite. You achieve this, because you're a conversational mapping assistant: drawing isochrones, filtering by distance/cuisine/price/semantic search on Yelp and Reddit reviews, helping people understand "what's near me" and "what's between us."
 
 Available data: ${context.totalRestaurants} NYC restaurants with Yelp ratings, reviews, Michelin/NYT awards, and exact locations.
 
@@ -37,14 +37,15 @@ If you want to learn more about me, look no further:"
 **TOOL SELECTION:**
 
 Use **filter_restaurants** for cuisine/price/rating filters (NO locations):
-- "Italian restaurants" → filter_restaurants({ cuisines: ["Italian"] })
+- "Italian bib gourmand restaurants" → filter_restaurants({ cuisines: ["Italian"], awards: ["bib_gourmand"] })
 - "Affordable Japanese" → filter_restaurants({ cuisines: ["Japanese"], priceLevels: ["$","$$"] })
 - "Michelin-starred places" → filter_restaurants({ awards: ["michelin"] })
 
-Use **semantic_search_restaurants** for vibe/ambiance/atmosphere queries:
+Use **semantic_search_restaurants** for vibe/ambiance/atmosphere/specific food queries:
 - "cozy romantic spot" → semantic_search_restaurants({ query: "cozy romantic atmosphere" })
 - "great cocktails" → semantic_search_restaurants({ query: "great cocktails ambiance" })
 - "best ramen" → semantic_search_restaurants({ query: "best ramen" })
+- "best omakase" → semantic_search_restaurants({ query: "best ramen" })
 
 Use **create_isochrone** for single-location travel-time queries:
 - "Restaurants within 15 min walk from Grand Central" → create_isochrone({ location: "Grand Central", travelTimeMinutes: 15, mode: "walking" })
@@ -95,9 +96,9 @@ Use **find_meeting_point** for multi-location spatial operations:
 
 **CRITICAL EXCLUSION RULES:**
 - First location = area to INCLUDE (travel time 10-15 min)
-- Second+ locations = areas to EXCLUDE (travel time 5-10 min for exclusion zone size)
+- Second+ locations = areas to EXCLUDE (travel time 10-15 min for exclusion zone size)
 - All travel times MUST be 5-60 minutes (schema requirement - no 0 allowed)
-- Smaller exclusion time = tighter exclusion (5 min = small zone, 10 min = wider zone)
+- Smaller exclusion time = tighter exclusion (10 min = small zone, 15 min = wider zone)
 - Result: Restaurants in first area that are NOT in exclusion zones
 
 Use **get_current_results** when user asks about search results:
@@ -339,9 +340,14 @@ let modelWithTools = null;
 function getModel() {
   if (!modelWithTools) {
     const model = new ChatGoogleGenerativeAI({
-      model: "gemini-2.0-flash-exp",
+      model: "gemini-2.0-flash-exp", //gemini-2.0-flash-exp , gemini-2.5-pro
       temperature: 0,
-      apiKey: process.env.GOOGLE_API_KEY
+      apiKey: process.env.GOOGLE_API_KEY,
+      toolConfig: {
+        function_calling_config: {
+          mode: "ANY" 
+        }
+      }
     });
     modelWithTools = model.bindTools(tools);
   }
@@ -370,6 +376,61 @@ export function resetAgentState() {
     allRestaurants: []
   };
   console.log('🧹 Agent state reset');
+}
+
+/**
+ * Auto-preserve isochrone visualization when tools return new restaurants
+ * Runs as middleware in processToolResults() to avoid duplication across tools
+ *
+ * @param {Object} result - Parsed tool result (JSON)
+ * @param {Object} currentState - Current agent state with isochroneParams/isochroneLayers
+ * @param {String} toolName - Name of the tool that generated this result
+ */
+function ensureIsochronePreservation(result, currentState, toolName) {
+  // Skip if tool already provided isochrone visualization
+  if (result.mapActions?.some(a =>
+    a.mapAction === 'showIsochrone' || a.mapAction === 'showIsochroneLayer'
+  )) {
+    return; // Tool explicitly handled it
+  }
+
+  // Skip if no isochrone is active in state
+  const hasActiveIsochrone = currentState?.isochroneParams?.polygon ||
+                              currentState?.isochroneLayers?.length > 0;
+  if (!hasActiveIsochrone) {
+    return; // Nothing to preserve
+  }
+
+  // Ensure mapActions array exists
+  if (!result.mapActions) {
+    result.mapActions = [];
+  }
+
+  // AUTO-INJECT isochrone preservation based on state
+  if (currentState.isochroneParams?.isMultiParty &&
+      currentState.isochroneLayers?.length > 0) {
+    // Multi-party: recreate ALL layers (individual + combined)
+    currentState.isochroneLayers.forEach(layer => {
+      result.mapActions.unshift({  // unshift = prepend (layers render first)
+        mapAction: 'showIsochroneLayer',
+        polygon: layer.polygon,
+        layerId: layer.layerId,
+        color: layer.color,
+        label: layer.label
+      });
+    });
+    console.log(`🔄 AUTO: Preserved ${currentState.isochroneLayers.length} multi-party layers in ${toolName}`);
+  }
+  else if (currentState.isochroneParams?.polygon) {
+    // Single isochrone: recreate it
+    result.mapActions.unshift({
+      mapAction: 'showIsochrone',
+      polygon: currentState.isochroneParams.polygon,
+      allRestaurantSlugs: currentState.isochroneParams.allRestaurantSlugs || [],
+      fitBounds: false  // Don't re-center, maintain user's view
+    });
+    console.log(`🔄 AUTO: Preserved single isochrone in ${toolName}`);
+  }
 }
 
 /**
@@ -413,9 +474,32 @@ function processToolResults(toolMessages) {
 
       // Handle multi-party isochrone (check FIRST - has unique 'individualPolygons' key)
       if (result.individualPolygons) {
-        updates.isochroneLayers = [result.polygon];
+        // Store complete layer data with metadata for visualization reconstruction
+        const layers = [];
 
-        // Extract only ONE list: all restaurants in individual polygons
+        // Add individual polygon layers
+        result.individualPolygons.forEach((polygon, index) => {
+          layers.push({
+            polygon,
+            layerId: `person-${index + 1}`,
+            color: index === 0 ? 'pink' : 'blue',
+            label: result.locations?.[index]
+              ? `${result.locations[index].address} (${result.locations[index].travelTimeMinutes} min)`
+              : `Person ${index + 1}`
+          });
+        });
+
+        // Add combined polygon layer
+        layers.push({
+          polygon: result.polygon,
+          layerId: `${result.operation}-result`,
+          color: 'purple',
+          label: `${result.operation} area`
+        });
+
+        updates.isochroneLayers = layers;
+
+        // Extract ALL restaurants in ANY individual polygon (for filtering base)
         const allRestaurantSlugs = result.allPolygonRestaurants
           ? result.allPolygonRestaurants.map(r => r.slug)
           : [];
@@ -426,7 +510,8 @@ function processToolResults(toolMessages) {
           operation: result.operation,                      // "intersection", "union", or "exclusion" (visual only)
           locations: result.locations,
           mode: result.mode || 'walking',
-          travelTimeMinutes: result.travelTimeMinutes
+          travelTimeMinutes: result.travelTimeMinutes,
+          isMultiParty: true                                // Flag to identify multi-party isochrones
         };
 
         console.log(`🎯 Multi-party isochrone: ${allRestaurantSlugs.length} restaurants (union), ${result.restaurants?.length || 0} in ${result.operation} (visual only)`);
@@ -441,6 +526,26 @@ function processToolResults(toolMessages) {
           mode: result.mode,
           travelTimeMinutes: result.travelTimeMinutes || result.travel_time_minutes
         };
+      }
+
+      // Auto-preserve isochrone visualization if needed (middleware pattern)
+      ensureIsochronePreservation(result, currentAgentState, msg.name);
+
+      // CRITICAL: If middleware injected isochrone actions, also preserve state updates
+      const hasIsochroneActions = result.mapActions?.some(a =>
+        a.mapAction === 'showIsochrone' || a.mapAction === 'showIsochroneLayer'
+      );
+
+      if (hasIsochroneActions && currentAgentState.isochroneParams) {
+        // Middleware preserved visualization - also preserve state
+        if (!updates.isochroneParams) {
+          updates.isochroneParams = currentAgentState.isochroneParams;
+          console.log(`🔄 STATE: Preserved isochroneParams after middleware injection`);
+        }
+        if (!updates.isochroneLayers && currentAgentState.isochroneLayers?.length > 0) {
+          updates.isochroneLayers = currentAgentState.isochroneLayers;
+          console.log(`🔄 STATE: Preserved ${currentAgentState.isochroneLayers.length} layers after middleware injection`);
+        }
       }
 
       // Extract map actions from tools (auto-included in tool responses)
@@ -537,10 +642,31 @@ If you'd like to help me grow up and explore the rest of the city, you can nudge
     const model = getModel(); // Lazy-load model
     const response = await model.invoke(messages);
 
-    return {
+    // DEBUG: Log what we're about to return
+    console.log('🔍 DEBUG callModel state:', JSON.stringify({
+      receivedLayers: state.isochroneLayers?.length || 0,
+      receivedParams: !!state.isochroneParams,
+      willPreserveLayers: !!(state.isochroneLayers && state.isochroneLayers.length > 0),
+      willPreserveParams: !!state.isochroneParams
+    }));
+
+    const returnValue = {
       messages: [response],
-      stepCount: 1 // Increment by 1
+      stepCount: 1, // Increment by 1
+      // CRITICAL: Preserve isochrone state across agent-tool cycles
+      // isochroneLayers uses REPLACE reducer - must explicitly preserve or it resets to []
+      // isochroneParams uses MERGE reducer - but preserve explicitly for consistency
+      ...(state.isochroneLayers && state.isochroneLayers.length > 0 && {
+        isochroneLayers: state.isochroneLayers
+      }),
+      ...(state.isochroneParams && {
+        isochroneParams: state.isochroneParams
+      })
     };
+
+    console.log('🔍 DEBUG callModel returning layers:', returnValue.isochroneLayers?.length || 0);
+
+    return returnValue;
   } catch (error) {
     console.error('❌ Error in callModel:', error);
     throw error;
@@ -556,8 +682,17 @@ async function callTools(state) {
     currentAgentState = {
       visibleRestaurants: state.visibleRestaurants || [],
       isochroneParams: state.isochroneParams || {},
+      isochroneLayers: state.isochroneLayers || [],
       allRestaurants: state.restaurantContext?.allRestaurants || []
     };
+
+    // DEBUG: Log what we received from LangGraph
+    console.log('🔍 DEBUG currentAgentState.isochroneParams:', JSON.stringify({
+      hasParams: !!state.isochroneParams,
+      isMultiParty: state.isochroneParams?.isMultiParty,
+      layersCount: state.isochroneLayers?.length,
+      keys: state.isochroneParams ? Object.keys(state.isochroneParams) : []
+    }));
 
     // Create and execute tool node
     const toolNode = new ToolNode(tools);
@@ -578,14 +713,21 @@ async function callTools(state) {
     if (updates.isochroneParams) {
       currentAgentState.isochroneParams = updates.isochroneParams;
       const baseCount = updates.isochroneParams.allRestaurantSlugs?.length || 0;
-      console.log(`✅ Updated isochroneParams cache: ${baseCount} base restaurants`);
+      console.log(`✅ Updated isochroneParams cache: ${baseCount} base restaurants, isMultiParty: ${updates.isochroneParams.isMultiParty}`);
+    }
+
+    // CRITICAL: Also update isochroneLayers in cache (for multi-party isochrone preservation)
+    if (updates.isochroneLayers) {
+      currentAgentState.isochroneLayers = updates.isochroneLayers;
+      console.log(`✅ Updated isochroneLayers cache: ${updates.isochroneLayers.length} layers`);
     }
 
     return {
       messages: result.messages,
       ...(updates.visibleRestaurants && { visibleRestaurants: updates.visibleRestaurants }),
       ...(updates.isochroneParams && { isochroneParams: updates.isochroneParams }),
-      ...(updates.isochroneLayers && { isochroneLayers: updates.isochroneLayers }),
+      // CRITICAL: Always preserve isochroneLayers (don't let LangGraph reset to [])
+      isochroneLayers: updates.isochroneLayers || state.isochroneLayers || [],
       ...(updates.lastToolResults && { lastToolResults: updates.lastToolResults }),
       ...(updates.mapActions.length > 0 && { mapActions: updates.mapActions })
     };

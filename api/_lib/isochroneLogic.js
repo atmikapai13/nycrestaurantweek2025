@@ -3,6 +3,38 @@ import { geocodeAddress } from './geocodeLogic.js'
 import * as turf from '@turf/turf'
 
 /**
+ * Normalize polygon geometry to always be Polygon (not MultiPolygon)
+ * Converts MultiPolygon to Polygon by dissolving/merging all parts
+ */
+function normalizePolygonGeometry(feature) {
+  const geometry = feature.geometry || feature
+
+  // If already a Polygon, return as-is
+  if (geometry.type === 'Polygon') {
+    return feature
+  }
+
+  // If MultiPolygon, dissolve into single Polygon
+  if (geometry.type === 'MultiPolygon') {
+    try {
+      // Use turf.dissolve to merge all polygons into one
+      // For a single feature, this effectively converts MultiPolygon → Polygon
+      const dissolved = turf.dissolve(turf.featureCollection([feature]))
+
+      if (dissolved.features && dissolved.features.length > 0) {
+        console.log('✅ Normalized MultiPolygon → Polygon')
+        return dissolved.features[0]
+      }
+    } catch (error) {
+      console.warn('⚠️ Failed to normalize MultiPolygon, returning original:', error.message)
+    }
+  }
+
+  // Return original if normalization not needed/failed
+  return feature
+}
+
+/**
  * Generate Turf.js fallback isochrone (circular approximation)
  */
 function generateFallbackIsochrone(coordinates, minutes, mode) {
@@ -114,7 +146,10 @@ export async function generateIsochrone(coordinates, travelTimeMinutes, mode = '
     }
 
     // Geoapify returns GeoJSON FeatureCollection
-    const polygon = result.features[0]
+    const rawPolygon = result.features[0]
+
+    // Normalize geometry to ensure it's always Polygon (not MultiPolygon)
+    const polygon = normalizePolygonGeometry(rawPolygon)
 
     return {
       polygon,

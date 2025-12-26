@@ -85,7 +85,7 @@ filter_restaurants({ cuisines: ["Japanese"], scopeToIsochrone: false })
 // → visibleRestaurants = [80 Japanese restaurants]
 ```
 
-**Critical**: When `scopeToIsochrone: true`, tools **preserve** the isochrone visualization on the map by including `showIsochrone` in mapActions.
+**Critical**: When `scopeToIsochrone: true`, the agent middleware automatically preserves isochrone visualizations - tools don't need to handle this explicitly.
 
 ### Agent Prompt Rules (api/langgraph/agent.js)
 
@@ -148,11 +148,12 @@ All tools are LangChain `DynamicStructuredTool` instances. They return JSON with
 
 1. **`filter_restaurants`**: Structured filters (cuisine, price, neighborhood, awards, rating)
    - Supports `scopeToIsochrone: true` (default) to filter within visible set
-   - Preserves isochrone visualization when scoping
+   - Isochrone preservation handled automatically by agent middleware
 
 2. **`semantic_search_restaurants`**: RAG-powered semantic search via Pinecone
    - Supports `scopeToIsochrone: true` (default)
    - Use for vibe/ambiance queries ("cozy romantic spot")
+   - Isochrone preservation handled automatically by agent middleware
 
 3. **`create_isochrone`**: Generate travel-time polygon from a location
    - Modes: walking, cycling, transit, driving
@@ -278,44 +279,67 @@ const filtered = searchPool
   : filterData({ cuisines, priceLevels, ... });  // Full dataset
 ```
 
-### 2. Isochrone Preservation (tools.js:119-134)
+### 2. Isochrone Preservation Middleware (agent.js:376-434)
 
-When scoping, preserve isochrone visualization:
+**CRITICAL ARCHITECTURAL PATTERN**: Isochrone preservation is handled by a **centralized middleware** in `processToolResults()`, NOT in individual tools. This prevents code duplication and ensures ALL tools (including future ones) automatically preserve isochrone visualizations.
+
+**How it works:**
 ```javascript
-const mapActions = [];
+// In agent.js, BEFORE extracting mapActions from tool results:
+ensureIsochronePreservation(result, currentAgentState, msg.name);
 
-if (scopeToIsochrone && searchPool) {
-  const state = getCurrentAgentState();
-  if (state.isochroneParams?.polygon) {
-    mapActions.push({
-      mapAction: 'showIsochrone',
-      polygon: state.isochroneParams.polygon,
-      fitBounds: false  // Don't re-fit
-    });
-  }
-}
-
-mapActions.push({
-  mapAction: 'highlightRestaurants',
-  slugs: filtered.map(r => r.slug),
-  count: filtered.length
-});
+// Middleware function checks:
+// 1. Did tool already handle isochrone? (skip if yes)
+// 2. Is isochrone active in state? (skip if no)
+// 3. Did tool return restaurants? (skip if no - read-only query)
+// 4. Auto-inject appropriate mapActions:
+//    - Multi-party: All showIsochroneLayer actions (individual + combined polygons)
+//    - Single: One showIsochrone action
 ```
 
-### 3. Multi-Party Isochrone Filtering (agent.js:234-245, ChatInterface.tsx:470-474)
+**Why this pattern?**
+- **DRY**: Logic written once, applies to ALL tools
+- **Future-proof**: New tools automatically get isochrone preservation
+- **Bug fix**: Even tools like `get_restaurant_details` now preserve isochrones
+- **Cleaner tools**: Tools only return `highlightRestaurants`, middleware handles the rest
 
-Multi-party isochrones extract restaurant slugs for filtering just like single isochrones:
+**Tools should NOT manually preserve isochrones** - the middleware handles it automatically.
+
+### 3. Multi-Party Isochrone State Storage (agent.js:416-458)
+
+Multi-party isochrones store complete layer data with metadata for visualization:
 
 **Backend (agent.js)**:
 ```javascript
-if (result.combinedPolygon) {
-  updates.isochroneLayers = [result.combinedPolygon];
-  const restaurantSlugs = result.restaurants?.map(r => r.slug) || [];
+if (result.individualPolygons) {
+  // Store ALL layers with metadata (individual + combined)
+  const layers = [];
+
+  // Individual polygon layers
+  result.individualPolygons.forEach((polygon, index) => {
+    layers.push({
+      polygon,
+      layerId: `person-${index + 1}`,
+      color: index === 0 ? 'pink' : 'blue',
+      label: `${result.locations[index].address} (${result.locations[index].travelTimeMinutes} min)`
+    });
+  });
+
+  // Combined polygon layer
+  layers.push({
+    polygon: result.polygon,
+    layerId: `${result.operation}-result`,
+    color: 'purple',
+    label: `${result.operation} area`
+  });
+
+  updates.isochroneLayers = layers;  // Stored for middleware reconstruction
   updates.isochroneParams = {
-    polygon: result.combinedPolygon,
-    allRestaurantSlugs: restaurantSlugs,  // Enables filtering
+    polygon: result.polygon,
+    allRestaurantSlugs: [...],  // Enables filtering
     operation: result.operation,
-    locations: result.locations
+    locations: result.locations,
+    isMultiParty: true  // Flag for middleware detection
   };
 }
 ```
@@ -327,7 +351,7 @@ if (onIsochroneRegion && response.isochrone_params.allRestaurantSlugs) {
 }
 ```
 
-This ensures restaurants outside multi-party isochrone boundaries are hidden, not shown as grey markers.
+The `isochroneLayers` array stores complete metadata so the middleware can reconstruct ALL polygon visualizations (individual + combined) after any tool call, ensuring multi-layer isochrones persist correctly.
 
 ### 4. Conversation Memory (agent.js:277-305)
 
@@ -405,8 +429,10 @@ VITE_MAPBOX_TOKEN=...        # Mapbox GL JS map rendering
 - Confirm `scopeToIsochrone` parameter is being passed (check tool call args in logs)
 
 **Isochrone disappeared after filtering?**
-- Check if `mapActions` includes `showIsochrone` when `scopeToIsochrone: true`
-- Verify `state.isochroneParams` is not null before accessing `.polygon`
+- Check backend console logs for `🔄 AUTO: Preserved X layers in [tool_name]`
+- Verify `ensureIsochronePreservation()` middleware is being called in `processToolResults()`
+- For multi-party isochrones: Verify `isochroneLayers` array contains all layer metadata
+- Verify `state.isochroneParams.isMultiParty` flag is set correctly
 
 **Agent ignoring conversation context?**
 - Verify message history is being passed correctly in `ChatInterface.tsx`

@@ -160,28 +160,9 @@ IMPORTANT: For neighborhood queries, use create_isochrone instead (neighborhood 
     // Extract slugs for map actions
     const slugs = filtered.map(r => r.slug);
 
-    // Build map actions - preserve isochrone if scoping
+    // Build map actions (isochrone preservation handled automatically by agent middleware)
     const mapActions = [];
 
-    // If scoping to isochrone, preserve the isochrone visualization
-    if (scopeToIsochrone && baseIsochroneSlugs) {
-      try {
-        const { getCurrentAgentState } = await import('./agent.js');
-        const state = getCurrentAgentState();
-        if (state.isochroneParams?.polygon) {
-          mapActions.push({
-            mapAction: 'showIsochrone',
-            polygon: state.isochroneParams.polygon,
-            allRestaurantSlugs: baseIsochroneSlugs,
-            fitBounds: false  // Don't re-fit, just maintain the polygon
-          });
-        }
-      } catch (e) {
-        console.warn("❌ Could not access isochrone params:", e);
-      }
-    }
-
-    // Always add restaurant highlights
     mapActions.push({
       mapAction: 'highlightRestaurants',
       slugs,
@@ -354,26 +335,8 @@ Use for vibe/ambiance/dish queries: "cozy date spot", "best ramen", "great cockt
       // Extract slugs for map actions
       const slugs = result.results.map(r => r.slug);
 
-      // Build map actions - preserve isochrone if scoping
+      // Build map actions (isochrone preservation handled automatically by agent middleware)
       const mapActions = [];
-
-      // If scoping to isochrone, preserve the isochrone visualization
-      if (scopeToIsochrone && baseIsochroneSlugs) {
-        try {
-          const { getCurrentAgentState } = await import('./agent.js');
-          const state = getCurrentAgentState();
-          if (state.isochroneParams?.polygon) {
-            mapActions.push({
-              mapAction: 'showIsochrone',
-              polygon: state.isochroneParams.polygon,
-              allRestaurantSlugs: baseIsochroneSlugs,
-              fitBounds: false
-            });
-          }
-        } catch (e) {
-          console.warn("❌ Could not access isochrone params:", e);
-        }
-      }
 
       mapActions.push({
         mapAction: 'highlightRestaurants',

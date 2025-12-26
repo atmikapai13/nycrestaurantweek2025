@@ -55,6 +55,12 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
         {displayRestaurant.price && (
           <span className="tag tag-price">{displayRestaurant.price}</span>
         )}
+        {displayRestaurant.michelin_award && ['ONE_STAR', 'TWO_STARS', 'THREE_STARS'].includes(displayRestaurant.michelin_award) && (
+          <span className="tag tag-michelin">Michelin</span>
+        )}
+        {displayRestaurant.michelin_award === 'BIB_GOURMAND' && (
+          <span className="tag tag-bib">Bib Gourmand</span>
+        )}
         {displayRestaurant.nyttop100_rank && (
           <span className="tag tag-nyt-rank">NYT Rank {displayRestaurant.nyttop100_rank}</span>
         )}

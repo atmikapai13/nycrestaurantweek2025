@@ -551,6 +551,10 @@
   }
 
   /* Drawer height states */
+  .drawer-12 {
+    height: 12vh;
+  }
+
   .drawer-40 {
     height: 40vh;
   }
@@ -564,7 +568,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px 0 10px 0;
+    padding: 20px 10px 8px 0;
     cursor: grab;
     touch-action: none;
   }
@@ -575,9 +579,10 @@
 
   .drawer-handle-bar {
     width: 80px;
-    height: 4px;
+    height: 6px;
+    
     background: rgba(0, 0, 0, 0.3);
-    border-radius: 2px;
+    border-radius: 10px;
   }
 
   /* Adjust chat messages for drawer */
@@ -589,12 +594,16 @@
     min-height: 0;
   }
 
+  .drawer-12 .chat-messages {
+    max-height: calc(12vh - 100px);
+  }
+
   .drawer-40 .chat-messages {
-    max-height: calc(40vh - 110px);
+    max-height: calc(40vh - 100px);
   }
 
   .drawer-80 .chat-messages {
-    max-height: calc(80vh - 110px);
+    max-height: calc(80vh - 100px);
   }
 
   .message-bubble {

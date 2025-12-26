@@ -11,6 +11,7 @@ export interface ChatContext {
   activeFilters: Record<string, any>
   visible_restaurants?: any[]
   isochrone_params?: any  // Persist isochrone state across turns
+  isochrone_layers?: any[]  // Persist multi-party isochrone layers across turns
 }
 
 export interface GeminiMessage {
@@ -44,6 +45,7 @@ export interface ChatResponse {
   visible_restaurants?: any[]
   isochrone_data?: any
   isochrone_params?: any  // Isochrone state from backend
+  isochrone_layers?: any[]  // Multi-party isochrone layers from backend
   current_filters?: any
   tool_calls?: string[]
   map_actions?: any[]
@@ -59,7 +61,7 @@ export async function sendChatMessage(
   console.log('API_CONFIG:', API_CONFIG)
 
   const controller = new AbortController()
-  const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 second timeout
+  const timeoutId = setTimeout(() => controller.abort(), 65000) // 65 second timeout (5s buffer for Vercel's 60s limit)
 
   try {
     const response = await fetch(apiUrl, {
@@ -77,10 +79,6 @@ export async function sendChatMessage(
 
     clearTimeout(timeoutId)
 
-    console.log('Response status:', response.status)
-    console.log('Response ok:', response.ok)
-    console.log('Response headers:', Object.fromEntries(response.headers.entries()))
-
     if (!response.ok) {
       const errorText = await response.text()
       console.error('Error response text:', errorText)
@@ -93,16 +91,13 @@ export async function sendChatMessage(
       throw new Error(error.error || `Chat API error: ${response.statusText}`)
     }
 
-    console.log('Parsing JSON response...')
     const text = await response.text()
-    console.log('Raw text:', text)
     const jsonResponse = JSON.parse(text)
-    console.log('JSON parsed successfully:', jsonResponse)
     return jsonResponse
   } catch (error) {
     clearTimeout(timeoutId)
     if (error instanceof Error && error.name === 'AbortError') {
-      throw new Error('Request timeout - please try again')
+      throw new Error("Oops! We've encountered an error. Please refresh your page and try again!")
     }
     throw error
   }

@@ -101,10 +101,6 @@ export default async function handler(req, res) {
 
     const initialState = initializeState(messages);
 
-    // Restore context if passed (e.g. from client-side state)
-    // This allows keeping the map view in sync
-    if (context.filters) initialState.currentFilters = context.filters;
-
     // Restore isochrone params (contains allRestaurantSlugs for tool scoping)
     // DON'T restore visibleRestaurants - agent must call tools to get data
     if (context.isochrone_params) {
@@ -113,6 +109,12 @@ export default async function handler(req, res) {
       if (baseCount > 0) {
         console.log(`♻️ Restored isochrone params: ${baseCount} base restaurants for scoping`);
       }
+    }
+
+    // CRITICAL: Also restore isochrone layers for multi-party isochrone visualization
+    if (context.isochrone_layers && Array.isArray(context.isochrone_layers)) {
+      initialState.isochroneLayers = context.isochrone_layers;
+      console.log(`♻️ Restored ${context.isochrone_layers.length} isochrone layers for visualization`);
     }
 
     // Run agent

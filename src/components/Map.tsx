@@ -3,6 +3,7 @@ import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import type { Restaurant } from '../types/restaurant'
 import ChatInterface, { type ChatInterfaceHandle } from './ChatInterface'
+import { MapLegend } from './MapLegend'
 
 // Set your Mapbox access token
 mapboxgl.accessToken = "pk.eyJ1IjoiYXRtaWthcGFpMTMiLCJhIjoiY21idHR4eTJpMDdhMjJsb20zNmZheTZ6ayJ9.d_bQSBzesyiCUMA-YHRoIA"
@@ -29,6 +30,16 @@ const hasAnyAward = (restaurant: Restaurant): boolean => {
     ['ONE_STAR', 'TWO_STARS', 'THREE_STARS', 'BIB_GOURMAND'].includes(restaurant.michelin_award)
   const hasNYT = Boolean(restaurant.nyttop100_rank && restaurant.nyttop100_rank !== '')
   return hasMichelin || hasNYT
+}
+
+// Compare two GeoJSON polygons for equality
+const arePolygonsEqual = (poly1: any, poly2: any): boolean => {
+  if (!poly1 && !poly2) return true
+  if (!poly1 || !poly2) return false
+
+  // Compare stringified versions for deep equality
+  // This handles both Polygon and MultiPolygon geometries
+  return JSON.stringify(poly1) === JSON.stringify(poly2)
 }
 
 interface MapProps {
@@ -78,6 +89,10 @@ export default function Map({
   const markerElements = useRef<HTMLDivElement[]>([])
   const chatInterfaceRef = useRef<ChatInterfaceHandle>(null)
 
+  // Refs for tracking previous isochrone states to prevent unnecessary re-renders
+  const previousPolygon = useRef<any>(null)
+  const previousLayers = useRef<IsochroneLayer[]>([])
+
   // Backward compatible: keep single polygon state for existing isochrone queries
   const [isochronePolygon, setIsochronePolygon] = useState<any>(null)
 
@@ -93,9 +108,12 @@ export default function Map({
     setIsochronePolygon(null)
     setIsochroneLayers([])
 
+    // Clear refs to allow fresh rendering on next isochrone
+    previousPolygon.current = null
+    previousLayers.current = []
+
     // Clear selected restaurant
     setSelectedRestaurantSlug(null)
-    console.log('🟣 Cleared selected restaurant')
 
     // Detect mobile viewport
     const isMobile = window.innerWidth <= 768
@@ -105,8 +123,6 @@ export default function Map({
     const zoom = isMobile ? 11.5 : 12.58  // Mobile: 11.5, Desktop: 12.58
     const pitch = 45
     const bearing = 0
-
-    console.log('🔄 Resetting map view:', { isMobile, center, zoom })
 
     // Reset map to default view (mobile or desktop)
     if (map.current) {
@@ -146,7 +162,6 @@ export default function Map({
 
   // Implement onMapFocus handler for semantic search results
   const handleMapFocus = (restaurantSlugs: string[]) => {
-    console.log('Map focus requested for', restaurantSlugs.length, 'restaurants')
 
     // Filter allRestaurants to only include the semantic search results
     const focusedRestaurants = allRestaurants.filter(r => restaurantSlugs.includes(r.slug))
@@ -285,6 +300,15 @@ export default function Map({
   useEffect(() => {
     if (!map.current) return
 
+    // Skip re-render if polygon hasn't changed
+    if (arePolygonsEqual(isochronePolygon, previousPolygon.current)) {
+      console.log('🔄 Skipping isochrone re-render - polygon unchanged')
+      return
+    }
+
+    // Update ref for next comparison
+    previousPolygon.current = isochronePolygon
+
     const sourceId = 'isochrone-polygon'
     const fillLayerId = 'isochrone-fill'
     const outlineLayerId = 'isochrone-outline'
@@ -390,7 +414,6 @@ export default function Map({
           }
         } catch (error) {
           console.error('Error fitting bounds to isochrone polygon:', error)
-          console.log('Polygon data:', isochronePolygon)
         }
       }
     }
@@ -405,6 +428,20 @@ export default function Map({
   // Handle multi-layer isochrone visualization (Phase 3)
   useEffect(() => {
     if (!map.current) return
+
+    // Compare layer arrays (check length and each layer's polygon)
+    const layersEqual = isochroneLayers.length === previousLayers.current.length &&
+      isochroneLayers.every((layer, i) =>
+        arePolygonsEqual(layer.polygon, previousLayers.current[i]?.polygon)
+      )
+
+    if (layersEqual) {
+      console.log('🔄 Skipping multi-layer re-render - layers unchanged')
+      return
+    }
+
+    // Update ref for next comparison
+    previousLayers.current = isochroneLayers
 
     const mapInstance = map.current
 
@@ -559,17 +596,6 @@ export default function Map({
       restaurantsToRender = basePool;
     }
 
-    console.log('🗺️ Map rendering:', {
-      total: allRestaurants.length,
-      rendering: restaurantsToRender.length,
-      isochrone: isochroneRegionSlugs?.length || 0,
-      modes: {
-        favorites: favoritesActive,
-        awards: awardsActive,
-        highlighted: highlightedActive
-      }
-    });
-
     // Render restaurants with coordinates
     restaurantsToRender.forEach(restaurant => {
       if (restaurant.latitude && restaurant.longitude) {
@@ -638,14 +664,14 @@ export default function Map({
         markerWrapper.addEventListener('click', () => {
           // If clicking already-selected restaurant, deselect it
           if (selectedRestaurantSlug === restaurant.slug) {
-            console.log(`🟣 Deselecting restaurant: ${restaurant.name}`)
+            
             setSelectedRestaurantSlug(null)  // Clear selection
             return
           }
 
           // Update selection state (triggers marker re-render)
           setSelectedRestaurantSlug(restaurant.slug)
-          console.log(`🟣 Selected restaurant: ${restaurant.name}`)
+          
 
           // Add restaurant card to chat
           if (chatInterfaceRef.current) {
@@ -702,71 +728,21 @@ export default function Map({
         favoritesActive={favoritesActive}
         onFavoritesToggle={onFavoritesToggle}
       />
+
       {/* Map Legend */}
-      <div className="map-legend">
-        <div className="legend-content">
-          <h4 style={{ color: '#000000', margin: '0 0 -4px 0' }}>
-            Remy's pickings
-          </h4>
-          <p style={{ color: '#666', fontSize: '8px', margin: '0 0 0px 0', fontStyle: 'italic' }}>
-            Click to isolate:
-          </p>
-          {/* Legend items */}
-          <div className="legend-items">
-            <div className="legend-item">
-              <div className="legend-marker" style={{ backgroundColor: '#7c7c7c', width: '8px', height: '8px' }}></div>
-              <span>
-                {isochroneRegionSlugs
-                  ? `${isochroneRegionSlugs.length} in isochrone`
-                  : `${allRestaurants.length} restaurants`}
-              </span>
-            </div>
-
-            {/* match your taste - clickable to filter to only highlighted restaurants */}
-            {highlightedIds && highlightedIds.size > 0 && (
-              <div
-                className="legend-item"
-                onClick={onHighlightedToggle}
-                style={{
-                  cursor: 'pointer',
-                  fontWeight: highlightedActive ? 600 : 400
-                }}
-              >
-                <div className="legend-marker" style={{ backgroundColor: '#FF69B4', width: '8px', height: '8px' }}></div>
-                <span>{highlightedIds.size} match your taste</span>
-              </div>
-            )}
-
-            {/* Award winners - clickable */}
-            {awardWinnersCount > 0 && (
-              <div
-                className="legend-item"
-                onClick={onAwardsToggle}
-                style={{
-                  cursor: 'pointer',
-                  fontWeight: awardsActive ? 600 : 400
-                }}
-              >
-                <div className="legend-marker" style={{ backgroundColor: '#FF9100', width: '8px', height: '8px' }}></div>
-                <span>{awardWinnersCount} award-winners</span>
-              </div>
-            )}
-
-            {/* Favorites - ALWAYS visible, clickable */}
-            <div
-              className="legend-item"
-              onClick={onFavoritesToggle}
-              style={{
-                cursor: 'pointer',
-                fontWeight: favoritesActive ? 600 : 400
-              }}
-            >
-              <div className="legend-marker" style={{ backgroundColor: '#c81224', width: '8px', height: '8px' }}></div>
-              <span>{favoritesCount === 0 ? '0 favorited as of yet' : `${favoritesCount} favorited`}</span>
-            </div>
-          </div>
-        </div>
-      </div>
+      <MapLegend
+        allRestaurants={allRestaurants}
+        isochroneRegionSlugs={isochroneRegionSlugs}
+        highlightedIds={highlightedIds}
+        awardWinnersCount={awardWinnersCount}
+        favoritesCount={favoritesCount}
+        highlightedActive={highlightedActive}
+        awardsActive={awardsActive}
+        favoritesActive={favoritesActive}
+        onHighlightedToggle={onHighlightedToggle}
+        onAwardsToggle={onAwardsToggle}
+        onFavoritesToggle={onFavoritesToggle}
+      />
     </div>
   )
 } 

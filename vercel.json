@@ -16,7 +16,7 @@
   "functions": {
     "api/chat.js": {
       "memory": 1024,
-      "maxDuration": 10
+      "maxDuration": 60
     },
     "api/geocode.js": {
       "memory": 1024,

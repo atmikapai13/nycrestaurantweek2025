@@ -74,6 +74,16 @@
   color: #000000;
 }
 
+.tag-michelin {
+  background-color: #ffcccc;
+  color: #000000;
+}
+
+.tag-bib {
+  background-color: #ffb3b3;
+  color: #000000;
+}
+
 .tag-nyt-rank {
   background-color: #ff69b4c0;
   color: #FFFFFF;
