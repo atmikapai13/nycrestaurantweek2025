@@ -3,8 +3,57 @@ import { app as agentApp, initializeState } from './_langgraph/agent.js';
 import { HumanMessage, AIMessage, ToolMessage } from "@langchain/core/messages";
 
 /**
+ * Validate that filter queries resulted in actual tool execution
+ * Prevents hallucinated responses where agent answers from context
+ *
+ * @param {string} message - User's original message
+ * @param {Object} finalState - Agent's final state after execution
+ * @param {Array} toolCallsMade - Array of tool names that were called
+ * @returns {Object} { valid: boolean, reason?: string, toolsCalled?: Array }
+ */
+function validateToolExecution(message, finalState, toolCallsMade) {
+  // Detect filter queries (same keywords as existing detection)
+  const filterKeywords = ['show me', 'filter', 'only', 'just', 'italian', 'japanese',
+                         'chinese', 'american', 'french', 'mexican', 'thai', 'korean',
+                         'indian', 'mediterranean', 'steakhouse', 'seafood', 'pizza',
+                         'cheap', 'expensive', '$$', '$$$', '$$$$', 'about', 'what about',
+                         'how about'];
+
+  const messageLower = message.toLowerCase();
+  const isFilterQuery = filterKeywords.some(keyword => messageLower.includes(keyword));
+
+  if (!isFilterQuery) {
+    return { valid: true }; // Not a filter query, no validation needed
+  }
+
+  // Check 1: Were relevant tools called?
+  const relevantTools = ['filter_restaurants', 'semantic_search_restaurants', 'create_isochrone', 'find_meeting_point'];
+  const toolWasCalled = toolCallsMade.some(tool => relevantTools.includes(tool));
+
+  // Check 2: Do we have tool results?
+  const hasToolResults = finalState.lastToolResults &&
+                        (finalState.lastToolResults.count !== undefined ||
+                         finalState.lastToolResults.tool !== undefined);
+
+  // Check 3: Do we have visible restaurants OR explicit zero-result state?
+  const hasResults = (finalState.visibleRestaurants && finalState.visibleRestaurants.length > 0) ||
+                    (finalState.lastToolResults?.count === 0);
+
+  // VALIDATION FAILURE: Filter query but no tool execution or results
+  if (!toolWasCalled || !hasToolResults) {
+    return {
+      valid: false,
+      reason: `Filter query detected but ${!toolWasCalled ? 'no tool was called' : 'no tool results exist'}`,
+      toolsCalled: toolCallsMade
+    };
+  }
+
+  return { valid: true };
+}
+
+/**
  * Serverless function for LangGraph chat
- * 
+ *
  * In Vercel serverless, we can't maintain in-memory sessions across requests.
  * We rely on the frontend to pass the full conversation history.
  */
@@ -117,9 +166,56 @@ export default async function handler(req, res) {
       console.log(`♻️ Restored ${context.isochrone_layers.length} isochrone layers for visualization`);
     }
 
-    // Run agent
-    // invoke returns the FINAL state
-    const finalState = await agentApp.invoke(initialState);
+    // Run agent with validation retry mechanism
+    let finalState;
+    let retryCount = 0;
+    const MAX_RETRIES = 1; // Only retry once to avoid loops
+
+    while (retryCount <= MAX_RETRIES) {
+      // invoke returns the FINAL state
+      finalState = await agentApp.invoke(initialState);
+
+      // Extract tool calls made during this execution
+      const toolCallsMade = [];
+      finalState.messages.forEach(msg => {
+        if (msg.tool_calls && msg.tool_calls.length > 0) {
+          msg.tool_calls.forEach(tc => toolCallsMade.push(tc.name));
+        }
+      });
+
+      // Validate tool execution for filter queries
+      const validation = validateToolExecution(message, finalState, toolCallsMade);
+
+      if (validation.valid) {
+        console.log(`✅ Validation passed: Tool execution confirmed`);
+        break; // Success - exit retry loop
+      }
+
+      // Validation failed
+      if (retryCount === MAX_RETRIES) {
+        console.error(`❌ Validation failed after ${MAX_RETRIES} retries:`, validation.reason);
+        console.error(`   Tools called: ${validation.toolsCalled.join(', ') || 'NONE'}`);
+        // Allow response to proceed (logged for debugging)
+        break;
+      }
+
+      // Retry with MAXIMUM enforcement
+      console.warn(`⚠️ Validation failed (attempt ${retryCount + 1}): ${validation.reason}`);
+      console.warn(`   Re-invoking agent with mandatory tool call instruction...`);
+
+      // Add CRITICAL system-level enforcement message
+      const enforcementMessage = new HumanMessage(`[SYSTEM OVERRIDE - CRITICAL]: The previous response violated architectural rules. You answered a filter/search query WITHOUT calling the required tool. This is a HARD FAILURE.
+
+You MUST call one of these tools for the query "${message}":
+- filter_restaurants (for cuisine/price/awards/rating filters)
+- semantic_search_restaurants (for vibe/ambiance/quality searches)
+
+DO NOT respond from memory or conversation history. CALL THE TOOL FIRST, then summarize the results.`);
+
+      // Add enforcement message to state for retry
+      initialState.messages.push(enforcementMessage);
+      retryCount++;
+    }
 
     // Extract assistant response
     const finalMessages = finalState.messages;
@@ -136,6 +232,11 @@ export default async function handler(req, res) {
       }
     });
 
+    // Log validation warning if filter query resulted in zero tool calls
+    if (toolCalls.length === 0 && isFilterQuery) {
+      console.warn(`⚠️ WARNING: Filter query "${message.substring(0, 50)}..." resulted in ZERO tool calls`);
+    }
+
     // Process output for frontend
     const response = {
       response: typeof lastMessage.content === 'string' ? lastMessage.content : JSON.stringify(lastMessage.content),
@@ -145,7 +246,12 @@ export default async function handler(req, res) {
       isochrone_params: finalState.isochroneParams || {},
       current_filters: finalState.currentFilters || {},
       tool_calls: toolCalls, // List of tools that were called
-      map_actions: finalState.mapActions || [] // Visual map actions to execute
+      map_actions: finalState.mapActions || [], // Visual map actions to execute
+      // Validation metadata for debugging/monitoring
+      _validation: {
+        retryCount: retryCount,
+        toolsExecuted: toolCalls.length > 0
+      }
     };
 
     // Return response

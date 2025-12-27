@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useMemo } from 'react'
+import { useEffect, useRef, useState, useMemo, useCallback } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import type { Restaurant } from '../types/restaurant'
@@ -108,9 +108,9 @@ export default function Map({
     setIsochronePolygon(null)
     setIsochroneLayers([])
 
-    // Clear refs to allow fresh rendering on next isochrone
-    previousPolygon.current = null
-    previousLayers.current = []
+    // DON'T clear refs here - let useEffect update them AFTER cleanup runs
+    // previousPolygon.current = null  // REMOVED - causes early return in useEffect
+    // previousLayers.current = []      // REMOVED - causes early return in useEffect
 
     // Clear selected restaurant
     setSelectedRestaurantSlug(null)
@@ -300,9 +300,11 @@ export default function Map({
   useEffect(() => {
     if (!map.current) return
 
-    // Skip re-render if polygon hasn't changed
+    // Skip re-render if polygon hasn't changed (only log if there's actually a polygon)
     if (arePolygonsEqual(isochronePolygon, previousPolygon.current)) {
-      console.log('🔄 Skipping isochrone re-render - polygon unchanged')
+      if (isochronePolygon) {
+        console.log('🔄 Skipping isochrone re-render - polygon unchanged')
+      }
       return
     }
 
@@ -436,7 +438,10 @@ export default function Map({
       )
 
     if (layersEqual) {
-      console.log('🔄 Skipping multi-layer re-render - layers unchanged')
+      // Only log if there are actually layers to skip (not empty arrays)
+      if (isochroneLayers.length > 0) {
+        console.log('🔄 Skipping multi-layer re-render - layers unchanged')
+      }
       return
     }
 
@@ -664,14 +669,12 @@ export default function Map({
         markerWrapper.addEventListener('click', () => {
           // If clicking already-selected restaurant, deselect it
           if (selectedRestaurantSlug === restaurant.slug) {
-            
             setSelectedRestaurantSlug(null)  // Clear selection
             return
           }
 
           // Update selection state (triggers marker re-render)
           setSelectedRestaurantSlug(restaurant.slug)
-          
 
           // Add restaurant card to chat
           if (chatInterfaceRef.current) {
@@ -686,7 +689,7 @@ export default function Map({
 
     // Update marker sizes after creating all markers
     updateMarkerSizes()
-  }, [allRestaurants, highlightedIds, onRestaurantSelect, isochroneRegionSlugs, selectedRestaurantSlug, favoritesActive, awardsActive, highlightedActive])
+  }, [allRestaurants, highlightedIds, onRestaurantSelect, isochroneRegionSlugs, selectedRestaurantSlug, favoritesActive, awardsActive, highlightedActive, favorites])
 
   // Calculate award winners count (respect isochrone if active)
   const awardWinnersCount = useMemo(() => {

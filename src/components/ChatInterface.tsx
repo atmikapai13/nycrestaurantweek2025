@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useImperativeHandle, forwardRef } from 'react'
+import { flushSync } from 'react-dom'
 import { sendChatMessage, type GeminiMessage } from '../services/chatService'
 import type { Restaurant } from '../types/restaurant'
 import { API_CONFIG } from '../config/features'
@@ -271,7 +272,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
   const tips = [
     "Tap a restaurant on the map, then hit the heart to favorite it.",
     "To get curated restaurant recs, stack queries in one prompt (e.g., Italian restaurants with 4★ or higher).",
-  "Click 'match your taste' in the map legend to isolate those restaurants on the map.",
+    "Click 'match your taste' in the map legend to isolate those restaurants on the map.",
     "Ask 'find me a spot between us' when meeting a friend—Remi will find restaurants in the overlap zone.",
     "Award-winning spots—Michelin, Bib Gourmand, or NYC Top 100—are marked with orange pins.",
     "Hit refresh in chat to clear the map and start over.",
@@ -279,7 +280,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
     "After an isochrone is generated, refine it further by cuisine, rating, or vibes (e.g., Italian, 4.5★ or higher, lively).",
     "Remi can find restaurants you can reach by walking, transit, or driving — à la isochrones!",
     "An isochrone is a boundary on the map showing how far you can go in a set time. Remi is good at making isochrones!",
-    "The current restaurant pool is limited to NYC Restaurant Week and Manhattan only. Buy me creator a coffee with a note if you want to expand the pool: buymeacoffee.com/atmikapai",
+    "The current restaurant pool is limited to NYC Restaurant Week and Manhattan. Buy me creator a coffee with a note if you want to expand the pool: buymeacoffee.com/atmikapai",
     "Click on a restaurant in the map to learn more.",
     "If you like this, buy me creator a coffee: buymeacoffee.com/atmikapai . Cheers!"
   ]
@@ -299,6 +300,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
   const [conversationHistory, setConversationHistory] = useState<GeminiMessage[]>([])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [isResetting, setIsResetting] = useState(false)
   const [currentTip, setCurrentTip] = useState('')
   // Store isochrone state for next turn
   const [lastIsochroneParams, setLastIsochroneParams] = useState<any>(null)
@@ -503,8 +505,11 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
         visibleRestaurants: restaurants.length,
         activeFilters: {},
         // Pass isochrone state from previous turn for state persistence
-        isochrone_params: lastIsochroneParams,
-        isochrone_layers: lastIsochroneLayers
+        // After reset, explicitly send null (not undefined)
+        isochrone_params: lastIsochroneParams || null,
+        isochrone_layers: (lastIsochroneLayers && lastIsochroneLayers.length > 0)
+          ? lastIsochroneLayers
+          : null
       }, historyWithUserMessage)
 
       // NEW: Handle Backend Agent Response (LangGraph)
@@ -664,9 +669,12 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
 
         // Check if any map action is a reset (from reset_search tool)
         if (response.map_actions && response.map_actions.some((a: any) => a.mapAction === 'reset_all')) {
-          console.log('🧹 Agent requested full reset via map action')
-          handleClearHistory()
-          return // Stop processing
+          console.log('🧹 Agent requested full reset via reset_search tool')
+
+          // Clear state FIRST, then stop processing stale response
+          await handleClearHistory()
+
+          return // Stop processing - response data is now stale
         }
 
         // 2. FALLBACK: Legacy behavior if no map actions (backward compatibility)
@@ -810,34 +818,66 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
   }
 
   const handleClearHistory = async () => {
-    // 1. Call backend to reset agent state
+    setIsResetting(true) // Block UI during reset
+
     try {
-      await fetch(`${API_CONFIG.API_URL}/reset`, { method: 'POST' })
-      console.log('🧹 Backend agent state reset')
-    } catch (e) {
-      console.error('Failed to reset backend state:', e)
-    }
+      console.log('🧹 Starting reset...')
 
-    // 2. Clear chat state
-    setConversationHistory([])
-    setMessages([{
-      role: 'assistant',
-      content: welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)]
-    }])
-    setLastIsochroneParams(null)   // Clear isochrone state persistence
-    setLastIsochroneLayers([])      // Clear isochrone layers persistence
+      // Step 1: Backend reset - MUST complete successfully
+      try {
+        const response = await fetch(`${API_CONFIG.API_URL}/reset`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        })
 
-    // 3. Clear isochrone visualizations
-    if (onIsochroneUpdate) {
-      onIsochroneUpdate(null)
-    }
-    if (onIsochroneLayersUpdate) {
-      onIsochroneLayersUpdate([])
-    }
+        if (!response.ok) {
+          throw new Error(`Backend reset failed with status ${response.status}`)
+        }
 
-    // 4. Trigger full app reset (clears filters, resets map view)
-    if (onResetAll) {
-      onResetAll()
+        const data = await response.json()
+        console.log('✅ Backend agent state reset:', data)
+      } catch (error) {
+        console.error('❌ Failed to reset backend state:', error)
+
+        // Show error to user instead of silently continuing
+        setMessages(prev => [...prev, {
+          role: 'assistant',
+          content: 'Sorry, I couldn\'t reset properly. Please refresh the page and try again.'
+        }])
+
+        return // STOP - don't clear frontend if backend failed
+      }
+
+      // Step 2: Clear frontend state SYNCHRONOUSLY (guaranteed atomic)
+      flushSync(() => {
+        setConversationHistory([])
+        setMessages([{
+          role: 'assistant',
+          content: welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)]
+        }])
+        setLastIsochroneParams(null)   // Clear isochrone persistence
+        setLastIsochroneLayers([])      // Clear multi-layer persistence
+      })
+
+      console.log('✅ Frontend chat state cleared (synchronous)')
+
+      // Step 3: Clear isochrone visualizations (state is now committed)
+      if (onIsochroneUpdate) {
+        onIsochroneUpdate(null)
+      }
+
+      if (onIsochroneLayersUpdate) {
+        onIsochroneLayersUpdate([])
+      }
+
+      // Step 4: Trigger full app reset (filters, map view)
+      if (onResetAll) {
+        onResetAll()
+      }
+
+      console.log('✅ Full reset complete')
+    } finally {
+      setIsResetting(false) // Re-enable UI
     }
   }
 
@@ -882,28 +922,8 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
                           restaurant={msg.restaurant}
                           isFavorited={favorites.includes(msg.restaurant.name)}
                           onToggleFavorite={onToggleFavorite ? () => onToggleFavorite(msg.restaurant!.name) : undefined}
+                          onRequestReviewHighlights={handleRestaurantSuggestionClick}
                         />
-                      </div>
-                      {/* Suggestion Buttons - Outside the card */}
-                      <div className="restaurant-suggestions">
-                        {msg.restaurant!.yelp_review_highlights && msg.restaurant!.yelp_review_highlights.length > 0 && (
-                          <button
-                            className="restaurant-suggestion-btn"
-                            onClick={() => handleRestaurantSuggestionClick(`What do yelpers have to say about ${msg.restaurant!.name}?`, msg.restaurant!.slug)}
-                          >
-                            
-                            Read <img src="/yelp_logo.png" alt="Yelp" className="suggestion-icon" />Yelp Highlights
-                          </button>
-                        )}
-                        {msg.restaurant!.reddit && msg.restaurant!.reddit.trim() !== '' && (
-                          <button
-                            className="restaurant-suggestion-btn"
-                            onClick={() => handleRestaurantSuggestionClick(`What do redditors have to say about ${msg.restaurant!.name}?`, msg.restaurant!.slug)}
-                          >
-                            
-                            Read<img src="/reddit.webp" alt="Reddit" className="suggestion-icon" />Reddit Takes
-                          </button>
-                        )}
                       </div>
                     </div>
                   </div>
@@ -1003,12 +1023,12 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Find a restaurant in NYC..."
-            disabled={isLoading}
+            disabled={isLoading || isResetting}
             className="chat-input"
           />
           <button
             onClick={handleSend}
-            disabled={isLoading || !input.trim()}
+            disabled={isLoading || isResetting || !input.trim()}
             className="chat-send-button"
           >
             ➤

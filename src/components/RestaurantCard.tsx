@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { Restaurant } from '../types/restaurant'
 import './RestaurantCard.css'
 
@@ -7,10 +8,13 @@ interface RestaurantCardProps {
   onClose?: () => void
   isFavorited?: boolean
   onToggleFavorite?: () => void
+  onRequestReviewHighlights?: (prompt: string, slug: string) => void
 }
 
-export default function RestaurantCard({ restaurant, placeholderRestaurant, onClose, isFavorited = false, onToggleFavorite }: RestaurantCardProps) {
+export default function RestaurantCard({ restaurant, placeholderRestaurant, onClose, isFavorited = false, onToggleFavorite, onRequestReviewHighlights }: RestaurantCardProps) {
   const displayRestaurant = restaurant || placeholderRestaurant
+  const [isContactsOpen, setIsContactsOpen] = useState(false)
+
   if (!displayRestaurant) return null
 
   return (
@@ -68,15 +72,82 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
       {/* Restaurant Description */}
       <p className="restaurant-description" style={{ fontSize: '12px' }}>{displayRestaurant.summary}</p>
 
-      {/* Yelp Rating */}
-      {displayRestaurant.yelp_rating && displayRestaurant.yelp_review_count && (
+      {/* Yelp Rating & Find a Table */}
+      {(displayRestaurant.yelp_rating && displayRestaurant.yelp_review_count) || (displayRestaurant.table_res || displayRestaurant.opentable_id) ? (
         <div className="yelp-price-row">
-          <span className="yelp-info"><b>Yelp:</b> {displayRestaurant.yelp_rating.toFixed(1)}★ ({displayRestaurant.yelp_review_count.toLocaleString()} Reviews)</span>
+          {displayRestaurant.yelp_rating && displayRestaurant.yelp_review_count && (
+            <span className="yelp-info"><b>Yelp:</b> {displayRestaurant.yelp_rating.toFixed(1)}★ ({displayRestaurant.yelp_review_count.toLocaleString()} Reviews)</span>
+          )}
+          {(displayRestaurant.table_res || displayRestaurant.opentable_id) && (
+            <a
+              href={
+                displayRestaurant.table_res && displayRestaurant.table_res.trim() !== ''
+                  ? displayRestaurant.table_res
+                  : `https://www.opentable.com/restaurant/profile/${displayRestaurant.opentable_id}`
+              }
+              target="_blank"
+              rel="noopener noreferrer"
+              className="find-table-btn"
+            >
+              Find a Table
+            </a>
+          )}
+        </div>
+      ) : null}
+
+      {/* Read Review Highlights Section */}
+      {(displayRestaurant.yelp_review_highlights || displayRestaurant.reddit) && onRequestReviewHighlights && (
+        <div className="review-highlights-section">
+          <div className="review-highlights-heading">What people have to say</div>
+          <div className="review-highlights-buttons">
+            {displayRestaurant.yelp_review_highlights && (
+              <button
+                className="review-btn review-btn-yelp"
+                onClick={() => onRequestReviewHighlights(`What do yelpers have to say about ${displayRestaurant.name}?`, displayRestaurant.slug)}
+              >
+                <img src="/yelp_logo.png" alt="Yelp" className="review-btn-icon" />
+                Yelp
+              </button>
+            )}
+            {displayRestaurant.reddit && displayRestaurant.reddit.trim() !== '' && (
+              <button
+                className="review-btn review-btn-reddit"
+                onClick={() => onRequestReviewHighlights(`What do redditors have to say about ${displayRestaurant.name}?`, displayRestaurant.slug)}
+              >
+                <img src="/reddit.webp" alt="Reddit" className="review-btn-icon" />
+                Reddit
+              </button>
+            )}
+          </div>
         </div>
       )}
 
-      {/* Social/Contact Icons Row */}
-      <div className="restaurant-icons-row">
+      {/* Contact & Links Accordion */}
+      <div className="contact-accordion">
+        <button
+          className="contact-accordion-header"
+          onClick={() => setIsContactsOpen(!isContactsOpen)}
+          aria-expanded={isContactsOpen}
+          aria-label="Toggle contact and links"
+        >
+          <span className="contact-accordion-title">Socials</span>
+          <svg
+            className={`contact-accordion-chevron ${isContactsOpen ? 'open' : ''}`}
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+
+        <div className={`contact-accordion-content ${isContactsOpen ? 'open' : ''}`}>
+          <div className="restaurant-icons-row">
         {displayRestaurant.website && (
           <a href={displayRestaurant.website} target="_blank" rel="noopener noreferrer" className="icon-link" title="Website">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -128,20 +199,8 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
             </svg>
           </a>
         )}
-        {(displayRestaurant.table_res || displayRestaurant.opentable_id) && (
-          <a
-            href={
-              displayRestaurant.table_res && displayRestaurant.table_res.trim() !== ''
-                ? displayRestaurant.table_res
-                : `https://www.opentable.com/restaurant/profile/${displayRestaurant.opentable_id}`
-            }
-            target="_blank"
-            rel="noopener noreferrer"
-            className="find-table-btn"
-          >
-            Find a Table
-          </a>
-        )}
+          </div>
+        </div>
       </div>
     </div>
   )

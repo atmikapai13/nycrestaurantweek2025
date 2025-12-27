@@ -351,12 +351,12 @@ async function fallbackSearch(query, filters, embedding) {
  * Perform RAG search using Pinecone vector embeddings
  * @param {string} query - Natural language query
  * @param {object} preFilters - Pre-filters to apply: { cuisines, price_levels, neighborhoods, min_rating }
- * @param {number} topK - Number of results to return (default: 20)
+ * @param {number} topK - Number of results to return (default: 15)
  * @param {string[]|null} restaurantIds - Optional array of restaurant slugs to scope search
  * @returns {Promise<{query: string, total_results: number, results: object[], overall_explanation: string, fallback: object|null, filters_applied: object}>}
  * @throws {Error} if Pinecone or Google AI API is not configured
  */
-export async function performRagSearch(query, preFilters = {}, topK = 20, restaurantIds = null) {
+export async function performRagSearch(query, preFilters = {}, topK = 15, restaurantIds = null) {
   if (!query || typeof query !== 'string') {
     throw new Error('Query is required and must be a string')
   }

@@ -311,7 +311,7 @@ Use for vibe/ambiance/dish queries: "cozy date spot", "best ramen", "great cockt
   schema: z.object({
     query: z.string().describe("Natural language query"),
     scopeToIsochrone: z.boolean().default(true).describe("If true and isochrone exists: search within isochrone base list. If false: search all 628 restaurants. Searches are NOT stacked - each query searches the same base."),
-    topK: z.number().default(20).describe("Number of results to return"),
+    topK: z.number().default(15).describe("Number of results to return"),
     preFilters: z.object({
       cuisines: z.array(z.string()).optional(),
       priceLevels: z.array(z.string()).optional(),
