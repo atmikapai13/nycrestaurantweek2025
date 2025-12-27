@@ -98,7 +98,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
       {/* Read Review Highlights Section */}
       {(displayRestaurant.yelp_review_highlights || displayRestaurant.reddit) && onRequestReviewHighlights && (
         <div className="review-highlights-section">
-          <div className="review-highlights-heading">What people have to say</div>
+          <div className="review-highlights-heading">What people say...</div>
           <div className="review-highlights-buttons">
             {displayRestaurant.yelp_review_highlights && (
               <button

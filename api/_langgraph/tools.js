@@ -259,7 +259,7 @@ Use when user asks "tell me about [restaurant]" or "what's the vibe".`,
       },
       reviews: {
         yelp: restaurant.yelp_review_highlights,
-        reddit: restaurant.reddit_mentions,
+        reddit: restaurant.reddit,
         count: 1
       },
       pricing: {
