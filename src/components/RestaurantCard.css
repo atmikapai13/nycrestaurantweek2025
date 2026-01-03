@@ -437,6 +437,10 @@
     gap: 12px;
     align-items: center;
   }
+
+  .review-text {
+    font-size: 10px;
+  }
 }
 
 @media (max-width: 480px) {
