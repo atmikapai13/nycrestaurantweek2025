@@ -897,6 +897,11 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
         >
           <div className="drawer-handle-bar"></div>
         </div>
+        {/* Collapsed header - shown only when drawer is at height 8 */}
+        <div className="drawer-collapsed-header" onClick={() => setDrawerHeight(40)}>
+          <img src="/remi_transparent.png" alt="Remi" className="drawer-collapsed-logo" />
+          <span className="drawer-collapsed-text">Chat with Remi</span>
+        </div>
         {/* Messages */}
         <div ref={messagesContainerRef} className="chat-messages">
           {messages.map((msg, idx) => {
@@ -923,6 +928,11 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
                           isFavorited={favorites.includes(msg.restaurant.name)}
                           onToggleFavorite={onToggleFavorite ? () => onToggleFavorite(msg.restaurant!.name) : undefined}
                           onRequestReviewHighlights={handleRestaurantSuggestionClick}
+                          onExpandDrawer={() => {
+                            if (window.innerWidth <= 768) {
+                              setDrawerHeight(80)
+                            }
+                          }}
                         />
                       </div>
                     </div>

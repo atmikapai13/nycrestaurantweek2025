@@ -75,7 +75,7 @@
 }
 
 .tag-michelin {
-  background-color: #ffcccc;
+  background-color: #ffb3b3;
   color: #000000;
 }
 
@@ -211,54 +211,93 @@
   gap: 4px;
 }
 
-/* Review Highlights Section */
-.review-highlights-section {
-  margin-top: 2px;
+/* Review Accordion */
+.review-accordion {
+  margin-top: 4px;
   padding-top: 2px;
   border-top: 1px solid rgba(0, 0, 0, 0.06);
 }
 
-.review-highlights-heading {
-  font-size: 8px;
+.review-accordion-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 4px 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.review-accordion-header:hover {
+  opacity: 0.7;
+}
+
+.review-accordion-title {
+  font-size: 11px;
   font-weight: 600;
   color: #4B5563;
-  margin-bottom: 3px;
   text-align: left;
 }
 
-.review-highlights-buttons {
+.review-accordion-chevron {
+  transition: transform 0.2s ease;
+  color: #4B5563;
+  flex-shrink: 0;
+}
+
+.review-accordion-chevron.open {
+  transform: rotate(180deg);
+}
+
+.review-accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+.review-accordion-content.open {
+  max-height: 500px;
+}
+
+.review-item {
   display: flex;
+  flex-direction: column;
   gap: 4px;
-  justify-content: flex-start;
-  align-items: center;
+  margin-bottom: 8px;
+  padding-top: 6px;
 }
 
-.review-btn {
+.review-item:last-child {
+  margin-bottom: 0;
+}
+
+.review-header {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 3px;
-  padding: 3px 8px;
-  margin-bottom: 3px;
-  border-radius: 14px;
-  font-size: 9px;
-  font-weight: 500;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  background-color: rgba(0, 0, 0, 0.05);
-  color: #000000;
+  gap: 4px;
 }
 
-.review-btn:hover {
-  background-color: rgba(0, 0, 0, 0.1);
-  transform: scale(1.05);
-}
-
-.review-btn-icon {
-  width: 12px;
-  height: 12px;
+.review-source-icon {
+  width: 14px;
+  height: 14px;
   object-fit: contain;
+  flex-shrink: 0;
+}
+
+.review-source-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: #4B5563;
+  flex-shrink: 0;
+}
+
+.review-text {
+  font-size: 9px;
+  line-height: 1.4;
+  color: #4B5563;
+  text-align: left;
 }
 
 /* Contact & Links Accordion */
@@ -285,7 +324,7 @@
 }
 
 .contact-accordion-title {
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 600;
   color: #4B5563;
   text-align: left;
@@ -348,10 +387,10 @@
 
 .find-table-btn {
   background-color: rgba(34, 34, 34, 0.15);
-  color: #000000;
+  color: #343333;
   font-size: 10px;
   font-weight: 500;
-  padding: 2px 8px;
+  padding: 0 8px;
   border: none;
   border-radius: 20px;
   cursor: pointer;

@@ -9,13 +9,36 @@ interface RestaurantCardProps {
   isFavorited?: boolean
   onToggleFavorite?: () => void
   onRequestReviewHighlights?: (prompt: string, slug: string) => void
+  onExpandDrawer?: () => void
 }
 
-export default function RestaurantCard({ restaurant, placeholderRestaurant, onClose, isFavorited = false, onToggleFavorite, onRequestReviewHighlights }: RestaurantCardProps) {
+export default function RestaurantCard({ restaurant, placeholderRestaurant, onClose, isFavorited = false, onToggleFavorite, onRequestReviewHighlights, onExpandDrawer }: RestaurantCardProps) {
   const displayRestaurant = restaurant || placeholderRestaurant
   const [isContactsOpen, setIsContactsOpen] = useState(false)
+  const [isReviewsOpen, setIsReviewsOpen] = useState(false)
 
   if (!displayRestaurant) return null
+
+  // Strip "Yelp categorizes..." first sentence from review highlights
+  const processYelpReview = (text: string) => {
+    if (!text) return ''
+    const sentences = text.split('. ')
+    if (sentences[0]?.startsWith('Yelp categorizes')) {
+      return sentences.slice(1).join('. ')
+    }
+    return text
+  }
+
+  // Handle review accordion toggle - expand drawer on mobile
+  const handleReviewToggle = () => {
+    const newState = !isReviewsOpen
+    setIsReviewsOpen(newState)
+
+    // Expand drawer to 80vh when opening reviews on mobile
+    if (newState && onExpandDrawer) {
+      onExpandDrawer()
+    }
+  }
 
   return (
     <div className="restaurant-card">
@@ -95,28 +118,49 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
         </div>
       ) : null}
 
-      {/* Read Review Highlights Section */}
-      {(displayRestaurant.yelp_review_highlights || displayRestaurant.reddit) && onRequestReviewHighlights && (
-        <div className="review-highlights-section">
-          <div className="review-highlights-heading">What people say...</div>
-          <div className="review-highlights-buttons">
+      {/* Review Highlights Accordion */}
+      {(displayRestaurant.yelp_review_highlights || displayRestaurant.reddit) && (
+        <div className="review-accordion">
+          <button
+            className="review-accordion-header"
+            onClick={handleReviewToggle}
+            aria-expanded={isReviewsOpen}
+            aria-label="Toggle reviews"
+          >
+            <span className="review-accordion-title">What people say...</span>
+            <svg
+              className={`review-accordion-chevron ${isReviewsOpen ? 'open' : ''}`}
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+
+          <div className={`review-accordion-content ${isReviewsOpen ? 'open' : ''}`}>
             {displayRestaurant.yelp_review_highlights && (
-              <button
-                className="review-btn review-btn-yelp"
-                onClick={() => onRequestReviewHighlights(`What do yelpers have to say about ${displayRestaurant.name}?`, displayRestaurant.slug)}
-              >
-                <img src="/yelp_logo.png" alt="Yelp" className="review-btn-icon" />
-                Yelp
-              </button>
+              <div className="review-item">
+                <div className="review-header">
+                  <img src="/yelp_logo.png" alt="Yelp" className="review-source-icon" />
+                  <span className="review-source-label">Yelp:</span>
+                </div>
+                <span className="review-text">{processYelpReview(displayRestaurant.yelp_review_highlights)}</span>
+              </div>
             )}
             {displayRestaurant.reddit && displayRestaurant.reddit.trim() !== '' && (
-              <button
-                className="review-btn review-btn-reddit"
-                onClick={() => onRequestReviewHighlights(`What do redditors have to say about ${displayRestaurant.name}?`, displayRestaurant.slug)}
-              >
-                <img src="/reddit.webp" alt="Reddit" className="review-btn-icon" />
-                Reddit
-              </button>
+              <div className="review-item">
+                <div className="review-header">
+                  <img src="/reddit.webp" alt="Reddit" className="review-source-icon" />
+                  <span className="review-source-label">Reddit:</span>
+                </div>
+                <span className="review-text">{displayRestaurant.reddit}</span>
+              </div>
             )}
           </div>
         </div>

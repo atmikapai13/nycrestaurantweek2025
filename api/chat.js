@@ -12,12 +12,31 @@ import { HumanMessage, AIMessage, ToolMessage } from "@langchain/core/messages";
  * @returns {Object} { valid: boolean, reason?: string, toolsCalled?: Array }
  */
 function validateToolExecution(message, finalState, toolCallsMade) {
-  // Detect filter queries (same keywords as existing detection)
-  const filterKeywords = ['show me', 'filter', 'only', 'just', 'italian', 'japanese',
-                         'chinese', 'american', 'french', 'mexican', 'thai', 'korean',
-                         'indian', 'mediterranean', 'steakhouse', 'seafood', 'pizza',
-                         'cheap', 'expensive', '$$', '$$$', '$$$$', 'about', 'what about',
-                         'how about'];
+  // Detect filter queries - comprehensive keyword list
+  const filterKeywords = [
+    // Action keywords
+    'show me', 'filter', 'only', 'just', 'about', 'what about', 'how about',
+
+    // Broad cuisine categories
+    'asian', 'european', 'latin', 'latino', 'middle eastern',
+
+    // Specific cuisines (all 45 from dataset)
+    'italian', 'japanese', 'chinese', 'american', 'french', 'mexican', 'thai', 'korean',
+    'indian', 'mediterranean', 'steakhouse', 'seafood', 'pizza', 'eclectic', 'gastropub',
+    'spanish', 'greek', 'cuban', 'peruvian', 'taiwanese', 'ukrainian', 'british', 'irish',
+    'african', 'argentinian', 'austrian', 'barbecue', 'belgian', 'brazilian', 'cajun',
+    'creole', 'caribbean', 'colombian', 'continental', 'eastern european', 'hawaiian',
+    'pan-asian', 'puerto rican', 'soul food', 'southern', 'turkish', 'vietnamese', 'sushi',
+
+    // Price keywords
+    'cheap', 'expensive', 'affordable', 'budget', '$', '$$', '$$$', '$$$$',
+
+    // Rating keywords
+    'rating', 'rated', 'star', 'stars', '4+', '4.5', 'highly rated', 'top rated', 'best rated',
+
+    // Award keywords
+    'michelin', 'bib gourmand', 'bib', 'nyt', 'nyt top 100', 'top 100'
+  ];
 
   const messageLower = message.toLowerCase();
   const isFilterQuery = filterKeywords.some(keyword => messageLower.includes(keyword));
@@ -46,6 +65,124 @@ function validateToolExecution(message, finalState, toolCallsMade) {
       reason: `Filter query detected but ${!toolWasCalled ? 'no tool was called' : 'no tool results exist'}`,
       toolsCalled: toolCallsMade
     };
+  }
+
+  return { valid: true };
+}
+
+/**
+ * Validate that isochrone modification queries resulted in actual tool execution
+ * Prevents agent from responding without creating/updating isochrones
+ *
+ * @param {string} message - User's original message
+ * @param {Object} finalState - Agent's final state after execution
+ * @param {Array} toolCallsMade - Array of tool names that were called
+ * @param {Object} context - Context from frontend (existing isochrone state)
+ * @returns {Object} { valid: boolean, reason?: string, toolsCalled?: Array }
+ */
+function validateIsochroneExecution(message, finalState, toolCallsMade, context) {
+  const messageLower = message.toLowerCase();
+
+  // Detect isochrone modification requests
+  const isochroneChangeKeywords = [
+    'change it to', 'change to', 'make it', 'update to', 'switch to', 'actually',
+    'instead', 'rather', 'let\'s do', 'how about', 'what about', 'nevermind', "i'll be at", "i'm in", "i'm at", "i'll be in"
+  ];
+
+  // Detect time/mode specifications
+  const timePatterns = [
+    /\d+\s*min/i,  // "20 min", "15min"
+    /\d+\s*minute/i  // "20 minutes"
+  ];
+  const modeKeywords = ['walking', 'walk', 'subway', 'transit', 'cycling', 'bike', 'driving', 'car'];
+
+  // Check if message is an isochrone modification request
+  const hasChangeKeyword = isochroneChangeKeywords.some(keyword => messageLower.includes(keyword));
+  const hasTimeSpec = timePatterns.some(pattern => pattern.test(message));
+  const hasModeSpec = modeKeywords.some(keyword => messageLower.includes(keyword));
+
+  // If user is modifying an existing isochrone (context has isochrone params)
+  const hasExistingIsochrone = context?.isochrone_params?.allRestaurantSlugs?.length > 0;
+
+  // SCENARIO: User is modifying existing isochrone parameters
+  if (hasExistingIsochrone && (hasChangeKeyword || hasTimeSpec || hasModeSpec)) {
+    console.log('🔍 Isochrone modification detected:', {
+      hasChangeKeyword,
+      hasTimeSpec,
+      hasModeSpec,
+      existingIsochrone: hasExistingIsochrone
+    });
+
+    // Check if create_isochrone was called
+    const isochroneToolCalled = toolCallsMade.includes('create_isochrone');
+
+    if (!isochroneToolCalled) {
+      return {
+        valid: false,
+        reason: 'Isochrone modification detected but create_isochrone was not called',
+        toolsCalled: toolCallsMade
+      };
+    }
+  }
+
+  return { valid: true };
+}
+
+/**
+ * Validate that map actions correspond to agent's text output
+ * Ensures visual representation matches what agent claims
+ *
+ * @param {Object} response - Response object with text and mapActions
+ * @param {Array} toolCallsMade - Array of tool names that were called
+ * @returns {Object} { valid: boolean, warnings?: Array }
+ */
+function validateMapTextCorrespondence(response, toolCallsMade) {
+  const warnings = [];
+  const agentText = response.response.toLowerCase();
+
+  // Extract time mentions from agent's text
+  const timeMatches = agentText.match(/(\d+)\s*min(ute)?s?/g);
+
+  // Check if agent mentions a specific travel time
+  if (timeMatches && timeMatches.length > 0) {
+    const mentionedTime = parseInt(timeMatches[timeMatches.length - 1]); // Use last mention
+
+    // Check if create_isochrone was called with matching time
+    if (toolCallsMade.includes('create_isochrone')) {
+      const isochroneParams = response.isochrone_params;
+      if (isochroneParams?.travelTimeMinutes && isochroneParams.travelTimeMinutes !== mentionedTime) {
+        warnings.push(`Agent mentions ${mentionedTime} min but isochrone created with ${isochroneParams.travelTimeMinutes} min`);
+      }
+    }
+  }
+
+  // Check if agent mentions restaurant count
+  const countMatches = agentText.match(/(\d+)\s*restaurant/g);
+  if (countMatches && countMatches.length > 0) {
+    const mentionedCount = parseInt(countMatches[countMatches.length - 1]);
+    const actualCount = response.visible_restaurants?.length || 0;
+
+    // Allow small discrepancies (e.g., "I found 38 restaurants" vs 37 actual)
+    if (Math.abs(mentionedCount - actualCount) > 2) {
+      warnings.push(`Agent mentions ${mentionedCount} restaurants but actual count is ${actualCount}`);
+    }
+  }
+
+  // Check if agent mentions mode (walking/subway/etc) matches isochrone
+  const modes = ['walking', 'subway', 'transit', 'cycling', 'biking', 'driving'];
+  const mentionedMode = modes.find(mode => agentText.includes(mode));
+  if (mentionedMode && response.isochrone_params?.mode) {
+    let normalizedMentioned = mentionedMode === 'subway' ? 'transit' : mentionedMode;
+    normalizedMentioned = normalizedMentioned === 'biking' ? 'cycling' : normalizedMentioned;
+
+    if (normalizedMentioned !== response.isochrone_params.mode) {
+      warnings.push(`Agent mentions ${mentionedMode} but isochrone created with ${response.isochrone_params.mode} mode`);
+    }
+  }
+
+  if (warnings.length > 0) {
+    console.warn('⚠️ Map/Text correspondence warnings:', warnings);
+    return { valid: true, warnings }; // Return warnings but don't block (soft validation)
   }
 
   return { valid: true };
@@ -81,11 +218,31 @@ export default async function handler(req, res) {
 
     console.log(`🤖 Processing: "${message.substring(0, 50)}..."`);
 
-    // Detect filter queries and enforce tool use
-    const filterKeywords = ['show me', 'filter', 'only', 'just', 'italian', 'japanese',
-                           'chinese', 'american', 'french', 'mexican', 'thai', 'korean',
-                           'indian', 'mediterranean', 'steakhouse', 'seafood', 'pizza',
-                           'cheap', 'expensive', '$$', '$$$', '$$$$'];
+    // Detect filter queries and enforce tool use - comprehensive keyword list
+    const filterKeywords = [
+      // Action keywords
+      'show me', 'filter', 'only', 'just', 'about', 'what about', 'how about',
+
+      // Broad cuisine categories
+      'asian', 'european', 'latin', 'latino', 'middle eastern',
+
+      // Specific cuisines (all 45 from dataset)
+      'italian', 'japanese', 'chinese', 'american', 'french', 'mexican', 'thai', 'korean',
+      'indian', 'mediterranean', 'steakhouse', 'seafood', 'pizza', 'eclectic', 'gastropub',
+      'spanish', 'greek', 'cuban', 'peruvian', 'taiwanese', 'ukrainian', 'british', 'irish',
+      'african', 'argentinian', 'austrian', 'barbecue', 'belgian', 'brazilian', 'cajun',
+      'creole', 'caribbean', 'colombian', 'continental', 'eastern european', 'hawaiian',
+      'pan-asian', 'puerto rican', 'soul food', 'southern', 'turkish', 'vietnamese', 'sushi',
+
+      // Price keywords
+      'cheap', 'expensive', 'affordable', 'budget', '$', '$$', '$$$', '$$$$',
+
+      // Rating keywords
+      'rating', 'rated', 'star', 'stars', '4+', '4.5', 'highly rated', 'top rated', 'best rated',
+
+      // Award keywords
+      'michelin', 'bib gourmand', 'bib', 'nyt', 'nyt top 100', 'top 100'
+    ];
 
     const messageLower = message.toLowerCase();
     const isFilterQuery = filterKeywords.some(keyword => messageLower.includes(keyword));
@@ -183,8 +340,19 @@ export default async function handler(req, res) {
         }
       });
 
-      // Validate tool execution for filter queries
-      const validation = validateToolExecution(message, finalState, toolCallsMade);
+      // VALIDATION 1: Filter query validation
+      const filterValidation = validateToolExecution(message, finalState, toolCallsMade);
+
+      // VALIDATION 2: Isochrone modification validation
+      const isochroneValidation = validateIsochroneExecution(message, finalState, toolCallsMade, context);
+
+      // COMBINED: Fail if either validation fails
+      const validation = {
+        valid: filterValidation.valid && isochroneValidation.valid,
+        reason: !filterValidation.valid ? filterValidation.reason : isochroneValidation.reason,
+        toolsCalled: toolCallsMade,
+        failedType: !filterValidation.valid ? 'filter' : 'isochrone'
+      };
 
       if (validation.valid) {
         console.log(`✅ Validation passed: Tool execution confirmed`);
@@ -203,12 +371,16 @@ export default async function handler(req, res) {
       console.warn(`⚠️ Validation failed (attempt ${retryCount + 1}): ${validation.reason}`);
       console.warn(`   Re-invoking agent with mandatory tool call instruction...`);
 
-      // Add CRITICAL system-level enforcement message
-      const enforcementMessage = new HumanMessage(`[SYSTEM OVERRIDE - CRITICAL]: The previous response violated architectural rules. You answered a filter/search query WITHOUT calling the required tool. This is a HARD FAILURE.
+      // Determine which validation failed and craft appropriate enforcement message
+      const failedType = validation.failedType === 'filter' ? 'filter/search' : 'isochrone modification';
+      const requiredTools = validation.failedType === 'filter'
+        ? 'filter_restaurants or semantic_search_restaurants'
+        : 'create_isochrone';
 
-You MUST call one of these tools for the query "${message}":
-- filter_restaurants (for cuisine/price/awards/rating filters)
-- semantic_search_restaurants (for vibe/ambiance/quality searches)
+      // Add CRITICAL system-level enforcement message
+      const enforcementMessage = new HumanMessage(`[SYSTEM OVERRIDE - CRITICAL]: The previous response violated architectural rules. You answered a ${failedType} query WITHOUT calling the required tool. This is a HARD FAILURE.
+
+You MUST call ${requiredTools} for the query "${message}".
 
 DO NOT respond from memory or conversation history. CALL THE TOOL FIRST, then summarize the results.`);
 
@@ -253,6 +425,14 @@ DO NOT respond from memory or conversation history. CALL THE TOOL FIRST, then su
         toolsExecuted: toolCalls.length > 0
       }
     };
+
+    // VALIDATION 3: Map/Text correspondence (soft validation)
+    const correspondenceValidation = validateMapTextCorrespondence(response, toolCalls);
+
+    if (correspondenceValidation.warnings?.length > 0) {
+      // Add warnings to response for debugging
+      response._validation.correspondenceWarnings = correspondenceValidation.warnings;
+    }
 
     // Return response
     return res.status(200).json(response);

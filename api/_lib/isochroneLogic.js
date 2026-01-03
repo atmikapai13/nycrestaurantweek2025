@@ -34,7 +34,6 @@ function normalizePolygonGeometry(feature) {
         }
       }
 
-      console.log(`✅ Normalized MultiPolygon → Polygon (took largest of ${polygons.length} polygons)`)
       return largestPolygon
     } catch (error) {
       console.warn('⚠️ Failed to normalize MultiPolygon, returning original:', error.message)
@@ -106,7 +105,10 @@ export async function generateIsochrone(coordinates, travelTimeMinutes, mode = '
       'walking': 'walk',
       'cycling': 'bicycle',
       'transit': 'transit',
-      'driving': 'drive'
+      'driving': 'drive',
+      'subway': 'transit',
+      'Uber':'drive',
+      'Lyft':'drive'
     };
     const geoapifyMode = modeMap[mode] || mode || 'transit';
 

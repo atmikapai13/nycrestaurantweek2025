@@ -311,7 +311,7 @@ Use for vibe/ambiance/dish queries: "cozy date spot", "best ramen", "great cockt
   schema: z.object({
     query: z.string().describe("Natural language query"),
     scopeToIsochrone: z.boolean().default(true).describe("If true and isochrone exists: search within isochrone base list. If false: search all 628 restaurants. Searches are NOT stacked - each query searches the same base."),
-    topK: z.number().default(15).describe("Number of results to return"),
+    topK: z.number().default(10).describe("Number of results to return"),
     preFilters: z.object({
       cuisines: z.array(z.string()).optional(),
       priceLevels: z.array(z.string()).optional(),
@@ -375,6 +375,7 @@ Use for "restaurants within 15 min walk from Grand Central".`,
     location: z.string().describe("NYC address, neighborhood, or landmark"),
     travelTimeMinutes: z.number().min(5).max(60),
     mode: z.enum(["walking", "cycling", "transit", "driving"]).default("walking"),
+    coordinates: z.array(z.number()).length(2).optional().describe("Optional [lon, lat] to skip geocoding (used when user picks from disambiguation options)"),
     filters: z.object({
       cuisines: z.array(z.string()).optional(),
       priceLevels: z.array(z.string()).optional(),
@@ -382,19 +383,63 @@ Use for "restaurants within 15 min walk from Grand Central".`,
     }).optional().describe("Optional filters to apply to restaurants")
   }),
 
-  func: async ({ location, travelTimeMinutes, mode, filters }) => {
+  func: async ({ location, travelTimeMinutes, mode, coordinates, filters }) => {
     try {
       console.log(`🗺️  Isochrone: ${location}, ${travelTimeMinutes}min ${mode}`);
 
-      // Step 1: Geocode location
-      const geocoded = await geocodeAddress(location);
-      if (!geocoded?.coordinates) {
-        return JSON.stringify({ error: `Could not geocode: ${location}` });
+      // Step 1: Geocode location (or use provided coordinates)
+      let finalCoordinates;
+      let finalAddress;
+
+      if (coordinates && Array.isArray(coordinates) && coordinates.length === 2) {
+        // User picked from disambiguation - skip geocoding
+        console.log(`📍 Using provided coordinates: [${coordinates[0]}, ${coordinates[1]}]`);
+        finalCoordinates = coordinates;
+        finalAddress = location; // Use location string as-is
+      } else {
+        // Normal geocoding flow
+        const geocoded = await geocodeAddress(location);
+        if (!geocoded?.coordinates) {
+          return JSON.stringify({ error: `Could not geocode: ${location}` });
+        }
+
+        // Check if geocoding requires disambiguation
+        if (geocoded.confidence === 'low' && geocoded.alternatives && geocoded.alternatives.length > 0) {
+          console.log(`🤔 Location "${location}" is ambiguous - asking user to choose`);
+
+          // Build options list with the primary result first
+          const options = [
+            {
+              id: 1,
+              label: `${geocoded.formatted_address} (${geocoded.neighborhood || 'unknown neighborhood'})`,
+              coordinates: geocoded.coordinates,
+              formatted_address: geocoded.formatted_address,
+              neighborhood: geocoded.neighborhood
+            },
+            ...geocoded.alternatives.map((alt, index) => ({
+              id: index + 2,
+              label: alt.label,
+              coordinates: alt.coordinates,
+              formatted_address: alt.formatted_address,
+              neighborhood: alt.neighborhood
+            }))
+          ];
+
+          return JSON.stringify({
+            needsDisambiguation: true,
+            location,
+            options,
+            message: `I found ${options.length} locations matching "${location}". Which one did you mean?`
+          });
+        }
+
+        finalCoordinates = geocoded.coordinates;
+        finalAddress = geocoded.formatted_address;
       }
 
       // Step 2: Generate isochrone
       const isochrone = await generateIsochrone(
-        geocoded.coordinates,
+        finalCoordinates,
         travelTimeMinutes,
         mode
       );
@@ -442,7 +487,7 @@ Use for "restaurants within 15 min walk from Grand Central".`,
         polygon: isochrone.polygon,
         allRestaurantSlugs: allSlugs,  // NEW: Base list for state tracking
         center: isochrone.center,
-        location: geocoded.formatted_address,
+        location: finalAddress,
         mode: isochrone.mode,
         travelTimeMinutes: isochrone.travel_time_minutes,
         fallback: isochrone.fallback || false,

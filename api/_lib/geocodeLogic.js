@@ -139,14 +139,16 @@ export async function geocodeAddress(address) {
       throw new Error(`Could not find location: ${address}`)
     }
 
-    const topFeature = result.features[0]
-    const properties = topFeature.properties
-    const coordinates = topFeature.geometry.coordinates // GeoJSON format: [lon, lat]
-    const [lon, lat] = coordinates
+    // Process multiple results for disambiguation
+    const validFeatures = result.features
+      .filter(feature => {
+        const [lon, lat] = feature.geometry.coordinates
+        return isWithinNYC(lat, lon)
+      })
+      .slice(0, 5) // Top 5 results max
 
-    // Verify result is within NYC bounds
-    if (!isWithinNYC(lat, lon)) {
-      console.log('Result outside NYC bounds, trying fallback')
+    if (validFeatures.length === 0) {
+      console.log('No results within NYC bounds, trying fallback')
       const fallbackResult = await fallbackNeighborhoodGeocode(expandedAddress)
 
       if (fallbackResult) {
@@ -156,14 +158,69 @@ export async function geocodeAddress(address) {
       throw new Error(`The address "${address}" is outside New York City`)
     }
 
+    // Build primary result (top match)
+    const topFeature = validFeatures[0]
+    const topProperties = topFeature.properties
+    const topCoordinates = topFeature.geometry.coordinates
+    const [topLon, topLat] = topCoordinates
+
+    // Determine confidence level
+    let confidence = 'high'
+    let alternatives = []
+
+    // If we have multiple distinct results, confidence is lower
+    if (validFeatures.length > 1) {
+      // Check if results are geographically distinct (>500m apart)
+      const hasDifferentLocations = validFeatures.slice(1).some(feature => {
+        const [lon, lat] = feature.geometry.coordinates
+        const distance = Math.sqrt(
+          Math.pow((lon - topLon) * 111000 * Math.cos(topLat * Math.PI / 180), 2) +
+          Math.pow((lat - topLat) * 111000, 2)
+        )
+        return distance > 500 // 500 meters
+      })
+
+      if (hasDifferentLocations) {
+        confidence = 'low'
+
+        // Build alternatives list
+        alternatives = validFeatures.slice(1, 4).map((feature, index) => {
+          const props = feature.properties
+          const coords = feature.geometry.coordinates
+          const neighborhood = props.neighborhood || props.suburb || props.district
+          const borough = props.county || props.city || 'Manhattan'
+
+          return {
+            coordinates: coords,
+            formatted_address: props.formatted || props.address_line1,
+            neighborhood,
+            borough,
+            label: neighborhood && borough
+              ? `${props.formatted || props.address_line1} (${neighborhood}, ${borough})`
+              : (props.formatted || props.address_line1)
+          }
+        })
+
+        console.log(`⚠️ Low confidence geocoding: ${alternatives.length + 1} distinct locations found`)
+        console.log(`   Primary: ${topProperties.formatted} (${topProperties.neighborhood || 'unknown neighborhood'})`)
+        alternatives.forEach((alt, i) => {
+          console.log(`   Option ${i + 2}: ${alt.formatted_address} (${alt.neighborhood || 'unknown neighborhood'})`)
+        })
+      } else {
+        // Results are close together (same location, different precision)
+        confidence = 'high'
+      }
+    }
+
     // Build response
     return {
-      coordinates,
-      formatted_address: properties.formatted || properties.address_line1,
-      neighborhood: properties.neighborhood || properties.suburb,
-      borough: properties.county || properties.city,
-      confidence: 'high',
-      fallback: false
+      coordinates: topCoordinates,
+      formatted_address: topProperties.formatted || topProperties.address_line1,
+      neighborhood: topProperties.neighborhood || topProperties.suburb,
+      borough: topProperties.county || topProperties.city,
+      confidence,
+      fallback: false,
+      alternatives: alternatives.length > 0 ? alternatives : undefined
     }
   } catch (error) {
     // Try fallback on any error

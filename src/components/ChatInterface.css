@@ -164,8 +164,8 @@
 
 /* Avatar inside bubble for assistant messages */
 .message-avatar-inside {
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   min-width: 35px;
   border-radius: 50%;
   overflow: hidden;
@@ -511,13 +511,21 @@
   display: none;
 }
 
-/* Desktop-only elements */
+/* Desktop: Show desktop-style avatar (outside bubble), hide mobile-style avatar (inside bubble) */
 .desktop-only {
   display: block;
 }
 
 .mobile-only {
   display: none;
+}
+
+/* Tablet - Wider chat interface for iPads */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .chat-interface {
+    width: 45%;
+    max-width: 600px;
+  }
 }
 
 /* Responsive - Mobile Drawer */
@@ -602,20 +610,52 @@
     display: none;
   }
 
+  /* Collapsed header - only visible on mobile when drawer is at height 8 */
+  .drawer-collapsed-header {
+    display: none;
+  }
+
+  .drawer-8 .drawer-collapsed-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    padding: 0 16px 5px 16px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .drawer-8 .drawer-collapsed-header:hover {
+    opacity: 0.7;
+  }
+
+  .drawer-collapsed-logo {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+  }
+
+  .drawer-collapsed-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: #4B5563;
+  }
+
   .drawer-40 .chat-messages {
-    max-height: calc(40vh - 100px);
+    max-height: calc(40vh - 110px);
   }
 
   .drawer-80 .chat-messages {
-    max-height: calc(80vh - 100px);
+    max-height: calc(80vh - 110px);
   }
 
   .message-bubble {
-    font-size: 14px;
+    font-size: 13px;
+    line-height: 1.4;
   }
 
   .suggestion-pill {
-    font-size: 13px;
+    font-size: 12px;
   }
 
   .chat-input-container {
@@ -628,12 +668,11 @@
     transform: translateX(-50%);
   }
 
-  /* Hide chatbot avatars on mobile */
+  /* Switch from desktop avatar (outside bubble) to mobile avatar (inside bubble) */
   .desktop-only {
     display: none !important;
   }
 
-  /* Show mobile avatar on mobile */
   .mobile-only {
     display: block !important;
   }
@@ -641,10 +680,10 @@
   /* Mobile avatar positioning - top left */
   .message-avatar-mobile {
     position: absolute;
-    top: 8px;
-    left: 8px;
-    width: 30px;
-    height: 30px;
+    top: 10px;
+    left: 12px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     overflow: hidden;
     background: transparent;
@@ -660,7 +699,9 @@
   /* Assistant message bubble positioning for mobile avatar */
   .chat-message.assistant .message-bubble {
     position: relative;
-    padding-left: 45px;
+    padding-left: 70px;
+    padding-top: 12px;
+    padding-bottom: 10px;
   }
 
   /* Restaurant card full width on mobile */
@@ -758,4 +799,11 @@
 
 .btn-primary:hover {
   background: #ff1493;
+}
+
+/* Desktop - Hide collapsed header (only for mobile) */
+@media (min-width: 769px) {
+  .drawer-collapsed-header {
+    display: none !important;
+  }
 }
