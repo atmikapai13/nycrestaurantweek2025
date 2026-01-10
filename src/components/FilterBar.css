@@ -359,6 +359,11 @@
   background: #5b5658;
 }
 
+/* Scroll Arrows - Hidden on desktop */
+.filter-scroll-arrow {
+  display: none;
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .filter-bar-container {
@@ -369,6 +374,33 @@
     bottom: auto;
     overflow: visible;
     z-index: 850;
+  }
+
+  /* Scroll Arrows - Visible on mobile */
+  .filter-scroll-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(3px) saturate(100%);
+    -webkit-backdrop-filter: blur(3px) saturate(100%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    z-index: 10;
+  }
+
+  .filter-scroll-arrow:active {
+    background: rgba(222, 227, 228, 0.9);
+    transform: scale(0.95);
   }
 
   .filter-hamburger-button {

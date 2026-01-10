@@ -142,10 +142,10 @@
 
 /* Restaurant Description */
 .restaurant-description {
-  font-size: 8px;
-  line-height: 1.3;
+  font-size: 10px;
+  line-height: 1.4;
   color: #4B5563;
-  margin: 0 0 3px 0;
+  margin: 0 0 6px 0;
   white-space: pre-line;
 }
 
@@ -594,23 +594,97 @@
 @media (max-width: 768px) {
 
   .restaurant-card {
-    padding: 20px;
+    padding: 24px;
     min-width: 90%;
     max-width: 100%;
     margin-bottom: 0;
   }
 
   .restaurant-name {
-    font-size: 16px;
+    font-size: 18px;
+    margin-bottom: 8px;
   }
 
   .restaurant-tags {
     gap: 6px;
+    margin-bottom: 8px;
   }
 
   .tag {
-    font-size: 8px;
+    font-size: 9px;
     padding: 4px 10px;
+  }
+
+  .restaurant-description {
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+
+  .yelp-price-row {
+    margin-bottom: 10px;
+    font-size: 11px;
+  }
+
+  .yelp-info {
+    font-size: 11px;
+  }
+
+  /* Accordion titles - bigger on mobile */
+  .review-accordion-title,
+  .about-accordion-title,
+  .restaurant-week-accordion-title,
+  .contact-accordion-title {
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  /* Accordion content text - match summary font size */
+  .review-text {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .about-text {
+    font-size: 12px;
+    line-height: 1.5;
+    padding-top: 6px;
+  }
+
+  .meal-types-text {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .review-item {
+    padding-top: 8px;
+    margin-bottom: 12px;
+  }
+
+  .meal-types-row {
+    padding-top: 8px;
+  }
+
+  /* Add spacing between accordions */
+  .review-accordion,
+  .about-accordion,
+  .restaurant-week-accordion,
+  .contact-accordion {
+    margin-top: 8px;
+    padding-top: 8px;
+  }
+
+  /* Find a Table button - bigger and more prominent */
+  .find-table-btn {
+    font-size: 12px;
+    padding: 6px 14px;
+    font-weight: 600;
+  }
+
+  /* See Menu button - consistent with Find a Table */
+  .see-menu-btn {
+    font-size: 12px;
+    padding: 6px 14px;
+    font-weight: 600;
   }
 
   .action-links {
@@ -618,24 +692,18 @@
     gap: 12px;
     align-items: center;
   }
-
-  .review-text {
-    font-size: 10px;
-  }
 }
 
 @media (max-width: 480px) {
 
   .restaurant-card {
     min-width: 90%;
-    padding: 16px;
+    padding: 20px;
   }
 
   .restaurant-name {
-    font-size: 14px;
+    font-size: 17px;
   }
 
-  .restaurant-description {
-    font-size: 9px;
-  }
+  /* Keep consistent font sizes from 768px breakpoint */
 }

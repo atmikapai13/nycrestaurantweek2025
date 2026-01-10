@@ -75,6 +75,42 @@ export default function FilterBar({
 }: FilterBarProps) {
   const [isExpanded, setIsExpanded] = useState(true)
   const filterBarRef = useRef<HTMLDivElement>(null)
+  const [showLeftArrow, setShowLeftArrow] = useState(false)
+  const [showRightArrow, setShowRightArrow] = useState(false)
+
+  // Check scroll position to show/hide arrows
+  const checkScrollPosition = () => {
+    if (filterBarRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = filterBarRef.current
+      setShowLeftArrow(scrollLeft > 10) // Show left arrow if scrolled right
+      setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 10) // Show right arrow if more content
+    }
+  }
+
+  // Scroll filter bar
+  const scrollFilterBar = (direction: 'left' | 'right') => {
+    if (filterBarRef.current) {
+      const scrollAmount = 200
+      filterBarRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      })
+    }
+  }
+
+  // Check scroll position on mount and when filters change
+  useEffect(() => {
+    checkScrollPosition()
+  }, [activeFilters, isExpanded])
+
+  // Add scroll listener
+  useEffect(() => {
+    const filterBar = filterBarRef.current
+    if (filterBar) {
+      filterBar.addEventListener('scroll', checkScrollPosition)
+      return () => filterBar.removeEventListener('scroll', checkScrollPosition)
+    }
+  }, [])
 
   // Handler to reset all filters
   const handleResetFilters = () => {
@@ -316,6 +352,17 @@ export default function FilterBar({
         <span className="hamburger-line"></span>
       </button>
 
+      {/* Left Scroll Arrow - Mobile only */}
+      {showLeftArrow && isExpanded && (
+        <button
+          className="filter-scroll-arrow filter-scroll-left"
+          onClick={() => scrollFilterBar('left')}
+          aria-label="Scroll left"
+        >
+          ‹
+        </button>
+      )}
+
       {/* Filter Bar - Collapsible */}
       <div
         ref={filterBarRef}
@@ -463,6 +510,17 @@ export default function FilterBar({
           </button>
         )}
       </div>
+
+      {/* Right Scroll Arrow - Mobile only */}
+      {showRightArrow && isExpanded && (
+        <button
+          className="filter-scroll-arrow filter-scroll-right"
+          onClick={() => scrollFilterBar('right')}
+          aria-label="Scroll right"
+        >
+          ›
+        </button>
+      )}
     </div>
   )
 }

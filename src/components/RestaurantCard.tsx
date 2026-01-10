@@ -50,13 +50,35 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
     }
   }
 
+  // Handle Restaurant Week accordion toggle - expand drawer on mobile
+  const handleRestaurantWeekToggle = () => {
+    const newState = !isRestaurantWeekOpen
+    setIsRestaurantWeekOpen(newState)
+
+    // Expand drawer to 80vh when opening accordion
+    if (newState && onExpandDrawer) {
+      onExpandDrawer()
+    }
+  }
+
+  // Handle About accordion toggle - expand drawer on mobile
+  const handleAboutToggle = () => {
+    const newState = !isAboutOpen
+    setIsAboutOpen(newState)
+
+    // Expand drawer to 80vh when opening accordion
+    if (newState && onExpandDrawer) {
+      onExpandDrawer()
+    }
+  }
+
   return (
     <div className="restaurant-card">
       {/* Top right buttons */}
       <div className="card-header-buttons">
         {onToggleFavorite && (
           <button className="btn-favorite" onClick={onToggleFavorite} aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill={isFavorited ? "#EB213E" : "none"} stroke="#EB213E" strokeWidth="2.0">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill={isFavorited ? "#FF69B4" : "none"} stroke="#FF69B4" strokeWidth="2.0">
               <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
             </svg>
           </button>
@@ -88,7 +110,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
         )}
       </div>
       {/* Restaurant Description */}
-      <p className="restaurant-description" style={{ fontSize: '12px' }}>
+      <p className="restaurant-description">
         {displayRestaurant.summary && displayRestaurant.summary.split('. ').reduce((acc: string, sentence: string, index: number, array: string[]) => {
           // Add the sentence back with period (except for last one which might already have it)
           const sentenceWithPeriod = index === array.length - 1 && sentence.endsWith('.') ? sentence : sentence + '.';
@@ -128,7 +150,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
         <div className="restaurant-week-accordion">
           <button
             className="restaurant-week-accordion-header"
-            onClick={() => setIsRestaurantWeekOpen(!isRestaurantWeekOpen)}
+            onClick={handleRestaurantWeekToggle}
             aria-expanded={isRestaurantWeekOpen}
             aria-label="Toggle Restaurant Week details"
           >
@@ -237,7 +259,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
         <div className="about-accordion">
           <button
             className="about-accordion-header"
-            onClick={() => setIsAboutOpen(!isAboutOpen)}
+            onClick={handleAboutToggle}
             aria-expanded={isAboutOpen}
             aria-label="Toggle about"
           >
