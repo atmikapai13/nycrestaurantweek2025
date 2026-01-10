@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import type { Restaurant } from '../types/restaurant'
 import './RestaurantCard.css'
 
@@ -18,6 +18,12 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
   const [isReviewsOpen, setIsReviewsOpen] = useState(false)
   const [isRestaurantWeekOpen, setIsRestaurantWeekOpen] = useState(false)
   const [isAboutOpen, setIsAboutOpen] = useState(false)
+
+  // Refs for accordion content
+  const reviewsContentRef = useRef<HTMLDivElement>(null)
+  const restaurantWeekContentRef = useRef<HTMLDivElement>(null)
+  const aboutContentRef = useRef<HTMLDivElement>(null)
+  const contactsContentRef = useRef<HTMLDivElement>(null)
 
   if (!displayRestaurant) return null
 
@@ -48,6 +54,16 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
     if (newState && onExpandDrawer) {
       onExpandDrawer()
     }
+
+    // Scroll expanded content into view after animation
+    if (newState && reviewsContentRef.current) {
+      setTimeout(() => {
+        reviewsContentRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest'
+        })
+      }, 350) // Wait for animation to complete (300ms + buffer)
+    }
   }
 
   // Handle Restaurant Week accordion toggle - expand drawer on mobile
@@ -59,6 +75,16 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
     if (newState && onExpandDrawer) {
       onExpandDrawer()
     }
+
+    // Scroll expanded content into view after animation
+    if (newState && restaurantWeekContentRef.current) {
+      setTimeout(() => {
+        restaurantWeekContentRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest'
+        })
+      }, 350) // Wait for animation to complete (300ms + buffer)
+    }
   }
 
   // Handle About accordion toggle - expand drawer on mobile
@@ -69,6 +95,16 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
     // Expand drawer to 80vh when opening accordion
     if (newState && onExpandDrawer) {
       onExpandDrawer()
+    }
+
+    // Scroll expanded content into view after animation
+    if (newState && aboutContentRef.current) {
+      setTimeout(() => {
+        aboutContentRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest'
+        })
+      }, 350) // Wait for animation to complete (300ms + buffer)
     }
   }
 
@@ -173,7 +209,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
             </svg>
           </button>
 
-          <div className={`restaurant-week-accordion-content ${isRestaurantWeekOpen ? 'open' : ''}`}>
+          <div ref={restaurantWeekContentRef} className={`restaurant-week-accordion-content ${isRestaurantWeekOpen ? 'open' : ''}`}>
             <div className="meal-types-row">
               <div className="meal-types-text">
                 NYC Tourism hosts Restaurant Week biannually. This year, <b>{displayRestaurant.name}</b> is participating{displayRestaurant.participation_weeks2 && (
@@ -223,7 +259,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
             </svg>
           </button>
 
-          <div className={`review-accordion-content ${isReviewsOpen ? 'open' : ''}`}>
+          <div ref={reviewsContentRef} className={`review-accordion-content ${isReviewsOpen ? 'open' : ''}`}>
             {displayRestaurant.yelp_review_highlights && (
               <div className="review-item">
                 <div className="review-header">
@@ -279,7 +315,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
             </svg>
           </button>
 
-          <div className={`about-accordion-content ${isAboutOpen ? 'open' : ''}`}>
+          <div ref={aboutContentRef} className={`about-accordion-content ${isAboutOpen ? 'open' : ''}`}>
             {/* Award Tags */}
             <div className="about-award-tags" style={{ display: 'flex', gap: '6px', marginBottom: '4px', flexWrap: 'wrap' }}>
               {displayRestaurant.michelin_award && ['ONE_STAR', 'TWO_STARS', 'THREE_STARS'].includes(displayRestaurant.michelin_award) && (
@@ -309,7 +345,20 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
       <div className="contact-accordion">
         <button
           className="contact-accordion-header"
-          onClick={() => setIsContactsOpen(!isContactsOpen)}
+          onClick={() => {
+            const newState = !isContactsOpen
+            setIsContactsOpen(newState)
+
+            // Scroll expanded content into view after animation
+            if (newState && contactsContentRef.current) {
+              setTimeout(() => {
+                contactsContentRef.current?.scrollIntoView({
+                  behavior: 'smooth',
+                  block: 'nearest'
+                })
+              }, 350)
+            }
+          }}
           aria-expanded={isContactsOpen}
           aria-label="Toggle contact and links"
         >
@@ -329,7 +378,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
           </svg>
         </button>
 
-        <div className={`contact-accordion-content ${isContactsOpen ? 'open' : ''}`}>
+        <div ref={contactsContentRef} className={`contact-accordion-content ${isContactsOpen ? 'open' : ''}`}>
           <div className="restaurant-icons-row">
         {displayRestaurant.website && (
           <a href={displayRestaurant.website} target="_blank" rel="noopener noreferrer" className="icon-link" title="Website">

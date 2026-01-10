@@ -602,7 +602,7 @@
 
   .restaurant-name {
     font-size: 18px;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
   }
 
   .restaurant-tags {
@@ -651,7 +651,7 @@
   }
 
   .meal-types-text {
-    font-size: 12px;
+    font-size: 13px;
     line-height: 1.5;
   }
 
@@ -669,14 +669,14 @@
   .about-accordion,
   .restaurant-week-accordion,
   .contact-accordion {
-    margin-top: 8px;
-    padding-top: 8px;
+    margin-top: 6px;
+    padding-top: 6px;
   }
 
   /* Find a Table button - bigger and more prominent */
   .find-table-btn {
     font-size: 12px;
-    padding: 6px 14px;
+    padding: 4px 10px;
     font-weight: 600;
   }
 

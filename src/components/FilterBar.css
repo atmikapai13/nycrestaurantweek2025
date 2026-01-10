@@ -381,26 +381,35 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 30px;
-    height: 30px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(3px) saturate(100%);
     -webkit-backdrop-filter: blur(3px) saturate(100%);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    border: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
     cursor: pointer;
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
+    color: #555;
+    opacity: 0.9;
     transition: all 0.2s ease;
     flex-shrink: 0;
     z-index: 10;
   }
 
+  .filter-scroll-arrow svg {
+    display: block;
+  }
+
+  .filter-scroll-arrow:hover {
+    opacity: 1;
+    color: #333;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+  }
+
   .filter-scroll-arrow:active {
-    background: rgba(222, 227, 228, 0.9);
-    transform: scale(0.95);
+    background: rgba(222, 227, 228, 0.95);
+    transform: scale(0.92);
   }
 
   .filter-hamburger-button {
