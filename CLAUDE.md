@@ -195,24 +195,25 @@ mapActions: [
 ```
 
 **Available map actions**:
-- `highlightRestaurants`: Pink markers for matching restaurants
-- `showIsochrone`: Display travel-time polygon (pink/purple fill)
+- `highlightRestaurants`: Yellow/Orange markers for matching restaurants
+- `showIsochrone`: Display travel-time polygon (yellow/orange fill)
 - `showIsochroneLayer`: Multi-layer isochrones (for meeting point visualization)
 - `fitBounds`: Auto-zoom to show all markers/polygons
 - `reset_all`: Clear map (remove isochrones, reset highlights)
 
 ## Map Marker Color System (src/components/Map.tsx)
 
-Markers use a 4-tier priority system:
+Markers use a 5-tier priority system:
 
-1. **Purple (#8b4dfe, 10px, z-index:3)** - Selected restaurant (click to select, click again to deselect)
-2. **Red (#c81224, 10px, z-index:2)** - Favorites when favorites mode is active
-3. **Pink (#FF69B4, 10px, z-index:2)** - Highlighted restaurants (search results, filters)
-4. **Grey (#7c7c7c, 6px, z-index:1)** - Default/unfiltered restaurants
+1. **Purple (#8b4dfe, 8px, z-index:4)** - Selected restaurant (click to select, click again to deselect)
+2. **Yellow/Orange (#FF9100, 8px, z-index:3)** - Highlighted restaurants (search results, filters)
+3. **Pink (#FF69B4, 8px, z-index:2)** - Favorites
+4. **Red (#c81224, 8px, z-index:1)** - Award winners (Michelin or NYT Top 100)
+5. **Grey (#7c7c7c, 8px, z-index:0)** - Default/unfiltered restaurants
 
 **Favorites Mode Behavior**:
-- When active: Only favorite markers shown (red), all grey markers hidden
-- When inactive: All restaurants shown, favorites highlighted pink (if in search results)
+- When active: Only favorite markers shown (pink), all grey markers hidden
+- When inactive: All restaurants shown, favorites highlighted pink
 
 **Isochrone Filtering**:
 - Single isochrone: Only restaurants inside polygon rendered

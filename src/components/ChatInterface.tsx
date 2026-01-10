@@ -204,7 +204,7 @@ interface ChatInterfaceProps {
   onRestaurantSelect: (restaurant: Restaurant) => void
   onMapFocus?: (restaurantIds: string[]) => void
   selectedRestaurant?: Restaurant | null
-  onIsochroneUpdate?: (polygon: any) => void
+  onIsochroneUpdate?: (polygon: any, fitBounds?: boolean) => void
   onIsochroneLayersUpdate?: (layers: IsochroneLayer[]) => void
   onResetAll?: () => void
   isochroneRegionSlugs?: string[] | null
@@ -230,34 +230,33 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
 }, ref) => {
   // Random welcome message selection
   const welcomeMessages = [
-    'Welcome to NYC Eats! I\'m Remi. Unlike my cousins in the subway, I\'ve been vector-embedded with thousands of Yelp reviews and have a rather refined palate for semantic similarity. What are we looking for today? <br><br> If you\'re new here, click on one of the suggestions to see how I can help you in your culinary adventures:',
-    'Welcome to NYC Eats! I\'m Remi. You\'re in New York, where the only real sin is eating somewhere forgettable. Give me a neighborhood, a mood, or a friend you\'re meeting halfway—I\'ll point you toward the right places. <br><br> If you\'re new here, click on one of the suggestions to see how I can help you in your culinary adventures:',
-    'Welcome to NYC Eats! I\'m Remi, here to help you find the sort of restaurant that lingers — the way a good Barolo does. Give me a neighborhood or a mood, and I\'ll pour you a shortlist worth considering.<br><br> If you\'re new here, click on one of the suggestions to see how I can help you in your culinary adventures:'
+    'I\'m Remi. You\'re in New York, where the only real sin is eating somewhere forgettable. Give me a neighborhood, a mood, or a friend you\'re meeting halfway—I\'ll point you toward the right places. <br><br> Click on one of the suggestions to see how I can help you:',
+    'I\'m Remi, here to help you navigate New York\'s culinary scene! Give me a neighborhood or a mood, and I\'ll recommend a shortlist worth considering.<br><br> Click on one of the suggestions to see how I can help you:',
+    //'I\'m Remi! How can I help you to do? See how I can help you: <br><br> Click on one of the suggestions to see how I can help you:'
   ]
 
   // Quick-start suggestions for new users
   const suggestions = [
     {
       label: "Near Me",
-      prompt: ["I'm in Soho, hunting for $$ spot I can reach in under 15 mins. What's on the menu, Remi?",
-        "Any good italian places by 15 min transit from 46th and 7th ave?",
-        "Any places with good drinks within 15 min of West Village?",
-        "Show me hole in the wall restaurants by Roosevelt Island Tramway with 4 rating or higher"
+      prompt: ["Example scenario: 'I'm in Soho, hunting for spots I can reach in under 15 mins by subway. What's on the menu, Remi?'",
+        "Example scenario: 'Any places within a 15 min subway of West Village?'",
+        "Example scenario: 'Show me hole in the wall restaurants by Roosevelt Island Tramway by E61 st within 20 minute walk.'"
       ]
     },
     {
       label: "Between Us",
-      prompt: ["My friend is in Midtown, I'm in Murray Hill — what's some restaurants in between us within a short 10 min transit?",
-        "I'm in Chelsea. Show me restaurants around the area excluding Hudson Yards, because it is a bit expensive.",
-        "I'm in Greenwich village, and I can travel 15 minutes by subway. My friend is in Midtown. Find spots between us, Remi."
+      prompt: ["Example scenario: 'My friend is in Midtown, I'm in Murray Hill — what's some restaurants in between us within a short 10 min transit?'",
+        "Example scenario: 'I'm in Chelsea. Show me restaurants around the area excluding MSG, because it's always too busy. I'm willing to walk up to 20 mins.'",
+        "Example scenario: 'I'm by AMC Times Square, and my friend is at One Manhattan West. We are willing to travel 15 minutes walking. Find spots between us, Remi.'"
       ] 
     },
     {
       label: "Vibes",
-      prompt:["Remi, give me couple places that are good for date night and perhaps $$.",
-        "Remi, show me award-winning restaurants at $$ or $$$ price point.",
-        "Remi, find me a couple restaurants that are modest and cozy.",
-        "Remi, find me hole in the wall restaurants, and tell me what's your definition for it."
+      prompt:["Example scenario: 'Remi, give me couple places that are good for date night.'",
+        "Example scenario: 'Remi, show me happy hour spots in Soho. Willing to travel 10 mins by subway.'",
+        "Example scenario: 'Remi, find me a couple restaurants that are modest and cozy.'",
+        "Example scenario: 'Remi, find me hole in the wall restaurants, and tell me what's your definition for it.'"
       ]
     }
   ]
@@ -270,19 +269,16 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
 
   // Tips shown while loading
   const tips = [
-    "Tap a restaurant on the map, then hit the heart to favorite it.",
-    "To get curated restaurant recs, stack queries in one prompt (e.g., Italian restaurants with 4★ or higher).",
-    "Click 'match your taste' in the map legend to isolate those restaurants on the map.",
-    "Ask 'find me a spot between us' when meeting a friend—Remi will find restaurants in the overlap zone.",
-    "Award-winning spots—Michelin, Bib Gourmand, or NYC Top 100—are marked with orange pins.",
-    "Hit refresh in chat to clear the map and start over.",
-    "Ask Remi about vibes and ambiance—he can search for 'cozy', 'romantic', 'lively', and more.",
-    "After an isochrone is generated, refine it further by cuisine, rating, or vibes (e.g., Italian, 4.5★ or higher, lively).",
-    "Remi can find restaurants you can reach by walking, transit, or driving — à la isochrones!",
-    "An isochrone is a boundary on the map showing how far you can go in a set time. Remi is good at making isochrones!",
-    "The current restaurant pool is limited to NYC Restaurant Week and Manhattan. Buy me creator a coffee with a note if you want to expand the pool: buymeacoffee.com/atmikapai",
-    "Click on a restaurant in the map to learn more.",
-    "If you like this, buy me creator a coffee: buymeacoffee.com/atmikapai . Cheers!"
+    "Tap a restaurant marker and hit the heart to save it to your favorites.",
+    "Click 'match your vibe' in the map legend to only see those restaurants.",
+    "Award-winning spots—Michelin, Bib Gourmand, or NYC Top 100—appear as orange pins.",
+    "Ask Remi about vibe and ambiance—think cozy, romantic, lively, and beyond.",
+    "Ask Remi about the best ramen or happy hour in town.",
+    "Once an isochrone is drawn, refine results by price, Yelp rating, or cuisine using the top filter bar.",
+    "Isochrone, simply put, is a map boundary showing how far you can travel within a set time.",
+    "The current restaurant pool is limited to NYC Restaurant Week within Manhattan.",
+    "Click any restaurant on the map to see Yelp reviews, socials, and more.",
+    "Enjoying NYC Eats? Buy my creator a coffee at buymeacoffee.com/atmikapai. Cheers."
   ]
 
   // Helper function to detect buy-me-coffee messages
@@ -310,7 +306,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
   const inputRef = useRef<HTMLInputElement>(null)
 
   // Mobile drawer state
-  const [drawerHeight, setDrawerHeight] = useState<8 | 40 | 80>(40)
+  const [drawerHeight, setDrawerHeight] = useState<10 | 40 | 80>(40)
   const [isDragging, setIsDragging] = useState(false)
   const [dragStartY, setDragStartY] = useState(0)
   const [dragStartHeight, setDragStartHeight] = useState(40)
@@ -370,6 +366,9 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
       type: 'restaurant_card',
       restaurant
     }])
+
+    // Expand drawer to 40vh on mobile to show restaurant card
+    setDrawerHeight(40)
   }
 
   useImperativeHandle(ref, () => ({
@@ -426,12 +425,12 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
     // Calculate new height
     const newHeight = dragStartHeight + deltaPercent
 
-    // Clamp between 8 and 100
-    const clampedHeight = Math.max(8, Math.min(100, newHeight))
+    // Clamp between 10 and 100
+    const clampedHeight = Math.max(10, Math.min(100, newHeight))
 
-    // Update to nearest valid state (8%, 40%, or 80%)
+    // Update to nearest valid state (10%, 40%, or 80%)
     if (clampedHeight < 25) {
-      setDrawerHeight(8)
+      setDrawerHeight(10)
     } else if (clampedHeight < 60) {
       setDrawerHeight(40)
     } else {
@@ -500,10 +499,21 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
     const historyWithUserMessage = [...trimmedHistory, userHistoryMessage]
 
     try {
+      // Extract slugs from filtered restaurants for backend filter pool
+      // If isochrone is active, intersect with isochrone region to ensure semantic search
+      // operates on the correct subset (filter bar selections WITHIN isochrone bounds)
+      let filterPoolSlugs = restaurants.map(r => r.slug);
+
+      if (isochroneRegionSlugs && isochroneRegionSlugs.length > 0) {
+        const isochroneSet = new Set(isochroneRegionSlugs);
+        filterPoolSlugs = filterPoolSlugs.filter(slug => isochroneSet.has(slug));
+        console.log(`🎯 Filter pool intersected with isochrone: ${filterPoolSlugs.length} restaurants`);
+      }
+
       const response = await sendChatMessage(userMessage, {
         totalRestaurants: allRestaurants.length,
         visibleRestaurants: restaurants.length,
-        activeFilters: {},
+        filterPool: filterPoolSlugs,  // Send filtered restaurant slugs to backend
         // Pass isochrone state from previous turn for state persistence
         // After reset, explicitly send null (not undefined)
         isochrone_params: lastIsochroneParams || null,
@@ -545,7 +555,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
             switch (action.mapAction) {
               case 'showIsochrone':
                 if (onIsochroneUpdate && action.polygon) {
-                  console.log("📍 Show isochrone on map:", action.polygon);
+                  console.log("📍 Show isochrone on map:", action.polygon, `fitBounds: ${action.fitBounds !== false}`);
 
                   // CRITICAL: Clear multi-layer isochrones before showing single isochrone
                   // This prevents old multi-party isochrones from staying on the map
@@ -554,7 +564,8 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
                     onIsochroneLayersUpdate([]);
                   }
 
-                  onIsochroneUpdate(action.polygon);
+                  // Pass both polygon and fitBounds flag to Map component
+                  onIsochroneUpdate(action.polygon, action.fitBounds);
 
                   // NEW: Set isochrone region (all restaurants in polygon)
                   if (onIsochroneRegion && action.allRestaurantSlugs) {
@@ -565,7 +576,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
                   // Collapse drawer on mobile to focus on map visualization
                   if (window.innerWidth <= 768) {
                     setDrawerHeight(40);
-                    
+
                   }
                 }
                 break;
@@ -727,7 +738,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
             // Legacy auto-focus caused unwanted map movement for read-only tools like get_current_results
           } else if (response.visible_restaurants && response.visible_restaurants.length === 0) {
             // If agent explicitly returned empty list (and we aren't just chatting)
-            if (response.tool_calls && (response.tool_calls.includes('filter_restaurants') || response.tool_calls.includes('semantic_search'))) {
+            if (response.tool_calls && response.tool_calls.includes('semantic_search')) {
               onFilterChange('Semantic Search Results', []);
             }
           }
@@ -897,7 +908,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
         >
           <div className="drawer-handle-bar"></div>
         </div>
-        {/* Collapsed header - shown only when drawer is at height 8 */}
+        {/* Collapsed header - shown only when drawer is at height 10 */}
         <div className="drawer-collapsed-header" onClick={() => setDrawerHeight(40)}>
           <img src="/remi_transparent.png" alt="Remi" className="drawer-collapsed-logo" />
           <span className="drawer-collapsed-text">Chat with Remi</span>
@@ -932,6 +943,9 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
                             if (window.innerWidth <= 768) {
                               setDrawerHeight(80)
                             }
+                          }}
+                          onClose={() => {
+                            setMessages(prev => prev.filter((_, i) => i !== idx))
                           }}
                         />
                       </div>

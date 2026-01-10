@@ -429,12 +429,12 @@ export async function performRagSearch(query, preFilters = {}, topK = 10, restau
     const topScore = boostedResults[0].score
 
     if (topScore < 0.4) {
-      // Low confidence - return fewer results (7 max to avoid decision fatigue)
-      dynamicTopK = Math.min(7, topK)
+      // Low confidence - return fewer results (5 max to avoid decision fatigue)
+      dynamicTopK = Math.min(5, topK)
       console.log(`⚠️ Low confidence query (top score: ${topScore.toFixed(3)}) - reducing results to ${dynamicTopK}`)
     } else {
-      // High confidence - return more results (12)
-      dynamicTopK = 12
+      // High confidence - return more results (10)
+      dynamicTopK = 10
       console.log(`✅ High confidence query (top score: ${topScore.toFixed(3)}) - returning ${dynamicTopK} results`)
     }
   }

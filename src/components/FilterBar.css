@@ -1,0 +1,528 @@
+/* FilterBar Container Wrapper */
+.filter-bar-container {
+  position: absolute;
+  top: 3%;
+  left: 37%;
+  right: 10px; /* Add right constraint to prevent cut-off */
+  z-index: 850;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+  overflow: visible; /* Allow dropdowns to overflow */
+}
+
+/* Hamburger Menu Button */
+.filter-hamburger-button {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(3px) saturate(100%);
+  -webkit-backdrop-filter: blur(3px) saturate(100%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.filter-hamburger-button:hover {
+  background: rgb(222, 227, 228);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.hamburger-line {
+  width: 15px;
+  height: 2px;
+  background-color: #333;
+  border-radius: 1px;
+  transition: all 0.2s ease;
+}
+
+/* FilterBar */
+.filter-bar {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.filter-bar.collapsed {
+  max-width: 0;
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.filter-bar.expanded {
+  max-width: 800px;
+  opacity: 1;
+  pointer-events: none; /* Disable pointer events on container */
+  overflow-x: auto;
+  overflow-y: unset; /* Don't clip vertically - allow dropdowns to overflow */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+  padding-right: 20px; /* Extra space to prevent Reset button from being cut off */
+  padding-bottom: 250px; /* Add vertical padding to create space for dropdowns */
+  margin-bottom: -250px; /* Collapse the extra space */
+}
+
+/* Re-enable pointer events on filter children */
+.filter-bar.expanded > * {
+  pointer-events: auto;
+}
+
+/* Hide scrollbar for Chrome/Safari */
+.filter-bar.expanded::-webkit-scrollbar {
+  display: none;
+}
+
+
+/* ========================================
+   FILTER BAR STANDARD PATTERN
+   ========================================
+
+   All filters share consistent active state styling:
+
+   1. DROPDOWNS (.filter-pill-button):
+      - Apply .active class when selections exist
+      - Pink background/border (rgba(255, 105, 180, 0.2))
+
+   2. TOGGLE BUTTONS (.restaurant-week-button, .award-winners-button, .favorites-button, etc):
+      - Apply .active class when toggled on
+      - Same pink background/border styling
+
+   3. NEW FILTERS:
+      - Follow this pattern for consistency
+      - Use pink (#FF69B4) for active state
+      - See FilterBar.tsx for implementation details
+   ======================================== */
+
+/* FilterDropdown Container */
+.filter-dropdown {
+  position: relative;
+  overflow: visible; /* Allow dropdown menu to overflow */
+}
+
+/* Filter Pill Button - Glassmorphism */
+.filter-pill-button {
+  /* Glassmorphism matching ChatInterface.css and RestaurantCard.css */
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(3px) saturate(100%);
+  -webkit-backdrop-filter: blur(3px) saturate(100%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: none;
+  padding: 4px 10px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  color: #333;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.filter-pill-button:hover {
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* ACTIVE STATE: Pink background/border when filter has selections
+   This is the standard pattern for ALL filters */
+.filter-pill-button.active {
+  background: rgba(255, 105, 180, 0.2);
+  border: 1px solid rgba(255, 105, 180, 0.5);
+  color: #333;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(255, 105, 180, 0.2);
+}
+
+/* Filter Pill Elements */
+.filter-pill-icon {
+  font-size: 12px;
+  line-height: 1;
+}
+
+.filter-pill-label {
+  font-weight: 500;
+}
+
+.filter-pill-badge {
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  border-radius: 6px;
+  padding: 1px 4px;
+  font-size: 9px;
+  font-weight: 600;
+  min-width: 14px;
+  text-align: center;
+}
+
+.filter-pill-button.active .filter-pill-badge {
+  background: rgba(255, 255, 255, 1);
+  color: #333;
+}
+
+.filter-pill-arrow {
+  font-size: 9px;
+  margin-left: 1px;
+}
+
+/* Dropdown Menu */
+.filter-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 140px;
+  max-width: 240px;
+  max-height: 240px;
+  overflow-y: auto;
+
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px) saturate(180%);
+  -webkit-backdrop-filter: blur(10px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+
+  padding: 4px;
+  z-index: 2000; /* Increased z-index to appear above map and other UI elements */
+
+  animation: dropdownFadeIn 0.2s ease;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Dropdown Header (Reset icon) */
+.filter-dropdown-header {
+  padding: 2px 4px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  margin-bottom: 2px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.filter-reset-icon {
+  background: transparent;
+  border: none;
+  color: #333;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 2px 3px;
+  border-radius: 3px;
+  transition: color 0.15s ease;
+  line-height: 1;
+}
+
+.filter-reset-icon:hover:not(:disabled) {
+  color: #333;
+}
+
+.filter-reset-icon:disabled {
+  color: #333;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Options List - Limited to 4 visible items with scrolling */
+.filter-options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  max-height: 115px; /* Show exactly 4 items without scrollbar */
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Scrollbar Styling for Options List */
+.filter-options-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.filter-options-list::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
+}
+
+.filter-options-list::-webkit-scrollbar-thumb {
+  background: #5b56589f;
+  border-radius: 3px;
+}
+
+.filter-options-list::-webkit-scrollbar-thumb:hover {
+  background: #5b5658;
+}
+
+/* Filter Option (Checkbox Item) */
+.filter-option {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 6px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.filter-option:hover {
+  background: rgb(222, 227, 228);
+}
+
+.filter-option.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.filter-option-checkbox {
+  width: 13px;
+  height: 13px;
+  cursor: pointer;
+  accent-color: #5b5658;
+  flex-shrink: 0;
+}
+
+.filter-option.disabled .filter-option-checkbox {
+  cursor: not-allowed;
+}
+
+.filter-option-label {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  color: #333;
+  user-select: none;
+}
+
+/* Empty State */
+.filter-dropdown-empty {
+  padding: 12px 8px;
+  text-align: center;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 11px;
+  color: #999;
+  font-style: italic;
+}
+
+/* Warning Message */
+.filter-dropdown-warning {
+  padding: 8px;
+  background: rgba(255, 193, 7, 0.1);
+  border-radius: 6px;
+  margin-top: 6px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 10px;
+  color: #666;
+  text-align: center;
+}
+
+/* Scrollbar Styling for Dropdown */
+.filter-dropdown-menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.filter-dropdown-menu::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
+}
+
+.filter-dropdown-menu::-webkit-scrollbar-thumb {
+  background: #5b56589f;
+  border-radius: 3px;
+}
+
+.filter-dropdown-menu::-webkit-scrollbar-thumb:hover {
+  background: #5b5658;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .filter-bar-container {
+    position: fixed;
+    top: 35px;
+    left: 10px;
+    right: 10px;
+    bottom: auto;
+    overflow: visible;
+    z-index: 850;
+  }
+
+  .filter-hamburger-button {
+    width: 25px;
+    height: 25px;
+  }
+
+  .hamburger-line {
+    width: 15px;
+  }
+
+  .filter-bar {
+    gap: 8px;
+    padding-bottom: 200px; /* Allow space for dropdowns below */
+    margin-bottom: -200px; /* Collapse the extra space */
+  }
+
+  /* Collapsed state - same as desktop */
+  .filter-bar.collapsed {
+    max-width: 0;
+    opacity: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  /* Expanded state - horizontal scroll like desktop */
+  .filter-bar.expanded {
+    max-width: 800px;
+    opacity: 1;
+    pointer-events: none; /* Disable pointer events on container */
+    overflow-x: auto;
+    overflow-y: visible; /* Don't clip vertically - allow dropdowns to overflow */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
+
+  /* Re-enable pointer events on filter children - already defined globally */
+
+  .filter-bar.expanded::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filter-bar-isochrone-indicator {
+    flex-shrink: 0;
+    font-size: 10px;
+    padding: 5px 10px;
+  }
+
+  .filter-pill-button {
+    flex-shrink: 0 !important;
+    font-size: 12px;
+    padding: 6px 12px;
+    white-space: nowrap;
+  }
+
+  .filter-pill-icon {
+    font-size: 12px;
+  }
+
+  .restaurant-week-button,
+  .award-winners-button,
+  .favorites-button,
+  .has-menu-button,
+  .remis-recs-button {
+    flex-shrink: 0 !important;
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+
+  .filter-dropdown-menu {
+    min-width: 180px;
+    max-width: 250px;
+    max-height: 250px;
+    z-index: 1500 !important; /* Ensure dropdowns appear above other UI elements */
+  }
+}
+
+/* Toggle Button Base Styling
+   STANDARD PATTERN: All toggle buttons (Restaurant Week, Award Winners, Favorites, Has Menu, Remi's Recs, etc.)
+   follow this pattern with pink active state */
+.restaurant-week-button,
+.award-winners-button,
+.favorites-button,
+.has-menu-button,
+.remis-recs-button {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(3px) saturate(100%);
+  -webkit-backdrop-filter: blur(3px) saturate(100%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  padding: 4px 10px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.restaurant-week-button:hover,
+.award-winners-button:hover,
+.favorites-button:hover,
+.has-menu-button:hover,
+.remis-recs-button:hover {
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.restaurant-week-button.active,
+.award-winners-button.active,
+.favorites-button.active,
+.has-menu-button.active,
+.remis-recs-button.active {
+  background: rgba(255, 105, 180, 0.2);
+  border: 1px solid rgba(255, 105, 180, 0.5);
+  color: #333;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(255, 105, 180, 0.2);
+}
+
+/* NEW Badge for Restaurant Week Button */
+.new-badge {
+  background-color: #FF69B4;
+  color: white;
+  font-size: 6px;
+  font-weight: 700;
+  padding: 1px 3px;
+  border-radius: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-right: 4px;
+}
+
+/* Reset Button */
+.filter-reset-button {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(3px) saturate(100%);
+  -webkit-backdrop-filter: blur(3px) saturate(100%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.filter-reset-button:hover {
+  background: rgba(255, 255, 255, 0.85);
+  color: #333;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}

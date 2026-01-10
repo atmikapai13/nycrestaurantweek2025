@@ -16,17 +16,27 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
   const displayRestaurant = restaurant || placeholderRestaurant
   const [isContactsOpen, setIsContactsOpen] = useState(false)
   const [isReviewsOpen, setIsReviewsOpen] = useState(false)
+  const [isRestaurantWeekOpen, setIsRestaurantWeekOpen] = useState(false)
+  const [isAboutOpen, setIsAboutOpen] = useState(false)
 
   if (!displayRestaurant) return null
 
-  // Strip "Yelp categorizes..." first sentence from review highlights
+  // Strip "Yelp categorizes..." first sentence from review highlights and add paragraph breaks
   const processYelpReview = (text: string) => {
     if (!text) return ''
     const sentences = text.split('. ')
-    if (sentences[0]?.startsWith('Yelp categorizes')) {
-      return sentences.slice(1).join('. ')
-    }
-    return text
+    const filteredSentences = sentences[0]?.startsWith('Yelp categorizes')
+      ? sentences.slice(1)
+      : sentences
+
+    // Add paragraph breaks every 2 sentences
+    return filteredSentences.reduce((acc: string, sentence: string, index: number, array: string[]) => {
+      const sentenceWithPeriod = index === array.length - 1 && sentence.endsWith('.') ? sentence : sentence + '.';
+      if (index > 0 && index % 2 === 0) {
+        return acc + '\n\n' + sentenceWithPeriod;
+      }
+      return acc + (index > 0 ? ' ' : '') + sentenceWithPeriod;
+    }, '')
   }
 
   // Handle review accordion toggle - expand drawer on mobile
@@ -42,27 +52,21 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
 
   return (
     <div className="restaurant-card">
-      {onClose && (
-        <button className="restaurant-card-close" onClick={onClose} aria-label="Close">
-          <svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="4" y1="4" x2="16" y2="16" />
-            <line x1="16" y1="4" x2="4" y2="16" />
-          </svg>
-        </button>
-      )}
-      {onToggleFavorite && (
-        <button className="restaurant-card-heart" onClick={onToggleFavorite} aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}>
-          {isFavorited ? (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="#EB213E" stroke="#EB213E" strokeWidth="2">
+      {/* Top right buttons */}
+      <div className="card-header-buttons">
+        {onToggleFavorite && (
+          <button className="btn-favorite" onClick={onToggleFavorite} aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill={isFavorited ? "#EB213E" : "none"} stroke="#EB213E" strokeWidth="2.0">
               <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
             </svg>
-          ) : (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#EB213E" strokeWidth="2.5">
-              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-            </svg>
-          )}
-        </button>
-      )}
+          </button>
+        )}
+        {onClose && (
+          <button className="btn-close-card" onClick={onClose} aria-label="Close">
+            ✕
+          </button>
+        )}
+      </div>
       {/* Restaurant Name */}
       <h2 className="restaurant-name">
         {displayRestaurant.name}
@@ -82,18 +86,19 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
         {displayRestaurant.price && (
           <span className="tag tag-price">{displayRestaurant.price}</span>
         )}
-        {displayRestaurant.michelin_award && ['ONE_STAR', 'TWO_STARS', 'THREE_STARS'].includes(displayRestaurant.michelin_award) && (
-          <span className="tag tag-michelin">Michelin</span>
-        )}
-        {displayRestaurant.michelin_award === 'BIB_GOURMAND' && (
-          <span className="tag tag-bib">Bib Gourmand</span>
-        )}
-        {displayRestaurant.nyttop100_rank && (
-          <span className="tag tag-nyt-rank">NYT Rank {displayRestaurant.nyttop100_rank}</span>
-        )}
       </div>
       {/* Restaurant Description */}
-      <p className="restaurant-description" style={{ fontSize: '12px' }}>{displayRestaurant.summary}</p>
+      <p className="restaurant-description" style={{ fontSize: '12px' }}>
+        {displayRestaurant.summary && displayRestaurant.summary.split('. ').reduce((acc: string, sentence: string, index: number, array: string[]) => {
+          // Add the sentence back with period (except for last one which might already have it)
+          const sentenceWithPeriod = index === array.length - 1 && sentence.endsWith('.') ? sentence : sentence + '.';
+          // Add double line break every 2 sentences for paragraph breaks
+          if (index > 0 && index % 2 === 0) {
+            return acc + '\n\n' + sentenceWithPeriod;
+          }
+          return acc + (index > 0 ? ' ' : '') + sentenceWithPeriod;
+        }, '')}
+      </p>
 
       {/* Yelp Rating & Find a Table */}
       {(displayRestaurant.yelp_rating && displayRestaurant.yelp_review_count) || (displayRestaurant.table_res || displayRestaurant.opentable_id) ? (
@@ -118,6 +123,59 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
         </div>
       ) : null}
 
+      {/* Restaurant Week Spring 2026 Accordion */}
+      {displayRestaurant.meal_types && displayRestaurant.meal_types.length > 0 && (
+        <div className="restaurant-week-accordion">
+          <button
+            className="restaurant-week-accordion-header"
+            onClick={() => setIsRestaurantWeekOpen(!isRestaurantWeekOpen)}
+            aria-expanded={isRestaurantWeekOpen}
+            aria-label="Toggle Restaurant Week details"
+          >
+            <span className="restaurant-week-accordion-title">
+              <span className="new-badge">NEW</span>
+              Restaurant Week
+            </span>
+            <svg
+              className={`restaurant-week-accordion-chevron ${isRestaurantWeekOpen ? 'open' : ''}`}
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+
+          <div className={`restaurant-week-accordion-content ${isRestaurantWeekOpen ? 'open' : ''}`}>
+            <div className="meal-types-row">
+              <div className="meal-types-text">
+                NYC Tourism hosts Restaurant Week biannually. This year, <b>{displayRestaurant.name}</b> is participating{displayRestaurant.participation_weeks2 && (
+                  <> from <b>{displayRestaurant.participation_weeks2}</b></>
+                )}. Participating spots curate their own lunch and/or dinner offerings. Saturdays are not included.
+                <br /><br />
+                This restaurant is offering the following menus: <b>{displayRestaurant.meal_types.join(', ')}</b>
+              </div>
+            </div>
+            {displayRestaurant.menu_url && displayRestaurant.menu_url.trim() !== '' && (
+              <a
+                href={displayRestaurant.menu_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="see-menu-btn"
+                style={{ display: 'block', marginTop: '8px', marginLeft: 'auto', width: 'fit-content' }}
+              >
+                See Menu
+              </a>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Review Highlights Accordion */}
       {(displayRestaurant.yelp_review_highlights || displayRestaurant.reddit) && (
         <div className="review-accordion">
@@ -127,7 +185,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
             aria-expanded={isReviewsOpen}
             aria-label="Toggle reviews"
           >
-            <span className="review-accordion-title">What people say...</span>
+            <span className="review-accordion-title">Reviews</span>
             <svg
               className={`review-accordion-chevron ${isReviewsOpen ? 'open' : ''}`}
               width="14"
@@ -159,9 +217,68 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
                   <img src="/reddit.webp" alt="Reddit" className="review-source-icon" />
                   <span className="review-source-label">Reddit:</span>
                 </div>
-                <span className="review-text">{displayRestaurant.reddit}</span>
+                <span className="review-text">
+                  {displayRestaurant.reddit.split('. ').reduce((acc: string, sentence: string, index: number, array: string[]) => {
+                    const sentenceWithPeriod = index === array.length - 1 && sentence.endsWith('.') ? sentence : sentence + '.';
+                    if (index > 0 && index % 2 === 0) {
+                      return acc + '\n\n' + sentenceWithPeriod;
+                    }
+                    return acc + (index > 0 ? ' ' : '') + sentenceWithPeriod;
+                  }, '')}
+                </span>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* About Accordion */}
+      {displayRestaurant.summary2 && displayRestaurant.summary2.trim() !== '' && (
+        <div className="about-accordion">
+          <button
+            className="about-accordion-header"
+            onClick={() => setIsAboutOpen(!isAboutOpen)}
+            aria-expanded={isAboutOpen}
+            aria-label="Toggle about"
+          >
+            <span className="about-accordion-title">About</span>
+            <svg
+              className={`about-accordion-chevron ${isAboutOpen ? 'open' : ''}`}
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+
+          <div className={`about-accordion-content ${isAboutOpen ? 'open' : ''}`}>
+            {/* Award Tags */}
+            <div className="about-award-tags" style={{ display: 'flex', gap: '6px', marginBottom: '4px', flexWrap: 'wrap' }}>
+              {displayRestaurant.michelin_award && ['ONE_STAR', 'TWO_STARS', 'THREE_STARS'].includes(displayRestaurant.michelin_award) && (
+                <span className="tag tag-michelin">Michelin</span>
+              )}
+              {displayRestaurant.michelin_award === 'BIB_GOURMAND' && (
+                <span className="tag tag-bib">Bib Gourmand</span>
+              )}
+              {displayRestaurant.nyttop100_rank && (
+                <span className="tag tag-nyt-rank">NYT Rank {displayRestaurant.nyttop100_rank}</span>
+              )}
+            </div>
+            <p className="about-text">
+              {displayRestaurant.summary2 && displayRestaurant.summary2.split('. ').reduce((acc: string, sentence: string, index: number, array: string[]) => {
+                const sentenceWithPeriod = index === array.length - 1 && sentence.endsWith('.') ? sentence : sentence + '.';
+                if (index > 0 && index % 2 === 0) {
+                  return acc + '\n\n' + sentenceWithPeriod;
+                }
+                return acc + (index > 0 ? ' ' : '') + sentenceWithPeriod;
+              }, '')}
+            </p>
           </div>
         </div>
       )}

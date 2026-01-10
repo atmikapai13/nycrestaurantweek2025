@@ -15,11 +15,16 @@ class RestaurantCoordinateExtractor:
             'Accept-Encoding': 'gzip, deflate',
             'Connection': 'keep-alive',
         }
-        
+
         # Rate limiting for faster but respectful scraping
         self.request_delay = 0.1  # 100ms between requests
         self.last_request_time = 0
         self.request_lock = threading.Lock()
+
+        # Rate limiting for Mapbox API
+        self.mapbox_request_count = 0
+        self.mapbox_request_limit = 100  # Max 100 requests per minute (free tier safety)
+        self.mapbox_last_reset = time.time()
     
     def extract_restaurant_data(self, restaurant: Dict) -> Dict:
         """Extract coordinates and address from restaurant's page source"""
@@ -87,110 +92,152 @@ class RestaurantCoordinateExtractor:
                 'latitude': None,
                 'longitude': None
             }
-    
-    def extract_json_data(self, page_content: str, restaurant_name: str) -> Dict:
-        """Extract address and coordinates from JSON in page source"""
-        
-        # Strategy 1: Look for venueAddress and location pattern
-        venue_pattern = r'"venueAddress":"([^"]+)"[^}]*"location":\s*\{\s*"lon":\s*([+-]?\d+\.?\d*)\s*,\s*"lat":\s*([+-]?\d+\.?\d*)\s*\}'
-        
-        matches = re.findall(venue_pattern, page_content)
-        
+
+    def extract_from_staticmap(self, page_content: str) -> Optional[Tuple[float, float]]:
+        """Extract coordinates from Google Maps staticmap URL with full precision"""
+        # Pattern captures all decimal places (typically 7+ decimals from Google Maps)
+        pattern = r'maps\.googleapis\.com/maps/api/staticmap\?center=([+-]?\d+\.\d+),([+-]?\d+\.\d+)'
+        matches = re.search(pattern, page_content)
+
         if matches:
-            address_raw, lon, lat = matches[0]
-            
-            # Clean up the address (it's often formatted like "320 Atlantic Ave.,Brooklyn,11201,NY")
-            address = self.clean_venue_address(address_raw)
-            
+            lat_str, lon_str = matches.groups()
+            # Convert to float preserving all decimal places
+            return (float(lat_str), float(lon_str))
+
+        return None
+
+    def extract_address_from_html(self, page_content: str) -> Optional[str]:
+        """Extract address from HTML content"""
+
+        # Try pattern 1: locationAddress div
+        pattern1 = r'<div[^>]*class="[^"]*locationAddress[^"]*"[^>]*>(.*?)</div>'
+        matches = re.search(pattern1, page_content, re.DOTALL)
+        if matches:
+            html_block = matches.group(1)
+            # Extract text from <p> tags
+            text_pattern = r'<p[^>]*>(.*?)</p>'
+            text_matches = re.findall(text_pattern, html_block, re.DOTALL)
+            if text_matches:
+                # Clean HTML entities and whitespace
+                address = text_matches[0].strip()
+                address = re.sub(r'\s+', ' ', address)  # Normalize whitespace
+                if len(address) > 10:  # Sanity check
+                    return address
+
+        # Try pattern 2: Location section
+        pattern2 = r'<p[^>]*>\s*(\d+[^<]+(?:Manhattan|Brooklyn|Queens|Bronx|Staten Island)[^<]*\d{5})\s*</p>'
+        matches = re.search(pattern2, page_content, re.IGNORECASE)
+        if matches:
+            return matches.group(1).strip()
+
+        # Try pattern 3: Broader NYC address pattern
+        pattern3 = r'(\d+\s+[NSEW]\.?\s+\w+\s+(?:St\.|Street|Ave\.|Avenue|Blvd\.|Boulevard|Rd\.|Road|Pl\.|Place)[^,]*,\s*(?:Manhattan|Brooklyn|Queens|Bronx|Staten Island),?\s*NY,?\s*\d{5})'
+        matches = re.search(pattern3, page_content, re.IGNORECASE)
+        if matches:
+            return matches.group(1).strip()
+
+        return None
+
+    def geocode_with_mapbox(self, address: str) -> Optional[Tuple[float, float, str]]:
+        """Geocode address using Mapbox Geocoding API"""
+        import urllib.parse
+
+        MAPBOX_TOKEN = 'pk.eyJ1IjoiYXRtaWthcGFpMTMiLCJhIjoiY21idHR4eTJpMDdhMjJsb20zNmZheTZ6ayJ9.d_bQSBzesyiCUMA-YHRoIA'
+        MANHATTAN_BBOX = '-74.02,40.68,-73.91,40.88'  # [minLon,minLat,maxLon,maxLat]
+        NYC_CENTER = '-73.9712,40.7831'  # [lon,lat]
+
+        # Check rate limit
+        current_time = time.time()
+        if current_time - self.mapbox_last_reset > 60:
+            # Reset counter every minute
+            self.mapbox_request_count = 0
+            self.mapbox_last_reset = current_time
+
+        if self.mapbox_request_count >= self.mapbox_request_limit:
+            print(f"      ⚠️  Mapbox rate limit reached, waiting...")
+            time.sleep(60 - (current_time - self.mapbox_last_reset))
+            self.mapbox_request_count = 0
+            self.mapbox_last_reset = time.time()
+
+        self.mapbox_request_count += 1
+
+        try:
+            # URL encode the address
+            encoded_address = urllib.parse.quote(address)
+
+            params = {
+                'access_token': MAPBOX_TOKEN,
+                'bbox': MANHATTAN_BBOX,
+                'proximity': NYC_CENTER,
+                'limit': 1,
+                'types': 'address,poi'  # Focus on addresses and points of interest
+            }
+
+            url = f'https://api.mapbox.com/geocoding/v5/mapbox.places/{encoded_address}.json'
+
+            response = requests.get(url, params=params, timeout=5)
+
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('features') and len(data['features']) > 0:
+                    feature = data['features'][0]
+
+                    # Mapbox returns coordinates as [lon, lat]
+                    lon, lat = feature['geometry']['coordinates']
+
+                    # Get formatted address
+                    formatted = feature.get('place_name', address)
+
+                    return (lat, lon, formatted)
+
+            return None
+
+        except Exception as e:
+            print(f"      Mapbox error: {e}")
+            return None
+
+    def extract_json_data(self, page_content: str, restaurant_name: str) -> Dict:
+        """Extract address and coordinates using staticmap and Mapbox geocoding"""
+
+        # STRATEGY 1: Extract from Google Maps staticmap URL (PRIMARY)
+        coords = self.extract_from_staticmap(page_content)
+        if coords:
+            lat, lon = coords
+            # Try to get address separately
+            address = self.extract_address_from_html(page_content)
+
             return {
-                'address': address,
-                'latitude': float(lat),
-                'longitude': float(lon),
+                'address': address or 'Address not found',
+                'latitude': lat,
+                'longitude': lon,
                 'extraction_success': True,
                 'error': None
             }
-        
-        # Strategy 2: Look for broader location patterns
-        location_patterns = [
-            r'"location":\s*\{\s*"lon":\s*([+-]?\d+\.?\d*)\s*,\s*"lat":\s*([+-]?\d+\.?\d*)\s*\}',
-            r'"lat":\s*([+-]?\d+\.?\d*)\s*,\s*"lon":\s*([+-]?\d+\.?\d*)',
-            r'"longitude":\s*([+-]?\d+\.?\d*)\s*,\s*"latitude":\s*([+-]?\d+\.?\d*)',
-        ]
-        
-        for i, pattern in enumerate(location_patterns):
-            matches = re.findall(pattern, page_content)
-            
-            if matches:
-                if i == 0:  # lon, lat format
-                    lon, lat = matches[0]
-                elif i == 1:  # lat, lon format  
-                    lat, lon = matches[0]
-                elif i == 2:  # longitude, latitude format
-                    lon, lat = matches[0]
-                
-                # Try to find address separately
-                address = self.find_address_in_content(page_content)
-                
+
+        # STRATEGY 2: Extract address and geocode via Mapbox (SECONDARY)
+        address = self.extract_address_from_html(page_content)
+        if address:
+            geocode_result = self.geocode_with_mapbox(address)
+            if geocode_result:
+                lat, lon, formatted_address = geocode_result
+
                 return {
-                    'address': address,
-                    'latitude': float(lat),
-                    'longitude': float(lon),
+                    'address': formatted_address,
+                    'latitude': lat,
+                    'longitude': lon,
                     'extraction_success': True,
-                    'error': None,
-                    
+                    'error': None
                 }
-        
-        # If no patterns matched, return failure
+
+        # If both strategies fail
         return {
             'address': None,
             'latitude': None,
             'longitude': None,
             'extraction_success': False,
-            'error': 'No coordinate patterns found in page source',
-           
+            'error': 'Both extraction strategies failed'
         }
-    
-    def clean_venue_address(self, address_raw: str) -> str:
-        """Clean the raw venue address format"""
-        
-        # Format is often: "320 Atlantic Ave.,Brooklyn,11201,NY"
-        # Split by comma and reconstruct
-        parts = [part.strip() for part in address_raw.split(',')]
-        
-        if len(parts) >= 4:
-            # Standard format: street, borough, zip, state
-            street = parts[0]
-            borough = parts[1]
-            zip_code = parts[2]
-            state = parts[3]
-            
-            return f"{street}, {borough}, {state} {zip_code}"
-        
-        elif len(parts) >= 3:
-            # Missing zip or state
-            return ', '.join(parts)
-        
-        else:
-            # Just return as-is if unusual format
-            return address_raw
-    
-    def find_address_in_content(self, page_content: str) -> Optional[str]:
-        """Find address in page content using various patterns"""
-        
-        # Look for address patterns
-        address_patterns = [
-            r'"address":"([^"]+)"',
-            r'"streetAddress":"([^"]+)"',
-            r'"venueAddress":"([^"]+)"',
-        ]
-        
-        for pattern in address_patterns:
-            matches = re.findall(pattern, page_content)
-            if matches:
-                return matches[0]
-        
-        return None
-    
+
     def process_restaurant_with_progress(self, restaurant_data) -> Dict:
         """Process a single restaurant with progress tracking"""
         
@@ -244,9 +291,33 @@ class RestaurantCoordinateExtractor:
         
         return results
     
-    def save_results(self, restaurants: List[Dict], filename: str = "../data/NYCRestaurantWeek/2_Geocoded.json"):
+    def save_results(self, restaurants: List[Dict], filename: str = None):
         """Save results to JSON file"""
-        
+
+        # Try different possible output paths
+        if filename is None:
+            possible_output_paths = [
+                'src/data/NYCRestaurantWeek/2_Geocoded.json',  # From project root
+                '../../data/NYCRestaurantWeek/2_Geocoded.json',  # From src/utils/NYCRestaurantWeek directory
+            ]
+
+            # Try to find a valid output directory
+            import os
+            for path in possible_output_paths:
+                try:
+                    directory = os.path.dirname(path)
+                    if os.path.exists(directory):
+                        filename = path
+                        break
+                except:
+                    continue
+
+            # Fallback to first option if nothing found
+            if filename is None:
+                filename = possible_output_paths[0]
+                # Create directory if it doesn't exist
+                os.makedirs(os.path.dirname(filename), exist_ok=True)
+
         try:
             with open(filename, 'w', encoding='utf-8') as f:
                 json.dump(restaurants, f, indent=2, ensure_ascii=False)
@@ -263,8 +334,7 @@ def main():
         # Try different possible paths
         possible_paths = [
             'src/data/NYCRestaurantWeek/1_Scraped.json',  # From project root
-            '../data/NYCRestaurantWeek/1_Scraped.json',  # From utils directory
-            '../data/1_Scraped.json',  # From utils directory
+            '../data/NYCRestaurantWeek/1_Scraped.json',  # From src/utils/NYCRestaurantWeek directory
         ]
         
         restaurants = None
@@ -288,7 +358,8 @@ def main():
                 continue
         
         if restaurants is None:
-            print("❌ Error: Could not find 1_Scraped.json in ../data/NYCRestaurantWeek/")
+            print("❌ Error: Could not find 1_Scraped.json")
+            print(f"   Tried paths: {possible_paths}")
             return
             
     except Exception as e:

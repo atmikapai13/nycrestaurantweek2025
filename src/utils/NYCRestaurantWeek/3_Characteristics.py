@@ -6,6 +6,7 @@ import re
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import threading
 from bs4 import BeautifulSoup
+import os
 
 class RestaurantCharacteristicsExtractor:
     def __init__(self):
@@ -81,11 +82,30 @@ class RestaurantCharacteristicsExtractor:
                 menu_url = self.extract_menu_url(soup)
                 if menu_url:
                     characteristics['menu_url'] = menu_url
-                
+
+                # 6. Extract longer description (summary2)
+                description = self.extract_description(soup)
+                if description:
+                    characteristics['summary2'] = description
+
                 # Update restaurant with new characteristics
                 restaurant_copy = restaurant.copy()
                 restaurant_copy.update(characteristics)
-                
+
+                # 7. Clean meal_types to remove "Price" suffix
+                if 'meal_types' in restaurant_copy:
+                    restaurant_copy['meal_types'] = self.clean_meal_types(restaurant_copy['meal_types'])
+
+                # 8. Add participation_weeks2 field (BEFORE cleaning participation_weeks)
+                if 'participation_weeks' in restaurant_copy:
+                    participation_weeks2 = self.extract_participation_dates(restaurant_copy['participation_weeks'])
+                    if participation_weeks2:
+                        restaurant_copy['participation_weeks2'] = participation_weeks2
+
+                # 9. Clean participation_weeks to remove "Week X " prefix (AFTER extracting participation_weeks2)
+                if 'participation_weeks' in restaurant_copy:
+                    restaurant_copy['participation_weeks'] = self.clean_participation_weeks(restaurant_copy['participation_weeks'])
+
                 # Print what we found
                 if characteristics:
                     print(f"  ✅ Found: {list(characteristics.keys())}")
@@ -227,7 +247,133 @@ class RestaurantCharacteristicsExtractor:
                 return matches[0]
         
         return None
-    
+
+    def extract_description(self, soup: BeautifulSoup) -> Optional[str]:
+        """Extract the longer description from the page"""
+        # Strategy 1: Look for paragraphs with BodyText classes (the full description)
+        # These typically have classes like "BodyText_bodytext___ZHWy" or "RichText_bodyText__aZFuf"
+        for p_tag in soup.find_all('p'):
+            class_list = p_tag.get('class', [])
+            class_str = ' '.join(class_list)
+
+            # Check if it's a BodyText paragraph (the detailed description)
+            if 'BodyText_bodytext' in class_str or 'RichText_bodyText' in class_str:
+                text = p_tag.get_text(strip=True)
+                # Filter out short texts and price indicators
+                if text and len(text) > 100 and not text.startswith('$'):
+                    return text
+
+        # Strategy 2: Look for the Description section specifically
+        # Find divs/sections that might contain "Description" heading
+        description_section = soup.find(['div', 'section'], class_=re.compile(r'description', re.IGNORECASE))
+        if description_section:
+            # Get the first substantial paragraph
+            for p_tag in description_section.find_all('p'):
+                text = p_tag.get_text(strip=True)
+                if text and len(text) > 100:
+                    return text
+
+        # Strategy 3: Look for the longest paragraph on the page (likely the main description)
+        all_paragraphs = soup.find_all('p')
+        longest_paragraph = None
+        max_length = 100  # Minimum length threshold
+
+        for p_tag in all_paragraphs:
+            text = p_tag.get_text(strip=True)
+            # Skip paragraphs that look like prices, contact info, or very short text
+            if text and len(text) > max_length:
+                # Exclude paragraphs that are primarily addresses or contact info
+                if not re.search(r'^\d+\s+[NSEW]\.?\s+\w+', text) and not text.startswith('('):
+                    if len(text) > len(longest_paragraph or ''):
+                        longest_paragraph = text
+
+        return longest_paragraph
+
+    def clean_meal_types(self, meal_types: list) -> list:
+        """Remove 'Price' suffix from meal_types array items"""
+        if not meal_types or not isinstance(meal_types, list):
+            return meal_types
+
+        cleaned_types = []
+        for meal_type in meal_types:
+            if isinstance(meal_type, str):
+                # Remove " Price" suffix (case-insensitive)
+                cleaned = meal_type.replace(" Price", "").replace(" price", "")
+                cleaned_types.append(cleaned)
+            else:
+                cleaned_types.append(meal_type)
+
+        return cleaned_types
+
+    def clean_participation_weeks(self, participation_weeks: list) -> list:
+        """Remove 'Week X ' prefix from participation_weeks array items.
+
+        Example:
+        Input: ["Week 1 (Jan 20 - Jan 25)", "Week 2 (Jan 26 - Feb 1)"]
+        Output: ["Jan 20 - Jan 25", "Jan 26 - Feb 1"]
+        """
+        if not participation_weeks or not isinstance(participation_weeks, list):
+            return participation_weeks
+
+        cleaned_weeks = []
+        # Pattern to match "Week X (dates)" and extract just the dates
+        # Matches "Week" (case insensitive) + number + "(" + content + ")"
+        pattern = r'(?i)Week\s*\d+\s*\((.+?)\)\s*$'
+
+        for week in participation_weeks:
+            if isinstance(week, str):
+                # Try to match the "Week X (dates)" pattern
+                match = re.match(pattern, week.strip())
+
+                if match:
+                    # Extract just the dates part (inside parentheses)
+                    cleaned = match.group(1).strip()
+                    cleaned_weeks.append(cleaned)
+                else:
+                    # If pattern doesn't match, keep original (already cleaned)
+                    cleaned_weeks.append(week.strip())
+            else:
+                cleaned_weeks.append(week)
+
+        return cleaned_weeks
+
+    def extract_participation_dates(self, participation_weeks: list) -> str:
+        """Extract first and last dates from participation_weeks array.
+
+        Example:
+        Input: ["Week 1 (Jan 20 - Jan 25)", "Week 2 (Jan 26 - Feb 1)", "Week 3 (Feb 2 - Feb 8)", "Week 4 (Feb 9 - Feb 12)"]
+        Output: "Jan 20 - Feb 12"
+        """
+        if not participation_weeks or not isinstance(participation_weeks, list) or len(participation_weeks) == 0:
+            return None
+
+        # Get first and last week
+        first_week = participation_weeks[0]
+        last_week = participation_weeks[-1]
+
+        # Extract dates from format "Week X (Date1 - Date2)"
+        # Pattern: anything in parentheses containing dates
+        date_pattern = r'\(([^)]+)\)'
+
+        # Extract from first week
+        first_match = re.search(date_pattern, first_week)
+        if not first_match:
+            return None
+
+        first_dates = first_match.group(1)  # e.g., "Jan 20 - Jan 25"
+        first_date = first_dates.split(' - ')[0].strip()  # Get "Jan 20"
+
+        # Extract from last week
+        last_match = re.search(date_pattern, last_week)
+        if not last_match:
+            return None
+
+        last_dates = last_match.group(1)  # e.g., "Feb 9 - Feb 12"
+        last_date = last_dates.split(' - ')[-1].strip()  # Get "Feb 12"
+
+        # Combine them
+        return f"{first_date} - {last_date}"
+
     def process_restaurant(self, restaurant_data: Tuple[int, int, Dict]) -> Dict:
         """Extract characteristics for a single restaurant"""
         
@@ -270,7 +416,7 @@ class RestaurantCharacteristicsExtractor:
                     
                     # Progress update
                     if len(processed_restaurants) % 25 == 0:
-                        success_count = sum(1 for r in processed_restaurants if any(r.get(char) for char in ['telephone', 'price_range', 'facebook_url', 'instagram_url', 'menu_url']))
+                        success_count = sum(1 for r in processed_restaurants if any(r.get(char) for char in ['telephone', 'price_range', 'facebook_url', 'instagram_url', 'menu_url', 'summary2']))
                         print(f"\n📊 Progress: {len(processed_restaurants)}/{len(restaurants)} ({success_count} with characteristics found)")
                         
                 except Exception as e:
@@ -283,9 +429,33 @@ class RestaurantCharacteristicsExtractor:
         
         return processed_restaurants
     
-    def save_data(self, restaurants: List[Dict], filename: str = "../data/NYCRestaurantWeek/3_Characteristics.json"):
+    def save_data(self, restaurants: List[Dict], filename: str = None):
         """Save restaurant data with characteristics"""
-        
+
+        # Try different possible output paths
+        if filename is None:
+            possible_output_paths = [
+                'src/data/NYCRestaurantWeek/3_Characteristics.json',  # From project root
+                '../../data/NYCRestaurantWeek/3_Characteristics.json',  # From src/utils/NYCRestaurantWeek directory
+            ]
+
+            # Try to find a valid output directory
+            for path in possible_output_paths:
+                try:
+                    # Test if directory exists
+                    directory = os.path.dirname(path)
+                    if os.path.exists(directory):
+                        filename = path
+                        break
+                except:
+                    continue
+
+            # Fallback to first option if nothing found
+            if filename is None:
+                filename = possible_output_paths[0]
+                # Create directory if it doesn't exist
+                os.makedirs(os.path.dirname(filename), exist_ok=True)
+
         try:
             with open(filename, 'w', encoding='utf-8') as f:
                 json.dump(restaurants, f, indent=2, ensure_ascii=False)
@@ -301,8 +471,8 @@ def main():
     try:
         # Try different possible paths
         possible_paths = [
-            '../data/NYCRestaurantWeek/2_Geocoded.json',  # From root directory
-            '../data/NYCRestaurantWeek/2_Geocoded.json',  # From utils directory
+            'src/data/NYCRestaurantWeek/2_Geocoded.json',  # From project root
+            '../../data/NYCRestaurantWeek/2_Geocoded.json',  # From src/utils/NYCRestaurantWeek directory
         ]
         
         restaurants = None
@@ -316,7 +486,8 @@ def main():
                 continue
         
         if restaurants is None:
-            print("❌ Error: Could not find 2_Geocoded.json in ../data/NYCRestaurantWeek/")
+            print("❌ Error: Could not find 2_Geocoded.json")
+            print(f"   Tried paths: {possible_paths}")
             return
             
     except Exception as e:
@@ -341,7 +512,8 @@ def main():
         'price_range': 0,
         'facebook_url': 0,
         'instagram_url': 0,
-        'menu_url': 0
+        'menu_url': 0,
+        'summary2': 0
     }
     
     for restaurant in processed_restaurants:

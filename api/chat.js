@@ -46,7 +46,7 @@ function validateToolExecution(message, finalState, toolCallsMade) {
   }
 
   // Check 1: Were relevant tools called?
-  const relevantTools = ['filter_restaurants', 'semantic_search_restaurants', 'create_isochrone', 'find_meeting_point'];
+  const relevantTools = ['semantic_search_restaurants', 'create_isochrone', 'find_meeting_point'];
   const toolWasCalled = toolCallsMade.some(tool => relevantTools.includes(tool));
 
   // Check 2: Do we have tool results?
@@ -292,7 +292,7 @@ export default async function handler(req, res) {
     // Add current user message (with tool enforcement if needed)
     if (isFilterQuery && context.isochrone_params?.allRestaurantSlugs?.length > 0) {
       // Prepend strong instruction to force tool use
-      const enforcedMessage = `[CRITICAL INSTRUCTION: This is a filter/search query. You MUST call filter_restaurants or semantic_search_restaurants. DO NOT answer from conversation history or memory. CALL THE TOOL FIRST.]\n\n${message}`;
+      const enforcedMessage = `[CRITICAL INSTRUCTION: This is a filter/search query. You MUST call semantic_search_restaurants. DO NOT answer from conversation history or memory. CALL THE TOOL FIRST.]\n\n${message}`;
       messages.push(new HumanMessage(enforcedMessage));
     } else {
       messages.push(new HumanMessage(message));
@@ -321,6 +321,14 @@ export default async function handler(req, res) {
     if (context.isochrone_layers && Array.isArray(context.isochrone_layers)) {
       initialState.isochroneLayers = context.isochrone_layers;
       console.log(`♻️ Restored ${context.isochrone_layers.length} isochrone layers for visualization`);
+    }
+
+    // Restore filter pool for scoped RAG search (filtered by frontend filter bar)
+    if (context.filterPool && Array.isArray(context.filterPool)) {
+      initialState.filterPool = context.filterPool;
+      console.log(`🎯 Restored filter pool: ${context.filterPool.length} restaurants`);
+    } else {
+      initialState.filterPool = [];
     }
 
     // Run agent with validation retry mechanism
@@ -374,7 +382,7 @@ export default async function handler(req, res) {
       // Determine which validation failed and craft appropriate enforcement message
       const failedType = validation.failedType === 'filter' ? 'filter/search' : 'isochrone modification';
       const requiredTools = validation.failedType === 'filter'
-        ? 'filter_restaurants or semantic_search_restaurants'
+        ? 'semantic_search_restaurants'
         : 'create_isochrone';
 
       // Add CRITICAL system-level enforcement message

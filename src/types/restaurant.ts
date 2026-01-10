@@ -5,10 +5,12 @@ export interface Restaurant {
   neighborhood: string;
   cuisine: string;
   summary: string;
+  summary2?: string;
   website?: string;
   image_url?: string;
   meal_types?: string[];
   participation_weeks?: string[];
+  participation_weeks2?: string;
   collections: string[];
   opentable_id?: string;
   table_res?: string;

@@ -108,7 +108,7 @@ def main():
     if not failed_scripts:
         print("\n🎉 All NYC Restaurant Week scripts completed successfully!")
         print("📁 Check the output files in src/data/NYCRestaurantWeek/")
-        print("📁 Final data available in src/data/FinalData.json")
+        
     else:
         print(f"\n⚠️  Pipeline completed with {len(failed_scripts)} error(s).")
         print("🔧 Please fix the errors and re-run the pipeline.")

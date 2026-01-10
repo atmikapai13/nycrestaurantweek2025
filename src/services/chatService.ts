@@ -8,8 +8,7 @@ export interface ChatMessage {
 export interface ChatContext {
   totalRestaurants: number
   visibleRestaurants: number
-  activeFilters: Record<string, any>
-  visible_restaurants?: any[]
+  filterPool: string[]  // Array of restaurant slugs (filtered by filter bar)
   isochrone_params?: any  // Persist isochrone state across turns
   isochrone_layers?: any[]  // Persist multi-party isochrone layers across turns
 }

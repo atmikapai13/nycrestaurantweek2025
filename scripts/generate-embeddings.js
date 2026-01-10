@@ -52,6 +52,9 @@ function createEmbeddingText(restaurant) {
     // Summary description
     restaurant.summary || '',
 
+    // Extended summary (richer descriptive language)
+    restaurant.summary2 || '',
+
     // Yelp review highlights (most important for semantic search)
     restaurant.yelp_review_highlights ? `Yelp highlights: ${restaurant.yelp_review_highlights}` : '',
 

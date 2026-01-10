@@ -1,23 +1,16 @@
 .floating-header {
   position: fixed;
-  top: 20px;
-  left: 20px;
+  top: 2%;
+  right: 2%;
   z-index: 1000;
-  display: flex;
+  display: none; /* Hidden on desktop */
   align-items: center;
   gap: 10px;
 }
 
-.floating-header-logo {
-  width: 60px;
-  height: 60px;
-  object-fit: contain;
-  filter: drop-shadow(0px 4px 10px rgba(0, 0, 0, 0.25));
-}
-
 .floating-header-title {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 400;
   color: #404040;
   letter-spacing: 0.5px;
@@ -29,14 +22,10 @@
   color: rgba(242, 61, 151, 0.875);
 }
 
-.floating-header-chatbot {
-  display: none;
-  /* Hidden on desktop */
-}
-
 /* Mobile responsive */
 @media (max-width: 768px) {
   .floating-header {
+    display: flex; /* Show on mobile */
     top: 0px;
     left: 0px;
     padding: 8px 14px;

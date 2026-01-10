@@ -2,6 +2,48 @@ import json
 import pandas as pd
 from typing import Dict, List, Tuple
 from collections import Counter
+import os
+
+def resolve_path(base_filename: str) -> str:
+    """Try multiple possible paths and return the first that exists"""
+    # Extract just the relative part after 'data/'
+    if 'NYCRestaurantWeek/' in base_filename:
+        relative = base_filename.split('data/')[-1]
+        possible_paths = [
+            f'src/data/{relative}',  # From project root
+            f'../../data/{relative}',  # From src/utils/NYCRestaurantWeek directory
+        ]
+    elif 'Lists/' in base_filename:
+        relative = base_filename.split('data/')[-1]
+        possible_paths = [
+            f'src/data/{relative}',  # From project root
+            f'../../data/{relative}',  # From src/utils/NYCRestaurantWeek directory
+        ]
+    elif 'data/' in base_filename:
+        # For paths like ../data/FinalData.json
+        relative = base_filename.split('data/')[-1]
+        possible_paths = [
+            f'src/data/{relative}',  # From project root
+            f'../../data/{relative}',  # From src/utils/NYCRestaurantWeek directory
+        ]
+    else:
+        # For root data files like nycrestaurantweek2026.json
+        filename = os.path.basename(base_filename)
+        possible_paths = [
+            f'src/data/{filename}',  # From project root
+            f'../../data/{filename}',  # From src/utils/NYCRestaurantWeek directory
+        ]
+
+    for path in possible_paths:
+        if os.path.exists(path):
+            return path
+
+    # If none exist, return the first option with directory creation
+    first_path = possible_paths[0]
+    dir_path = os.path.dirname(first_path)
+    if dir_path:  # Only create if there's a directory component
+        os.makedirs(dir_path, exist_ok=True)
+    return first_path
 
 def load_json_file(filepath: str) -> List[Dict]:
     """Load JSON file and return list of dictionaries"""
@@ -321,24 +363,242 @@ def analyze_join_results(joined_data: List[Dict]):
             print(f"      Cuisine: {restaurant.get('cuisine', 'N/A')}")
             print()
 
+def is_empty_value(value):
+    """Check if a value is considered empty (None, empty string, empty array, etc.)"""
+    if value is None:
+        return True
+    if isinstance(value, str) and value.strip() == "":
+        return True
+    if isinstance(value, list) and len(value) == 0:
+        return True
+    return False
+
+def detect_borough_from_address(address: str) -> str:
+    """Detect the correct borough from an address string.
+
+    Returns: 'Manhattan', 'Brooklyn', 'Queens', 'Bronx', 'Staten Island', or None if unclear
+    """
+    if not address:
+        return None
+
+    address_lower = address.lower()
+
+    # Check for explicit borough names first
+    if 'manhattan' in address_lower:
+        return 'Manhattan'
+    if 'brooklyn' in address_lower:
+        return 'Brooklyn'
+    if 'queens' in address_lower:
+        return 'Queens'
+    if 'bronx' in address_lower:
+        return 'Bronx'
+    if 'staten island' in address_lower:
+        return 'Staten Island'
+
+    # Queens neighborhoods
+    queens_neighborhoods = [
+        'astoria', 'long island city', 'lic', 'flushing', 'forest hills',
+        'jackson heights', 'elmhurst', 'corona', 'woodside', 'sunnyside',
+        'jamaica', 'bayside', 'ridgewood', 'glendale', 'middle village'
+    ]
+
+    # Brooklyn neighborhoods
+    brooklyn_neighborhoods = [
+        'williamsburg', 'greenpoint', 'bushwick', 'dumbo', 'brooklyn heights',
+        'park slope', 'cobble hill', 'carroll gardens', 'red hook', 'sunset park',
+        'bay ridge', 'dyker heights', 'bensonhurst', 'coney island', 'brighton beach',
+        'sheepshead bay', 'flatbush', 'prospect heights', 'crown heights', 'bed-stuy',
+        'bedford-stuyvesant', 'clinton hill', 'fort greene', 'downtown brooklyn',
+        'boerum hill', 'gowanus', 'Industry City'
+    ]
+
+    # Bronx neighborhoods
+    bronx_neighborhoods = [
+        'riverdale', 'kingsbridge', 'fordham', 'belmont', 'arthur avenue',
+        'mott haven', 'hunts point', 'pelham', 'city island'
+    ]
+
+    # Check for specific neighborhood names
+    for neighborhood in queens_neighborhoods:
+        if neighborhood in address_lower:
+            return 'Queens'
+
+    for neighborhood in brooklyn_neighborhoods:
+        if neighborhood in address_lower:
+            return 'Brooklyn'
+
+    for neighborhood in bronx_neighborhoods:
+        if neighborhood in address_lower:
+            return 'Bronx'
+
+    # If no clear indicator, return None
+    return None
+
+def correct_borough_assignments(restaurants: List[Dict]) -> int:
+    """Correct borough assignments based on address.
+
+    Returns: Number of corrections made
+    """
+    corrections_made = 0
+
+    for restaurant in restaurants:
+        current_borough = restaurant.get('borough', '')
+        address = restaurant.get('address', '')
+
+        if not address:
+            continue
+
+        # Detect correct borough from address
+        detected_borough = detect_borough_from_address(address)
+
+        if detected_borough and detected_borough != current_borough:
+            print(f"   Correcting: {restaurant.get('name')} | {current_borough} → {detected_borough}")
+            restaurant['borough'] = detected_borough
+            corrections_made += 1
+
+    return corrections_made
+
+def merge_2025_2026_data(data_2026: List[Dict], data_2025: List[Dict]) -> List[Dict]:
+    """Outer join 2026 and 2025 data on slug field.
+
+    Priority rules:
+    1. Primary fields from 2026 (with fallback to 2025 if empty/null/missing):
+       name, slug, borough, neighborhood, cuisine, summary, summary2, website, meal_types,
+       participation_weeks, participation_weeks2, menu_url, address, latitude, longitude,
+       telephone, facebook_url, instagram_url, opentable_id, michelin_award, nyttop100_rank
+
+    2. Fields from 2025 only:
+       price, available, yelp_rating, yelp_review_count, yelp_url, yelp_review_highlights,
+       table_res, collections, reddit
+    """
+    print(f"\n🔗 Performing outer join on slug...")
+    print(f"   2026 dataset: {len(data_2026)} restaurants")
+    print(f"   2025 dataset: {len(data_2025)} restaurants")
+
+    # Create lookup dictionary for 2025 data by slug
+    data_2025_by_slug = {r['slug']: r for r in data_2025 if 'slug' in r}
+
+    # Fields to take from 2026 with fallback to 2025
+    primary_fields_2026 = [
+        'name', 'slug', 'borough', 'neighborhood', 'cuisine', 'summary', 'summary2',
+        'website', 'meal_types', 'participation_weeks', 'participation_weeks2',
+        'menu_url', 'address', 'latitude', 'longitude', 'telephone',
+        'facebook_url', 'instagram_url', 'opentable_id', 'michelin_award',
+        'nyttop100_rank', 'primary_location', 'michelin_slug'
+    ]
+
+    # Fields to take from 2025 only
+    fields_from_2025 = [
+        'price', 'available', 'yelp_rating', 'yelp_review_count', 'yelp_url',
+        'yelp_review_highlights', 'table_res', 'collections', 'reddit'
+    ]
+
+    merged_data = []
+    slugs_processed = set()
+
+    # Process all restaurants from 2026
+    for restaurant_2026 in data_2026:
+        slug = restaurant_2026.get('slug')
+        if not slug:
+            continue
+
+        slugs_processed.add(slug)
+        merged_restaurant = {}
+
+        # Get corresponding 2025 restaurant if it exists
+        restaurant_2025 = data_2025_by_slug.get(slug, {})
+
+        # Copy primary fields from 2026, fallback to 2025 if empty
+        for field in primary_fields_2026:
+            value_2026 = restaurant_2026.get(field)
+            if is_empty_value(value_2026):
+                # Fallback to 2025
+                value_2025 = restaurant_2025.get(field)
+                if not is_empty_value(value_2025):
+                    merged_restaurant[field] = value_2025
+                else:
+                    merged_restaurant[field] = value_2026  # Keep the empty value from 2026
+            else:
+                merged_restaurant[field] = value_2026
+
+        # Copy fields from 2025 only
+        for field in fields_from_2025:
+            value_2025 = restaurant_2025.get(field)
+
+            # Special handling for collections - concatenate and deduplicate
+            if field == 'collections':
+                collections_2026 = restaurant_2026.get('collections', [])
+                collections_2025 = restaurant_2025.get('collections', [])
+
+                # Ensure both are lists
+                if not isinstance(collections_2026, list):
+                    collections_2026 = []
+                if not isinstance(collections_2025, list):
+                    collections_2025 = []
+
+                # Concatenate and deduplicate
+                combined_collections = list(set(collections_2026 + collections_2025))
+                if combined_collections:
+                    merged_restaurant['collections'] = combined_collections
+            elif not is_empty_value(value_2025):
+                merged_restaurant[field] = value_2025
+
+        merged_data.append(merged_restaurant)
+
+    # Add restaurants that are in 2025 but not in 2026 (to make it a true outer join)
+    for restaurant_2025 in data_2025:
+        slug = restaurant_2025.get('slug')
+        if slug and slug not in slugs_processed:
+            # This restaurant only exists in 2025
+            merged_restaurant = {}
+
+            # Copy primary fields from 2025 (since 2026 doesn't have it)
+            for field in primary_fields_2026:
+                value_2025 = restaurant_2025.get(field)
+                if not is_empty_value(value_2025):
+                    merged_restaurant[field] = value_2025
+
+            # Copy secondary fields from 2025
+            for field in fields_from_2025:
+                value_2025 = restaurant_2025.get(field)
+
+                # Special handling for collections
+                if field == 'collections':
+                    collections_2025 = restaurant_2025.get('collections', [])
+                    if not isinstance(collections_2025, list):
+                        collections_2025 = []
+                    if collections_2025:
+                        merged_restaurant['collections'] = collections_2025
+                elif not is_empty_value(value_2025):
+                    merged_restaurant[field] = value_2025
+
+            merged_data.append(merged_restaurant)
+
+    print(f"✅ Merged dataset: {len(merged_data)} total restaurants")
+    print(f"   From 2026 only: {len(data_2026) - len([s for s in slugs_processed if s in data_2025_by_slug])}")
+    print(f"   From 2025 only: {len(data_2025) - len([s for s in data_2025_by_slug.keys() if s in slugs_processed])}")
+    print(f"   In both: {len([s for s in slugs_processed if s in data_2025_by_slug])}")
+
+    return merged_data
+
 def main():
     """Main function to join Michelin and NYT data with restaurant characteristics"""
     
     print("🔗 NYC Restaurant Week - Michelin & NYT Data Join")
     print("=" * 60)
-    
-    # File paths
-    characteristics_file = "../data/NYCRestaurantWeek/3_Characteristics.json"
-    michelin_file = "../data/Lists/MichelinNYC.json"
-    nyt_file = "../data/Lists/NYTTop100.json"
-    michelin_output_file = "../data/NYCRestaurantWeek/4_JoinMichelin.json"
-    nyttop100_output_file = "../data/NYCRestaurantWeek/5_JoinNYT.json"
+
+    # File paths - resolve to correct location
+    characteristics_file = resolve_path("../data/NYCRestaurantWeek/3_Characteristics.json")
+    michelin_file = resolve_path("../data/Lists/MichelinNYC.json")
+    nyt_file = resolve_path("../data/Lists/NYTTop100.json")
+    michelin_output_file = resolve_path("../data/NYCRestaurantWeek/4_JoinMichelin.json")
+    nyttop100_output_file = resolve_path("../data/NYCRestaurantWeek/5_JoinNYT.json")
     
     # Load data
     print("\n📂 Loading data files...")
     characteristics_data = load_json_file(characteristics_file)
     michelin_data = load_json_file(michelin_file)
-    
+
     # Load NYT data
     nyt_raw_data = load_json_file(nyt_file)
     if nyt_raw_data and 'restaurants' in nyt_raw_data:
@@ -346,11 +606,11 @@ def main():
     else:
         nyt_data = []
         print("❌ Failed to load NYT data")
-    
+
     if not characteristics_data or not michelin_data:
         print("❌ Failed to load data files")
         return
-    
+
     # Step 1: Join with Michelin data
     print("\n" + "="*50)
     print("STEP 1: Joining with Michelin data")
@@ -376,17 +636,56 @@ def main():
     # Save final result
     save_joined_data(final_joined_data, nyttop100_output_file)
     
-    # Also save as FinalData.json for easy access
-    final_data_file = "../data/FinalData.json"
-    save_joined_data(final_joined_data, final_data_file)
-    
+    # Also save as nycrestaurantweek2026.json for easy access
+    nycrestaurantweek2026_file = resolve_path("../data/NYCRestaurantWeek/nycrestaurantweek2026.json")
+    save_joined_data(final_joined_data, nycrestaurantweek2026_file)
+
+    # Step 3: Outer join with 2025 data
+    print("\n" + "="*50)
+    print("STEP 3: Merging with 2025 data")
+    print("="*50)
+
+    # Load 2025 data
+    nycrestaurantweek2025_file = resolve_path("../data/NYCRestaurantWeek/nycrestaurantweek2025.json")
+    data_2025 = load_json_file(nycrestaurantweek2025_file)
+
+    if data_2025:
+        # Merge 2026 and 2025 data
+        final_data = merge_2025_2026_data(final_joined_data, data_2025)
+
+        # Data corrections - fix incorrect borough assignments based on address
+        print(f"\n🔧 Applying data corrections (borough detection from address)...")
+        corrections_count = correct_borough_assignments(final_data)
+        if corrections_count > 0:
+            print(f"✅ Corrected {corrections_count} restaurant(s)")
+        else:
+            print(f"✅ No corrections needed")
+
+        # Filter to only include Manhattan restaurants
+        print(f"\n🗽 Filtering to Manhattan only...")
+        print(f"   Before filter: {len(final_data)} restaurants")
+        manhattan_only = [r for r in final_data if r.get('borough', '').lower() == 'manhattan']
+        print(f"   After filter: {len(manhattan_only)} restaurants (Manhattan only)")
+
+        # Save to FinalData.json (Manhattan only)
+        final_data_output = resolve_path("../data/FinalData.json")
+        save_joined_data(manhattan_only, final_data_output)
+
+        # Update final_data to use Manhattan-only for analysis
+        final_data = manhattan_only
+    else:
+        print("❌ Failed to load 2025 data, skipping merge")
+        final_data = final_joined_data
+        final_data_output = nycrestaurantweek2026_file
+
     # Analyze results
-    analyze_join_results(final_joined_data)
-    
+    analyze_join_results(final_data)
+
     print(f"\n🎉 Join completed successfully!")
     print(f"📁 Michelin output file: {michelin_output_file}")
     print(f"📁 NYT Top 100 output file: {nyttop100_output_file}")
-    print(f"📁 Final data file: {final_data_file}")
+    print(f"📁 2026 data file: {nycrestaurantweek2026_file}")
+    print(f"📁 Final merged data file: {final_data_output}")
 
 if __name__ == "__main__":
     main() 

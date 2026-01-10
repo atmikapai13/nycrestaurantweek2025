@@ -1,30 +1,48 @@
-.restaurant-card-close {
+/* Header buttons container */
+.card-header-buttons {
   position: absolute;
-  top: 12px;
-  right: 12px;
-  background: none;
-  border: none;
-  color: #888;
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 50%;
-  transition: background 0.15s, color 0.15s;
+  top: 11px;
+  right: 10px;
+  display: flex;
+  gap: 4px;
   z-index: 10;
 }
 
-.restaurant-card-heart {
-  position: absolute;
-  top: 12px;
-  right: 12px;
+/* Favorite button */
+.btn-favorite {
   background: none;
   border: none;
   cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
 
-  
-  padding: 4px;
-  border-radius: 50%;
-  transition: background 0.15s, transform 0.15s;
-  z-index: 10;
+.btn-favorite:hover {
+  transform: scale(1.1);
+}
+
+/* Close button */
+.btn-close-card {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 300;
+  color: #aaa;
+  transition: all 0.2s;
+  line-height: 1;
+}
+
+.btn-close-card:hover {
+  color: #666;
 }
 
 .restaurant-card {
@@ -37,7 +55,7 @@
   min-height: auto;
   overflow: visible;
   flex-shrink: 0;
-  background: rgba(255, 255, 255, 0.80);
+  background: rgba(255, 255, 255, 0.70);
   backdrop-filter: blur(3px) saturate(100%);
   -webkit-backdrop-filter: blur(3px) saturate(100%);
   border: 2px solid rgba(242, 61, 150, 0.4);
@@ -54,7 +72,6 @@
 
 .tag {
   padding: 1px 4px;
-  margin-top: 5px;
   border-radius: 3px;
   font-size: 7px;
   font-weight: 400;
@@ -65,12 +82,12 @@
 }
 
 .tag-cuisine {
-  background-color: #f5e9dad9;
+  background-color: #f5dfc4d6;
   color: #000000;
 }
 
 .tag-price {
-  background-color: rgba(249, 219, 100, 0.7);
+  background-color: rgba(249, 219, 100, 0.495);
   color: #000000;
 }
 
@@ -80,13 +97,13 @@
 }
 
 .tag-bib {
-  background-color: #ffb3b3;
+  background-color: #ffb3b3bb;
   color: #000000;
 }
 
 .tag-nyt-rank {
-  background-color: #ff69b4c0;
-  color: #FFFFFF;
+  background-color: rgba(249, 152, 100, 0.495);
+  color: #000000;
 }
 
 
@@ -101,7 +118,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  padding-right: 30px;
+  padding-right: 60px;
   /* Reserve space for heart + close buttons */
 }
 
@@ -129,6 +146,7 @@
   line-height: 1.3;
   color: #4B5563;
   margin: 0 0 3px 0;
+  white-space: pre-line;
 }
 
 /* Yelp and Price Row */
@@ -298,6 +316,169 @@
   line-height: 1.4;
   color: #4B5563;
   text-align: left;
+  white-space: pre-line;
+}
+
+/* About Accordion */
+.about-accordion {
+  margin-top: 4px;
+  padding-top: 2px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.about-accordion-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 4px 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.about-accordion-header:hover {
+  opacity: 0.7;
+}
+
+.about-accordion-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #4B5563;
+  text-align: left;
+}
+
+.about-accordion-chevron {
+  transition: transform 0.2s ease;
+  color: #4B5563;
+  flex-shrink: 0;
+}
+
+.about-accordion-chevron.open {
+  transform: rotate(180deg);
+}
+
+.about-accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+.about-accordion-content.open {
+  max-height: 500px;
+}
+
+.about-text {
+  font-size: 9px;
+  line-height: 1.4;
+  color: #4B5563;
+  text-align: left;
+  padding-top: 2px;
+  margin: 0;
+  white-space: pre-line;
+}
+
+/* Restaurant Week Spring 2026 Accordion */
+.restaurant-week-accordion {
+  margin-top: 4px;
+  padding-top: 2px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.restaurant-week-accordion-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 4px 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.restaurant-week-accordion-header:hover {
+  opacity: 0.7;
+}
+
+.restaurant-week-accordion-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #4B5563;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.new-badge {
+  background-color: #f96bb2;
+  color: white;
+  font-size: 7px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.restaurant-week-accordion-chevron {
+  transition: transform 0.2s ease;
+  color: #4B5563;
+  flex-shrink: 0;
+}
+
+.restaurant-week-accordion-chevron.open {
+  transform: rotate(180deg);
+}
+
+.restaurant-week-accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+.restaurant-week-accordion-content.open {
+  max-height: 300px;
+}
+
+.meal-types-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 6px;
+}
+
+.meal-types-text {
+  font-size: 10px;
+  color: #4B5563;
+  line-height: 1.4;
+}
+
+.see-menu-btn {
+  background-color: rgba(34, 34, 34, 0.15);
+  color: #343333;
+  font-size: 10px;
+  font-weight: 500;
+  padding: 0 8px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 0.3px;
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  text-align: center;
+  white-space: nowrap;
+  align-self: flex-end;
+}
+
+.see-menu-btn:hover {
+  background-color: rgba(0, 0, 0, 0.25);
+  color: #000000;
+  transform: scale(1.0);
 }
 
 /* Contact & Links Accordion */
@@ -363,8 +544,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background: rgba(0, 0, 0, 0.05);
   color: #555;
@@ -373,8 +554,8 @@
 }
 
 .icon-link svg {
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
 }
 
 .icon-link:hover {

@@ -1,4 +1,4 @@
-import { geoapifyRequest, getNYCBoundingBox, getNYCCenter, isWithinNYC } from './_lib/geoapifyClient.js'
+import { geoapifyRequest, getManhattanBoundingBox, getNYCCenter, isWithinManhattan } from './_lib/geoapifyClient.js'
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -164,7 +164,7 @@ export default async function handler(req, res) {
     const nycCenter = getNYCCenter()
     const result = await geoapifyRequest('/geocode/search', {
       text: expandedAddress,
-      filter: `rect:${getNYCBoundingBox()}`,
+      filter: `rect:${getManhattanBoundingBox()}`,
       bias: `proximity:${nycCenter.lon},${nycCenter.lat}`,
       limit: 5
     })
@@ -206,9 +206,9 @@ export default async function handler(req, res) {
     const coordinates = topFeature.geometry.coordinates // GeoJSON format: [lon, lat]
     const [lon, lat] = coordinates
 
-    // Verify result is within NYC bounds
-    if (!isWithinNYC(lat, lon)) {
-      console.log('Result outside NYC bounds, trying fallback')
+    // Verify result is within Manhattan bounds
+    if (!isWithinManhattan(lat, lon)) {
+      console.log('Result outside Manhattan bounds, trying fallback')
       const fallbackResult = await fallbackNeighborhoodGeocode(expandedAddress)
 
       if (fallbackResult) {

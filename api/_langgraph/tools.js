@@ -31,38 +31,60 @@ import { generateIsochrone, generateMultiPartyIsochrone } from '../_lib/isochron
  */
 
 /**
- * Get the search pool for filtering operations
+ * Get the filtered pool for search operations
  *
- * Returns:
- * - If scopeToIsochrone=true AND isochrone exists: restaurants in allRestaurantSlugs (base list)
- * - Otherwise: null (signals to use full dataset of 628 restaurants)
+ * Returns array of restaurants to scope search to.
+ * Priority:
+ * 1. Use filterPool from frontend (if exists and not empty)
+ * 2. Use isochrone base (if exists and scopeToIsochrone=true)
+ * 3. Return null (signal to use all restaurants)
  *
- * CRITICAL: NEVER returns visibleRestaurants (that's only for pink markers)
+ * Filter pool = base pool (all OR isochrone) + filter bar selections
+ * Frontend pre-computes this, so backend just uses it directly
  */
 async function getScopedSearchPool(scopeToIsochrone) {
-  if (!scopeToIsochrone) {
-    return null; // Signal to use full dataset
-  }
-
   try {
     const { getCurrentAgentState } = await import('./agent.js');
     const state = getCurrentAgentState();
+    const allRestaurants = loadRestaurantData();
 
-    // Check for allRestaurantSlugs (works for both single and multi-party isochrones)
-    if (state.isochroneParams?.allRestaurantSlugs?.length > 0) {
-      const allRestaurants = loadRestaurantData();
-      const searchPool = allRestaurants.filter(r =>
-        state.isochroneParams.allRestaurantSlugs.includes(r.slug)
-      );
+    // CRITICAL FIX: When both filterPool AND isochrone exist, INTERSECT them
+    // This handles the case where filterPool is from pre-isochrone state
+    if (scopeToIsochrone &&
+        state.isochroneParams?.allRestaurantSlugs?.length > 0 &&
+        state.filterPool &&
+        state.filterPool.length > 0) {
 
-      const isoType = state.isochroneParams.operation ? 'multi-party' : 'single-party';
-      console.log(`🔍 Scoped search pool: ${searchPool.length} restaurants (${isoType} isochrone base)`);
+      // Intersect filterPool with isochrone boundary
+      const isochroneSet = new Set(state.isochroneParams.allRestaurantSlugs);
+      const intersectedSlugs = state.filterPool.filter(slug => isochroneSet.has(slug));
+
+      const searchPool = allRestaurants.filter(r => intersectedSlugs.includes(r.slug));
+
+      console.log(`🔗 Intersected filter pool (${state.filterPool.length}) with isochrone (${state.isochroneParams.allRestaurantSlugs.length}): ${searchPool.length} restaurants`);
       return searchPool;
     }
 
-    // No isochrone → use full dataset
-    console.log(`🔍 No isochrone found - will search full dataset`);
+    // STEP 1: Check for filter pool ONLY (no isochrone active)
+    if (state.filterPool && state.filterPool.length > 0) {
+      const searchPool = allRestaurants.filter(r => state.filterPool.includes(r.slug));
+      console.log(`🎯 Using filter pool: ${searchPool.length} restaurants`);
+      return searchPool;
+    }
+
+    // STEP 2: Fall back to isochrone base only (if scopeToIsochrone=true)
+    if (scopeToIsochrone && state.isochroneParams?.allRestaurantSlugs?.length > 0) {
+      const searchPool = allRestaurants.filter(r =>
+        state.isochroneParams.allRestaurantSlugs.includes(r.slug)
+      );
+      console.log(`🔍 Using isochrone base: ${searchPool.length} restaurants`);
+      return searchPool;
+    }
+
+    // STEP 3: No scoping - use all restaurants
+    console.log(`🌍 No filter pool or isochrone - using all restaurants`);
     return null;
+
   } catch (e) {
     console.warn("❌ Could not access agent state for scoping:", e);
     return null;
@@ -105,94 +127,7 @@ function applyFiltersManually(restaurants, { cuisines = [], priceLevels = [], ne
 }
 
 /**
- * Tool 1: Filter restaurants
- */
-export const filterRestaurants = new DynamicStructuredTool({
-  name: "filter_restaurants",
-  description: `Filter restaurants by cuisine, price, ratings, and awards. Returns metadata summary.
-Use for structured queries like "Japanese restaurants" or "Michelin-starred places".
-IMPORTANT: For neighborhood queries, use create_isochrone instead (neighborhood data is unreliable).`,
-
-  schema: z.object({
-    cuisines: z.array(z.string()).optional().describe("Cuisine types"),
-    priceLevels: z.array(z.string()).optional().describe("Price: $, $$, $$$, $$$$"),
-    neighborhoods: z.array(z.string()).optional().describe("DEPRECATED: Use create_isochrone for neighborhood queries. This field has unreliable data."),
-    minRating: z.number().optional().describe("Min Yelp rating (0-5)"),
-    awards: z.array(z.string()).optional().describe("michelin, bib_gourmand, nyt_top_100"),
-    scopeToIsochrone: z.boolean().default(true).describe("If true and isochrone exists: search within isochrone base list. If false: search all 628 restaurants. Filters are NOT stacked - each query searches the same base.")
-  }),
-
-  func: async ({ cuisines = [], priceLevels = [], neighborhoods = [], minRating = 0, awards = [], scopeToIsochrone = true }) => {
-    // Step 1: Get search pool (isochrone base or full dataset)
-    const searchPool = await getScopedSearchPool(scopeToIsochrone);
-    const baseIsochroneSlugs = searchPool
-      ? searchPool.map(r => r.slug)
-      : null;
-
-    // Step 2: Apply filters (against base list, NOT stacked on previous results)
-    const filtered = searchPool
-      ? applyFiltersManually(searchPool, { cuisines, priceLevels, neighborhoods, minRating, awards })
-      : filterData({ cuisines, priceLevels, neighborhoods, minRating, awards });
-
-    // Calculate summary
-    const cuisineCount = {};
-    const neighborhoodCount = {};
-    const priceCount = { "$": 0, "$$": 0, "$$$": 0, "$$$$": 0 };
-    let totalRating = 0;
-
-    filtered.forEach(r => {
-      cuisineCount[r.cuisine] = (cuisineCount[r.cuisine] || 0) + 1;
-      neighborhoodCount[r.neighborhood] = (neighborhoodCount[r.neighborhood] || 0) + 1;
-      if (r.price) priceCount[r.price]++;
-      totalRating += r.yelp_rating || 0;
-    });
-
-    const topCuisines = Object.entries(cuisineCount)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 5)
-      .map(([c]) => c);
-
-    const topNeighborhoods = Object.entries(neighborhoodCount)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 5)
-      .map(([n]) => n);
-
-    // Extract slugs for map actions
-    const slugs = filtered.map(r => r.slug);
-
-    // Build map actions (isochrone preservation handled automatically by agent middleware)
-    const mapActions = [];
-
-    mapActions.push({
-      mapAction: 'highlightRestaurants',
-      slugs,
-      count: slugs.length
-    });
-
-    return JSON.stringify({
-      count: filtered.length,
-      restaurants: filtered.slice(0, 20).map(r => ({
-        name: r.name,
-        slug: r.slug,
-        cuisine: r.cuisine,
-        rating: r.yelp_rating,
-        price: r.price,
-        neighborhood: r.neighborhood
-      })),
-      summary: {
-        topCuisines,
-        topNeighborhoods,
-        priceDistribution: priceCount,
-        avgRating: filtered.length > 0 ? (totalRating / filtered.length).toFixed(1) : 0
-      },
-      // Auto-return map actions for visualization
-      mapActions
-    });
-  }
-});
-
-/**
- * Tool 2: Get restaurant details
+ * Tool 1: Get restaurant details
  */
 export const getRestaurantDetails = new DynamicStructuredTool({
   name: "get_restaurant_details",
@@ -305,32 +240,28 @@ Use when user asks "tell me about [restaurant]" or "what's the vibe".`,
  */
 export const semanticSearchRestaurants = new DynamicStructuredTool({
   name: "semantic_search_restaurants",
-  description: `AI-powered semantic search using vector embeddings (Pinecone + RAG).
-Use for vibe/ambiance/dish queries: "cozy date spot", "best ramen", "great cocktails".`,
+  description: `AI-powered semantic search using vector embeddings.
+Use for vibe/ambiance/dish queries: "cozy date spot", "best ramen", "cocktails".
+Automatically scopes to filtered pool (respects filter bar + isochrone).`,
 
   schema: z.object({
-    query: z.string().describe("Natural language query"),
-    scopeToIsochrone: z.boolean().default(true).describe("If true and isochrone exists: search within isochrone base list. If false: search all 628 restaurants. Searches are NOT stacked - each query searches the same base."),
-    topK: z.number().default(10).describe("Number of results to return"),
-    preFilters: z.object({
-      cuisines: z.array(z.string()).optional(),
-      priceLevels: z.array(z.string()).optional(),
-      neighborhoods: z.array(z.string()).optional(),
-      minRating: z.number().optional()
-    }).optional().describe("Optional filters to apply before semantic search")
+    query: z.string().describe("Natural language search query"),
+    scopeToIsochrone: z.boolean().default(true)
+      .describe("If true: use filtered pool. If false: search all 628 restaurants."),
+    topK: z.number().default(10).describe("Number of results to return")
+    // REMOVED: preFilters parameter (filter bar handles this now)
   }),
 
-  func: async ({ query, scopeToIsochrone, topK, preFilters }) => {
+  func: async ({ query, scopeToIsochrone, topK }) => {
     try {
-      console.log(`🔍 RAG Search: "${query}"`);
+      console.log(`🔍 Semantic search: "${query}"`);
 
-      // Get search pool (isochrone base or full dataset)
+      // Get filtered pool (uses filter pool from frontend)
       const searchPool = await getScopedSearchPool(scopeToIsochrone);
       const visibleIds = searchPool ? searchPool.map(r => r.slug) : null;
-      const baseIsochroneSlugs = visibleIds;
 
-      // Perform RAG search (scoped to base list if isochrone exists)
-      const result = await performRagSearch(query, preFilters || {}, topK, visibleIds);
+      // Perform RAG search (no preFilters - pool already filtered)
+      const result = await performRagSearch(query, {}, topK, visibleIds);
 
       // Extract slugs for map actions
       const slugs = result.results.map(r => r.slug);
@@ -373,7 +304,7 @@ Use for "restaurants within 15 min walk from Grand Central".`,
 
   schema: z.object({
     location: z.string().describe("NYC address, neighborhood, or landmark"),
-    travelTimeMinutes: z.number().min(5).max(60),
+    travelTimeMinutes: z.number().min(5).max(60).default(15),
     mode: z.enum(["walking", "cycling", "transit", "driving"]).default("walking"),
     coordinates: z.array(z.number()).length(2).optional().describe("Optional [lon, lat] to skip geocoding (used when user picks from disambiguation options)"),
     filters: z.object({
@@ -508,11 +439,6 @@ Use for "restaurants within 15 min walk from Grand Central".`,
             polygon: isochrone.polygon,
             allRestaurantSlugs: allSlugs,  // NEW: Base list for frontend
             fitBounds: true
-          },
-          {
-            mapAction: 'highlightRestaurants',
-            slugs: filteredSlugs,  // Filtered subset for highlighting
-            count: filteredSlugs.length
           }
         ]
       });
@@ -535,6 +461,8 @@ Use for "I'm at Times Square, friend at LIC, what's between us?"`,
   schema: z.object({
     locations: z.array(z.object({
       address: z.string(),
+      coordinates: z.array(z.number()).length(2).optional()
+        .describe("Optional [lon, lat] to skip geocoding (used when user picks from disambiguation options)"),
       travelTimeMinutes: z.number().min(5).max(60),
       mode: z.enum(["walking", "cycling", "transit", "driving"]).default("walking")
     })).min(2).describe("Array of 2+ locations with travel times"),
@@ -545,7 +473,86 @@ Use for "I'm at Times Square, friend at LIC, what's between us?"`,
     try {
       console.log(`🤝 Meeting point: ${operation}, ${locations.length} locations`);
 
-      const result = await generateMultiPartyIsochrone(locations, operation);
+      // STEP 1: Geocode all locations and check confidence BEFORE proceeding
+      const geocodedLocations = await Promise.all(
+        locations.map(async (loc) => {
+          // If coordinates already provided (from disambiguation), skip geocoding
+          if (loc.coordinates && Array.isArray(loc.coordinates) && loc.coordinates.length === 2) {
+            console.log(`✅ Using pre-validated coordinates for "${loc.address}": [${loc.coordinates}]`);
+            return {
+              ...loc,
+              geocoded: null,  // No geocoding needed
+              coordinates: loc.coordinates,
+              formatted_address: loc.address
+            };
+          }
+
+          const geocoded = await geocodeAddress(loc.address);
+          console.log(`Geocoding: "${loc.address}" → confidence: ${geocoded.confidence}`);
+
+          return {
+            ...loc,
+            geocoded,  // Store full geocoding result (including confidence + alternatives)
+            coordinates: geocoded.coordinates,
+            formatted_address: geocoded.formatted_address
+          };
+        })
+      );
+
+      // STEP 2: Check if ANY location has low confidence
+      const ambiguousLocations = geocodedLocations.filter(
+        loc => loc.geocoded && loc.geocoded.confidence === 'low' &&
+               loc.geocoded.alternatives?.length > 0
+      );
+
+      if (ambiguousLocations.length > 0) {
+        // STOP: At least one location is ambiguous
+        console.log(`🤔 ${ambiguousLocations.length} ambiguous location(s) - asking user to clarify`);
+
+        // For simplicity: Handle FIRST ambiguous location only
+        // (Sequential disambiguation: ask for location 1, then location 2, etc.)
+        const firstAmbiguous = ambiguousLocations[0];
+        const geocoded = firstAmbiguous.geocoded;
+
+        const options = [
+          {
+            id: 1,
+            label: `${geocoded.formatted_address} (${geocoded.neighborhood || 'unknown neighborhood'})`,
+            coordinates: geocoded.coordinates,
+            formatted_address: geocoded.formatted_address,
+            neighborhood: geocoded.neighborhood
+          },
+          ...geocoded.alternatives.map((alt, index) => ({
+            id: index + 2,
+            label: alt.label,
+            coordinates: alt.coordinates,
+            formatted_address: alt.formatted_address,
+            neighborhood: alt.neighborhood
+          }))
+        ];
+
+        return JSON.stringify({
+          needsDisambiguation: true,
+          location: firstAmbiguous.address,
+          locationIndex: geocodedLocations.indexOf(firstAmbiguous),  // Track which location is ambiguous
+          operation,  // Store operation for resumption
+          allLocations: locations,  // Store all locations for resumption
+          options,
+          message: `I found ${options.length} locations matching "${firstAmbiguous.address}". Which one did you mean?`
+        });
+      }
+
+      // STEP 3: All locations are clear - proceed with isochrone generation
+      // Extract coordinates (now validated)
+      const validatedLocations = geocodedLocations.map(loc => ({
+        address: loc.formatted_address,
+        coordinates: loc.coordinates,
+        travelTimeMinutes: loc.travelTimeMinutes,
+        mode: loc.mode
+      }));
+
+      // Call the existing function but with pre-geocoded coordinates
+      const result = await generateMultiPartyIsochrone(validatedLocations, operation);
 
       if (!result.combinedPolygon) {
         return JSON.stringify({
@@ -616,13 +623,6 @@ Use for "I'm at Times Square, friend at LIC, what's between us?"`,
         label: `${operation} area`
       });
 
-      // Highlight restaurants in the result area
-      mapActions.push({
-        mapAction: 'highlightRestaurants',
-        slugs,
-        count: slugs.length
-      });
-
       // Fit map to show all polygons
       mapActions.push({
         mapAction: 'fitBounds',
@@ -673,18 +673,13 @@ Use for "I'm at Times Square, friend at LIC, what's between us?"`,
  */
 export const getCurrentResults = new DynamicStructuredTool({
   name: "get_current_results",
-  description: `Get summary of the restaurants of interest (pink markers on map).
-Use when user asks: "what did you find?", "show me results", "what kind of restaurants are these?", "tell me about the results".
-Returns: total count, cuisine breakdown, price breakdown, average rating, and top 3 examples.`,
+  description: `Get a simple summary of currently highlighted restaurants (pink markers).
+Use when user asks: "what did you find?", "show me results", "what are these restaurants?".
+Returns: Simple count-based summary with witty observation.`,
 
-  schema: z.object({
-    includeExamples: z.boolean().default(true)
-  }),
+  schema: z.object({}),  // No parameters needed
 
-  func: async ({ includeExamples }) => {
-    // Access state from agent's module-level cache
-    // Note: This requires importing getCurrentAgentState from agent.js
-    // For now, use dynamic import to avoid circular dependency
+  func: async () => {
     const { getCurrentAgentState } = await import('./agent.js');
     const state = getCurrentAgentState();
     const visible = state.visibleRestaurants || [];
@@ -692,24 +687,36 @@ Returns: total count, cuisine breakdown, price breakdown, average rating, and to
     if (visible.length === 0) {
       return JSON.stringify({
         count: 0,
-        message: "No restaurants currently highlighted. Try filtering or searching first."
+        message: "No restaurants currently highlighted. Try searching or creating an isochrone first."
       });
     }
 
-    // Calculate stats
+    // Simple stats for context generation
+    const count = visible.length;
+
+    // Get most common cuisine (for context)
     const cuisines = {};
-    const prices = {};
     visible.forEach(r => {
       cuisines[r.cuisine] = (cuisines[r.cuisine] || 0) + 1;
-      prices[r.price] = (prices[r.price] || 0) + 1;
     });
+    const topCuisine = Object.entries(cuisines)
+      .sort(([, a], [, b]) => b - a)[0]?.[0] || '';
+
+    // Determine context based on state
+    let context = '';
+    if (state.isochroneParams?.center) {
+      context = 'in your selected area';
+    } else if (state.filterPool && state.filterPool.length > 0) {
+      context = 'matching your filters';
+    } else {
+      context = 'from your search';
+    }
 
     return JSON.stringify({
-      count: visible.length,
-      cuisineBreakdown: cuisines,
-      priceBreakdown: prices,
-      avgRating: (visible.reduce((sum, r) => sum + (r.rating || r.yelp_rating || 0), 0) / visible.length).toFixed(1),
-      examples: includeExamples ? visible.slice(0, 3).map(r => r.name) : []
+      count,
+      context,
+      topCuisine,
+      message: `We found ${count} restaurants ${context}. ${topCuisine ? `Leaning ${topCuisine}. ` : ''}Would you like to refine by vibe or ambiance?`
     });
   }
 });
@@ -745,7 +752,6 @@ Use when user says "start over", "clear map", "reset", "remove isochrones", or "
 });
 
 export const tools = [
-  filterRestaurants,
   getRestaurantDetails,
   semanticSearchRestaurants,
   createIsochrone,

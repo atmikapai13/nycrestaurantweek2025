@@ -1,4 +1,4 @@
-import { geoapifyRequest, isWithinNYC } from './geoapifyClient.js'
+import { geoapifyRequest, isWithinManhattan } from './geoapifyClient.js'
 import { geocodeAddress } from './geocodeLogic.js'
 import * as turf from '@turf/turf'
 
@@ -94,9 +94,9 @@ export async function generateIsochrone(coordinates, travelTimeMinutes, mode = '
 
   const [lon, lat] = coordinates
 
-  // Verify coordinates are in NYC
-  if (!isWithinNYC(lat, lon)) {
-    throw new Error('Location outside NYC - isochrone calculations are only supported for NYC locations')
+  // Verify coordinates are in Manhattan
+  if (!isWithinManhattan(lat, lon)) {
+    throw new Error('Location outside Manhattan - our restaurant pool is limited to Manhattan borough')
   }
 
   try {
@@ -212,10 +212,32 @@ export async function generateMultiPartyIsochrone(locations, operation = 'inters
 
   console.log(`🎯 Multi-party isochrone: ${locations.length} locations, operation: ${operation}`)
 
-  // Step 1: Geocode all locations in parallel
+  // Step 1: Geocode all locations in parallel (skip if coordinates already provided)
   const geocodedLocations = await Promise.all(
     locations.map(async (loc) => {
+      // If coordinates already provided, skip geocoding
+      if (loc.coordinates && Array.isArray(loc.coordinates) && loc.coordinates.length === 2) {
+        console.log(`✅ Using pre-validated coordinates for "${loc.address}"`)
+        return {
+          address: loc.address,
+          coordinates: loc.coordinates,
+          travelTimeMinutes: loc.travelTimeMinutes || 15,
+          mode: loc.mode || 'walking',
+          geocoded: {
+            coordinates: loc.coordinates,
+            formatted_address: loc.address
+          }
+        }
+      }
+
+      // Otherwise, geocode as normal
       const geocoded = await geocodeAddress(loc.address)
+      console.log(`Geocoding: "${loc.address}" → "${geocoded.formatted_address}"`)
+
+      if (!geocoded?.coordinates) {
+        throw new Error(`Could not geocode location: ${loc.address}`)
+      }
+
       return {
         ...loc,
         geocoded

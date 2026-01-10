@@ -1,4 +1,4 @@
-import { geoapifyRequest, getNYCBoundingBox, getNYCCenter, isWithinNYC } from './geoapifyClient.js'
+import { geoapifyRequest, getManhattanBoundingBox, getNYCCenter, isWithinManhattan } from './geoapifyClient.js'
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -21,6 +21,7 @@ const NYC_SLANG_MAP = {
   'times sq': 'Times Square',
   'grand central': 'Grand Central Terminal',
   'penn station': 'Pennsylvania Station',
+  'hudson yards': 'Hudson Yards',  // Added: recognize Hudson Yards as a neighborhood
   'the vessel': 'Hudson Yards',
   'soho': 'SoHo',
   'noho': 'NoHo',
@@ -106,11 +107,11 @@ export async function geocodeAddress(address) {
   console.log(`Geocoding: "${address}" → "${expandedAddress}"`)
 
   try {
-    // Call Geoapify Geocoding API
+    // Call Geoapify Geocoding API (filter to Manhattan only)
     const nycCenter = getNYCCenter()
     const result = await geoapifyRequest('/geocode/search', {
       text: expandedAddress,
-      filter: `rect:${getNYCBoundingBox()}`,
+      filter: `rect:${getManhattanBoundingBox()}`,
       bias: `proximity:${nycCenter.lon},${nycCenter.lat}`,
       limit: 5
     })
@@ -139,23 +140,23 @@ export async function geocodeAddress(address) {
       throw new Error(`Could not find location: ${address}`)
     }
 
-    // Process multiple results for disambiguation
+    // Process multiple results for disambiguation (Manhattan only)
     const validFeatures = result.features
       .filter(feature => {
         const [lon, lat] = feature.geometry.coordinates
-        return isWithinNYC(lat, lon)
+        return isWithinManhattan(lat, lon)
       })
       .slice(0, 5) // Top 5 results max
 
     if (validFeatures.length === 0) {
-      console.log('No results within NYC bounds, trying fallback')
+      console.log('No results within Manhattan bounds, trying fallback')
       const fallbackResult = await fallbackNeighborhoodGeocode(expandedAddress)
 
       if (fallbackResult) {
         return fallbackResult
       }
 
-      throw new Error(`The address "${address}" is outside New York City`)
+      throw new Error(`The address "${address}" is outside Manhattan. Our restaurant pool is limited to Manhattan borough.`)
     }
 
     // Build primary result (top match)

@@ -1,7 +1,7 @@
 /* Chat Interface Container - Left Side */
 .chat-interface {
   position: absolute;
-  top: 50px;
+  top: 3%;
   left: 20px;
   bottom: 10px;
   z-index: 900;
@@ -100,6 +100,11 @@
   animation: fadeIn 0.3s ease;
 }
 
+/* Remove top spacing from first message */
+.chat-message:first-child {
+  margin-top: -10px;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -127,13 +132,13 @@
   border-radius: 16px;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 400;
-  font-size: 13px;
-  line-height: 1.5;
+  font-size: 12px;
+  line-height: 1.4;
   word-wrap: break-word;
   white-space: pre-wrap;
 
   /* Glassmorphism matching restaurant card */
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(3px) saturate(100%);
   -webkit-backdrop-filter: blur(3px) saturate(100%);
   border: 1px solid rgba(255, 255, 255, 0.3);
@@ -164,8 +169,8 @@
 
 /* Avatar inside bubble for assistant messages */
 .message-avatar-inside {
-  width: 50px;
-  height: 50px;
+  width: 70px;
+  height: 70px;
   min-width: 35px;
   border-radius: 50%;
   overflow: hidden;
@@ -193,8 +198,8 @@
 }
 
 .message-avatar-outside {
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   min-width: 35px;
   border-radius: 50%;
   overflow: hidden;
@@ -559,7 +564,7 @@
   }
 
   /* Drawer height states */
-  .drawer-8 {
+  .drawer-10 {
     height: 8vh;
   }
 
@@ -602,20 +607,20 @@
     min-height: 0;
   }
 
-  .drawer-8 .chat-messages {
+  .drawer-10 .chat-messages {
     display: none;
   }
 
-  .drawer-8 .chat-input-container {
+  .drawer-10 .chat-input-container {
     display: none;
   }
 
-  /* Collapsed header - only visible on mobile when drawer is at height 8 */
+  /* Collapsed header - only visible on mobile when drawer is at height 10 */
   .drawer-collapsed-header {
     display: none;
   }
 
-  .drawer-8 .drawer-collapsed-header {
+  .drawer-10 .drawer-collapsed-header {
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -625,7 +630,7 @@
     transition: opacity 0.2s;
   }
 
-  .drawer-8 .drawer-collapsed-header:hover {
+  .drawer-10 .drawer-collapsed-header:hover {
     opacity: 0.7;
   }
 

@@ -2,771 +2,3704 @@
   {
     "name": "Icca",
     "slug": "icca",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Atera",
     "slug": "atera",
-    "michelin_award": "TWO_STARS"
+    "michelin_award": "TWO_STARS",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Shion 69 Leonard Street",
     "slug": "shoji-at-69-leonard",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
+  },
+  {
+    "name": "Huso",
+    "slug": "huso-1218089",
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Jungsik New York",
     "slug": "jungsik-new-york",
-    "michelin_award": "THREE_STARS"
-  },
-  {
-    "name": "One White Street",
-    "slug": "one-white-street",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "THREE_STARS",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Crown Shy",
     "slug": "crown-shy",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Saga",
     "slug": "saga",
-    "michelin_award": "TWO_STARS"
+    "michelin_award": "TWO_STARS",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
+  },
+  {
+    "name": "Bridges",
+    "slug": "bridges-1216261",
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Dim Sum Go Go",
     "slug": "dim-sum-go-go",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      },
+      {
+        "code": "TYC_1041",
+        "label": "Dim Sum",
+        "slug": "dim-sum"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
+  },
+  {
+    "name": "Yamada",
+    "slug": "yamada",
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Le Coucou",
     "slug": "le-coucou",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1049",
+        "label": "French",
+        "slug": "french"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
-    "name": "Sushi Ichimura",
-    "slug": "sushi-ichimura",
-    "michelin_award": "ONE_STAR"
+    "name": "Muku",
+    "slug": "muku",
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "L’Abeille",
     "slug": "l’abeille",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1049",
+        "label": "French",
+        "slug": "french"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Nyonya",
     "slug": "nyonya",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1077",
+        "label": "Malaysian",
+        "slug": "malaysian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Corima",
     "slug": "corima",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1084",
+        "label": "Mexican",
+        "slug": "mexican"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Thai Diner",
     "slug": "thai-diner",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1117",
+        "label": "Thai",
+        "slug": "thai"
+      },
+      {
+        "code": "TYC_1161",
+        "label": "Fusion",
+        "slug": "fusion-1161"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Cervo’s",
     "slug": "cervo-s",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1044",
+        "label": "Spanish",
+        "slug": "spanish"
+      },
+      {
+        "code": "TYC_1096",
+        "label": "Seafood",
+        "slug": "seafood-1096"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Potluck Club",
     "slug": "potluck-club",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      },
+      {
+        "code": "TYC_1025",
+        "label": "Cantonese",
+        "slug": "cantonese"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Tolo",
     "slug": "tolo",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Dirt Candy",
     "slug": "dirt-candy",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [],
+    "chef": "Amanda Cohen",
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Pinch Chinese",
     "slug": "pinch-chinese",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      },
+      {
+        "code": "TYC_1101",
+        "label": "Regional Cuisine",
+        "slug": "regional-cuisine"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "César",
     "slug": "cesar",
-    "michelin_award": "TWO_STARS"
+    "michelin_award": "TWO_STARS",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_1096",
+        "label": "Seafood",
+        "slug": "seafood-1096"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Torrisi",
     "slug": "torrisi",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_1179",
+        "label": "Italian-American",
+        "slug": "italian-american"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Russ & Daughters Cafe",
     "slug": "russ-daughters-cafe",
-    "michelin_award": "BIB_GOURMAND"
-  },
-  {
-    "name": "The Musket Room",
-    "slug": "the-musket-room",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Estela",
     "slug": "estela",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Dhamaka",
     "slug": "dhamaka",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1059",
+        "label": "Indian",
+        "slug": "indian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Torien",
     "slug": "torien",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1244",
+        "label": "Yakitori",
+        "slug": "yakitori"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "8282",
     "slug": "8282",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_1161",
+        "label": "Fusion",
+        "slug": "fusion-1161"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
+  },
+  {
+    "name": "Laliko",
+    "slug": "laliko",
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_120",
+        "label": "Central Asian",
+        "slug": "central-asian-120"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "C as in Charlie",
     "slug": "c-as-in-charlie",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1161",
+        "label": "Fusion",
+        "slug": "fusion-1161"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Una Pizza Napoletana",
     "slug": "una-pizza-napoletana",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_70",
+        "label": "Pizza",
+        "slug": "pizza"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Sami & Susu",
     "slug": "sami-susu",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1083",
+        "label": "Mediterranean Cuisine",
+        "slug": "mediterranean-cuisine"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Atla",
     "slug": "atla",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1084",
+        "label": "Mexican",
+        "slug": "mexican"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Nami Nori",
     "slug": "nami-nori",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1036",
+        "label": "Creative",
+        "slug": "creative"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Yoshino",
     "slug": "yoshino-1185037",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Katz's",
     "slug": "katz-s",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_51",
+        "label": "Deli",
+        "slug": "deli"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Bungalow",
     "slug": "bungalow",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1059",
+        "label": "Indian",
+        "slug": "indian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "63 Clinton",
     "slug": "63-clinton",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
-    "name": "Sushi Nakazawa",
+    "name": "Sushi Nakazawa New York",
     "slug": "sushi-nakazawa",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Little Myanmar",
     "slug": "little-myanmar",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_46",
+        "label": "Burmese",
+        "slug": "burmese"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Family Meal at Blue Hill",
     "slug": "blue-hill",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      }
+    ],
+    "chef": "Dan Barber",
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Jeju Noodle Bar",
     "slug": "jeju-noodle-bar",
-    "michelin_award": "ONE_STAR"
-  },
-  {
-    "name": "Red Paper Clip",
-    "slug": "red-paper-clip",
-    "michelin_award": "ONE_STAR"
-  },
-  {
-    "name": "Clover Hill",
-    "slug": "clover-hill",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Frevo",
     "slug": "frevo",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Shmoné",
     "slug": "shmone",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1066",
+        "label": "Israeli",
+        "slug": "israeli"
+      },
+      {
+        "code": "TYC_66",
+        "label": "Middle Eastern",
+        "slug": "middle-eastern"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "CheLi",
     "slug": "cheli",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      },
+      {
+        "code": "TYC_807",
+        "label": "Shanghainese",
+        "slug": "shanghainese"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Soda Club",
     "slug": "soda-club",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1179",
+        "label": "Italian-American",
+        "slug": "italian-american"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Tuome",
     "slug": "tuome",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_55",
+        "label": "Fusion",
+        "slug": "fusion"
+      },
+      {
+        "code": "TYC_1203",
+        "label": "Asian Contemporary",
+        "slug": "asian-contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "MáLà Project",
     "slug": "mala-project",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      },
+      {
+        "code": "TYC_1116",
+        "label": "Sichuan",
+        "slug": "sichuan"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Ruffian",
     "slug": "ruffian",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_1036",
+        "label": "Creative",
+        "slug": "creative"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
+  },
+  {
+    "name": "Noreetuh",
+    "slug": "noreetuh",
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_55",
+        "label": "Fusion",
+        "slug": "fusion"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Sobaya",
     "slug": "soba-ya",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1197",
+        "label": "Soba",
+        "slug": "soba"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Superiority Burger",
     "slug": "superiority-burger",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Bar Miller",
     "slug": "bar-miller",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Tsukimi",
     "slug": "tsukimi",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1250",
+        "label": "Seasonal Cuisine",
+        "slug": "seasonal-cuisine"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Pranakhon",
     "slug": "pranakhon",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1117",
+        "label": "Thai",
+        "slug": "thai"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Semma",
     "slug": "semma",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1059",
+        "label": "Indian",
+        "slug": "indian"
+      },
+      {
+        "code": "TYC_1101",
+        "label": "Regional Cuisine",
+        "slug": "regional-cuisine"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Momofuku Noodle Bar",
     "slug": "momofuku-noodle-bar",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1010",
+        "label": "Asian",
+        "slug": "asian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
+  },
+  {
+    "name": "Bánh Anh Em",
+    "slug": "banh-anh-em",
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1129",
+        "label": "Vietnamese",
+        "slug": "vietnamese"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Yellow Rose",
     "slug": "yellow-rose",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1171",
+        "label": "Tex-Mex",
+        "slug": "tex-mex"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Odre",
     "slug": "odre",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Kosaka",
     "slug": "kosaka",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Ishq",
     "slug": "ishq",
-    "michelin_award": "BIB_GOURMAND"
-  },
-  {
-    "name": "Saint Julivert Fisherie",
-    "slug": "saint-julivert-fisherie",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1059",
+        "label": "Indian",
+        "slug": "indian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Casa Mono",
     "slug": "casa-mono",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1044",
+        "label": "Spanish",
+        "slug": "spanish"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
-    "name": "bōm",
-    "slug": "bom",
-    "michelin_award": "ONE_STAR"
+    "name": "La Dong",
+    "slug": "la-dong",
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1129",
+        "label": "Vietnamese",
+        "slug": "vietnamese"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
+  },
+  {
+    "name": "Sal Tang's",
+    "slug": "sal-tang-s",
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_813",
+        "label": "Chinese Contemporary",
+        "slug": "chinese-contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn"
   },
   {
     "name": "Oiji Mi",
     "slug": "oiji-mi",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
+  },
+  {
+    "name": "bōm",
+    "slug": "bom",
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Gramercy Tavern",
     "slug": "gramercy-tavern",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Rezdôra",
     "slug": "rezdora-osteria-emiliana",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      },
+      {
+        "code": "TYC_1101",
+        "label": "Regional Cuisine",
+        "slug": "regional-cuisine"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Noda",
     "slug": "noda",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "odo",
     "slug": "odo",
-    "michelin_award": "TWO_STARS"
+    "michelin_award": "TWO_STARS",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Untable",
     "slug": "untable",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1117",
+        "label": "Thai",
+        "slug": "thai"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn"
   },
   {
     "name": "Noz 17",
     "slug": "noz17",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Coqodaq",
     "slug": "coqodaq",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Aska",
     "slug": "aska",
-    "michelin_award": "TWO_STARS"
+    "michelin_award": "TWO_STARS",
+    "cuisines": [
+      {
+        "code": "TYC_1107",
+        "label": "Scandinavian",
+        "slug": "scandinavian"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn"
   },
   {
     "name": "Cote",
     "slug": "cote",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_75",
+        "label": "Steakhouse",
+        "slug": "steakhouse"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Jua",
     "slug": "jua",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_1191",
+        "label": "Korean Contemporary",
+        "slug": "korean-contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Shota Omakase",
     "slug": "shota-omakase",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn"
   },
   {
     "name": "Eleven Madison Park",
     "slug": "eleven-madison-park",
-    "michelin_award": "THREE_STARS"
+    "michelin_award": "THREE_STARS",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Francie",
     "slug": "francie",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn"
   },
   {
     "name": "Miss Ada",
     "slug": "miss-ada",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1066",
+        "label": "Israeli",
+        "slug": "israeli"
+      },
+      {
+        "code": "TYC_66",
+        "label": "Middle Eastern",
+        "slug": "middle-eastern"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn"
   },
   {
     "name": "Atomix",
     "slug": "atomix",
-    "michelin_award": "TWO_STARS"
+    "michelin_award": "TWO_STARS",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Norma Gastronomia Siciliana",
     "slug": "norma-gastronomia-siciliana",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      },
+      {
+        "code": "TYC_1109",
+        "label": "Sicilian",
+        "slug": "sicilian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "HanGawi",
     "slug": "hangawi",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "The Four Horsemen",
     "slug": "the-four-horsemen",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      },
+      {
+        "code": "TYC_47",
+        "label": "Californian",
+        "slug": "californian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn"
   },
   {
     "name": "Joo Ok",
     "slug": "joo-ok-1214822",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "TWO_STARS",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Nōksu",
     "slug": "noksu",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Hometown Bar B Que New York",
     "slug": "hometown-bar-b-que",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1143",
+        "label": "Barbecue",
+        "slug": "barbecue-1143"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn"
   },
   {
     "name": "Café Mars",
     "slug": "cafe-mars",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn"
   },
   {
     "name": "Shalom Japan",
     "slug": "shalom-japan",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_55",
+        "label": "Fusion",
+        "slug": "fusion"
+      },
+      {
+        "code": "TYC_1010",
+        "label": "Asian",
+        "slug": "asian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn"
   },
   {
     "name": "Cho Dang Gol",
     "slug": "cho-dang-gol",
-    "michelin_award": "BIB_GOURMAND"
-  },
-  {
-    "name": "Cecily",
-    "slug": "cecily",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Tonchin",
     "slug": "tonchin",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_839",
+        "label": "Ramen",
+        "slug": "ramen"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Little Alley",
     "slug": "little-alley",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      },
+      {
+        "code": "TYC_807",
+        "label": "Shanghainese",
+        "slug": "shanghainese"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Haenyeo",
     "slug": "haenyeo",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_1191",
+        "label": "Korean Contemporary",
+        "slug": "korean-contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn"
   },
   {
     "name": "Oxomoco",
     "slug": "oxomoco",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1084",
+        "label": "Mexican",
+        "slug": "mexican"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn"
   },
   {
     "name": "Tempura Matsui",
     "slug": "tempura-matsui",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1174",
+        "label": "Tempura",
+        "slug": "tempura"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Restaurant Yuu",
     "slug": "restaurant-yuu",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_800",
+        "label": "French Contemporary",
+        "slug": "french-contemporary"
+      },
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn"
   },
   {
     "name": "Peppercorn Station",
     "slug": "peppercorn-station",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      },
+      {
+        "code": "TYC_1116",
+        "label": "Sichuan",
+        "slug": "sichuan"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Chef's Table at Brooklyn Fare",
     "slug": "chef-s-table-at-brooklyn-fare",
-    "michelin_award": "TWO_STARS"
+    "michelin_award": "TWO_STARS",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": "Cesar Ramirez",
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Speedy Romeo",
     "slug": "speedy-romeo",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_70",
+        "label": "Pizza",
+        "slug": "pizza"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn"
+  },
+  {
+    "name": "Taqueria El Chato",
+    "slug": "taqueria-el-chato",
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1084",
+        "label": "Mexican",
+        "slug": "mexican"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn"
   },
   {
     "name": "Alta Calidad",
     "slug": "alta-calidad",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1084",
+        "label": "Mexican",
+        "slug": "mexican"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn"
   },
   {
     "name": "Pierozek",
     "slug": "pierozek",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1097",
+        "label": "Polish",
+        "slug": "polish"
+      },
+      {
+        "code": "TYC_832",
+        "label": "Dumplings",
+        "slug": "dumplings"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn"
   },
   {
     "name": "Sushi Sho",
     "slug": "sushi-sho-1213976",
-    "michelin_award": "TWO_STARS"
+    "michelin_award": "THREE_STARS",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Gabriel Kreuther",
     "slug": "gabriel-kreuther",
-    "michelin_award": "TWO_STARS"
+    "michelin_award": "TWO_STARS",
+    "cuisines": [
+      {
+        "code": "TYC_1049",
+        "label": "French",
+        "slug": "french"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Le Pavillon",
     "slug": "le-pavillon-1192744",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1049",
+        "label": "French",
+        "slug": "french"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Jōji",
     "slug": "joji",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Bonnie's",
     "slug": "bonnie-s",
-    "michelin_award": "BIB_GOURMAND"
-  },
-  {
-    "name": "Sushi Amane",
-    "slug": "sushi-amane",
-    "michelin_award": "ONE_STAR"
-  },
-  {
-    "name": "Ammazzacaffè",
-    "slug": "ammazzacaffe",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1025",
+        "label": "Cantonese",
+        "slug": "cantonese"
+      },
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn"
   },
   {
     "name": "Win Son",
     "slug": "win-son",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      },
+      {
+        "code": "TYC_842",
+        "label": "Taiwanese",
+        "slug": "taiwanese"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn"
   },
   {
     "name": "Meju",
     "slug": "meju",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_1101",
+        "label": "Regional Cuisine",
+        "slug": "regional-cuisine"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Queens",
+      "slug": "queens",
+      "exonyms": []
+    },
+    "area_name": "Queens"
   },
   {
     "name": "Kochi",
     "slug": "kochi",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Mari",
     "slug": "mari",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Hupo",
     "slug": "hupo",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      },
+      {
+        "code": "TYC_1116",
+        "label": "Sichuan",
+        "slug": "sichuan"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Queens",
+      "slug": "queens",
+      "exonyms": []
+    },
+    "area_name": "Queens"
   },
   {
     "name": "Runner Up",
     "slug": "runner-up",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn"
   },
   {
     "name": "Kung Fu Little Steamed Buns Ramen",
     "slug": "kung-fu-little-steamed-buns-ramen",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      },
+      {
+        "code": "TYC_832",
+        "label": "Dumplings",
+        "slug": "dumplings"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Le Bernardin",
     "slug": "le-bernardin",
-    "michelin_award": "THREE_STARS"
+    "michelin_award": "THREE_STARS",
+    "cuisines": [
+      {
+        "code": "TYC_9",
+        "label": "Seafood",
+        "slug": "seafood"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
+  },
+  {
+    "name": "Chalong",
+    "slug": "chalong",
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1117",
+        "label": "Thai",
+        "slug": "thai"
+      },
+      {
+        "code": "TYC_1263",
+        "label": "Southern Thai",
+        "slug": "southern-thai"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "LORE",
     "slug": "lore",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_1112",
+        "label": "South East Asian",
+        "slug": "south-east-asian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn"
   },
   {
     "name": "The Modern",
     "slug": "the-modern",
-    "michelin_award": "TWO_STARS"
+    "michelin_award": "TWO_STARS",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "YingTao",
     "slug": "yingtao",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Aquavit",
     "slug": "aquavit",
-    "michelin_award": "TWO_STARS"
+    "michelin_award": "TWO_STARS",
+    "cuisines": [
+      {
+        "code": "TYC_1107",
+        "label": "Scandinavian",
+        "slug": "scandinavian"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Chavela’s",
     "slug": "chavela-s",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1084",
+        "label": "Mexican",
+        "slug": "mexican"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn"
   },
   {
     "name": "Roberta's",
     "slug": "roberta-s",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_70",
+        "label": "Pizza",
+        "slug": "pizza"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn"
   },
   {
     "name": "Agi's Counter",
     "slug": "agi-s-counter",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1036",
+        "label": "Creative",
+        "slug": "creative"
+      },
+      {
+        "code": "TYC_1057",
+        "label": "Hungarian",
+        "slug": "hungarian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn"
   },
   {
     "name": "Sobre Masa",
     "slug": "sobre-masa",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1084",
+        "label": "Mexican",
+        "slug": "mexican"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn"
   },
   {
     "name": "Per Se",
     "slug": "per-se",
-    "michelin_award": "THREE_STARS"
+    "michelin_award": "THREE_STARS",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_1049",
+        "label": "French",
+        "slug": "french"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Masa",
     "slug": "masa",
-    "michelin_award": "THREE_STARS"
+    "michelin_award": "TWO_STARS",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Jean-Georges",
     "slug": "jean-georges",
-    "michelin_award": "TWO_STARS"
-  },
-  {
-    "name": "Falansai",
-    "slug": "falansai",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "TWO_STARS",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_800",
+        "label": "French Contemporary",
+        "slug": "french-contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Café Boulud",
     "slug": "cafe-boulud",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1049",
+        "label": "French",
+        "slug": "french"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Lungi",
     "slug": "lungi",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_88",
+        "label": "Sri Lankan",
+        "slug": "sri-lankan"
+      },
+      {
+        "code": "TYC_1059",
+        "label": "Indian",
+        "slug": "indian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Bayon",
     "slug": "bayon",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_93",
+        "label": "Cambodian",
+        "slug": "cambodian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Daniel",
     "slug": "daniel",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1049",
+        "label": "French",
+        "slug": "french"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Bohemian Spirit",
     "slug": "bohemian-spirit",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1118",
+        "label": "Czech",
+        "slug": "czech"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Gordo's Cantina",
     "slug": "gordo-s-cantina",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1084",
+        "label": "Mexican",
+        "slug": "mexican"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn"
   },
   {
     "name": "Sushi Noz",
     "slug": "sushi-noz",
-    "michelin_award": "TWO_STARS"
+    "michelin_award": "TWO_STARS",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Essential by Christophe",
     "slug": "essential-by-christophe",
-    "michelin_award": "ONE_STAR"
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_800",
+        "label": "French Contemporary",
+        "slug": "french-contemporary"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Covacha",
     "slug": "covacha",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1084",
+        "label": "Mexican",
+        "slug": "mexican"
+      },
+      {
+        "code": "TYC_1101",
+        "label": "Regional Cuisine",
+        "slug": "regional-cuisine"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Cardamom",
     "slug": "cardamom",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1059",
+        "label": "Indian",
+        "slug": "indian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Queens",
+      "slug": "queens",
+      "exonyms": []
+    },
+    "area_name": "Queens"
   },
   {
     "name": "Tha Phraya",
     "slug": "tha-phraya",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1252",
+        "label": "Thai contemporary",
+        "slug": "thai-contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Chuan Tian Xia",
     "slug": "chuan-tian-xia",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      },
+      {
+        "code": "TYC_1116",
+        "label": "Sichuan",
+        "slug": "sichuan"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn"
+  },
+  {
+    "name": "Olmo",
+    "slug": "olmo-1244242",
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1084",
+        "label": "Mexican",
+        "slug": "mexican"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn"
   },
   {
     "name": "Rolo's",
     "slug": "rolo-s",
-    "michelin_award": "BIB_GOURMAND"
-  },
-  {
-    "name": "Chick Chick",
-    "slug": "chick-chick",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Queens",
+      "slug": "queens",
+      "exonyms": []
+    },
+    "area_name": "Queens"
   },
   {
     "name": "Tanoreen",
     "slug": "tanoreen",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_66",
+        "label": "Middle Eastern",
+        "slug": "middle-eastern"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn"
   },
   {
-    "name": "Enoteca Maria",
-    "slug": "enoteca-maria",
-    "michelin_award": "BIB_GOURMAND"
+    "name": "Yemenat",
+    "slug": "yemenat",
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_66",
+        "label": "Middle Eastern",
+        "slug": "middle-eastern"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn"
   },
   {
     "name": "Sagara",
     "slug": "sagara",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_88",
+        "label": "Sri Lankan",
+        "slug": "sri-lankan"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Staten Island",
+      "slug": "staten-island",
+      "exonyms": []
+    },
+    "area_name": "Staten Island"
   },
   {
     "name": "Phayul",
     "slug": "phayul",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1120",
+        "label": "Tibetan",
+        "slug": "tibetan"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Queens",
+      "slug": "queens",
+      "exonyms": []
+    },
+    "area_name": "Queens"
   },
   {
     "name": "Zaab Zaab",
     "slug": "zaab-zaab",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1117",
+        "label": "Thai",
+        "slug": "thai"
+      },
+      {
+        "code": "TYC_1261",
+        "label": "Isan",
+        "slug": "isan"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Queens",
+      "slug": "queens",
+      "exonyms": []
+    },
+    "area_name": "Queens"
   },
   {
     "name": "SaRanRom Thai",
     "slug": "saranrom-thai",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1117",
+        "label": "Thai",
+        "slug": "thai"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Queens",
+      "slug": "queens",
+      "exonyms": []
+    },
+    "area_name": "Queens"
   },
   {
     "name": "Oso",
     "slug": "oso",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1084",
+        "label": "Mexican",
+        "slug": "mexican"
+      },
+      {
+        "code": "TYC_1101",
+        "label": "Regional Cuisine",
+        "slug": "regional-cuisine"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan"
   },
   {
     "name": "Caleta 111 Cevicheria",
     "slug": "caleta-111-cevicheria",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1130",
+        "label": "Peruvian",
+        "slug": "peruvian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Queens",
+      "slug": "queens",
+      "exonyms": []
+    },
+    "area_name": "Queens"
   },
   {
     "name": "Jiang Nan",
     "slug": "jiang-nan",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      },
+      {
+        "code": "TYC_1101",
+        "label": "Regional Cuisine",
+        "slug": "regional-cuisine"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Queens",
+      "slug": "queens",
+      "exonyms": []
+    },
+    "area_name": "Queens"
   },
   {
     "name": "Alley 41",
     "slug": "alley-41",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      },
+      {
+        "code": "TYC_1116",
+        "label": "Sichuan",
+        "slug": "sichuan"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Queens",
+      "slug": "queens",
+      "exonyms": []
+    },
+    "area_name": "Queens"
   },
   {
     "name": "Tong Sam Gyup Goo Yi",
     "slug": "tong-sam-gyup-goo-yi",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_1143",
+        "label": "Barbecue",
+        "slug": "barbecue-1143"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Queens",
+      "slug": "queens",
+      "exonyms": []
+    },
+    "area_name": "Queens"
   },
   {
     "name": "Legend of Taste",
     "slug": "legend-of-taste",
-    "michelin_award": "BIB_GOURMAND"
-  },
-  {
-    "name": "Tredici Social",
-    "slug": "tredici-social",
-    "michelin_award": "BIB_GOURMAND"
+    "michelin_award": "BIB_GOURMAND",
+    "cuisines": [
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      },
+      {
+        "code": "TYC_1116",
+        "label": "Sichuan",
+        "slug": "sichuan"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Queens",
+      "slug": "queens",
+      "exonyms": []
+    },
+    "area_name": "Queens"
   }
 ]

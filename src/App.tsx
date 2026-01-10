@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import './App.css'
 import FloatingHeader from './components/FloatingHeader'
+import FilterBar from './components/FilterBar'
 import Map from './components/Map'
 import type { Restaurant } from './types/restaurant'
 import restaurantData from './data/FinalData.json'
@@ -14,8 +15,9 @@ function App() {
   const [searchTerm, setSearchTerm] = useState('')
   const [favorites, setFavorites] = useState<string[]>([])
   const [favoritesActive, setFavoritesActive] = useState(false)
-  const [awardsActive, setAwardsActive] = useState(false)
-  const [highlightedActive, setHighlightedActive] = useState(false)
+  const [restaurantWeekActive, setRestaurantWeekActive] = useState(false)
+  const [hasMenuActive, setHasMenuActive] = useState(false)
+  const [remisRecsActive, setRemisRecsActive] = useState(false)
 
   // Callback ref for map reset function (will be set by Map component)
   const mapResetRef = useRef<(() => void) | null>(null)
@@ -23,11 +25,17 @@ function App() {
   // Highlighted restaurant IDs (for pink markers when searching/isochrone)
   const [highlightedRestaurantIds, setHighlightedRestaurantIds] = useState<Set<string>>(new Set())
 
+  // Track if user has made their first query (to auto-expand filter bar)
+  const [hasUserQueried, setHasUserQueried] = useState(false)
+
   // Store previous highlights when favorites mode is activated (to restore when deactivated)
   const previousHighlightedIdsRef = useRef<Set<string>>(new Set())
 
   // Isochrone region slugs (defines which restaurants are inside active isochrone polygon)
   const [isochroneRegionSlugs, setIsochroneRegionSlugs] = useState<string[] | null>(null)
+
+  // FilterBar selections (separate from activeFilters - these create highlights, not hide restaurants)
+  const [filterBarSelections, setFilterBarSelections] = useState<Record<string, string[]>>({})
 
   useEffect(() => {
     // Load restaurants from imported data
@@ -49,6 +57,11 @@ function App() {
       const savedFavorites = localStorage.getItem('restaurantFavorites')
       if (savedFavorites) {
         setFavorites(JSON.parse(savedFavorites))
+      } else {
+        // Default to Fish Cheeks as favorite for new users
+        const defaultFavorites = ['Fish Cheeks']
+        setFavorites(defaultFavorites)
+        localStorage.setItem('restaurantFavorites', JSON.stringify(defaultFavorites))
       }
     }
   }, [])
@@ -85,23 +98,22 @@ function App() {
 
   const handleFavoritesToggle = () => {
     setFavoritesActive(!favoritesActive)
-    // No need to modify highlightedRestaurantIds - Map.tsx filtering handles it
   }
 
-  const handleAwardsToggle = () => {
-    setAwardsActive(!awardsActive)
-    // No need to modify highlightedRestaurantIds - Map.tsx filtering handles it
+  const handleRestaurantWeekToggle = () => {
+    setRestaurantWeekActive(!restaurantWeekActive)
   }
 
-  const handleHighlightedToggle = () => {
-    setHighlightedActive(!highlightedActive)
-    // No need to modify highlightedRestaurantIds - Map.tsx filtering handles it
+  const handleHasMenuToggle = () => {
+    setHasMenuActive(!hasMenuActive)
+  }
+
+  const handleRemisRecsToggle = () => {
+    setRemisRecsActive(!remisRecsActive)
   }
 
   const applyFilters = (restaurantsToFilter: Restaurant[]) => {
     let filtered = restaurantsToFilter
-
-    // Note: Favorites no longer filter - they highlight with pink markers instead
 
     // Apply active filters
     Object.entries(activeFilters).forEach(([filterType, values]) => {
@@ -120,6 +132,10 @@ function App() {
             case 'Price':
               // Prefer v2 `price` if present, otherwise fall back to `price_range`
               return values.includes((restaurant as any).price ?? restaurant.price_range)
+            case 'Participation Weeks':
+              // Check if restaurant participates in any of the selected weeks
+              return restaurant.participation_weeks && Array.isArray(restaurant.participation_weeks) &&
+                     values.some(week => restaurant.participation_weeks.includes(week))
             case 'Yelp Rating': {
               const rating = (restaurant as any).yelp_rating as number | undefined
               if (typeof rating !== 'number') return false
@@ -166,6 +182,34 @@ function App() {
       }
     })
 
+    // Apply Restaurant Week filter
+    if (restaurantWeekActive) {
+      filtered = filtered.filter(restaurant => {
+        return restaurant.meal_types && Array.isArray(restaurant.meal_types) && restaurant.meal_types.length > 0
+      })
+    }
+
+    // Apply Favorites filter
+    if (favoritesActive) {
+      filtered = filtered.filter(restaurant => {
+        return favorites.includes(restaurant.name)
+      })
+    }
+
+    // Apply Has Menu filter
+    if (hasMenuActive) {
+      filtered = filtered.filter(restaurant => {
+        return restaurant.menu_url && restaurant.menu_url.trim() !== ''
+      })
+    }
+
+    // Apply Remi's Recs filter (only show highlighted restaurants)
+    if (remisRecsActive) {
+      filtered = filtered.filter(restaurant => {
+        return highlightedRestaurantIds.has(restaurant.slug)
+      })
+    }
+
     // Apply legend filters
     if (legendFilters.length > 0) {
       filtered = filtered.filter(restaurant => {
@@ -193,6 +237,11 @@ function App() {
     console.log(`🗺️ Setting isochrone region: ${slugs?.length || 0} restaurants`);
     setIsochroneRegionSlugs(slugs);
 
+    // Mark that user has made a query (to auto-expand filter bar)
+    if (slugs && slugs.length > 0) {
+      setHasUserQueried(true);
+    }
+
     // DON'T automatically highlight - let map actions control highlights
     // This allows backend to distinguish "all in region" vs "filtered subset"
   }
@@ -204,6 +253,11 @@ function App() {
       // No need to re-scope here (avoids async state bugs)
       const newHighlights = new Set(values)
       setHighlightedRestaurantIds(newHighlights)
+
+      // Mark that user has made a query (to auto-expand filter bar)
+      if (values.length > 0) {
+        setHasUserQueried(true)
+      }
       return
     }
 
@@ -239,8 +293,9 @@ function App() {
     setSearchTerm('')
     setSelectedRestaurant(null)
     // Don't reset favoritesActive - preserve favorites mode
-    setAwardsActive(false)
-    setHighlightedActive(false)
+    setRestaurantWeekActive(false)
+    setHasMenuActive(false)
+    setRemisRecsActive(false)
     setHighlightedRestaurantIds(new Set())  // Clear highlights
     previousHighlightedIdsRef.current = new Set()  // Clear saved highlights
     setIsochroneRegionSlugs(null)  // Clear isochrone region
@@ -267,11 +322,33 @@ function App() {
     // Apply all filters
     filtered = applyFilters(filtered)
     setFilteredRestaurants(filtered)
-  }, [activeFilters, legendFilters, searchTerm, restaurants])
+  }, [activeFilters, legendFilters, searchTerm, restaurants, restaurantWeekActive, favoritesActive, hasMenuActive, remisRecsActive, favorites, highlightedRestaurantIds])
 
   return (
     <div className="app">
       <FloatingHeader />
+
+      {/* Filter Bar */}
+      <FilterBar
+          allRestaurants={restaurants}
+          isochroneRegionSlugs={isochroneRegionSlugs}
+          onFilterChange={handleFilterChange}
+          activeFilters={activeFilters}
+          visible={true}
+          hasUserQueried={hasUserQueried}
+          totalRestaurants={filteredRestaurants.length}
+          favoritesCount={favorites.length}
+          highlightedCount={highlightedRestaurantIds.size}
+          restaurantWeekActive={restaurantWeekActive}
+          onRestaurantWeekToggle={handleRestaurantWeekToggle}
+          favoritesActive={favoritesActive}
+          onFavoritesToggle={handleFavoritesToggle}
+          hasMenuActive={hasMenuActive}
+          onHasMenuToggle={handleHasMenuToggle}
+          remisRecsActive={remisRecsActive}
+          onRemisRecsToggle={handleRemisRecsToggle}
+        />
+
       {/* Full Screen Map */}
       <div className="map-section">
         <Map
@@ -292,10 +369,6 @@ function App() {
           isochroneRegionSlugs={isochroneRegionSlugs}
           favoritesActive={favoritesActive}
           onFavoritesToggle={handleFavoritesToggle}
-          awardsActive={awardsActive}
-          onAwardsToggle={handleAwardsToggle}
-          highlightedActive={highlightedActive}
-          onHighlightedToggle={handleHighlightedToggle}
         />
 
         {/* Restaurant Card now appears in chat when clicking markers */}

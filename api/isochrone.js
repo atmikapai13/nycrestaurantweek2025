@@ -1,4 +1,4 @@
-import { geoapifyRequest, getNYCCenter, isWithinNYC } from './_lib/geoapifyClient.js'
+import { geoapifyRequest, getNYCCenter, isWithinManhattan } from './_lib/geoapifyClient.js'
 import * as turf from '@turf/turf'
 import fs from 'fs'
 import path from 'path'
@@ -103,11 +103,11 @@ export default async function handler(req, res) {
 
     const [lon, lat] = coordinates
 
-    // Verify coordinates are in NYC
-    if (!isWithinNYC(lat, lon)) {
+    // Verify coordinates are in Manhattan
+    if (!isWithinManhattan(lat, lon)) {
       return res.status(400).json({
-        error: 'Location outside NYC',
-        message: 'Isochrone calculations are only supported for NYC locations'
+        error: 'Location outside Manhattan',
+        message: 'Our restaurant pool is limited to Manhattan borough'
       })
     }
 
