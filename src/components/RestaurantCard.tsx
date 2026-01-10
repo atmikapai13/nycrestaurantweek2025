@@ -146,7 +146,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
         )}
       </div>
       {/* Restaurant Description */}
-      <p className="restaurant-description">
+      <p className="card-body-text restaurant-description">
         {displayRestaurant.summary && displayRestaurant.summary.split('. ').reduce((acc: string, sentence: string, index: number, array: string[]) => {
           // Add the sentence back with period (except for last one which might already have it)
           const sentenceWithPeriod = index === array.length - 1 && sentence.endsWith('.') ? sentence : sentence + '.';
@@ -211,7 +211,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
 
           <div ref={restaurantWeekContentRef} className={`restaurant-week-accordion-content ${isRestaurantWeekOpen ? 'open' : ''}`}>
             <div className="meal-types-row">
-              <div className="meal-types-text">
+              <div className="card-body-text meal-types-text">
                 NYC Tourism hosts Restaurant Week biannually. This year, <b>{displayRestaurant.name}</b> is participating{displayRestaurant.participation_weeks2 && (
                   <> from <b>{displayRestaurant.participation_weeks2}</b></>
                 )}. Participating spots curate their own lunch and/or dinner offerings. Saturdays are not included.
@@ -328,7 +328,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
                 <span className="tag tag-nyt-rank">NYT Rank {displayRestaurant.nyttop100_rank}</span>
               )}
             </div>
-            <p className="about-text">
+            <p className="card-body-text about-text">
               {displayRestaurant.summary2 && displayRestaurant.summary2.split('. ').reduce((acc: string, sentence: string, index: number, array: string[]) => {
                 const sentenceWithPeriod = index === array.length - 1 && sentence.endsWith('.') ? sentence : sentence + '.';
                 if (index > 0 && index % 2 === 0) {

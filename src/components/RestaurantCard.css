@@ -140,11 +140,15 @@
   vertical-align: middle;
 }
 
-/* Restaurant Description */
-.restaurant-description {
+/* Unified body text class for all content text */
+.card-body-text {
   font-size: 10px;
   line-height: 1.4;
   color: #4B5563;
+}
+
+/* Restaurant Description */
+.restaurant-description {
   margin: 0 0 6px 0;
   white-space: pre-line;
 }
@@ -370,9 +374,6 @@
 }
 
 .about-text {
-  font-size: 9px;
-  line-height: 1.4;
-  color: #4B5563;
   text-align: left;
   padding-top: 2px;
   margin: 0;
@@ -451,9 +452,7 @@
 }
 
 .meal-types-text {
-  font-size: 10px;
-  color: #4B5563;
-  line-height: 1.4;
+  /* Inherits from .card-body-text */
 }
 
 .see-menu-btn {
@@ -615,8 +614,9 @@
     padding: 4px 10px;
   }
 
+  /* Keep unified body text consistent across mobile and desktop */
+
   .restaurant-description {
-    font-size: 12px;
     margin-bottom: 10px;
   }
 
@@ -638,21 +638,18 @@
     font-weight: 600;
   }
 
-  /* Accordion content text - match summary font size */
+  /* Accordion content text */
   .review-text {
     font-size: 12px;
     line-height: 1.5;
   }
 
   .about-text {
-    font-size: 12px;
-    line-height: 1.5;
     padding-top: 6px;
   }
 
   .meal-types-text {
-    font-size: 13px;
-    line-height: 1.5;
+    /* Inherits from .card-body-text */
   }
 
   .review-item {

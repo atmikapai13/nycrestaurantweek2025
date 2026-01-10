@@ -345,10 +345,11 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
     }
   }, [])
 
-  // Randomly show a tip when loading starts (60% chance)
+  // Show a tip when loading starts (always on mobile, 60% chance on desktop)
   useEffect(() => {
     if (isLoading) {
-      const shouldShowTip = Math.random() < 0.6 // 60% chance to show a tip
+      const isMobile = window.innerWidth <= 768
+      const shouldShowTip = isMobile || Math.random() < 0.6 // Always on mobile, 60% chance on desktop
       if (shouldShowTip) {
         const randomTip = tips[Math.floor(Math.random() * tips.length)]
         setCurrentTip(randomTip)
