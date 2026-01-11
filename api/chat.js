@@ -223,6 +223,16 @@ export default async function handler(req, res) {
       // Action keywords
       'show me', 'filter', 'only', 'just', 'about', 'what about', 'how about',
 
+      // "Show more" keywords - trigger semantic search continuation
+      'more', 'show more', 'more options', 'more restaurants', 'additional', 'what else',
+      'other suggestions', 'expand', 'couple more', 'few more', 'some more', 'any more',
+
+      // Semantic/vibe keywords - trigger semantic_search_restaurants
+      'vibe', 'vibes', 'atmosphere', 'ambiance', 'mood', 'feel', 'scene',
+      'romantic', 'cozy', 'lively', 'casual', 'fancy', 'upscale', 'trendy', 'intimate',
+      'outdoor seating', 'patio', 'rooftop', 'happy hour', 'date night', 'groups', 'family',
+      'ramen', 'sushi', 'burger', 'steak', 'cocktails', 'brunch', 'omakase',
+
       // Broad cuisine categories
       'asian', 'european', 'latin', 'latino', 'middle eastern',
 

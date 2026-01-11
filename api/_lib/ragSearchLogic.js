@@ -365,8 +365,8 @@ export async function performRagSearch(query, preFilters = {}, topK = 10, restau
   // Step 1: Generate query embedding
   const queryEmbedding = await generateQueryEmbedding(query)
 
-  // Step 2: Query Pinecone
-  let pineconeMatches = await queryPinecone(queryEmbedding, preFilters, 50)
+  // Step 2: Query Pinecone (request more than topK to account for filtering)
+  let pineconeMatches = await queryPinecone(queryEmbedding, preFilters, Math.max(topK, 50))
 
   let fallbackInfo = null
 
@@ -433,8 +433,8 @@ export async function performRagSearch(query, preFilters = {}, topK = 10, restau
       dynamicTopK = Math.min(5, topK)
       console.log(`⚠️ Low confidence query (top score: ${topScore.toFixed(3)}) - reducing results to ${dynamicTopK}`)
     } else {
-      // High confidence - return more results (10)
-      dynamicTopK = 10
+      // High confidence - return requested number of results
+      dynamicTopK = topK
       console.log(`✅ High confidence query (top score: ${topScore.toFixed(3)}) - returning ${dynamicTopK} results`)
     }
   }

@@ -242,19 +242,20 @@ export const semanticSearchRestaurants = new DynamicStructuredTool({
   name: "semantic_search_restaurants",
   description: `AI-powered semantic search using vector embeddings.
 Use for vibe/ambiance/dish queries: "cozy date spot", "best ramen", "cocktails".
-Automatically scopes to filtered pool (respects filter bar + isochrone).`,
+Automatically scopes to filtered pool (respects filter bar + isochrone).
+For "show me more" requests, increase topK (default: 10, can go up to 40).`,
 
   schema: z.object({
     query: z.string().describe("Natural language search query"),
     scopeToIsochrone: z.boolean().default(true)
       .describe("If true: use filtered pool. If false: search all 628 restaurants."),
-    topK: z.number().default(10).describe("Number of results to return")
+    topK: z.number().default(10).describe("Number of results to return (10=default, 20=more, 30=even more, 40=max)")
     // REMOVED: preFilters parameter (filter bar handles this now)
   }),
 
   func: async ({ query, scopeToIsochrone, topK }) => {
     try {
-      console.log(`🔍 Semantic search: "${query}"`);
+      console.log(`🔍 Semantic search: "${query}" (topK: ${topK})`);
 
       // Get filtered pool (uses filter pool from frontend)
       const searchPool = await getScopedSearchPool(scopeToIsochrone);
@@ -263,8 +264,8 @@ Automatically scopes to filtered pool (respects filter bar + isochrone).`,
       // Perform RAG search (no preFilters - pool already filtered)
       const result = await performRagSearch(query, {}, topK, visibleIds);
 
-      // Extract slugs for map actions
-      const slugs = result.results.map(r => r.slug);
+      // Extract slugs for map actions (limit to topK)
+      const slugs = result.results.slice(0, topK).map(r => r.slug);
 
       // Build map actions (isochrone preservation handled automatically by agent middleware)
       const mapActions = [];
@@ -277,10 +278,11 @@ Automatically scopes to filtered pool (respects filter bar + isochrone).`,
 
       return JSON.stringify({
         count: result.total_results,
-        restaurants: result.results.slice(0, 10), // Return top 10 for display
+        restaurants: result.results.slice(0, topK), // Return up to topK results
         explanation: result.overall_explanation,
         fallback: result.fallback,
         query: result.query,
+        topK: topK, // Include topK in response so agent knows how many were requested
         // Auto-return map actions for visualization
         mapActions
       });
