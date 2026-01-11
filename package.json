@@ -6,6 +6,7 @@
   "homepage": "https://nyceats.live",
   "scripts": {
     "dev": "vite",
+    "api2:dev": "tsx watch api2/server.ts",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
@@ -17,30 +18,41 @@
     "embeddings:setup": "npm run embeddings:generate && npm run embeddings:upload"
   },
   "dependencies": {
+    "@ai-sdk/google": "^3.0.6",
+    "@ai-sdk/mcp": "^1.0.5",
+    "@ai-sdk/react": "^3.0.29",
     "@google/generative-ai": "^0.24.1",
+    "@langchain/core": "^0.3.0",
+    "@langchain/google-genai": "^0.1.0",
+    "@langchain/langgraph": "^0.2.0",
+    "@modelcontextprotocol/sdk": "^1.25.2",
     "@pinecone-database/pinecone": "^3.0.3",
+    "@t3-oss/env-core": "^0.13.10",
     "@turf/turf": "^7.3.0",
     "@types/mapbox-gl": "^3.4.1",
+    "ai": "^6.0.26",
+    "hono": "^4.11.3",
     "mapbox-gl": "^3.13.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "redis": "^4.7.0",
-    "@langchain/core": "^0.3.0",
-    "@langchain/google-genai": "^0.1.0",
-    "@langchain/langgraph": "^0.2.0",
-    "zod": "^3.22.4"
+    "zod": "^3.25.76"
   },
   "devDependencies": {
+    "@hono/node-server": "^1.19.8",
     "@types/node": "^24.9.2",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@typescript-eslint/parser": "^7.2.0",
     "@vitejs/plugin-react": "^4.2.1",
+    "concurrently": "^9.2.1",
+    "dotenv": "^17.2.3",
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
     "gh-pages": "^6.3.0",
+    "tsx": "^4.21.0",
     "typescript": "^5.2.2",
     "vite": "^5.2.0"
   }

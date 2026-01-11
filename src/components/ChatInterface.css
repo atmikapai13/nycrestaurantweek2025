@@ -135,7 +135,9 @@
   font-size: 12px;
   line-height: 1.4;
   word-wrap: break-word;
+  overflow-wrap: anywhere;
   white-space: pre-wrap;
+  min-width: 0;
 
   /* Glassmorphism matching restaurant card */
   background: rgba(255, 255, 255, 0.8);
@@ -187,6 +189,7 @@
 /* Message content wrapper */
 .message-content {
   flex: 1;
+  min-width: 0;
 }
 
 /* Welcome greeting - larger font for visual hierarchy */
@@ -208,6 +211,40 @@
   align-items: flex-start;
   gap: 8px;
   width: 100%;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+/* Hover effect for clickable restaurant cards */
+.restaurant-card-message[style*="cursor: pointer"]:hover {
+  transform: translateX(4px);
+  opacity: 0.9;
+}
+
+.restaurant-card-message[style*="cursor: pointer"]:active {
+  transform: translateX(2px);
+}
+
+/* Container for multiple restaurant cards from displayRestaurants tool */
+.restaurant-cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+/* Make restaurant cards in the container clickable with hover effect */
+.restaurant-cards-container .restaurant-card-message {
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.restaurant-cards-container .restaurant-card-message:hover {
+  transform: translateX(4px);
+  opacity: 0.9;
+}
+
+.restaurant-cards-container .restaurant-card-message:active {
+  transform: translateX(2px);
 }
 
 .message-avatar-outside {
@@ -369,6 +406,81 @@
   color: #515151;
   font-style: italic;
   padding: 4px 0;
+}
+
+/* Tool Status Styles */
+.tool-status-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(255, 105, 180, 0.3);
+}
+
+.tool-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-style: italic;
+  color: #666;
+  animation: fadeIn 0.3s ease;
+}
+
+.interlined-tool-status {
+  margin: 4px 0;
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  width: auto;
+}
+
+.isochrone-toggle-button {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  background: rgba(255, 105, 180, 0.1);
+  border: 1px solid rgba(255, 105, 180, 0.3);
+  border-radius: 12px;
+  color: #ff69b4;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  height: 24px;
+}
+
+.isochrone-toggle-button:hover {
+  background: rgba(255, 105, 180, 0.2);
+  transform: translateY(-1px);
+}
+
+.isochrone-toggle-button:active {
+  transform: translateY(0);
+}
+
+.tool-spinner {
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgba(255, 105, 180, 0.3);
+  border-top-color: #ff69b4;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  flex-shrink: 0;
+}
+
+.tool-done {
+  color: #4CAF50;
+  font-weight: bold;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 /* Intro Suggestions Wrapper */
