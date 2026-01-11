@@ -402,7 +402,7 @@ export default function FilterBar({
 
           {/* Yelp Rating Filter */}
           <FilterDropdown
-            label="Yelp ★★★"
+            label="★★★"
             icon=""
             options={ratingOptions}
             selectedValues={activeFilters['Yelp Rating'] || []}
@@ -443,7 +443,7 @@ export default function FilterBar({
                   border: '1px solid white',
                   boxShadow: '0 1px 2px rgba(0,0,0,0.2)'
                 }}></span>
-                Award-winners
+                Awarded
               </span>
             }
             icon=""
@@ -504,7 +504,7 @@ export default function FilterBar({
               className={`filter-pill-base restaurant-week-button ${restaurantWeekActive ? 'active' : ''}`}
               onClick={onRestaurantWeekToggle}
             >
-              <span className="new-badge">NEW</span> Restaurant Week
+              <span className="new-badge">NEW</span> Restaurant Week (RW)
             </button>
           )}
 
@@ -515,13 +515,13 @@ export default function FilterBar({
               className={`filter-pill-base has-menu-button ${hasMenuActive ? 'active' : ''}`}
               onClick={onHasMenuToggle}
             >
-              Has Menu
+              RW Menu
             </button>
           )}
 
           {/* Meal Types Filter */}
           <FilterDropdown
-            label="Special Menus"
+            label="RW Specials"
             icon=""
             options={mealTypesOptions}
             selectedValues={activeFilters['Meal Types'] || []}
