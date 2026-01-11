@@ -5,24 +5,11 @@ import type { Restaurant } from "../types/restaurant";
 import ChatInterface, { type ChatInterfaceHandle } from "./ChatInterface";
 import { MapLegend } from "./MapLegend";
 import { point, booleanPointInPolygon } from "@turf/turf";
-import { useMap, type IsochroneLayer } from "../contexts/MapContext";
+import { useMap, hasAnyAward, type IsochroneLayer } from "../contexts/MapContext";
 
 // Set your Mapbox access token
 mapboxgl.accessToken =
   "pk.eyJ1IjoiYXRtaWthcGFpMTMiLCJhIjoiY21idHR4eTJpMDdhMjJsb20zNmZheTZ6ayJ9.d_bQSBzesyiCUMA-YHRoIA";
-
-// Helper function to check if restaurant has any award
-const hasAnyAward = (restaurant: Restaurant): boolean => {
-  const hasMichelin =
-    restaurant.michelin_award &&
-    ["ONE_STAR", "TWO_STARS", "THREE_STARS", "BIB_GOURMAND"].includes(
-      restaurant.michelin_award
-    );
-  const hasNYT = Boolean(
-    restaurant.nyttop100_rank && restaurant.nyttop100_rank !== ""
-  );
-  return hasMichelin || hasNYT;
-};
 
 // Compare two GeoJSON polygons for equality
 const arePolygonsEqual = (
@@ -48,39 +35,19 @@ const arePolygonsEqual = (
 };
 
 interface MapProps {
-  restaurants: Restaurant[];
   onRestaurantSelect: (restaurant: Restaurant) => void;
-  favorites: string[];
   onToggleFavorite?: (restaurantName: string) => void;
   onFilterChange: (filterType: string, values: string[]) => void;
-  allRestaurants: Restaurant[];
   onResetAll?: () => void;
   mapResetRef?: React.MutableRefObject<(() => void) | null>;
-  highlightedIds?: Set<string>;
-  favoritesActive?: boolean;
-  onFavoritesToggle?: () => void;
-  awardsActive?: boolean;
-  onAwardsToggle?: () => void;
-  highlightedActive?: boolean;
-  onHighlightedToggle?: () => void;
 }
 
 export default function Map({
-  restaurants,
   onRestaurantSelect,
-  favorites,
   onToggleFavorite,
   onFilterChange,
-  allRestaurants,
   onResetAll,
   mapResetRef,
-  highlightedIds,
-  favoritesActive,
-  onFavoritesToggle,
-  awardsActive,
-  onAwardsToggle,
-  highlightedActive,
-  onHighlightedToggle,
 }: MapProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
@@ -88,12 +55,21 @@ export default function Map({
   const markerElements = useRef<HTMLDivElement[]>([]);
   const chatInterfaceRef = useRef<ChatInterfaceHandle>(null);
 
-  // Use MapContext for isochrone layer management
+  // Use MapContext for state and actions
   const {
+    allRestaurants,
+    filteredRestaurants,
+    favorites,
+    favoritesActive,
+    setFavoritesActive,
+    awardsActive,
+    setAwardsActive,
+    highlightedActive,
+    setHighlightedActive,
+    highlightedRestaurantIds,
     isochroneLayers,
     layerVisibilityMap,
     isochroneRegionSlugs,
-    setIsochroneRegionSlugs,
     selectedRestaurant,
     setSelectedRestaurant,
   } = useMap();
@@ -566,42 +542,29 @@ export default function Map({
     markers.current = [];
     markerElements.current = [];
 
-    // Determine which restaurants to render based on active modes
-    let restaurantsToRender: Restaurant[];
-
     // Check if any filter modes are active
     const hasActiveFilters =
       favoritesActive || awardsActive || highlightedActive;
-    const hasHighlighted = highlightedIds && highlightedIds.size > 0;
+    const hasHighlighted = highlightedRestaurantIds && highlightedRestaurantIds.size > 0;
 
-    // Determine base pool: start with filtered restaurants from App.tsx (respects all filters)
-    // If any isochrone layers are visible, further scope to those restaurants
-    let basePool = restaurants; // Use filtered restaurants from props
-    
-    if (visibleIsochroneSlugs !== null) {
-      // Further filter by isochrone if active
-      basePool = basePool.filter((r) => visibleIsochroneSlugs.includes(r.slug));
-    }
+    let restaurantsToRender = filteredRestaurants;
 
     if (hasActiveFilters) {
-      // Filter mode active: apply OR logic to base pool (respects isochrone if active)
-      restaurantsToRender = basePool.filter((r) => {
-        if (highlightedActive && hasHighlighted && highlightedIds.has(r.slug))
+      // Filter mode active: apply OR logic to the already filtered pool
+      restaurantsToRender = filteredRestaurants.filter((r) => {
+        if (highlightedActive && hasHighlighted && highlightedRestaurantIds.has(r.slug))
           return true;
         if (awardsActive && hasAnyAward(r)) return true;
         if (favoritesActive && favorites.includes(r.name)) return true;
         return false;
       });
-    } else {
-      // No filter modes: show base pool (all restaurants or isochrone restaurants)
-      restaurantsToRender = basePool;
     }
 
     // Render restaurants with coordinates
     restaurantsToRender.forEach((restaurant) => {
       if (restaurant.latitude && restaurant.longitude) {
         // 5-TIER COLOR LOGIC: Purple (selected), Red (favorites - always), Pink (highlighted), Orange (awards), Grey (rest)
-        const isHighlighted = highlightedIds?.has(restaurant.slug);
+        const isHighlighted = highlightedRestaurantIds?.has(restaurant.slug);
         const isSelected = selectedRestaurant?.slug === restaurant.slug;
         const isFavorite = favorites.includes(restaurant.name);
         const isAwardWinner = hasAnyAward(restaurant);
@@ -689,99 +652,16 @@ export default function Map({
     // Update marker sizes after creating all markers
     updateMarkerSizes();
   }, [
-    restaurants, // Use filtered restaurants from props instead of allRestaurants
-    highlightedIds,
+    filteredRestaurants,
+    highlightedRestaurantIds,
     onRestaurantSelect,
-    isochroneRegionSlugs,
     selectedRestaurant,
     favoritesActive,
     awardsActive,
     highlightedActive,
     favorites,
-    layerVisibilityMap,
-    isochroneLayers,
+    setSelectedRestaurant,
   ]);
-
-  // Calculate which restaurants are inside ANY visible isochrone (from MapContext)
-  const visibleIsochroneSlugs = useMemo(() => {
-    // Get all visible polygons from context layers
-    const visiblePolygons: Array<GeoJSON.Polygon | GeoJSON.MultiPolygon> = [];
-
-    // Check multi layers - default to visible if not explicitly set to false
-    isochroneLayers.forEach((layer) => {
-      if (layerVisibilityMap.get(layer.id) !== false && layer.polygon) {
-        // Extract the actual geometry from Feature or use polygon directly
-        const geom =
-          "type" in layer.polygon && layer.polygon.type === "Feature"
-            ? (
-                layer.polygon as GeoJSON.Feature<
-                  GeoJSON.Polygon | GeoJSON.MultiPolygon
-                >
-              ).geometry
-            : (layer.polygon as GeoJSON.Polygon | GeoJSON.MultiPolygon);
-        visiblePolygons.push(geom);
-      }
-    });
-
-    if (visiblePolygons.length === 0) return null;
-
-    // 2. Filter allRestaurants by any of these polygons
-    const slugs = allRestaurants
-      .filter((r) => {
-        const lng = Number(r.longitude);
-        const lat = Number(r.latitude);
-        if (isNaN(lng) || isNaN(lat)) return false;
-        const pt = point([lng, lat]);
-        // Use booleanPointInPolygon from turf
-        return visiblePolygons.some((poly) => booleanPointInPolygon(pt, poly));
-      })
-      .map((r) => r.slug);
-
-    console.log(
-      `🎯 Calculated ${slugs.length} restaurants inside ${visiblePolygons.length} visible polygons`
-    );
-    return slugs;
-  }, [allRestaurants, isochroneLayers, layerVisibilityMap]);
-
-  // Sync computed slugs with parent state for legend
-  const previousVisibleSlugsRef = useRef<string[] | null>(null);
-  useEffect(() => {
-    // Only update if the values have actually changed (prevent render loop)
-    const currentSlugs = visibleIsochroneSlugs || [];
-    const previousSlugs = previousVisibleSlugsRef.current || [];
-
-    const hasChanged =
-      currentSlugs.length !== previousSlugs.length ||
-      currentSlugs.some((slug, i) => slug !== previousSlugs[i]);
-
-    if (hasChanged) {
-      console.log(
-        `🔄 Isochrone slugs changed (${previousSlugs.length} -> ${currentSlugs.length}). Updating context.`
-      );
-      previousVisibleSlugsRef.current = currentSlugs;
-      setIsochroneRegionSlugs(currentSlugs.length > 0 ? currentSlugs : null);
-    }
-  }, [visibleIsochroneSlugs, setIsochroneRegionSlugs]);
-
-  // Calculate award winners count (respect isochrone if active and any layers visible)
-  const awardWinnersCount = useMemo(() => {
-    const pool =
-      visibleIsochroneSlugs !== null
-        ? allRestaurants.filter((r) => visibleIsochroneSlugs.includes(r.slug))
-        : allRestaurants;
-
-    return pool.filter((r) => hasAnyAward(r)).length;
-  }, [allRestaurants, visibleIsochroneSlugs]);
-
-  // Calculate favorites count (respect isochrone if active and any layers visible)
-  const favoritesCount = useMemo(() => {
-    const pool =
-      visibleIsochroneSlugs !== null
-        ? allRestaurants.filter((r) => visibleIsochroneSlugs.includes(r.slug))
-        : allRestaurants;
-
-    return pool.filter((r) => favorites.includes(r.name)).length;
-  }, [allRestaurants, visibleIsochroneSlugs, favorites]);
 
   // Zoom to selected restaurant when it changes
   useEffect(() => {
@@ -820,34 +700,14 @@ export default function Map({
       {/* Chat Interface (overlays map region) */}
       <ChatInterface
         ref={chatInterfaceRef}
-        restaurants={restaurants}
-        allRestaurants={allRestaurants}
-        onFilterChange={onFilterChange}
         onRestaurantSelect={onRestaurantSelect}
         onMapFocus={handleMapFocus}
-        selectedRestaurant={selectedRestaurant}
         onResetAll={onResetAll}
-        favorites={favorites}
         onToggleFavorite={onToggleFavorite}
-        favoritesActive={favoritesActive}
-        onFavoritesToggle={onFavoritesToggle}
       />
 
       {/* Map Legend */}
-      <MapLegend
-        allRestaurants={allRestaurants}
-        isochroneRegionSlugs={isochroneRegionSlugs}
-        highlightedIds={highlightedIds}
-        awardWinnersCount={awardWinnersCount}
-        favoritesCount={favoritesCount}
-        highlightedActive={highlightedActive}
-        awardsActive={awardsActive}
-        favoritesActive={favoritesActive}
-        hasVisibleIsochrones={visibleIsochroneSlugs !== null}
-        onHighlightedToggle={onHighlightedToggle}
-        onAwardsToggle={onAwardsToggle}
-        onFavoritesToggle={onFavoritesToggle}
-      />
+      <MapLegend />
     </div>
   );
 }

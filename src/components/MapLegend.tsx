@@ -1,39 +1,31 @@
-import type { Restaurant } from '../types/restaurant'
+import React, { useMemo } from 'react'
+import { useMap, hasAnyAward } from '../contexts/MapContext'
 
-interface MapLegendProps {
-  // Counts
-  allRestaurants: Restaurant[]
-  isochroneRegionSlugs?: string[] | null
-  highlightedIds?: Set<string>
-  awardWinnersCount: number
-  favoritesCount: number
+export const MapLegend: React.FC = () => {
+  const {
+    allRestaurants,
+    filteredRestaurants,
+    isochroneRegionSlugs,
+    highlightedRestaurantIds,
+    highlightedActive,
+    setHighlightedActive,
+    awardsActive,
+    setAwardsActive,
+    favorites,
+    favoritesActive,
+    setFavoritesActive
+  } = useMap()
 
-  // Active states (all optional to match Map.tsx)
-  highlightedActive?: boolean
-  awardsActive?: boolean
-  favoritesActive?: boolean
-  hasVisibleIsochrones?: boolean
+  const awardWinnersCount = useMemo(() => {
+    return filteredRestaurants.filter((r) => hasAnyAward(r)).length
+  }, [filteredRestaurants])
 
-  // Callbacks (all optional to match Map.tsx)
-  onHighlightedToggle?: () => void
-  onAwardsToggle?: () => void
-  onFavoritesToggle?: () => void
-}
+  const favoritesCount = useMemo(() => {
+    return filteredRestaurants.filter((r) => favorites.includes(r.name)).length
+  }, [filteredRestaurants, favorites])
 
-export const MapLegend: React.FC<MapLegendProps> = ({
-  allRestaurants,
-  isochroneRegionSlugs,
-  highlightedIds,
-  awardWinnersCount,
-  favoritesCount,
-  highlightedActive = false,
-  awardsActive = false,
-  favoritesActive = false,
-  hasVisibleIsochrones = false,
-  onHighlightedToggle,
-  onAwardsToggle,
-  onFavoritesToggle
-}) => {
+  const hasVisibleIsochrones = isochroneRegionSlugs !== null
+
   return (
     <div className="map-legend">
       <div className="legend-content">
@@ -53,17 +45,17 @@ export const MapLegend: React.FC<MapLegendProps> = ({
           </div>
 
           {/* match your taste - clickable to filter to only highlighted restaurants */}
-          {highlightedIds && highlightedIds.size > 0 && (
+          {highlightedRestaurantIds && highlightedRestaurantIds.size > 0 && (
             <div
               className="legend-item"
-              onClick={onHighlightedToggle}
+              onClick={() => setHighlightedActive(!highlightedActive)}
               style={{
                 cursor: 'pointer',
                 fontWeight: highlightedActive ? 600 : 400
               }}
             >
               <div className="legend-marker" style={{ backgroundColor: '#FF69B4', width: '8px', height: '8px' }}></div>
-              <span>{highlightedIds.size} match your taste</span>
+              <span>{highlightedRestaurantIds.size} match your taste</span>
             </div>
           )}
 
@@ -71,7 +63,7 @@ export const MapLegend: React.FC<MapLegendProps> = ({
           {awardWinnersCount > 0 && (
             <div
               className="legend-item"
-              onClick={onAwardsToggle}
+              onClick={() => setAwardsActive(!awardsActive)}
               style={{
                 cursor: 'pointer',
                 fontWeight: awardsActive ? 600 : 400
@@ -85,7 +77,7 @@ export const MapLegend: React.FC<MapLegendProps> = ({
           {/* Favorites - ALWAYS visible, clickable */}
           <div
             className="legend-item"
-            onClick={onFavoritesToggle}
+            onClick={() => setFavoritesActive(!favoritesActive)}
             style={{
               cursor: 'pointer',
               fontWeight: favoritesActive ? 600 : 400

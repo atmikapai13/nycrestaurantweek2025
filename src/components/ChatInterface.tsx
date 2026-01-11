@@ -164,38 +164,22 @@ function computeResultMetadata(restaurants: Restaurant[]) {
 }
 
 interface ChatInterfaceProps {
-  restaurants: Restaurant[];
-  allRestaurants: Restaurant[];
-  onFilterChange: (filterType: string, values: string[]) => void;
   onRestaurantSelect: (restaurant: Restaurant) => void;
   onMapFocus?: (restaurantIds: string[]) => void;
-  selectedRestaurant?: Restaurant | null;
   onResetAll?: () => void;
-  favorites?: string[];
   onToggleFavorite?: (restaurantName: string) => void;
-  favoritesActive?: boolean;
-  onFavoritesToggle?: () => void;
 }
 
 const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
-  (
-    {
-      restaurants: _restaurants,
+  ({ onRestaurantSelect, onMapFocus, onResetAll, onToggleFavorite }, ref) => {
+    // Use MapContext for data and state management
+    const {
       allRestaurants,
-      onFilterChange: _onFilterChange,
-      onRestaurantSelect,
-      onMapFocus,
-      selectedRestaurant: _selectedRestaurant,
-      onResetAll,
-      favorites = [],
-      onToggleFavorite,
-      favoritesActive: _favoritesActive,
-      onFavoritesToggle: _onFavoritesToggle,
-    },
-    ref
-  ) => {
-    // Use MapContext for layer management
-    const { addLayers, isochroneRegionSlugs, clearAllLayers } = useMap();
+      favorites,
+      addLayers,
+      isochroneRegionSlugs,
+      clearAllLayers,
+    } = useMap();
 
     // Random welcome message selection
     const welcomeMessages = [
@@ -1110,7 +1094,8 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                               onClose={() => {
                                 // Find the index of this custom message and remove it
                                 const customMsgIndex = customMessages.findIndex(
-                                  (cm) => cm.restaurant?.slug === msg.restaurant?.slug
+                                  (cm) =>
+                                    cm.restaurant?.slug === msg.restaurant?.slug
                                 );
                                 if (customMsgIndex !== -1) {
                                   removeRestaurantCard(customMsgIndex);
@@ -1232,14 +1217,14 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                         );
 
                                       case "output-available":
-                                        const restaurants =
+                                        const displayRestaurantsPool =
                                           part.output?.restaurants || [];
                                         return (
                                           <div
                                             key={pIdx}
                                             className="restaurant-cards-container"
                                           >
-                                            {restaurants.map(
+                                            {displayRestaurantsPool.map(
                                               (
                                                 restaurant: Restaurant,
                                                 rIdx: number
@@ -1287,7 +1272,8 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                                 </div>
                                               )
                                             )}
-                                            {restaurants.length === 0 && (
+                                            {displayRestaurantsPool.length ===
+                                              0 && (
                                               <p
                                                 style={{
                                                   padding: "16px",
