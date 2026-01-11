@@ -815,6 +815,11 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       });
     };
 
+    // Function to remove a restaurant card by index
+    const removeRestaurantCard = (index: number) => {
+      setCustomMessages((prev) => prev.filter((_, i) => i !== index));
+    };
+
     useImperativeHandle(ref, () => ({
       addRestaurantCard,
     }));
@@ -1100,6 +1105,15 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                               onExpandDrawer={() => {
                                 if (window.innerWidth <= 768) {
                                   setDrawerHeight(80);
+                                }
+                              }}
+                              onClose={() => {
+                                // Find the index of this custom message and remove it
+                                const customMsgIndex = customMessages.findIndex(
+                                  (cm) => cm.restaurant?.slug === msg.restaurant?.slug
+                                );
+                                if (customMsgIndex !== -1) {
+                                  removeRestaurantCard(customMsgIndex);
                                 }
                               }}
                             />

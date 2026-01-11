@@ -39,14 +39,6 @@ function AppContent() {
   // Store previous highlights when favorites mode is activated (to restore when deactivated)
   const previousHighlightedIdsRef = useRef<Set<string>>(new Set());
 
-  // selectedRestaurant is now in context
-  const selectedRestaurant = null;
-
-  // FilterBar selections (separate from activeFilters - these create highlights, not hide restaurants)
-  const [filterBarSelections, setFilterBarSelections] = useState<
-    Record<string, string[]>
-  >({});
-
   useEffect(() => {
     // Load restaurants from imported data
     setRestaurants(restaurantData as Restaurant[]);
@@ -132,7 +124,7 @@ function AppContent() {
     setHighReviewCountActive((prev) => !prev);
   }, []);
 
-  const applyFilters = (restaurantsToFilter: Restaurant[]) => {
+  const applyFilters = useCallback((restaurantsToFilter: Restaurant[]) => {
     let filtered = restaurantsToFilter;
 
     // Apply active filters
@@ -151,7 +143,8 @@ function AppContent() {
             case "Meal Types":
               return (
                 restaurant.meal_types &&
-                values.some((meal) => restaurant.meal_types.includes(meal))
+                Array.isArray(restaurant.meal_types) &&
+                values.some((meal) => restaurant.meal_types?.includes(meal))
               );
             case "Price":
               // Prefer v2 `price` if present, otherwise fall back to `price_range`
@@ -164,7 +157,7 @@ function AppContent() {
                 restaurant.participation_weeks &&
                 Array.isArray(restaurant.participation_weeks) &&
                 values.some((week) =>
-                  restaurant.participation_weeks.includes(week)
+                  restaurant.participation_weeks?.includes(week)
                 )
               );
             case "Yelp Rating": {
@@ -299,7 +292,17 @@ function AppContent() {
     }
 
     return filtered;
-  };
+  }, [
+    activeFilters,
+    legendFilters,
+    restaurantWeekActive,
+    favoritesActive,
+    hasMenuActive,
+    remisRecsActive,
+    highReviewCountActive,
+    favorites,
+    highlightedRestaurantIds,
+  ]);
 
   const handleFilterChange = useCallback((filterType: string, values: string[]) => {
     // Special case: "Semantic Search Results" means highlight, not filter
@@ -400,7 +403,6 @@ function AppContent() {
         isochroneRegionSlugs={isochroneRegionSlugs}
         onFilterChange={handleFilterChange}
         activeFilters={activeFilters}
-        visible={true}
         hasUserQueried={hasUserQueried}
         totalRestaurants={filteredRestaurants.length}
         favoritesCount={favorites.length}
