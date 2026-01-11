@@ -124,185 +124,190 @@ function AppContent() {
     setHighReviewCountActive((prev) => !prev);
   }, []);
 
-  const applyFilters = useCallback((restaurantsToFilter: Restaurant[]) => {
-    let filtered = restaurantsToFilter;
+  const applyFilters = useCallback(
+    (restaurantsToFilter: Restaurant[]) => {
+      let filtered = restaurantsToFilter;
 
-    // Apply active filters
-    Object.entries(activeFilters).forEach(([filterType, values]) => {
-      if (values.length > 0) {
+      // Apply active filters
+      Object.entries(activeFilters).forEach(([filterType, values]) => {
+        if (values.length > 0) {
+          filtered = filtered.filter((restaurant) => {
+            switch (filterType) {
+              case "Cuisine":
+                // Support both exact match and partial match (for chatbot)
+                if (!restaurant.cuisine) return false;
+                return values.some(
+                  (value) =>
+                    restaurant.cuisine === value ||
+                    restaurant.cuisine
+                      .toLowerCase()
+                      .includes(value.toLowerCase())
+                );
+              case "Meal Types":
+                return (
+                  restaurant.meal_types &&
+                  Array.isArray(restaurant.meal_types) &&
+                  values.some((meal) => restaurant.meal_types?.includes(meal))
+                );
+              case "Price":
+                // Prefer v2 `price` if present, otherwise fall back to `price_range`
+                return values.includes(
+                  (restaurant as any).price ?? restaurant.price_range
+                );
+              case "Participation Weeks":
+                // Check if restaurant participates in any of the selected weeks
+                return (
+                  restaurant.participation_weeks &&
+                  Array.isArray(restaurant.participation_weeks) &&
+                  values.some((week) =>
+                    restaurant.participation_weeks?.includes(week)
+                  )
+                );
+              case "Yelp Rating": {
+                const rating = (restaurant as any).yelp_rating as
+                  | number
+                  | undefined;
+                if (typeof rating !== "number") return false;
+                const thresholds = values
+                  .map((v) => parseFloat(v))
+                  .filter((n) => !Number.isNaN(n));
+                if (thresholds.length === 0) return true;
+                const minThreshold = Math.min(...thresholds);
+                return rating >= minThreshold;
+              }
+              case "Collections":
+              case "Vibes":
+                return (
+                  restaurant.collections &&
+                  values.some((collection) =>
+                    restaurant.collections.includes(collection)
+                  )
+                );
+              case "Badges": {
+                // OR logic: match if restaurant has ANY of the selected badges
+                return values.some((badge) => {
+                  switch (badge) {
+                    case "michelin":
+                      return (
+                        restaurant.michelin_award &&
+                        ["ONE_STAR", "TWO_STARS", "THREE_STARS"].includes(
+                          restaurant.michelin_award
+                        )
+                      );
+                    case "bib":
+                    case "bib_gourmand": // Support both formats
+                      return restaurant.michelin_award === "BIB_GOURMAND";
+                    case "nyt":
+                    case "nyt_top_100": // Support both formats
+                      return Boolean(restaurant.nyttop100_rank);
+                    default:
+                      return false;
+                  }
+                });
+              }
+              case "Semantic Features": {
+                // Search for keywords in yelp_review_highlights
+                const highlights =
+                  restaurant.yelp_review_highlights?.toLowerCase() || "";
+                if (!highlights) return false;
+                // Match if ANY keyword is found in the highlights
+                return values.some(
+                  (keyword) =>
+                    keyword && highlights.includes(keyword.toLowerCase())
+                );
+              }
+              case "Semantic Search Results": {
+                // Filter to only show restaurants that match the slugs from semantic search
+                return values.some((slug) => restaurant.slug === slug);
+              }
+              default:
+                return true;
+            }
+          });
+        }
+      });
+
+      // Apply Restaurant Week filter
+      if (restaurantWeekActive) {
         filtered = filtered.filter((restaurant) => {
-          switch (filterType) {
-            case "Cuisine":
-              // Support both exact match and partial match (for chatbot)
-              if (!restaurant.cuisine) return false;
-              return values.some(
-                (value) =>
-                  restaurant.cuisine === value ||
-                  restaurant.cuisine.toLowerCase().includes(value.toLowerCase())
-              );
-            case "Meal Types":
-              return (
-                restaurant.meal_types &&
-                Array.isArray(restaurant.meal_types) &&
-                values.some((meal) => restaurant.meal_types?.includes(meal))
-              );
-            case "Price":
-              // Prefer v2 `price` if present, otherwise fall back to `price_range`
-              return values.includes(
-                (restaurant as any).price ?? restaurant.price_range
-              );
-            case "Participation Weeks":
-              // Check if restaurant participates in any of the selected weeks
-              return (
-                restaurant.participation_weeks &&
-                Array.isArray(restaurant.participation_weeks) &&
-                values.some((week) =>
-                  restaurant.participation_weeks?.includes(week)
-                )
-              );
-            case "Yelp Rating": {
-              const rating = (restaurant as any).yelp_rating as
-                | number
-                | undefined;
-              if (typeof rating !== "number") return false;
-              const thresholds = values
-                .map((v) => parseFloat(v))
-                .filter((n) => !Number.isNaN(n));
-              if (thresholds.length === 0) return true;
-              const minThreshold = Math.min(...thresholds);
-              return rating >= minThreshold;
-            }
-            case "Collections":
-            case "Vibes":
-              return (
-                restaurant.collections &&
-                values.some((collection) =>
-                  restaurant.collections.includes(collection)
-                )
-              );
-            case "Badges": {
-              // OR logic: match if restaurant has ANY of the selected badges
-              return values.some((badge) => {
-                switch (badge) {
-                  case "michelin":
-                    return (
-                      restaurant.michelin_award &&
-                      ["ONE_STAR", "TWO_STARS", "THREE_STARS"].includes(
-                        restaurant.michelin_award
-                      )
-                    );
-                  case "bib":
-                  case "bib_gourmand": // Support both formats
-                    return restaurant.michelin_award === "BIB_GOURMAND";
-                  case "nyt":
-                  case "nyt_top_100": // Support both formats
-                    return Boolean(restaurant.nyttop100_rank);
-                  default:
-                    return false;
-                }
-              });
-            }
-            case "Semantic Features": {
-              // Search for keywords in yelp_review_highlights
-              const highlights =
-                restaurant.yelp_review_highlights?.toLowerCase() || "";
-              if (!highlights) return false;
-              // Match if ANY keyword is found in the highlights
-              return values.some(
-                (keyword) =>
-                  keyword && highlights.includes(keyword.toLowerCase())
-              );
-            }
-            case "Semantic Search Results": {
-              // Filter to only show restaurants that match the slugs from semantic search
-              return values.some((slug) => restaurant.slug === slug);
-            }
-            default:
-              return true;
-          }
+          return (
+            restaurant.meal_types &&
+            Array.isArray(restaurant.meal_types) &&
+            restaurant.meal_types.length > 0
+          );
         });
       }
-    });
 
-    // Apply Restaurant Week filter
-    if (restaurantWeekActive) {
-      filtered = filtered.filter((restaurant) => {
-        return (
-          restaurant.meal_types &&
-          Array.isArray(restaurant.meal_types) &&
-          restaurant.meal_types.length > 0
-        );
-      });
-    }
-
-    // Apply Favorites filter
-    if (favoritesActive) {
-      filtered = filtered.filter((restaurant) => {
-        return favorites.includes(restaurant.name);
-      });
-    }
-
-    // Apply Has Menu filter
-    if (hasMenuActive) {
-      filtered = filtered.filter((restaurant) => {
-        return restaurant.menu_url && restaurant.menu_url.trim() !== "";
-      });
-    }
-
-    // Apply Remi's Recs filter (only show highlighted restaurants)
-    if (remisRecsActive) {
-      filtered = filtered.filter((restaurant) => {
-        return highlightedRestaurantIds.has(restaurant.slug);
-      });
-    }
-
-    // Apply 500+ Reviews filter
-    if (highReviewCountActive) {
-      filtered = filtered.filter((restaurant) => {
-        const reviewCount = (restaurant as any).yelp_review_count as
-          | number
-          | undefined;
-        return typeof reviewCount === "number" && reviewCount >= 500;
-      });
-    }
-
-    // Apply legend filters
-    if (legendFilters.length > 0) {
-      filtered = filtered.filter((restaurant) => {
-        return legendFilters.some((filterType) => {
-          switch (filterType) {
-            case "michelin":
-              return (
-                restaurant.michelin_award &&
-                ["ONE_STAR", "TWO_STARS", "THREE_STARS"].includes(
-                  restaurant.michelin_award
-                )
-              );
-            case "bib":
-              return restaurant.michelin_award === "BIB_GOURMAND";
-            case "nyt":
-              return restaurant.nyttop100_rank;
-            case "regular":
-              return !restaurant.michelin_award && !restaurant.nyttop100_rank;
-            default:
-              return false;
-          }
+      // Apply Favorites filter
+      if (favoritesActive) {
+        filtered = filtered.filter((restaurant) => {
+          return favorites.includes(restaurant.name);
         });
-      });
-    }
+      }
 
-    return filtered;
-  }, [
-    activeFilters,
-    legendFilters,
-    restaurantWeekActive,
-    favoritesActive,
-    hasMenuActive,
-    remisRecsActive,
-    highReviewCountActive,
-    favorites,
-    highlightedRestaurantIds,
-  ]);
+      // Apply Has Menu filter
+      if (hasMenuActive) {
+        filtered = filtered.filter((restaurant) => {
+          return restaurant.menu_url && restaurant.menu_url.trim() !== "";
+        });
+      }
+
+      // Apply Remi's Recs filter (only show highlighted restaurants)
+      if (remisRecsActive) {
+        filtered = filtered.filter((restaurant) => {
+          return highlightedRestaurantIds.has(restaurant.slug);
+        });
+      }
+
+      // Apply 500+ Reviews filter
+      if (highReviewCountActive) {
+        filtered = filtered.filter((restaurant) => {
+          const reviewCount = (restaurant as any).yelp_review_count as
+            | number
+            | undefined;
+          return typeof reviewCount === "number" && reviewCount >= 500;
+        });
+      }
+
+      // Apply legend filters
+      if (legendFilters.length > 0) {
+        filtered = filtered.filter((restaurant) => {
+          return legendFilters.some((filterType) => {
+            switch (filterType) {
+              case "michelin":
+                return (
+                  restaurant.michelin_award &&
+                  ["ONE_STAR", "TWO_STARS", "THREE_STARS"].includes(
+                    restaurant.michelin_award
+                  )
+                );
+              case "bib":
+                return restaurant.michelin_award === "BIB_GOURMAND";
+              case "nyt":
+                return restaurant.nyttop100_rank;
+              case "regular":
+                return !restaurant.michelin_award && !restaurant.nyttop100_rank;
+              default:
+                return false;
+            }
+          });
+        });
+      }
+
+      return filtered;
+    },
+    [
+      activeFilters,
+      legendFilters,
+      restaurantWeekActive,
+      favoritesActive,
+      hasMenuActive,
+      remisRecsActive,
+      highReviewCountActive,
+      favorites,
+      highlightedRestaurantIds,
+    ]
+  );
 
   const handleFilterChange = useCallback((filterType: string, values: string[]) => {
     // Special case: "Semantic Search Results" means highlight, not filter
@@ -380,17 +385,9 @@ function AppContent() {
     filtered = applyFilters(filtered);
     setFilteredRestaurants(filtered);
   }, [
-    activeFilters,
-    legendFilters,
-    searchTerm,
+    applyFilters,
     restaurants,
-    restaurantWeekActive,
-    favoritesActive,
-    hasMenuActive,
-    remisRecsActive,
-    highReviewCountActive,
-    favorites,
-    highlightedRestaurantIds,
+    searchTerm,
   ]);
 
   return (
