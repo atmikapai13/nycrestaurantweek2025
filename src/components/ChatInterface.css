@@ -1,7 +1,7 @@
 /* Chat Interface Container - Left Side */
 .chat-interface {
   position: absolute;
-  top: 3%;
+  top: 4.5%;
   left: 20px;
   bottom: 10px;
   z-index: 900;

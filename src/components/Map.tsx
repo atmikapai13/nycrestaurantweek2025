@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useMemo, useCallback } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import type { Restaurant } from '../types/restaurant'
@@ -680,45 +680,6 @@ export default function Map({
     // Update marker sizes after creating all markers
     updateMarkerSizes()
   }, [allRestaurants, highlightedIds, onRestaurantSelect, isochroneRegionSlugs, selectedRestaurantSlug, favoritesActive, favorites])
-
-  // Calculate filtered restaurant count (respects both isochrone and FilterBar filters)
-  const restaurantCount = useMemo(() => {
-    if (isochroneRegionSlugs) {
-      // Count filtered restaurants that are in the isochrone
-      return restaurants.filter(r => isochroneRegionSlugs.includes(r.slug)).length
-    }
-    // No isochrone: show filtered restaurants count (filter bar may be active)
-    return restaurants.length
-  }, [restaurants, isochroneRegionSlugs])
-
-  // Calculate award winners count (respect both isochrone and FilterBar filters)
-  const awardWinnersCount = useMemo(() => {
-    const pool = isochroneRegionSlugs
-      ? restaurants.filter(r => isochroneRegionSlugs.includes(r.slug))
-      : restaurants
-
-    return pool.filter(r => hasAnyAward(r)).length
-  }, [restaurants, isochroneRegionSlugs])
-
-  // Calculate favorites count (respect both isochrone and FilterBar filters)
-  const favoritesCount = useMemo(() => {
-    const pool = isochroneRegionSlugs
-      ? restaurants.filter(r => isochroneRegionSlugs.includes(r.slug))
-      : restaurants
-
-    return pool.filter(r => favorites.includes(r.name)).length
-  }, [restaurants, isochroneRegionSlugs, favorites])
-
-  // Calculate highlighted count (respect both isochrone and FilterBar filters)
-  const highlightedCount = useMemo(() => {
-    if (!highlightedIds || highlightedIds.size === 0) return 0
-
-    const pool = isochroneRegionSlugs
-      ? restaurants.filter(r => isochroneRegionSlugs.includes(r.slug))
-      : restaurants
-
-    return pool.filter(r => highlightedIds.has(r.slug)).length
-  }, [restaurants, isochroneRegionSlugs, highlightedIds])
 
   return (
     <div className="map-wrapper">

@@ -12,7 +12,7 @@ interface RestaurantCardProps {
   onExpandDrawer?: () => void
 }
 
-export default function RestaurantCard({ restaurant, placeholderRestaurant, onClose, isFavorited = false, onToggleFavorite, onRequestReviewHighlights, onExpandDrawer }: RestaurantCardProps) {
+export default function RestaurantCard({ restaurant, placeholderRestaurant, onClose, isFavorited = false, onToggleFavorite, onExpandDrawer }: RestaurantCardProps) {
   const displayRestaurant = restaurant || placeholderRestaurant
   const [isContactsOpen, setIsContactsOpen] = useState(false)
   const [isReviewsOpen, setIsReviewsOpen] = useState(false)
@@ -146,7 +146,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
         )}
       </div>
       {/* Restaurant Description */}
-      <p className="card-body-text restaurant-description">
+      <p className="card-body-text">
         {displayRestaurant.summary && displayRestaurant.summary.split('. ').reduce((acc: string, sentence: string, index: number, array: string[]) => {
           // Add the sentence back with period (except for last one which might already have it)
           const sentenceWithPeriod = index === array.length - 1 && sentence.endsWith('.') ? sentence : sentence + '.';
@@ -212,11 +212,11 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
           <div ref={restaurantWeekContentRef} className={`restaurant-week-accordion-content ${isRestaurantWeekOpen ? 'open' : ''}`}>
             <div className="meal-types-row">
               <div className="card-body-text meal-types-text">
-                NYC Tourism hosts Restaurant Week biannually. This year, <b>{displayRestaurant.name}</b> is participating{displayRestaurant.participation_weeks2 && (
-                  <> from <b>{displayRestaurant.participation_weeks2}</b></>
-                )}. Participating spots curate their own lunch and/or dinner offerings. Saturdays are not included.
+                NYC Tourism hosts Restaurant Week biannually. Participating spots curate their own lunch and/or dinner offerings. Saturdays are not included.
                 <br /><br />
-                This restaurant is offering the following menus: <b>{displayRestaurant.meal_types.join(', ')}</b>
+                For Spring 2026 Restaurant Week, {displayRestaurant.name} is participating{displayRestaurant.participation_weeks2 && (
+                  <> from <b>{displayRestaurant.participation_weeks2}</b></>
+                )}. This restaurant is offering the following menus: <b>{displayRestaurant.meal_types.join(', ')}</b>
               </div>
             </div>
             {displayRestaurant.menu_url && displayRestaurant.menu_url.trim() !== '' && (
@@ -266,7 +266,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
                   <img src="/yelp_logo.png" alt="Yelp" className="review-source-icon" />
                   <span className="review-source-label">Yelp:</span>
                 </div>
-                <span className="review-text">{processYelpReview(displayRestaurant.yelp_review_highlights)}</span>
+                <span className="card-body-text review-text">{processYelpReview(displayRestaurant.yelp_review_highlights)}</span>
               </div>
             )}
             {displayRestaurant.reddit && displayRestaurant.reddit.trim() !== '' && (
@@ -275,7 +275,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
                   <img src="/reddit.webp" alt="Reddit" className="review-source-icon" />
                   <span className="review-source-label">Reddit:</span>
                 </div>
-                <span className="review-text">
+                <span className="card-body-text review-text">
                   {displayRestaurant.reddit.split('. ').reduce((acc: string, sentence: string, index: number, array: string[]) => {
                     const sentenceWithPeriod = index === array.length - 1 && sentence.endsWith('.') ? sentence : sentence + '.';
                     if (index > 0 && index % 2 === 0) {

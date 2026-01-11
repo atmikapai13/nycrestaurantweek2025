@@ -5,7 +5,7 @@ export default function FloatingHeader() {
     <div className="floating-header">
       
       <h1 className="floating-header-title">
-        NYCEATS<span className="live">.LIVE</span>
+        NYC <span className="live">EATS</span>
       </h1>
     </div>
   )

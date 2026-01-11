@@ -4,6 +4,7 @@ export interface FilterOption {
   value: string
   label: string
   disabled?: boolean
+  icon?: string
 }
 
 interface FilterDropdownProps {
@@ -148,7 +149,7 @@ export default function FilterDropdown({
       {/* STANDARD PATTERN: Apply 'active' class when selections exist
           This triggers pink active state styling (see FilterBar.css) */}
       <button
-        className={`filter-pill-button ${hasSelections ? 'active' : ''}`}
+        className={`filter-pill-base filter-pill-button ${hasSelections ? 'active' : ''}`}
         onClick={() => setIsOpen(!isOpen)}
         onKeyDown={handleKeyDown}
         aria-controls={`${label}-dropdown-menu`}
@@ -201,6 +202,13 @@ export default function FilterDropdown({
                     disabled={option.disabled}
                     aria-label={option.label}
                   />
+                  {option.icon && (
+                    <img
+                      src={option.icon}
+                      alt=""
+                      className="filter-option-icon"
+                    />
+                  )}
                   <span className="filter-option-label">{option.label}</span>
                 </label>
               ))

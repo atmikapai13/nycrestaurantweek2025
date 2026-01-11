@@ -18,6 +18,7 @@ function App() {
   const [restaurantWeekActive, setRestaurantWeekActive] = useState(false)
   const [hasMenuActive, setHasMenuActive] = useState(false)
   const [remisRecsActive, setRemisRecsActive] = useState(false)
+  const [highReviewCountActive, setHighReviewCountActive] = useState(false)
 
   // Callback ref for map reset function (will be set by Map component)
   const mapResetRef = useRef<(() => void) | null>(null)
@@ -110,6 +111,10 @@ function App() {
 
   const handleRemisRecsToggle = () => {
     setRemisRecsActive(!remisRecsActive)
+  }
+
+  const handleHighReviewCountToggle = () => {
+    setHighReviewCountActive(!highReviewCountActive)
   }
 
   const applyFilters = (restaurantsToFilter: Restaurant[]) => {
@@ -207,6 +212,14 @@ function App() {
     if (remisRecsActive) {
       filtered = filtered.filter(restaurant => {
         return highlightedRestaurantIds.has(restaurant.slug)
+      })
+    }
+
+    // Apply 500+ Reviews filter
+    if (highReviewCountActive) {
+      filtered = filtered.filter(restaurant => {
+        const reviewCount = (restaurant as any).yelp_review_count as number | undefined
+        return typeof reviewCount === 'number' && reviewCount >= 500
       })
     }
 
@@ -322,7 +335,7 @@ function App() {
     // Apply all filters
     filtered = applyFilters(filtered)
     setFilteredRestaurants(filtered)
-  }, [activeFilters, legendFilters, searchTerm, restaurants, restaurantWeekActive, favoritesActive, hasMenuActive, remisRecsActive, favorites, highlightedRestaurantIds])
+  }, [activeFilters, legendFilters, searchTerm, restaurants, restaurantWeekActive, favoritesActive, hasMenuActive, remisRecsActive, highReviewCountActive, favorites, highlightedRestaurantIds])
 
   return (
     <div className="app">
@@ -339,6 +352,7 @@ function App() {
           totalRestaurants={filteredRestaurants.length}
           favoritesCount={favorites.length}
           highlightedCount={highlightedRestaurantIds.size}
+          highlightedRestaurantIds={highlightedRestaurantIds}
           restaurantWeekActive={restaurantWeekActive}
           onRestaurantWeekToggle={handleRestaurantWeekToggle}
           favoritesActive={favoritesActive}
@@ -347,6 +361,8 @@ function App() {
           onHasMenuToggle={handleHasMenuToggle}
           remisRecsActive={remisRecsActive}
           onRemisRecsToggle={handleRemisRecsToggle}
+          highReviewCountActive={highReviewCountActive}
+          onHighReviewCountToggle={handleHighReviewCountToggle}
         />
 
       {/* Full Screen Map */}

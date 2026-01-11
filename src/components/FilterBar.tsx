@@ -17,12 +17,6 @@ import './FilterBar.css'
  * Any new filters should follow this pattern.
  */
 
-// Filter option interface (matching FilterDropdown)
-interface FilterOption {
-  value: string
-  label: string
-  disabled?: boolean
-}
 
 // Helper to get restaurants in the current isochrone pool
 function getIsochroneRestaurants(
@@ -41,11 +35,11 @@ interface FilterBarProps {
   isochroneRegionSlugs: string[] | null
   onFilterChange: (filterType: string, values: string[]) => void
   activeFilters: Record<string, string[]>
-  visible: boolean
   hasUserQueried?: boolean
   totalRestaurants?: number
   favoritesCount?: number
   highlightedCount?: number
+  highlightedRestaurantIds?: Set<string>
   restaurantWeekActive?: boolean
   onRestaurantWeekToggle?: () => void
   favoritesActive?: boolean
@@ -54,6 +48,8 @@ interface FilterBarProps {
   onHasMenuToggle?: () => void
   remisRecsActive?: boolean
   onRemisRecsToggle?: () => void
+  highReviewCountActive?: boolean
+  onHighReviewCountToggle?: () => void
 }
 
 export default function FilterBar({
@@ -61,9 +57,8 @@ export default function FilterBar({
   isochroneRegionSlugs,
   onFilterChange,
   activeFilters,
-  visible,
-  hasUserQueried = false,
   highlightedCount = 0,
+  highlightedRestaurantIds,
   restaurantWeekActive = false,
   onRestaurantWeekToggle,
   favoritesActive = false,
@@ -71,7 +66,9 @@ export default function FilterBar({
   hasMenuActive = false,
   onHasMenuToggle,
   remisRecsActive = false,
-  onRemisRecsToggle
+  onRemisRecsToggle,
+  highReviewCountActive = false,
+  onHighReviewCountToggle
 }: FilterBarProps) {
   const [isExpanded, setIsExpanded] = useState(true)
   const filterBarRef = useRef<HTMLDivElement>(null)
@@ -132,6 +129,9 @@ export default function FilterBar({
     if (remisRecsActive && onRemisRecsToggle) {
       onRemisRecsToggle()
     }
+    if (highReviewCountActive && onHighReviewCountToggle) {
+      onHighReviewCountToggle()
+    }
   }
 
   // Toggle filter bar expansion
@@ -167,18 +167,34 @@ export default function FilterBar({
     const isochroneRestaurants = getIsochroneRestaurants(allRestaurants, isochroneRegionSlugs)
     const availableCuisines = new Set<string>()
     const allCuisines = new Set<string>()
+    const cuisineCounts = new Map<string, number>()
 
     // Collect all cuisines from full dataset
     allRestaurants.forEach(r => {
       if (r.cuisine) allCuisines.add(r.cuisine)
     })
 
-    // If isochrone is active, collect cuisines from isochrone pool
-    if (isochroneRestaurants) {
+    // Determine which restaurant set to count from (priority: highlighted > isochrone > all)
+    let countSource = allRestaurants
+    if (isochroneRestaurants && isochroneRestaurants.length > 0) {
+      countSource = isochroneRestaurants
       isochroneRestaurants.forEach(r => {
         if (r.cuisine) availableCuisines.add(r.cuisine)
       })
     }
+
+    // If there are highlighted restaurants, use those for counts
+    if (highlightedRestaurantIds && highlightedRestaurantIds.size > 0) {
+      const highlightedRestaurants = allRestaurants.filter(r => highlightedRestaurantIds.has(r.slug))
+      countSource = highlightedRestaurants
+    }
+
+    // Count cuisines from the selected source
+    countSource.forEach(r => {
+      if (r.cuisine) {
+        cuisineCounts.set(r.cuisine, (cuisineCounts.get(r.cuisine) || 0) + 1)
+      }
+    })
 
     if (allCuisines.size === 0) {
       return [{ value: '', label: 'No cuisines available', disabled: true }]
@@ -187,12 +203,15 @@ export default function FilterBar({
     // Sort alphabetically
     return Array.from(allCuisines)
       .sort((a, b) => a.localeCompare(b))
-      .map(cuisine => ({
-        value: cuisine,
-        label: cuisine,
-        disabled: isochroneRestaurants !== null && !availableCuisines.has(cuisine)
-      }))
-  }, [allRestaurants, isochroneRegionSlugs])
+      .map(cuisine => {
+        const count = cuisineCounts.get(cuisine) || 0
+        return {
+          value: cuisine,
+          label: count > 0 ? `${cuisine} · ${count}` : cuisine,
+          disabled: isochroneRestaurants !== null && !availableCuisines.has(cuisine)
+        }
+      })
+  }, [allRestaurants, isochroneRegionSlugs, highlightedRestaurantIds])
 
   // Check if there's any yelp rating data
   const hasYelpRatings = useMemo(() => {
@@ -280,9 +299,9 @@ export default function FilterBar({
   // Generate award options
   const awardOptions = useMemo(() => {
     return [
-      { value: 'michelin', label: 'Michelin', disabled: false },
-      { value: 'bib', label: 'Bib Gourmand', disabled: false },
-      { value: 'nyt', label: 'NYT Top 100', disabled: false }
+      { value: 'michelin', label: 'Michelin', disabled: false, icon: '/MichelinStar.svg.png' },
+      { value: 'bib', label: 'Bib Gourmand', disabled: false, icon: '/bibgourmand.png' },
+      { value: 'nyt', label: 'NYT Top 100', disabled: false, icon: '/nytimes.png' }
     ]
   }, [])
 
@@ -365,152 +384,169 @@ export default function FilterBar({
         </button>
       )}
 
-      {/* Filter Bar - Collapsible */}
+      {/* Filter Bar - Collapsible with Two Rows */}
       <div
         ref={filterBarRef}
         className={`filter-bar ${isExpanded ? 'expanded' : 'collapsed'}`}
       >
-        {/* Remi's Recs Button - only show when there are highlighted restaurants
-            STANDARD PATTERN: Toggle button with pink active state */}
-        {highlightedCount > 0 && onRemisRecsToggle && (
-          <button
-            className={`remis-recs-button ${remisRecsActive ? 'active' : ''}`}
-            onClick={onRemisRecsToggle}
-          >
-            <span style={{
-              display: 'inline-block',
-              width: '10px',
-              height: '10px',
-              borderRadius: '50%',
-              backgroundColor: '#FF9100',
-              marginRight: '6px',
-              border: '1px solid white',
-              boxShadow: '0 1px 2px rgba(0,0,0,0.2)'
-            }}></span>
-            Remi's Recs
-          </button>
-        )}
+        {/* Row 1: Marker-based and Core Filters */}
+        <div className="filter-row filter-row-markers">
+          {/* Price Filter */}
+          <FilterDropdown
+            label="$$$"
+            icon=""
+            options={priceOptions}
+            selectedValues={activeFilters['Price'] || []}
+            onChange={(values) => onFilterChange('Price', values)}
+          />
 
-        {/* Price Filter */}
-        <FilterDropdown
-          label="Price"
-          icon=""
-          options={priceOptions}
-          selectedValues={activeFilters['Price'] || []}
-          onChange={(values) => onFilterChange('Price', values)}
-        />
+          {/* Yelp Rating Filter */}
+          <FilterDropdown
+            label="Yelp ★★★"
+            icon=""
+            options={ratingOptions}
+            selectedValues={activeFilters['Yelp Rating'] || []}
+            onChange={(values) => onFilterChange('Yelp Rating', values)}
+            placeholder={!hasYelpRatings ? '⚠️ Rating data not available' : undefined}
+          />
 
-        {/* Yelp Rating Filter */}
-        <FilterDropdown
-          label="Yelp Rating"
-          icon=""
-          options={ratingOptions}
-          selectedValues={activeFilters['Yelp Rating'] || []}
-          onChange={(values) => onFilterChange('Yelp Rating', values)}
-          placeholder={!hasYelpRatings ? '⚠️ Rating data not available' : undefined}
-        />
+          {/* 500+ Reviews Button
+              STANDARD PATTERN: Toggle button with pink active state */}
+          {onHighReviewCountToggle && (
+            <button
+              className={`filter-pill-base high-review-count-button ${highReviewCountActive ? 'active' : ''}`}
+              onClick={onHighReviewCountToggle}
+            >
+              500+ Reviews
+            </button>
+          )}
 
-        {/* Cuisine Filter */}
-        <FilterDropdown
-          label="Cuisine"
-          icon=""
-          options={cuisineOptions}
-          selectedValues={activeFilters['Cuisine'] || []}
-          onChange={(values) => onFilterChange('Cuisine', values)}
-        />
+          {/* Cuisine Filter */}
+          <FilterDropdown
+            label="Cuisine"
+            icon=""
+            options={cuisineOptions}
+            selectedValues={activeFilters['Cuisine'] || []}
+            onChange={(values) => onFilterChange('Cuisine', values)}
+          />
 
-        {/* Award Winners Filter with red marker */}
-        <FilterDropdown
-          label={
-            <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          {/* Award Winners Filter with red marker */}
+          <FilterDropdown
+            label={
+              <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <span style={{
+                  display: 'inline-block',
+                  width: '10px',
+                  height: '10px',
+                  borderRadius: '50%',
+                  backgroundColor: '#c81224',
+                  border: '1px solid white',
+                  boxShadow: '0 1px 2px rgba(0,0,0,0.2)'
+                }}></span>
+                Award-winners
+              </span>
+            }
+            icon=""
+            options={awardOptions}
+            selectedValues={activeFilters['Badges'] || []}
+            onChange={(values) => onFilterChange('Badges', values)}
+          />
+
+          {/* Favorites Button
+              STANDARD PATTERN: Toggle button with pink active state */}
+          {onFavoritesToggle && (
+            <button
+              className={`filter-pill-base favorites-button ${favoritesActive ? 'active' : ''}`}
+              onClick={onFavoritesToggle}
+            >
               <span style={{
                 display: 'inline-block',
                 width: '10px',
                 height: '10px',
                 borderRadius: '50%',
-                backgroundColor: '#c81224',
+                backgroundColor: '#FF69B4',
+                marginRight: '6px',
                 border: '1px solid white',
                 boxShadow: '0 1px 2px rgba(0,0,0,0.2)'
               }}></span>
-              Award-winners
-            </span>
-          }
-          icon=""
-          options={awardOptions}
-          selectedValues={activeFilters['Badges'] || []}
-          onChange={(values) => onFilterChange('Badges', values)}
-        />
+              Favorites
+            </button>
+          )}
 
-        {/* Favorites Button
-            STANDARD PATTERN: Toggle button with pink active state */}
-        {onFavoritesToggle && (
-          <button
-            className={`favorites-button ${favoritesActive ? 'active' : ''}`}
-            onClick={onFavoritesToggle}
-          >
-            <span style={{
-              display: 'inline-block',
-              width: '10px',
-              height: '10px',
-              borderRadius: '50%',
-              backgroundColor: '#FF69B4',
-              marginRight: '6px',
-              border: '1px solid white',
-              boxShadow: '0 1px 2px rgba(0,0,0,0.2)'
-            }}></span>
-            Favorites
-          </button>
-        )}
+          {/* Remi's Recs Button - only show when there are highlighted restaurants
+              STANDARD PATTERN: Toggle button with pink active state */}
+          {highlightedCount > 0 && onRemisRecsToggle && (
+            <button
+              className={`filter-pill-base remis-recs-button ${remisRecsActive ? 'active' : ''}`}
+              onClick={onRemisRecsToggle}
+            >
+              <span style={{
+                display: 'inline-block',
+                width: '10px',
+                height: '10px',
+                borderRadius: '50%',
+                backgroundColor: '#FF9100',
+                marginRight: '6px',
+                border: '1px solid white',
+                boxShadow: '0 1px 2px rgba(0,0,0,0.2)'
+              }}></span>
+              Remi's Recs
+            </button>
+          )}
+        </div>
 
-        {/* Restaurant Week Spring 2026 Button with NEW badge
-            STANDARD PATTERN: Toggle button with pink active state */}
-        {onRestaurantWeekToggle && (
-          <button
-            className={`restaurant-week-button ${restaurantWeekActive ? 'active' : ''}`}
-            onClick={onRestaurantWeekToggle}
-          >
-            <span className="new-badge">NEW</span> Restaurant Week
-          </button>
-        )}
+        {/* Row 2: Restaurant Week Filters */}
+        <div className="filter-row filter-row-main">
+          {/* Restaurant Week Spring 2026 Button with NEW badge
+              STANDARD PATTERN: Toggle button with pink active state */}
+          {onRestaurantWeekToggle && (
+            <button
+              className={`filter-pill-base restaurant-week-button ${restaurantWeekActive ? 'active' : ''}`}
+              onClick={onRestaurantWeekToggle}
+            >
+              <span className="new-badge">NEW</span> Restaurant Week
+            </button>
+          )}
 
-        {/* Has Menu Button
-            STANDARD PATTERN: Toggle button with pink active state */}
-        {onHasMenuToggle && (
-          <button
-            className={`has-menu-button ${hasMenuActive ? 'active' : ''}`}
-            onClick={onHasMenuToggle}
-          >
-            Has Menu
-          </button>
-        )}
+          {/* Has Menu Button
+              STANDARD PATTERN: Toggle button with pink active state */}
+          {onHasMenuToggle && (
+            <button
+              className={`filter-pill-base has-menu-button ${hasMenuActive ? 'active' : ''}`}
+              onClick={onHasMenuToggle}
+            >
+              Has Menu
+            </button>
+          )}
 
-        {/* Meal Types Filter */}
-        <FilterDropdown
-          label="Menus"
-          icon=""
-          options={mealTypesOptions}
-          selectedValues={activeFilters['Meal Types'] || []}
-          onChange={(values) => onFilterChange('Meal Types', values)}
-        />
+          {/* Meal Types Filter */}
+          <FilterDropdown
+            label="Special Menus"
+            icon=""
+            options={mealTypesOptions}
+            selectedValues={activeFilters['Meal Types'] || []}
+            onChange={(values) => onFilterChange('Meal Types', values)}
+          />
 
-        {/* Participation Weeks Filter */}
-        <FilterDropdown
-          label="Participating Weeks"
-          icon=""
-          options={participationWeeksOptions}
-          selectedValues={activeFilters['Participation Weeks'] || []}
-          onChange={(values) => onFilterChange('Participation Weeks', values)}
-        />
+          {/* Participation Weeks Filter */}
+          <FilterDropdown
+            label="Participating Weeks"
+            icon=""
+            options={participationWeeksOptions}
+            selectedValues={activeFilters['Participation Weeks'] || []}
+            onChange={(values) => onFilterChange('Participation Weeks', values)}
+          />
 
-        {/* Reset button - only show when filters are active */}
-        {(Object.keys(activeFilters).length > 0 || restaurantWeekActive || favoritesActive || hasMenuActive || remisRecsActive) && (
-          <button
-            className="filter-reset-button"
-            onClick={handleResetFilters}
-          >
-            Reset
-          </button>
-        )}
+          {/* Reset button - only show when filters are active */}
+          {(Object.keys(activeFilters).length > 0 || restaurantWeekActive || favoritesActive || hasMenuActive || remisRecsActive || highReviewCountActive) && (
+            <button
+              className="filter-reset-button"
+              onClick={handleResetFilters}
+            >
+              Reset
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Right Scroll Arrow - Mobile only */}

@@ -19,184 +19,6 @@ export interface ChatInterfaceHandle {
   addRestaurantCard: (restaurant: Restaurant) => void
 }
 
-/**
- * Computes aggregate metadata from restaurant array for intelligent summaries
- * Performance: O(n) single pass, ~5-10ms for 628 restaurants
- */
-function computeResultMetadata(restaurants: Restaurant[]) {
-  if (restaurants.length === 0) {
-    return {
-      total_count: 0,
-      message: "No restaurants match your current filters."
-    }
-  }
-
-  const metadata: Record<string, any> = {
-    total_count: restaurants.length,
-    cuisine_breakdown: {} as Record<string, number>,
-    top_cuisines: [] as string[],
-    borough_breakdown: {} as Record<string, number>,
-    top_neighborhoods: [] as string[],
-    price_breakdown: { "$": 0, "$$": 0, "$$$": 0, "$$$$": 0 },
-    avg_rating: 0,
-    rating_range: [5, 0] as [number, number],
-    michelin_count: 0,
-    michelin_types: [] as string[],
-    nyt_count: 0,
-    collections_present: [] as string[],
-    has_awards: false
-  }
-
-  let totalRating = 0
-  let ratingCount = 0
-  const neighborhoodCounts: Record<string, number> = {}
-  const collectionSet = new Set<string>()
-  const michelinSet = new Set<string>()
-
-  // Single pass through restaurants
-  restaurants.forEach(r => {
-    // Cuisine
-    if (r.cuisine) {
-      metadata.cuisine_breakdown[r.cuisine] = (metadata.cuisine_breakdown[r.cuisine] || 0) + 1
-    }
-
-    // Borough
-    if (r.borough) {
-      metadata.borough_breakdown[r.borough] = (metadata.borough_breakdown[r.borough] || 0) + 1
-    }
-
-    // Neighborhood
-    if (r.neighborhood) {
-      neighborhoodCounts[r.neighborhood] = (neighborhoodCounts[r.neighborhood] || 0) + 1
-    }
-
-    // Price
-    if (r.price && r.price in metadata.price_breakdown) {
-      metadata.price_breakdown[r.price as keyof typeof metadata.price_breakdown]++
-    }
-
-    // Rating
-    if (r.yelp_rating && r.yelp_rating > 0) {
-      totalRating += r.yelp_rating
-      ratingCount++
-      metadata.rating_range[0] = Math.min(metadata.rating_range[0], r.yelp_rating)
-      metadata.rating_range[1] = Math.max(metadata.rating_range[1], r.yelp_rating)
-    }
-
-    // Awards
-    if (r.michelin_award) {
-      metadata.michelin_count++
-      michelinSet.add(r.michelin_award)
-      metadata.has_awards = true
-    }
-
-    if (r.nyttop100_rank) {
-      metadata.nyt_count++
-      metadata.has_awards = true
-    }
-
-    // Collections
-    r.collections?.forEach(c => collectionSet.add(c))
-  })
-
-  // Compute derived fields
-  metadata.avg_rating = ratingCount > 0 ? Math.round((totalRating / ratingCount) * 10) / 10 : 0
-
-  // Top 3 cuisines
-  metadata.top_cuisines = Object.entries(metadata.cuisine_breakdown)
-    .sort(([, a], [, b]) => (b as number) - (a as number))
-    .slice(0, 3)
-    .map(([cuisine]) => cuisine)
-
-  // Top 3 neighborhoods
-  metadata.top_neighborhoods = Object.entries(neighborhoodCounts)
-    .sort(([, a], [, b]) => b - a)
-    .slice(0, 3)
-    .map(([hood]) => hood)
-
-  metadata.michelin_types = Array.from(michelinSet)
-  metadata.collections_present = Array.from(collectionSet)
-
-  return metadata
-}
-
-/**
- * Formats restaurant results into a consistent summary format
- * Used by all tools to ensure uniform output
- */
-function formatResultsSummary(
-  restaurants: Restaurant[],
-  contextMessage: string,
-  options: {
-    includeExamples?: boolean
-    closingMessage?: string
-  } = {}
-): string {
-  const {
-    includeExamples = true,
-    closingMessage = "If you want to learn more, click on a restaurant with a pink marker or ask me questions."
-  } = options
-
-  const metadata = computeResultMetadata(restaurants)
-
-  // Get top 3 examples (sorted by rating)
-  let examples: string[] = []
-  if (includeExamples && restaurants.length > 0) {
-    const sorted = restaurants.slice().sort((a, b) => (b.yelp_rating || 0) - (a.yelp_rating || 0))
-    examples = sorted.slice(0, 3).map(r => r.name)
-  }
-
-  // Start with context message
-  let summary = contextMessage
-
-  // Add top-rated examples immediately after context
-  if (examples.length > 0) {
-    summary += ` Top-rated restaurants are ${examples.join(', ')}.`
-  }
-
-  // Build breakdown section
-  let breakdownParts: string[] = []
-
-  // Average rating
-  if (metadata.avg_rating > 0) {
-    breakdownParts.push(`Average rating: ${metadata.avg_rating}⭐`)
-  }
-
-  // Price distribution
-  const priceEntries = Object.entries(metadata.price_breakdown).filter(([, count]) => (count as number) > 0)
-  if (priceEntries.length > 0) {
-    const priceDetails = priceEntries.map(([price, count]) => `${count} ${price}`).join(', ')
-    breakdownParts.push(`Price distribution: ${priceDetails}`)
-  }
-
-  // Cuisines
-  if (metadata.top_cuisines && metadata.top_cuisines.length > 0) {
-    breakdownParts.push(`Top Cuisines: ${metadata.top_cuisines.join(', ')}`)
-  }
-
-  // Awards
-  const awards: string[] = []
-  if (metadata.michelin_count > 0) {
-    awards.push(`${metadata.michelin_count} Michelin-starred`)
-  }
-  if (metadata.nyt_count > 0) {
-    awards.push(`${metadata.nyt_count} NYT Top 100`)
-  }
-  if (awards.length > 0) {
-    breakdownParts.push(`Awards: ${awards.join(', ')}`)
-  }
-
-  // Add breakdown if there are details
-  if (breakdownParts.length > 0) {
-    summary += `\n\nHere's a further breakdown:\n• ${breakdownParts.join('\n• ')}`
-  }
-
-  // Add closing message
-  summary += `\n\n${closingMessage}`
-
-  return summary
-}
-
 interface ChatInterfaceProps {
   restaurants: Restaurant[]
   allRestaurants: Restaurant[]
@@ -239,24 +61,24 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
   const suggestions = [
     {
       label: "Near Me",
-      prompt: ["Example scenario: 'I'm in Soho, hunting for spots I can reach in under 15 mins by subway. What's on the menu, Remi?'",
-        "Example scenario: 'Any places within a 15 min subway of West Village?'",
-        "Example scenario: 'Show me hole in the wall restaurants by Roosevelt Island Tramway by E61 st within 20 minute walk.'"
+      prompt: ["Here's an example scenario: 'I'm in Soho, hunting for spots I can reach in under 15 mins by subway. What's on the menu, Remi?'",
+        "Here's an example scenario: 'Any places within a 15 min subway of West Village?'",
+        "Here's an example scenario: 'Show me hole in the wall restaurants by Roosevelt Island Tramway by E61 st within 20 minute walk.'"
       ]
     },
     {
       label: "Between Us",
-      prompt: ["Example scenario: 'My friend is in Midtown, I'm in Murray Hill — what's some restaurants in between us within a short 10 min transit?'",
-        "Example scenario: 'I'm in Chelsea. Show me restaurants around the area excluding MSG, because it's always too busy. I'm willing to walk up to 20 mins.'",
-        "Example scenario: 'I'm by AMC Times Square, and my friend is at One Manhattan West. We are willing to travel 15 minutes walking. Find spots between us, Remi.'"
+      prompt: ["Here's an example scenario: 'My friend is in Midtown, I'm in Murray Hill — what's some restaurants in between us within a short 10 min transit?'",
+        "Here's an example scenario: 'I'm in Chelsea. Show me restaurants around the area excluding MSG, because it's always too busy. I'm willing to walk up to 20 mins.'",
+        "Here's an example scenario: 'I'm by AMC Times Square, and my friend is at One Manhattan West. We are willing to travel 15 minutes walking. Find spots between us, Remi.'"
       ] 
     },
     {
       label: "Vibes",
-      prompt:["Example scenario: 'Remi, give me couple places that are good for date night.'",
-        "Example scenario: 'Remi, show me happy hour spots in Soho. Willing to travel 10 mins by subway.'",
-        "Example scenario: 'Remi, find me a couple restaurants that are modest and cozy.'",
-        "Example scenario: 'Remi, find me hole in the wall restaurants, and tell me what's your definition for it.'"
+      prompt:["Here's an example scenario: 'Remi, give me couple places that are good for date night.'",
+        "Here's an example scenario: 'Remi, show me happy hour spots in Soho. Willing to travel 10 mins by subway.'",
+        "Here's an example scenario: 'Remi, find me a couple restaurants that are modest and cozy.'",
+        "Here's an example scenario: 'Remi, find me hole in the wall restaurants, and tell me what's your definition for it.'"
       ]
     }
   ]
@@ -448,7 +270,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
     handleSend(suggestionText)
   }
 
-  const handleRestaurantSuggestionClick = (suggestionText: string, slug: string) => {
+  const handleRestaurantSuggestionClick = (suggestionText: string) => {
     // Add user message and trigger chat
     handleSuggestionClick(suggestionText)
   }
@@ -520,7 +342,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
         isochrone_params: lastIsochroneParams || null,
         isochrone_layers: (lastIsochroneLayers && lastIsochroneLayers.length > 0)
           ? lastIsochroneLayers
-          : null
+          : undefined
       }, historyWithUserMessage)
 
       // NEW: Handle Backend Agent Response (LangGraph)
