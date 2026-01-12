@@ -389,46 +389,18 @@ export default function FilterBar({
         ref={filterBarRef}
         className={`filter-bar ${isExpanded ? 'expanded' : 'collapsed'}`}
       >
-        {/* Row 1: Marker-based and Core Filters */}
-        <div className="filter-row filter-row-markers">
-          {/* Price Filter */}
-          <FilterDropdown
-            label="$$$"
-            icon=""
-            options={priceOptions}
-            selectedValues={activeFilters['Price'] || []}
-            onChange={(values) => onFilterChange('Price', values)}
-          />
-
-          {/* Yelp Rating Filter */}
-          <FilterDropdown
-            label="★★★"
-            icon=""
-            options={ratingOptions}
-            selectedValues={activeFilters['Yelp Rating'] || []}
-            onChange={(values) => onFilterChange('Yelp Rating', values)}
-            placeholder={!hasYelpRatings ? '⚠️ Rating data not available' : undefined}
-          />
-
-          {/* 500+ Reviews Button
+        {/* Row 1: Restaurant Week Filters */}
+        <div className="filter-row filter-row-main">
+          {/* Restaurant Week Spring 2026 Button
               STANDARD PATTERN: Toggle button with pink active state */}
-          {onHighReviewCountToggle && (
+          {onRestaurantWeekToggle && (
             <button
-              className={`filter-pill-base high-review-count-button ${highReviewCountActive ? 'active' : ''}`}
-              onClick={onHighReviewCountToggle}
+              className={`filter-pill-base restaurant-week-button ${restaurantWeekActive ? 'active' : ''}`}
+              onClick={onRestaurantWeekToggle}
             >
-              500+ Reviews
+              2026 Restaurant Week
             </button>
           )}
-
-          {/* Cuisine Filter */}
-          <FilterDropdown
-            label="Cuisine"
-            icon=""
-            options={cuisineOptions}
-            selectedValues={activeFilters['Cuisine'] || []}
-            onChange={(values) => onFilterChange('Cuisine', values)}
-          />
 
           {/* Award Winners Filter with red marker */}
           <FilterDropdown
@@ -495,47 +467,68 @@ export default function FilterBar({
           )}
         </div>
 
-        {/* Row 2: Restaurant Week Filters */}
-        <div className="filter-row filter-row-main">
-          {/* Restaurant Week Spring 2026 Button with NEW badge
+        {/* Row 2: Marker-based and Core Filters */}
+        <div className="filter-row filter-row-markers">
+          {/* Price Filter */}
+          <FilterDropdown
+            label="$$$"
+            icon=""
+            options={priceOptions}
+            selectedValues={activeFilters['Price'] || []}
+            onChange={(values) => onFilterChange('Price', values)}
+          />
+
+          {/* Yelp Rating Filter */}
+          <FilterDropdown
+            label="★★★"
+            icon=""
+            options={ratingOptions}
+            selectedValues={activeFilters['Yelp Rating'] || []}
+            onChange={(values) => onFilterChange('Yelp Rating', values)}
+            placeholder={!hasYelpRatings ? '⚠️ Rating data not available' : undefined}
+          />
+
+          {/* 500+ Reviews Button
               STANDARD PATTERN: Toggle button with pink active state */}
-          {onRestaurantWeekToggle && (
+          {onHighReviewCountToggle && (
             <button
-              className={`filter-pill-base restaurant-week-button ${restaurantWeekActive ? 'active' : ''}`}
-              onClick={onRestaurantWeekToggle}
+              className={`filter-pill-base high-review-count-button ${highReviewCountActive ? 'active' : ''}`}
+              onClick={onHighReviewCountToggle}
             >
-              <span className="new-badge">NEW</span> Restaurant Week (RW)
+              500+ Reviews
             </button>
           )}
 
-          {/* Has Menu Button
+          {/* Cuisine Filter */}
+          <FilterDropdown
+            label="Cuisine"
+            icon=""
+            options={cuisineOptions}
+            selectedValues={activeFilters['Cuisine'] || []}
+            onChange={(values) => onFilterChange('Cuisine', values)}
+          />
+
+          {/* Has Menu Button - Only show when Restaurant Week is active
               STANDARD PATTERN: Toggle button with pink active state */}
-          {onHasMenuToggle && (
+          {restaurantWeekActive && onHasMenuToggle && (
             <button
               className={`filter-pill-base has-menu-button ${hasMenuActive ? 'active' : ''}`}
               onClick={onHasMenuToggle}
             >
-              RW Menu
+              Has Prix Fixe Menu
             </button>
           )}
 
-          {/* Meal Types Filter */}
-          <FilterDropdown
-            label="RW Specials"
-            icon=""
-            options={mealTypesOptions}
-            selectedValues={activeFilters['Meal Types'] || []}
-            onChange={(values) => onFilterChange('Meal Types', values)}
-          />
-
-          {/* Participation Weeks Filter */}
-          <FilterDropdown
-            label="Participating Weeks"
-            icon=""
-            options={participationWeeksOptions}
-            selectedValues={activeFilters['Participation Weeks'] || []}
-            onChange={(values) => onFilterChange('Participation Weeks', values)}
-          />
+          {/* Meal Types Filter - Only show when Restaurant Week is active */}
+          {restaurantWeekActive && (
+            <FilterDropdown
+              label="Prix Fixe Types"
+              icon=""
+              options={mealTypesOptions}
+              selectedValues={activeFilters['Meal Types'] || []}
+              onChange={(values) => onFilterChange('Meal Types', values)}
+            />
+          )}
 
           {/* Reset button - only show when filters are active */}
           {(Object.keys(activeFilters).length > 0 || restaurantWeekActive || favoritesActive || hasMenuActive || remisRecsActive || highReviewCountActive) && (

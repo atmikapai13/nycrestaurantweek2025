@@ -52,29 +52,28 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
 }, ref) => {
   // Random welcome message selection
   const welcomeMessages = [
-    'I\'m Remi. You\'re in New York, where the only real sin is eating somewhere forgettable. Give me a neighborhood, a mood, or a friend you\'re meeting halfway—I\'ll point you toward the right places. <br><br> Click on one of the suggestions to see how I can help you:',
-    'I\'m Remi, here to help you navigate New York\'s culinary scene! Give me a neighborhood or a mood, and I\'ll recommend a shortlist worth considering.<br><br> Click on one of the suggestions to see how I can help you:',
-    //'I\'m Remi! How can I help you to do? See how I can help you: <br><br> Click on one of the suggestions to see how I can help you:'
+    '<strong>I\'m Remi!</strong> In New York, the only real sin is eating somewhere forgettable. <br><br>Let me help you find a restaurant or the best deals during 2026 Restaurant Week:',
+    '<strong>I\'m Remi</strong>, here to help you navigate New York\'s culinary scene! <br><br> Let\;s help you find a restaurant or the best deals during 2026 Restaurant Week:',
   ]
 
   // Quick-start suggestions for new users
   const suggestions = [
     {
-      label: "Near Me",
+      label: "By Neighborhood",
       prompt: ["Here's an example scenario: 'I'm in Soho, hunting for spots I can reach in under 15 mins by subway. What's on the menu, Remi?'",
         "Here's an example scenario: 'Any places within a 15 min subway of West Village?'",
         "Here's an example scenario: 'Show me hole in the wall restaurants by Roosevelt Island Tramway by E61 st within 20 minute walk.'"
       ]
     },
     {
-      label: "Between Us",
+      label: "By Meeting Point",
       prompt: ["Here's an example scenario: 'My friend is in Midtown, I'm in Murray Hill — what's some restaurants in between us within a short 10 min transit?'",
         "Here's an example scenario: 'I'm in Chelsea. Show me restaurants around the area excluding MSG, because it's always too busy. I'm willing to walk up to 20 mins.'",
         "Here's an example scenario: 'I'm by AMC Times Square, and my friend is at One Manhattan West. We are willing to travel 15 minutes walking. Find spots between us, Remi.'"
       ] 
     },
     {
-      label: "Vibes",
+      label: "By Vibes",
       prompt:["Here's an example scenario: 'Remi, give me couple places that are good for date night.'",
         "Here's an example scenario: 'Remi, show me happy hour spots in Soho. Willing to travel 10 mins by subway.'",
         "Here's an example scenario: 'Remi, find me a couple restaurants that are modest and cozy.'",

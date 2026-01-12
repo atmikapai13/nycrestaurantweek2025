@@ -162,7 +162,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
       {(displayRestaurant.yelp_rating && displayRestaurant.yelp_review_count) || (displayRestaurant.table_res || displayRestaurant.opentable_id) ? (
         <div className="yelp-price-row">
           {displayRestaurant.yelp_rating && displayRestaurant.yelp_review_count && (
-            <span className="yelp-info"><b>Yelp:</b> {displayRestaurant.yelp_rating.toFixed(1)}★ ({displayRestaurant.yelp_review_count.toLocaleString()} Reviews)</span>
+            <span className="card-body-text review-text yelp-info"><b>Yelp:</b> {displayRestaurant.yelp_rating.toFixed(1)}★ ({displayRestaurant.yelp_review_count.toLocaleString()} Reviews)</span>
           )}
           {(displayRestaurant.table_res || displayRestaurant.opentable_id) && (
             <a
@@ -227,7 +227,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
                 className="see-menu-btn"
                 style={{ display: 'block', marginTop: '8px', marginLeft: 'auto', width: 'fit-content' }}
               >
-                See Menu
+                See Prix Fixe Menu
               </a>
             )}
           </div>
