@@ -52,14 +52,13 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(({
 }, ref) => {
   // Random welcome message selection
   const welcomeMessages = [
-    '<strong>I\'m Remi!</strong> In New York, the only real sin is eating somewhere forgettable. <br><br>Let me help you find a restaurant or the best deals during 2026 Restaurant Week:',
-    '<strong>I\'m Remi</strong>, here to help you navigate New York\'s culinary scene! <br><br> Let\;s help you find a restaurant or the best deals during 2026 Restaurant Week:',
+    '<span class="welcome-greeting">I\'m Remi!</span> <br>Let\'s help you find the best restaurants and 2026 Restaurant Week deals:',
   ]
 
   // Quick-start suggestions for new users
   const suggestions = [
     {
-      label: "By Neighborhood",
+      label: "By Area",
       prompt: ["Here's an example scenario: 'I'm in Soho, hunting for spots I can reach in under 15 mins by subway. What's on the menu, Remi?'",
         "Here's an example scenario: 'Any places within a 15 min subway of West Village?'",
         "Here's an example scenario: 'Show me hole in the wall restaurants by Roosevelt Island Tramway by E61 st within 20 minute walk.'"

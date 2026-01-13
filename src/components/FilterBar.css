@@ -1,7 +1,7 @@
 /* FilterBar Container Wrapper */
 .filter-bar-container {
   position: absolute;
-  top: 4.5%;
+  top: 3%;
   left: 37%;
   right: 10px; /* Add right constraint to prevent cut-off */
   z-index: 850;

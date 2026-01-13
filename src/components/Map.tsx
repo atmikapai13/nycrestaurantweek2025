@@ -602,7 +602,7 @@ export default function Map({
         const isFavorite = favorites.includes(restaurant.name)
         const isAwardWinner = hasAnyAward(restaurant)
 
-        let markerColor = '#7c7c7c'  // Default grey
+        let markerColor = '#8f8f8f'  // Default grey
         let markerSize = '8px'       // Uniform size for all markers (when zoomed out)
         let zIndex = 0
 

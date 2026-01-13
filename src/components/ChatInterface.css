@@ -1,7 +1,7 @@
 /* Chat Interface Container - Left Side */
 .chat-interface {
   position: absolute;
-  top: 4.5%;
+  top: 3%;
   left: 20px;
   bottom: 10px;
   z-index: 900;
@@ -187,6 +187,19 @@
 /* Message content wrapper */
 .message-content {
   flex: 1;
+}
+
+/* Welcome greeting - larger font for visual hierarchy */
+.welcome-greeting {
+  font-size: 18px;
+  font-weight: 700;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .welcome-greeting {
+    font-size: 16px;
+  }
 }
 
 /* Restaurant card message - avatar outside the card */

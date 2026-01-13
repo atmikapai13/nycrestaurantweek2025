@@ -1,10 +1,11 @@
 .floating-header {
   position: fixed;
-  top: 1%;
-  left: 2%;
+  top: 2%;
+  right: 1%;
   z-index: 1000;
   align-items: center;
   gap: 10px;
+  display: none;
 }
 
 .floating-header-title {
