@@ -650,7 +650,7 @@ let modelWithTools = null;
 function getModel() {
   if (!modelWithTools) {
     const model = new ChatGoogleGenerativeAI({
-      model: "gemini-2.5-pro", //gemini-2.0-flash-exp , gemini-2.5-pro      //"gemini-2.0-flash"
+      model: "gemini-2.0-flash-exp", //gemini-2.0-flash-exp , gemini-2.5-pro      //"gemini-2.0-flash"
       temperature: 0,
       apiKey: process.env.GOOGLE_API_KEY,
       toolConfig: {
