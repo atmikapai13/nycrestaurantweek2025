@@ -855,9 +855,6 @@ Example BAD response (too verbose):
   };
   console.log("🛠️ All tools available:", Object.keys(allTools).join(", "));
 
-  // Track if MCP was closed in onFinish (successful stream completion)
-  let mcpClosedInOnFinish = false;
-
   try {
     const result = streamText({
       model: google("gemini-2.5-flash"),
@@ -900,10 +897,16 @@ Example BAD response (too verbose):
         });
       },
       onFinish: async () => {
+        // Close MCP client only when stream fully completes
+        // NOTE: Do NOT use finally block - it runs immediately after return,
+        // not after the stream completes, which would close MCP prematurely
         if (mcpClient) {
-          await mcpClient.close();
-          mcpClosedInOnFinish = true;
-          console.log("✅ MCP client closed");
+          try {
+            await mcpClient.close();
+            console.log("✅ MCP client closed");
+          } catch (closeError) {
+            console.warn("⚠️ Error closing MCP client:", closeError);
+          }
         }
       },
     });
@@ -911,20 +914,19 @@ Example BAD response (too verbose):
     return result.toUIMessageStreamResponse();
   } catch (error) {
     console.error("❌ Fatal error in stream:", error);
-    return c.json(
-      { error: error instanceof Error ? error.message : String(error) },
-      500
-    );
-  } finally {
-    // Ensure MCP client is closed even if an error occurred before onFinish
-    if (mcpClient && !mcpClosedInOnFinish) {
+    // Close MCP client on error (before streaming started)
+    if (mcpClient) {
       try {
         await mcpClient.close();
-        console.log("✅ MCP client closed (in finally)");
+        console.log("✅ MCP client closed (on error)");
       } catch (closeError) {
         console.warn("⚠️ Error closing MCP client:", closeError);
       }
     }
+    return c.json(
+      { error: error instanceof Error ? error.message : String(error) },
+      500
+    );
   }
 };
 
