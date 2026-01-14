@@ -1,172 +1,151 @@
-import { useEffect, useRef, useState, useCallback } from 'react'
-import mapboxgl from 'mapbox-gl'
-import 'mapbox-gl/dist/mapbox-gl.css'
-import type { Restaurant } from '../types/restaurant'
-import ChatInterface, { type ChatInterfaceHandle } from './ChatInterface'
+import { useEffect, useRef, useMemo } from "react";
+import mapboxgl from "mapbox-gl";
+import "mapbox-gl/dist/mapbox-gl.css";
+import type { Restaurant } from "../types/restaurant";
+import ChatInterface, { type ChatInterfaceHandle } from "./ChatInterface";
+import { MapLegend } from "./MapLegend";
+import { point, booleanPointInPolygon } from "@turf/turf";
+import { useMap, hasAnyAward, type IsochroneLayer } from "../contexts/MapContext";
 
 // Set your Mapbox access token
-mapboxgl.accessToken = "pk.eyJ1IjoiYXRtaWthcGFpMTMiLCJhIjoiY21idHR4eTJpMDdhMjJsb20zNmZheTZ6ayJ9.d_bQSBzesyiCUMA-YHRoIA"
-
-// IsochroneLayer interface for multi-polygon visualization
-export interface IsochroneLayer {
-  id: string                          // 'person1', 'person2', 'intersection', 'union'
-  polygon: GeoJSON.Feature            // The actual geometry
-  label: string                       // 'Alice', 'Bob', 'Overlap', etc.
-  color: string                       // Fill color (hex)
-  strokeColor: string                 // Outline color (hex)
-  opacity: number                     // 0-1 for fill opacity
-  metadata?: {
-    location?: string                 // Original query location
-    travel_time?: number              // Minutes
-    mode?: string                     // 'walking', 'transit', etc.
-    isDashed?: boolean                // For dashed outline (exclusion visualization)
-  }
-}
-
-// Helper function to check if restaurant has any award
-const hasAnyAward = (restaurant: Restaurant): boolean => {
-  const hasMichelin = restaurant.michelin_award &&
-    ['ONE_STAR', 'TWO_STARS', 'THREE_STARS', 'BIB_GOURMAND'].includes(restaurant.michelin_award)
-  const hasNYT = Boolean(restaurant.nyttop100_rank && restaurant.nyttop100_rank !== '')
-  return hasMichelin || hasNYT
-}
+mapboxgl.accessToken =
+  "pk.eyJ1IjoiYXRtaWthcGFpMTMiLCJhIjoiY21idHR4eTJpMDdhMjJsb20zNmZheTZ6ayJ9.d_bQSBzesyiCUMA-YHRoIA";
 
 // Compare two GeoJSON polygons for equality
-const arePolygonsEqual = (poly1: any, poly2: any): boolean => {
-  if (!poly1 && !poly2) return true
-  if (!poly1 || !poly2) return false
+const arePolygonsEqual = (
+  poly1:
+    | GeoJSON.Feature<GeoJSON.Polygon | GeoJSON.MultiPolygon>
+    | GeoJSON.Polygon
+    | GeoJSON.MultiPolygon
+    | null
+    | undefined,
+  poly2:
+    | GeoJSON.Feature<GeoJSON.Polygon | GeoJSON.MultiPolygon>
+    | GeoJSON.Polygon
+    | GeoJSON.MultiPolygon
+    | null
+    | undefined
+): boolean => {
+  if (!poly1 && !poly2) return true;
+  if (!poly1 || !poly2) return false;
 
   // Compare stringified versions for deep equality
   // This handles both Polygon and MultiPolygon geometries
-  return JSON.stringify(poly1) === JSON.stringify(poly2)
-}
+  return JSON.stringify(poly1) === JSON.stringify(poly2);
+};
 
 interface MapProps {
-  restaurants: Restaurant[]
-  onRestaurantSelect: (restaurant: Restaurant) => void
-  favorites: string[]
-  onToggleFavorite?: (restaurantName: string) => void
-  onFilterChange: (filterType: string, values: string[]) => void
-  allRestaurants: Restaurant[]
-  selectedRestaurant?: Restaurant | null
-  onResetAll?: () => void
-  mapResetRef?: React.MutableRefObject<(() => void) | null>
-  highlightedIds?: Set<string>
-  onIsochroneRegion?: (slugs: string[] | null) => void
-  isochroneRegionSlugs?: string[] | null
-  favoritesActive?: boolean
-  onFavoritesToggle?: () => void
+  onRestaurantSelect: (restaurant: Restaurant) => void;
+  onToggleFavorite?: (restaurantName: string) => void;
+  onFilterChange: (filterType: string, values: string[]) => void;
+  onResetAll?: () => void;
+  mapResetRef?: React.MutableRefObject<(() => void) | null>;
 }
 
 export default function Map({
-  restaurants,
   onRestaurantSelect,
-  favorites,
   onToggleFavorite,
   onFilterChange,
-  allRestaurants,
-  selectedRestaurant,
   onResetAll,
   mapResetRef,
-  highlightedIds,
-  onIsochroneRegion,
-  isochroneRegionSlugs,
-  favoritesActive,
-  onFavoritesToggle
 }: MapProps) {
-  const mapContainer = useRef<HTMLDivElement>(null)
-  const map = useRef<mapboxgl.Map | null>(null)
-  const markers = useRef<mapboxgl.Marker[]>([])
-  const markerElements = useRef<HTMLDivElement[]>([])
-  const chatInterfaceRef = useRef<ChatInterfaceHandle>(null)
+  const mapContainer = useRef<HTMLDivElement>(null);
+  const map = useRef<mapboxgl.Map | null>(null);
+  const markers = useRef<mapboxgl.Marker[]>([]);
+  const markerElements = useRef<HTMLDivElement[]>([]);
+  const chatInterfaceRef = useRef<ChatInterfaceHandle>(null);
+
+  // Use MapContext for state and actions
+  const {
+    allRestaurants,
+    filteredRestaurants,
+    favorites,
+    favoritesActive,
+    setFavoritesActive,
+    awardsActive,
+    setAwardsActive,
+    highlightedActive,
+    setHighlightedActive,
+    highlightedRestaurantIds,
+    isochroneLayers,
+    layerVisibilityMap,
+    isochroneRegionSlugs,
+    selectedRestaurant,
+    setSelectedRestaurant,
+  } = useMap();
 
   // Refs for tracking previous isochrone states to prevent unnecessary re-renders
-  const previousPolygon = useRef<any>(null)
-  const previousLayers = useRef<IsochroneLayer[]>([])
-
-  // Backward compatible: keep single polygon state for existing isochrone queries
-  const [isochronePolygon, setIsochronePolygon] = useState<any>(null)
-
-  // Track whether to fitBounds when rendering isochrone (default: true for new isochrones, false for preserved)
-  const shouldFitBoundsRef = useRef<boolean>(true)
-
-  // New: multi-layer state for Phase 3 spatial operations
-  const [isochroneLayers, setIsochroneLayers] = useState<IsochroneLayer[]>([])
+  const previousLayers = useRef<IsochroneLayer[]>([]);
 
   // Track selected restaurant for purple marker indicator
-  const [selectedRestaurantSlug, setSelectedRestaurantSlug] = useState<string | null>(null)
-
-  // Wrapper function to update isochrone with fitBounds control
-  const handleIsochroneUpdate = useCallback((polygon: any, fitBounds?: boolean) => {
-    setIsochronePolygon(polygon)
-    // If fitBounds is explicitly set to false, don't fit bounds (preserved isochrone)
-    // If undefined or true, fit bounds (new isochrone)
-    shouldFitBoundsRef.current = fitBounds !== false
-  }, [])
+  // Now managed by MapContext.selectedRestaurant
 
   // Function to reset map state (isochrones and view)
   const resetMapView = () => {
-    // Clear isochrone polygons
-    setIsochronePolygon(null)
-    setIsochroneLayers([])
-
+    // Layer clearing is now handled by MapContext.clearAllLayers()
     // Clear selected restaurant
-    setSelectedRestaurantSlug(null)
+    setSelectedRestaurant(null);
 
     // Detect mobile viewport
-    const isMobile = window.innerWidth <= 768
+    const isMobile = window.innerWidth <= 768;
 
     // Use EXACT same values as initial map setup (lines 212-221)
-    const center = isMobile ? [-73.990, 40.705] : [-74.014, 40.737] //change
-    const zoom = isMobile ? 11.5 : 12.1  // Mobile: 11.5, Desktop: 12.58
-    const pitch = 45
-    const bearing = 0
+    const center = isMobile ? [-73.99, 40.705] : [-74.014, 40.737];
+    const zoom = isMobile ? 11.5 : 12.58; // Mobile: 11.5, Desktop: 12.58
+    const pitch = 45;
+    const bearing = 0;
 
     // Reset map to default view (mobile or desktop)
     if (map.current) {
       // Create a small bounding box around the center point
       // This allows us to use fitBounds with padding (same as isochrone operations)
-      const lng = center[0]
-      const lat = center[1]
-      const offset = 0.05 // Small offset to create bounds (~5km)
+      const lng = center[0];
+      const lat = center[1];
+      const offset = 0.05; // Small offset to create bounds (~5km)
 
       const bounds = new mapboxgl.LngLatBounds(
         [lng - offset, lat - offset], // Southwest
-        [lng + offset, lat + offset]  // Northeast
-      )
+        [lng + offset, lat + offset] // Northeast
+      );
 
       // Use fitBounds with padding to account for chat interface
       // This matches the padding used in isochrone operations (lines 367-372)
       // Force exact zoom level to match initial map setup
+      console.log("🗺️ Resetting map view:", {
+        center,
+        zoom,
+        bounds: bounds.toArray(),
+      });
       map.current.fitBounds(bounds, {
         padding: isMobile
-          ? { top: 80, bottom: 320, left: 20, right: 20 }  // Mobile: pad bottom for drawer (40vh ≈ 320px)
-          : { top: 100, bottom: 100, left: 700, right: 100 }, // Desktop: pad left for chat panel
+          ? { top: 80, bottom: 320, left: 20, right: 20 } // Mobile: pad bottom for drawer (40vh ≈ 320px)
+          : { top: 100, bottom: 100, left: 480, right: 100 }, // Desktop: pad left for chat panel
         pitch,
         bearing,
-        maxZoom: zoom,  // Force exact zoom level
-        minZoom: zoom,  // Force exact zoom level
-        duration: 1000
-      })
+        maxZoom: zoom, // Force exact zoom level
+        minZoom: zoom, // Force exact zoom level
+        duration: 1000,
+      });
     }
-  }
+  };
 
   // Set the reset function to the ref so App.tsx can call it
   useEffect(() => {
     if (mapResetRef) {
-      mapResetRef.current = resetMapView
+      mapResetRef.current = resetMapView;
     }
-  }, [mapResetRef])
+  }, [mapResetRef]);
 
   // Implement onMapFocus handler for semantic search results
   const handleMapFocus = (restaurantSlugs: string[]) => {
-
     // Filter allRestaurants to only include the semantic search results
-    const focusedRestaurants = allRestaurants.filter(r => restaurantSlugs.includes(r.slug))
+    const focusedRestaurants = allRestaurants.filter((r) =>
+      restaurantSlugs.includes(r.slug)
+    );
 
     if (focusedRestaurants.length === 0) {
-      console.warn('No restaurants found matching the provided slugs')
-      return
+      console.warn("No restaurants found matching the provided slugs");
+      return;
     }
 
     // DON'T set isochrone region here - that should only be set by actual isochrone queries
@@ -174,433 +153,421 @@ export default function Map({
 
     // Use onFilterChange to set a special "Semantic Search" filter
     // This will trigger App.tsx to update filteredRestaurants
-    onFilterChange('Semantic Search Results', focusedRestaurants.map(r => r.slug))
+    onFilterChange(
+      "Semantic Search Results",
+      focusedRestaurants.map((r) => r.slug)
+    );
 
-    // Calculate bounds to fit all focused restaurants
+    // Fit map to bounds with responsive padding
     if (map.current && focusedRestaurants.length > 0) {
-      const bounds = new mapboxgl.LngLatBounds()
+      const bounds = new mapboxgl.LngLatBounds();
 
-      focusedRestaurants.forEach(restaurant => {
+      focusedRestaurants.forEach((restaurant) => {
         if (restaurant.longitude && restaurant.latitude) {
-          bounds.extend([restaurant.longitude, restaurant.latitude])
+          bounds.extend([restaurant.longitude, restaurant.latitude]);
         }
-      })
+      });
 
-      // Fit map to bounds with responsive padding
-      const isMobileView = window.innerWidth <= 768
+      const isMobileView = window.innerWidth <= 768;
+
+      console.log("🗺️ Focusing map on restaurant bounds:", {
+        count: focusedRestaurants.length,
+        slugs: focusedRestaurants.map((r) => r.slug),
+        bounds: bounds.toArray(),
+      });
+
       map.current.fitBounds(bounds, {
         padding: isMobileView
-          ? { top: 80, bottom: 320, left: 20, right: 20 }  // Mobile: pad bottom for drawer (40vh ≈ 320px)
-          : { top: 100, bottom: 100, left: 200, right: 100 }, // Desktop: pad left for chat panel
-        maxZoom: 14
-      })
+          ? { top: 80, bottom: 320, left: 20, right: 20 } // Mobile: pad bottom for drawer
+          : { top: 100, bottom: 100, left: 480, right: 100 }, // Desktop: pad left for chat panel
+        maxZoom: 16, // High zoom limit for neighborhood focus
+        duration: 1200,
+      });
     }
-  }
+  };
 
   // Function to determine if device is mobile
   const isMobile = () => {
-    return window.innerWidth <= 768 || 'ontouchstart' in window
-  }
+    return window.innerWidth <= 768 || "ontouchstart" in window;
+  };
 
   // Function to calculate marker size based on zoom level and device
-  const getMarkerSize = (baseSize: number, zoom: number, isMobileDevice: boolean) => {
-    let size = baseSize
+  const getMarkerSize = (
+    baseSize: number,
+    zoom: number,
+    isMobileDevice: boolean
+  ) => {
+    let size = baseSize;
 
     // Increase size in mobile when zoomed in
-    if (isMobileDevice && zoom >= 13) {
-      size *= 1.8
+    if (isMobileDevice && zoom >= 12.5) {
+      size *= 1.6;
     } else if (zoom >= 12.0) {
-      size *= 1.4
+      size *= 1.4;
     }
     // Increase size in desktop when zoomed in
-    if (!isMobileDevice && zoom >= 13.5) {
-      size *= 1.2
+    if (!isMobileDevice && zoom >= 14.0) {
+      size *= 1.3;
     } else if (zoom >= 12.0) {
-      size *= 0.8
+      size *= 0.9;
     }
 
-    return Math.round(size)
-  }
+    return Math.round(size);
+  };
 
   // Function to update all marker sizes
   const updateMarkerSizes = () => {
-    if (!map.current) return
+    if (!map.current) return;
 
-    const zoom = map.current.getZoom()
-    const mobile = isMobile()
+    const zoom = map.current.getZoom();
+    const mobile = isMobile();
 
     markerElements.current.forEach((markerEl) => {
       if (markerEl && markerEl.style) {
         // Get the base size from the marker's data attribute
-        const baseSize = parseInt(markerEl.getAttribute('data-base-size') || '6')
-        const newSize = getMarkerSize(baseSize, zoom, mobile)
+        const baseSize = parseInt(
+          markerEl.getAttribute("data-base-size") || "6"
+        );
+        const newSize = getMarkerSize(baseSize, zoom, mobile);
 
         // Update the inner marker size (the visual marker)
-        markerEl.style.width = `${newSize}px`
-        markerEl.style.height = `${newSize}px`
+        markerEl.style.width = `${newSize}px`;
+        markerEl.style.height = `${newSize}px`;
 
         // Update the wrapper padding (the click area)
-        const wrapper = markerEl.parentElement
+        const wrapper = markerEl.parentElement;
         if (wrapper) {
-          const padding = mobile ? '8px' : '6px'
-          wrapper.style.padding = padding
+          const padding = mobile ? "8px" : "6px";
+          wrapper.style.padding = padding;
         }
       }
-    })
-  }
+    });
+  };
 
   useEffect(() => {
-    if (!mapContainer.current) return
+    if (!mapContainer.current) return;
 
     // Detect mobile viewport
-    const isMobile = window.innerWidth <= 768
+    const isMobile = window.innerWidth <= 768;
 
     // Mobile-specific viewport: shifted south to account for 40% drawer at bottom
-    const mobileCenter: [number, number] = [-73.990, 40.705] // Shifted south to show lower Manhattan
-    const mobileZoom = 11.5
-    const mobilePitch = 45
-    const mobileBearing = 0
+    const mobileCenter: [number, number] = [-73.99, 40.705]; // Shifted south to show lower Manhattan
+    const mobileZoom = 11.5;
+    const mobilePitch = 45;
+    const mobileBearing = 0;
 
     // Desktop viewport
-    const desktopCenter: [number, number] = [-74.025, 40.755]
-    const desktopZoom = 11.8
-    const desktopPitch = 45
-    const desktopBearing = 0
+    const desktopCenter: [number, number] = [-74.014, 40.737];
+    const desktopZoom = 12.58;
+    const desktopPitch = 45;
+    const desktopBearing = 0;
 
     // Initialize map
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
-      style: 'mapbox://styles/atmikapai13/cmhdmnool00ai01qw6qz79zqu', // Custom style
+      style: "mapbox://styles/atmikapai13/cmhdmnool00ai01qw6qz79zqu", // Custom style
       center: isMobile ? mobileCenter : desktopCenter,
       zoom: isMobile ? mobileZoom : desktopZoom,
       pitch: isMobile ? mobilePitch : desktopPitch,
       bearing: isMobile ? mobileBearing : desktopBearing,
-      customAttribution: '© <a href="https://atmikapai.dev/" target="_blank">Atmika Pai</a> © <a href="https://marauders.earth/" target="_blank">Marauders.Earth</a> © <a href="https://www.fultonring.com/" target="_blank">Fulton Ring</a>'
-    })
+      minZoom: 10, // Prevent zooming out to the whole world
+      customAttribution:
+        '© <a href="https://atmikapai.dev/" target="_blank">Atmika Pai</a> © <a href="https://marauders.earth/" target="_blank">Marauders.Earth</a> © <a href="https://www.fultonring.com/" target="_blank">Fulton Ring</a>',
+    });
 
     // Add zoom event listener to update marker sizes
-    map.current.on('zoom', () => {
-      updateMarkerSizes()
-    })
+    map.current.on("zoom", () => {
+      updateMarkerSizes();
+    });
 
     // Add resize event listener for mobile detection
-    window.addEventListener('resize', updateMarkerSizes)
+    window.addEventListener("resize", updateMarkerSizes);
 
     return () => {
       if (map.current) {
-        map.current.remove()
+        map.current.remove();
       }
-      window.removeEventListener('resize', updateMarkerSizes)
-    }
-  }, [])
+      window.removeEventListener("resize", updateMarkerSizes);
+    };
+  }, []);
 
-  // Handle isochrone polygon visualization
+  // Handle multi-layer isochrone visualization (from MapContext)
   useEffect(() => {
-    if (!map.current) return
+    if (!map.current) return;
 
-    // Skip re-render if polygon hasn't changed (only log if there's actually a polygon)
-    if (arePolygonsEqual(isochronePolygon, previousPolygon.current)) {
-      if (isochronePolygon) {
-        console.log('🔄 Skipping isochrone re-render - polygon unchanged')
-      }
-      return
-    }
-
-    // Update ref for next comparison
-    previousPolygon.current = isochronePolygon
-
-    const sourceId = 'isochrone-polygon'
-    const fillLayerId = 'isochrone-fill'
-    const outlineLayerId = 'isochrone-outline'
-
-    // Wait for map to load before adding layers
-    const updatePolygon = () => {
-      const mapInstance = map.current!
-
-      // Remove existing single polygon layers and source if they exist
-      if (mapInstance.getLayer(fillLayerId)) {
-        mapInstance.removeLayer(fillLayerId)
-      }
-      if (mapInstance.getLayer(outlineLayerId)) {
-        mapInstance.removeLayer(outlineLayerId)
-      }
-      if (mapInstance.getSource(sourceId)) {
-        mapInstance.removeSource(sourceId)
-      }
-
-      // CRITICAL: Also clear multi-layer isochrones when showing single isochrone
-      // This ensures multi-layers are removed regardless of useEffect execution order
-      const existingLayers = mapInstance.getStyle().layers.filter((l: any) =>
-        l.id.startsWith('isochrone-') && (l.id.includes('-person') || l.id.includes('-exclusion') || l.id.includes('-intersection') || l.id.includes('-union'))
-      )
-      existingLayers.forEach((layer: any) => {
-        if (mapInstance.getLayer(layer.id)) {
-          mapInstance.removeLayer(layer.id)
-        }
-      })
-
-      const existingSources = Object.keys(mapInstance.getStyle().sources || {}).filter((s: string) =>
-        s.startsWith('isochrone-') && (s.includes('-person') || s.includes('-exclusion') || s.includes('-intersection') || s.includes('-union'))
-      )
-      existingSources.forEach((source: string) => {
-        if (mapInstance.getSource(source)) {
-          mapInstance.removeSource(source)
-        }
-      })
-
-      // Add new polygon if provided
-      if (isochronePolygon) {
-        // Add GeoJSON source
-        mapInstance.addSource(sourceId, {
-          type: 'geojson',
-          data: isochronePolygon
-        })
-
-        // Add fill layer (pink with transparency)
-        mapInstance.addLayer({
-          id: fillLayerId,
-          type: 'fill',
-          source: sourceId,
-          paint: {
-            'fill-color': '#FF69B4', // Pink
-            'fill-opacity': 0.2
-          }
-        })
-
-        // Add outline layer
-        mapInstance.addLayer({
-          id: outlineLayerId,
-          type: 'line',
-          source: sourceId,
-          paint: {
-            'line-color': '#FF69B4', // Pink
-            'line-width': 2,
-            'line-opacity': 0.4
-          }
-        })
-
-        // Fit map to polygon bounds
-        const bounds = new mapboxgl.LngLatBounds()
-
-        try {
-          const geometry = isochronePolygon.geometry || isochronePolygon
-
-          if (geometry.type === 'Polygon' && geometry.coordinates && geometry.coordinates[0]) {
-            geometry.coordinates[0].forEach((coord: [number, number]) => {
-              bounds.extend(coord)
-            })
-          } else if (geometry.type === 'MultiPolygon' && geometry.coordinates) {
-            // Handle MultiPolygon (Geoapify sometimes returns this)
-            geometry.coordinates.forEach((polygon: any) => {
-              if (polygon[0]) {
-                polygon[0].forEach((coord: [number, number]) => {
-                  bounds.extend(coord)
-                })
-              }
-            })
-          } else {
-            console.warn('Unknown polygon geometry type:', geometry.type)
-          }
-
-          // Only fitBounds if we actually added coordinates AND shouldFitBounds is true
-          if (!bounds.isEmpty() && shouldFitBoundsRef.current) {
-            console.log('📍 Fitting bounds to isochrone polygon')
-            const isMobileView = window.innerWidth <= 768
-            mapInstance.fitBounds(bounds, {
-              padding: isMobileView
-                ? { top: 80, bottom: 320, left: 20, right: 20 }  // Mobile: pad bottom for drawer (40vh ≈ 320px)
-                : { top: 100, bottom: 100, left: 700, right: 100 }, // Desktop: pad left for chat panel
-              maxZoom: 14
-            })
-          } else if (!bounds.isEmpty()) {
-            console.log('📍 Skipping fitBounds - preserving current view (isochrone preserved)')
-          }
-        } catch (error) {
-          console.error('Error fitting bounds to isochrone polygon:', error)
-        }
-      }
-    }
-
-    if (map.current.isStyleLoaded()) {
-      updatePolygon()
-    } else {
-      map.current.once('load', updatePolygon)
-    }
-  }, [isochronePolygon])
-
-  // Handle multi-layer isochrone visualization (Phase 3)
-  useEffect(() => {
-    if (!map.current) return
+    console.log(
+      `🗺️ Map received ${isochroneLayers.length} layers:`,
+      isochroneLayers.map((l) => ({ id: l.id, label: l.label }))
+    );
 
     // Compare layer arrays (check length and each layer's polygon)
-    const layersEqual = isochroneLayers.length === previousLayers.current.length &&
+    const layersEqual =
+      isochroneLayers.length === previousLayers.current.length &&
       isochroneLayers.every((layer, i) =>
         arePolygonsEqual(layer.polygon, previousLayers.current[i]?.polygon)
-      )
+      );
 
+    const mapInstance = map.current;
     if (layersEqual) {
-      // Only log if there are actually layers to skip (not empty arrays)
-      if (isochroneLayers.length > 0) {
-        console.log('🔄 Skipping multi-layer re-render - layers unchanged')
-      }
-      return
+      console.log("⏭️ Layers unchanged, only updating visibility");
+      // If visibility changed but layers didn't, update visibility for all existing layers
+      isochroneLayers.forEach((layer) => {
+        const fillLayerId = `isochrone-fill-${layer.id}`;
+        const outlineLayerId = `isochrone-outline-${layer.id}`;
+
+        // Check per-layer visibility (default to true if not set)
+        const isVisible = layerVisibilityMap.get(layer.id) !== false;
+
+        if (mapInstance.getLayer(fillLayerId)) {
+          mapInstance.setLayoutProperty(
+            fillLayerId,
+            "visibility",
+            isVisible ? "visible" : "none"
+          );
+        }
+        if (mapInstance.getLayer(outlineLayerId)) {
+          mapInstance.setLayoutProperty(
+            outlineLayerId,
+            "visibility",
+            isVisible ? "visible" : "none"
+          );
+        }
+      });
+      return;
     }
 
     // Update ref for next comparison
-    previousLayers.current = isochroneLayers
-
-    const mapInstance = map.current
+    previousLayers.current = isochroneLayers;
 
     // Wait for map to load before adding layers
     const updateLayers = () => {
-      // Remove ONLY multi-layer isochrone layers (not the single isochrone layers)
-      // Single isochrone uses: 'isochrone-fill' and 'isochrone-outline'
-      // Multi-layer uses: 'isochrone-fill-<id>' and 'isochrone-outline-<id>'
-      const existingLayers = mapInstance.getStyle().layers.filter((l: any) =>
-        l.id.startsWith('isochrone-') && (l.id.includes('-person') || l.id.includes('-exclusion') || l.id.includes('-intersection') || l.id.includes('-union'))
-      )
-      existingLayers.forEach((layer: any) => {
-        if (mapInstance.getLayer(layer.id)) {
-          mapInstance.removeLayer(layer.id)
-        }
-      })
+      // Remove ALL existing isochrone layers (both old and new format)
+      // This includes: messageId-person-X, messageId-intersection, messageId-single-isochrone
+      const existingLayers = mapInstance
+        .getStyle()
+        .layers.filter((l: mapboxgl.Layer) => l.id.startsWith("isochrone-"));
 
-      // Remove ONLY multi-layer isochrone sources (not the single isochrone source)
-      const existingSources = Object.keys(mapInstance.getStyle().sources || {}).filter((s: string) =>
-        s.startsWith('isochrone-') && (s.includes('-person') || s.includes('-exclusion') || s.includes('-intersection') || s.includes('-union'))
-      )
+      existingLayers.forEach((layer: mapboxgl.Layer) => {
+        if (mapInstance.getLayer(layer.id)) {
+          console.log(`🗑️ Removing old layer: ${layer.id}`);
+          mapInstance.removeLayer(layer.id);
+        }
+      });
+
+      // Remove ALL existing isochrone sources
+      const existingSources = Object.keys(
+        mapInstance.getStyle().sources || {}
+      ).filter((s: string) => s.startsWith("isochrone-"));
+
       existingSources.forEach((source: string) => {
         if (mapInstance.getSource(source)) {
-          mapInstance.removeSource(source)
+          console.log(`🗑️ Removing old source: ${source}`);
+          mapInstance.removeSource(source);
         }
-      })
+      });
 
       // If no layers to add (empty array), just return after cleanup
-      if (isochroneLayers.length === 0) return
+      if (isochroneLayers.length === 0) return;
 
       // Separate base layers (person1, person2, etc.) from result layers (intersection, union)
-      const baseLayers = isochroneLayers.filter(l => l.id.startsWith('person'))
-      const resultLayers = isochroneLayers.filter(l => !l.id.startsWith('person'))
+      // Layer IDs are now: messageId-person-1, messageId-person-2, messageId-intersection
+      const baseLayers = isochroneLayers.filter((l) =>
+        l.id.includes("-person-")
+      );
+      const resultLayers = isochroneLayers.filter(
+        (l) => !l.id.includes("-person-")
+      );
+
+      console.log(
+        `🎨 Rendering ${baseLayers.length} base layer(s) + ${resultLayers.length} result layer(s)`
+      );
 
       // Add layers in order: base layers first, then result layers (so result is on top)
-      const layersToAdd = [...baseLayers, ...resultLayers]
+      const layersToAdd = [...baseLayers, ...resultLayers];
 
       layersToAdd.forEach((layer) => {
-        const sourceId = `isochrone-${layer.id}`
-        const fillLayerId = `isochrone-fill-${layer.id}`
-        const outlineLayerId = `isochrone-outline-${layer.id}`
+        const sourceId = `isochrone-${layer.id}`;
+        const fillLayerId = `isochrone-fill-${layer.id}`;
+        const outlineLayerId = `isochrone-outline-${layer.id}`;
+
+        console.log(
+          `  ✏️ Adding layer: ${layer.id} (${layer.label}, color: ${layer.color})`
+        );
+
+        // Normalize polygon to GeoJSON Feature format for Mapbox
+        const polygonFeature: GeoJSON.Feature<
+          GeoJSON.Polygon | GeoJSON.MultiPolygon
+        > =
+          "type" in layer.polygon && layer.polygon.type === "Feature"
+            ? (layer.polygon as GeoJSON.Feature<
+                GeoJSON.Polygon | GeoJSON.MultiPolygon
+              >)
+            : {
+                type: "Feature",
+                geometry: layer.polygon as
+                  | GeoJSON.Polygon
+                  | GeoJSON.MultiPolygon,
+                properties: {},
+              };
 
         // Add GeoJSON source
         mapInstance.addSource(sourceId, {
-          type: 'geojson',
-          data: layer.polygon
-        })
+          type: "geojson",
+          data: polygonFeature,
+        });
 
         // Add fill layer with solid color
         if (layer.opacity > 0) {
           mapInstance.addLayer({
             id: fillLayerId,
-            type: 'fill',
+            type: "fill",
             source: sourceId,
+            layout: {
+              visibility:
+                layerVisibilityMap.get(layer.id) !== false ? "visible" : "none",
+            },
             paint: {
-              'fill-color': layer.color,
-              'fill-opacity': layer.opacity
-            }
-          })
+              "fill-color": layer.color,
+              "fill-opacity": layer.opacity,
+            },
+          });
         }
 
         // Add outline layer
         mapInstance.addLayer({
           id: outlineLayerId,
-          type: 'line',
+          type: "line",
           source: sourceId,
+          layout: {
+            visibility:
+              layerVisibilityMap.get(layer.id) !== false ? "visible" : "none",
+          },
           paint: {
-            'line-color': layer.strokeColor,
-            'line-width': 2,
-            'line-opacity': 0.4
-          }
-        })
-      })
+            "line-color": layer.strokeColor,
+            "line-width": 2,
+            "line-opacity": 0.4,
+          },
+        });
+      });
 
+      // ... (existing fitBounds logic) ...
       // Fit map bounds to ALL polygons
       if (isochroneLayers.length > 0) {
-        const bounds = new mapboxgl.LngLatBounds()
+        console.log(
+          `🗺️ Fitting map to ${isochroneLayers.length} layer(s):`,
+          isochroneLayers.map((l) => l.id)
+        );
+        const bounds = new mapboxgl.LngLatBounds();
 
         isochroneLayers.forEach((layer) => {
           try {
-            const geometry = layer.polygon.geometry || layer.polygon
+            // Extract the actual geometry from Feature or use polygon directly
+            const geometry =
+              "type" in layer.polygon && layer.polygon.type === "Feature"
+                ? (
+                    layer.polygon as GeoJSON.Feature<
+                      GeoJSON.Polygon | GeoJSON.MultiPolygon
+                    >
+                  ).geometry
+                : (layer.polygon as GeoJSON.Polygon | GeoJSON.MultiPolygon);
 
-            if (geometry.type === 'Polygon' && geometry.coordinates && geometry.coordinates[0]) {
-              geometry.coordinates[0].forEach((coord: any) => {
-                bounds.extend(coord as [number, number])
-              })
-            } else if (geometry.type === 'MultiPolygon' && geometry.coordinates) {
-              geometry.coordinates.forEach((polygon: any) => {
+            if (
+              geometry.type === "Polygon" &&
+              geometry.coordinates &&
+              geometry.coordinates[0]
+            ) {
+              geometry.coordinates[0].forEach((coord: GeoJSON.Position) => {
+                bounds.extend(coord as [number, number]);
+              });
+            } else if (
+              geometry.type === "MultiPolygon" &&
+              geometry.coordinates
+            ) {
+              geometry.coordinates.forEach((polygon: GeoJSON.Position[][]) => {
                 if (polygon[0]) {
-                  polygon[0].forEach((coord: [number, number]) => {
-                    bounds.extend(coord)
-                  })
+                  polygon[0].forEach((coord: GeoJSON.Position) => {
+                    bounds.extend(coord as [number, number]);
+                  });
                 }
-              })
+              });
             }
           } catch (error) {
-            console.error('Error processing layer geometry:', layer.id, error)
+            console.error("Error processing layer geometry:", layer.id, error);
           }
-        })
+        });
 
         // Fit bounds with responsive padding
         if (!bounds.isEmpty()) {
-          const isMobileView = window.innerWidth <= 768
+          const isMobileView = window.innerWidth <= 768;
+
+          // For "between us" queries (3+ layers including intersection), zoom in closer
+          // For single/double isochrone, use conservative zoom
+          const maxZoomLevel = isochroneLayers.length >= 3 ? 15.5 : 16;
+
+          console.log(
+            `🔍 Zoom settings: maxZoom=${maxZoomLevel}, layers=${isochroneLayers.length}`
+          );
+
+          console.log("🗺️ Fitting map to isochrone layers:", {
+            layerCount: isochroneLayers.length,
+            layerIds: isochroneLayers.map((l) => l.id),
+            bounds: bounds.toArray(),
+            maxZoom: maxZoomLevel,
+          });
+
           mapInstance.fitBounds(bounds, {
             padding: isMobileView
-              ? { top: 80, bottom: 320, left: 20, right: 20 }  // Mobile: pad bottom for drawer (40vh ≈ 320px)
-              : { top: 100, bottom: 100, left: 700, right: 100 }, // Desktop: pad left for chat panel
-            maxZoom: 14
-          })
+              ? { top: 80, bottom: 320, left: 20, right: 20 } // Mobile: pad bottom for drawer (40vh ≈ 320px)
+              : { top: 100, bottom: 100, left: 480, right: 100 }, // Desktop: pad left for chat panel
+            maxZoom: maxZoomLevel,
+            duration: 1200, // Smooth 1.2s animation
+          });
         }
       }
-    }
+    };
 
     if (mapInstance.isStyleLoaded()) {
-      updateLayers()
+      updateLayers();
     } else {
-      mapInstance.once('load', updateLayers)
+      mapInstance.once("load", updateLayers);
     }
-  }, [isochroneLayers])
+  }, [isochroneLayers, layerVisibilityMap]);
 
   // Update markers when restaurants change
   useEffect(() => {
-    if (!map.current) return
+    if (!map.current) return;
 
     // Clear existing markers
-    markers.current.forEach(marker => marker.remove())
-    markers.current = []
-    markerElements.current = []
+    markers.current.forEach((marker) => marker.remove());
+    markers.current = [];
+    markerElements.current = [];
 
-    // Determine which restaurants to render based on active modes
-    let restaurantsToRender: Restaurant[];
+    // Check if any filter modes are active
+    const hasActiveFilters =
+      favoritesActive || awardsActive || highlightedActive;
+    const hasHighlighted = highlightedRestaurantIds && highlightedRestaurantIds.size > 0;
 
-    // Determine base pool: if isochrone is active, scope to isochrone restaurants first
-    const basePool = isochroneRegionSlugs
-      ? restaurants.filter(r => isochroneRegionSlugs.includes(r.slug))
-      : restaurants;
+    let restaurantsToRender = filteredRestaurants;
 
-    // Favorites mode: only show favorited restaurants
-    if (favoritesActive) {
-      restaurantsToRender = basePool.filter(r => favorites.includes(r.name));
-    } else {
-      // No filter modes: show base pool (all restaurants or isochrone restaurants)
-      restaurantsToRender = basePool;
+    if (hasActiveFilters) {
+      // Filter mode active: apply OR logic to the already filtered pool
+      restaurantsToRender = filteredRestaurants.filter((r) => {
+        if (highlightedActive && hasHighlighted && highlightedRestaurantIds.has(r.slug))
+          return true;
+        if (awardsActive && hasAnyAward(r)) return true;
+        if (favoritesActive && favorites.includes(r.name)) return true;
+        return false;
+      });
     }
 
     // Render restaurants with coordinates
-    restaurantsToRender.forEach(restaurant => {
+    restaurantsToRender.forEach((restaurant) => {
       if (restaurant.latitude && restaurant.longitude) {
-        // 5-TIER COLOR PRIORITY: Purple (selected) > Yellow/Orange (highlighted) > Pink (favorites) > Red (award winners) > Grey (default)
-        const isHighlighted = highlightedIds?.has(restaurant.slug)
-        const isSelected = selectedRestaurantSlug === restaurant.slug
-        const isFavorite = favorites.includes(restaurant.name)
-        const isAwardWinner = hasAnyAward(restaurant)
+        // 5-TIER COLOR LOGIC: Purple (selected), Red (favorites - always), Pink (highlighted), Orange (awards), Grey (rest)
+        const isHighlighted = highlightedRestaurantIds?.has(restaurant.slug);
+        const isSelected = selectedRestaurant?.slug === restaurant.slug;
+        const isFavorite = favorites.includes(restaurant.name);
+        const isAwardWinner = hasAnyAward(restaurant);
 
         let markerColor = '#8f8f8f'  // Default grey
         let markerSize = '8px'       // Uniform size for all markers (when zoomed out)
@@ -608,78 +575,124 @@ export default function Map({
 
         if (isSelected) {
           // Selected restaurant: purple marker
-          markerColor = '#8b4dfe'    // Purple
-          zIndex = 4                 // Highest priority
-        } else if (isHighlighted) {
-          // Highlighted restaurants (search/filter results): yellow/orange marker
-          markerColor = '#FF9100'    // Yellow/Orange
-          zIndex = 3                 // Second highest priority
+          markerColor = "#8b4dfe"; // Purple
+          zIndex = 3; // Highest layer (above all others)
         } else if (isFavorite) {
-          // Favorited restaurant: pink marker
-          markerColor = '#FF69B4'    // Pink
-          zIndex = 2                 // Third priority
+          // Favorited restaurant: red marker (ALWAYS, not just when favorites mode active)
+          markerColor = "#c81224"; // Red for favorites
+          zIndex = 2; // Same layer as pink
+        } else if (awardsActive && isAwardWinner) {
+          // Awards mode active: orange markers for award winners (takes priority over pink)
+          markerColor = "#FF9100"; // Orange for award winners
+          zIndex = 2; // Same layer as pink/red
+        } else if (isHighlighted) {
+          markerColor = "#FF69B4"; // Pink for matches
+          zIndex = 2; // Higher layer (in front of awards/grey)
         } else if (isAwardWinner) {
-          // Award winners (Michelin/NYT): red marker
-          markerColor = '#c81224'    // Red
-          zIndex = 1                 // Fourth priority
+          markerColor = "#FF9100"; // Orange for award winners (when not in awards mode)
+          zIndex = 1.5; // Between grey and highlighted
         }
 
         // Create marker wrapper for larger click area
-        const markerWrapper = document.createElement('div')
-        markerWrapper.style.padding = isMobile() ? '10px' : '8px'
-        markerWrapper.style.display = 'flex'
-        markerWrapper.style.alignItems = 'center'
-        markerWrapper.style.justifyContent = 'center'
-        markerWrapper.style.cursor = 'pointer'
+        const markerWrapper = document.createElement("div");
+        markerWrapper.style.padding = isMobile() ? "10px" : "8px";
+        markerWrapper.style.display = "flex";
+        markerWrapper.style.alignItems = "center";
+        markerWrapper.style.justifyContent = "center";
+        markerWrapper.style.cursor = "pointer";
 
         // Create the actual marker element
-        const markerEl = document.createElement('div')
-        markerEl.className = 'restaurant-marker'
-        markerEl.style.width = markerSize
-        markerEl.style.height = markerSize
-        markerEl.style.borderRadius = '50%'
-        markerEl.style.backgroundColor = markerColor
-        markerEl.style.border = '1px solid white'
-        markerEl.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)'
-        markerEl.style.zIndex = zIndex.toString()
+        const markerEl = document.createElement("div");
+        markerEl.className = "restaurant-marker";
+        markerEl.style.width = markerSize;
+        markerEl.style.height = markerSize;
+        markerEl.style.borderRadius = "50%";
+        markerEl.style.backgroundColor = markerColor;
+        markerEl.style.border = "1px solid white";
+        markerEl.style.boxShadow = "0 2px 4px rgba(0,0,0,0.2)";
+        markerEl.style.zIndex = zIndex.toString();
 
         // Add the marker to the wrapper
-        markerWrapper.appendChild(markerEl)
+        markerWrapper.appendChild(markerEl);
 
         // Store base size for dynamic resizing
-        const baseSize = parseInt(markerSize)
-        markerEl.setAttribute('data-base-size', baseSize.toString())
+        const baseSize = parseInt(markerSize);
+        markerEl.setAttribute("data-base-size", baseSize.toString());
 
         // Create marker using the wrapper
         const marker = new mapboxgl.Marker(markerWrapper)
           .setLngLat([restaurant.longitude, restaurant.latitude])
-          .addTo(map.current!)
+          .addTo(map.current!);
 
         // Add click handler to the wrapper - show restaurant card in chat
-        markerWrapper.addEventListener('click', () => {
+        markerWrapper.addEventListener("click", () => {
           // If clicking already-selected restaurant, deselect it
-          if (selectedRestaurantSlug === restaurant.slug) {
-            setSelectedRestaurantSlug(null)  // Clear selection
-            return
+          if (selectedRestaurant?.slug === restaurant.slug) {
+            setSelectedRestaurant(null); // Clear selection
+            return;
           }
 
           // Update selection state (triggers marker re-render)
-          setSelectedRestaurantSlug(restaurant.slug)
+          setSelectedRestaurant(restaurant);
+
+          // Call onRestaurantSelect to trigger zoom/focus effect
+          onRestaurantSelect(restaurant);
 
           // Add restaurant card to chat
           if (chatInterfaceRef.current) {
-            chatInterfaceRef.current.addRestaurantCard(restaurant)
+            chatInterfaceRef.current.addRestaurantCard(restaurant);
           }
-        })
+        });
 
-        markers.current.push(marker)
-        markerElements.current.push(markerEl)
+        markers.current.push(marker);
+        markerElements.current.push(markerEl);
       }
-    })
+    });
 
     // Update marker sizes after creating all markers
-    updateMarkerSizes()
-  }, [allRestaurants, highlightedIds, onRestaurantSelect, isochroneRegionSlugs, selectedRestaurantSlug, favoritesActive, favorites])
+    updateMarkerSizes();
+  }, [
+    filteredRestaurants,
+    highlightedRestaurantIds,
+    onRestaurantSelect,
+    selectedRestaurant,
+    favoritesActive,
+    awardsActive,
+    highlightedActive,
+    favorites,
+    setSelectedRestaurant,
+  ]);
+
+  // Zoom to selected restaurant when it changes
+  useEffect(() => {
+    if (!map.current || !selectedRestaurant) return;
+
+    const { latitude, longitude } = selectedRestaurant;
+
+    if (latitude && longitude) {
+      console.log("🎯 Flying to selected restaurant:", {
+        name: selectedRestaurant.name,
+        coords: [longitude, latitude],
+        zoom: 15.5,
+      });
+
+      // Detect if mobile for responsive padding
+      const isMobileView = window.innerWidth <= 768;
+
+      // Smooth fly to the restaurant location
+      map.current.flyTo({
+        center: [longitude, latitude],
+        zoom: 15.5, // Close zoom to see restaurant details
+        pitch: 45,
+        bearing: map.current.getBearing(), // Keep current bearing
+        duration: 1500, // Smooth 1.5s animation
+        essential: true, // This animation is essential with respect to prefers-reduced-motion
+        padding: isMobileView
+          ? { top: 80, bottom: 320, left: 20, right: 20 } // Mobile: pad bottom for drawer
+          : { top: 100, bottom: 100, left: 480, right: 100 }, // Desktop: pad left for chat panel
+      });
+    }
+  }, [selectedRestaurant]);
 
   return (
     <div className="map-wrapper">
@@ -687,23 +700,14 @@ export default function Map({
       {/* Chat Interface (overlays map region) */}
       <ChatInterface
         ref={chatInterfaceRef}
-        restaurants={restaurants}
-        allRestaurants={allRestaurants}
-        onFilterChange={onFilterChange}
         onRestaurantSelect={onRestaurantSelect}
         onMapFocus={handleMapFocus}
-        selectedRestaurant={selectedRestaurant}
-        onIsochroneUpdate={handleIsochroneUpdate}
-        onIsochroneLayersUpdate={setIsochroneLayers}
         onResetAll={onResetAll}
-        isochroneRegionSlugs={isochroneRegionSlugs}
-        onIsochroneRegion={onIsochroneRegion}
-        favorites={favorites}
         onToggleFavorite={onToggleFavorite}
-        favoritesActive={favoritesActive}
-        onFavoritesToggle={onFavoritesToggle}
       />
 
+      {/* Map Legend */}
+      <MapLegend />
     </div>
-  )
-} 
+  );
+}

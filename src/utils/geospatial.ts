@@ -5,6 +5,12 @@
 
 import * as turf from '@turf/turf'
 import type { Restaurant } from '../types/restaurant'
+import type { Feature, Polygon, MultiPolygon, Geometry } from 'geojson'
+
+/**
+ * Type representing a GeoJSON polygon (Feature or direct geometry)
+ */
+type GeoJSONPolygon = Feature<Polygon | MultiPolygon> | Polygon | MultiPolygon | Feature<Geometry>
 
 /**
  * Calculate the true geographic midpoint between two locations
@@ -205,10 +211,10 @@ export function isWalkingDistance(distanceMiles: number, maxMiles: number = 1.0)
  */
 export function filterRestaurantsByPolygon(
   restaurants: Restaurant[],
-  polygon: any // GeoJSON Feature or Polygon
+  polygon: GeoJSONPolygon
 ): Restaurant[] {
   // Handle both Feature and direct Polygon geometry
-  const polygonGeometry = polygon.type === 'Feature' ? polygon : turf.feature(polygon)
+  const polygonGeometry = polygon.type === 'Feature' ? polygon : turf.feature(polygon as Polygon | MultiPolygon)
 
   return restaurants.filter(r => {
     if (!r.latitude || !r.longitude) return false
@@ -223,15 +229,15 @@ export function filterRestaurantsByPolygon(
  * Used for "restaurants between us" queries with dual isochrones
  */
 export function intersectPolygons(
-  ...polygons: any[]
-): any | null {
+  ...polygons: GeoJSONPolygon[]
+): Feature<Geometry> | null {
   try {
     if (polygons.length === 0) return null
-    if (polygons.length === 1) return polygons[0]
+    if (polygons.length === 1) return polygons[0] as Feature<Geometry>
 
     // Convert all to features
     const features = polygons.map(p =>
-      p.type === 'Feature' ? p : turf.feature(p)
+      p.type === 'Feature' ? p : turf.feature(p as Polygon | MultiPolygon)
     )
 
     // Reduce all polygons into a single intersection
@@ -241,7 +247,7 @@ export function intersectPolygons(
       const featureCollection = turf.featureCollection([acc, feature])
       const result = turf.intersect(featureCollection)
       return result
-    })
+    }) as Feature<Geometry> | null
   } catch (error) {
     console.error('Error intersecting polygons:', error)
     return null
@@ -253,15 +259,15 @@ export function intersectPolygons(
  * Used for "restaurants near either of us" queries
  */
 export function unionPolygons(
-  ...polygons: any[]
-): any | null {
+  ...polygons: GeoJSONPolygon[]
+): Feature<Geometry> | null {
   try {
     if (polygons.length === 0) return null
-    if (polygons.length === 1) return polygons[0]
+    if (polygons.length === 1) return polygons[0] as Feature<Geometry>
 
     // Convert all to features
     const features = polygons.map(p =>
-      p.type === 'Feature' ? p : turf.feature(p)
+      p.type === 'Feature' ? p : turf.feature(p as Polygon | MultiPolygon)
     )
 
     // Reduce all polygons into a single union
@@ -270,7 +276,7 @@ export function unionPolygons(
       if (!acc) return feature
       const featureCollection = turf.featureCollection([acc, feature])
       return turf.union(featureCollection)
-    })
+    }) as Feature<Geometry> | null
   } catch (error) {
     console.error('Error unioning polygons:', error)
     return null
@@ -282,16 +288,16 @@ export function unionPolygons(
  * Used for "show places near X but not in Y" queries
  */
 export function excludePolygon(
-  basePolygon: any,
-  excludePolygon: any
-): any | null {
+  basePolygon: GeoJSONPolygon,
+  excludePolygon: GeoJSONPolygon
+): Feature<Geometry> | null {
   try {
-    const baseFeature = basePolygon.type === 'Feature' ? basePolygon : turf.feature(basePolygon)
-    const excludeFeature = excludePolygon.type === 'Feature' ? excludePolygon : turf.feature(excludePolygon)
+    const baseFeature = basePolygon.type === 'Feature' ? basePolygon : turf.feature(basePolygon as Polygon | MultiPolygon)
+    const excludeFeature = excludePolygon.type === 'Feature' ? excludePolygon : turf.feature(excludePolygon as Polygon | MultiPolygon)
 
     const featureCollection = turf.featureCollection([baseFeature, excludeFeature])
     const difference = turf.difference(featureCollection)
-    return difference
+    return difference as Feature<Geometry> | null
   } catch (error) {
     console.error('Error excluding polygon:', error)
     return null
