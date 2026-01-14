@@ -10,5 +10,5 @@ export const API_CONFIG = {
   // Chat endpoint URL (supports local dev override)
   CHAT_URL: import.meta.env.DEV
     ? "http://localhost:3001/chat"
-    : `${import.meta.env.VITE_API_URL || "/api"}2/chat`,
+    : `${import.meta.env.VITE_API_URL || "/api"}/chat`,
 };

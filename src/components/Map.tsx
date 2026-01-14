@@ -60,15 +60,15 @@ export default function Map({
     filteredRestaurants,
     favorites,
     favoritesActive,
-    setFavoritesActive,
+    
     awardsActive,
-    setAwardsActive,
+    
     highlightedActive,
-    setHighlightedActive,
+    
     highlightedRestaurantIds,
     isochroneLayers,
     layerVisibilityMap,
-    isochroneRegionSlugs,
+    
     selectedRestaurant,
     setSelectedRestaurant,
     restaurantWeekActive,

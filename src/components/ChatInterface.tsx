@@ -232,10 +232,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       "Enjoying NYC Eats? Buy my creator a coffee at buymeacoffee.com/atmikapai. Cheers.",
     ];
 
-    // Helper function to detect buy-me-coffee messages
-    const isBuyMeCoffeeMessage = (content: string): boolean => {
-      return content.toLowerCase().includes("buymeacoffee.com/atmikapai");
-    };
+    
 
     // Initialize with welcome message
     const [initialMessage] = useState(() => {
@@ -1229,7 +1226,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                     if (toolName === "execute_sql") {
                                       statusText = isPending
                                         ? "I'm scurrying through the database..."
-                                        : "I'm consulting Bourdain and Gusteau for good recs...";
+                                        : "I'm consulting Bourdain and Gusteau for recs...";
                                     } else if (
                                       toolName === "get_isochrone" ||
                                       toolName === "get_isoline"

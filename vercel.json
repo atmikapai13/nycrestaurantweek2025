@@ -11,43 +11,10 @@
         { "key": "Access-Control-Allow-Methods", "value": "GET,OPTIONS,PATCH,DELETE,POST,PUT" },
         { "key": "Access-Control-Allow-Headers", "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version" }
       ]
-    },
-    {
-      "source": "/api2/(.*)",
-      "headers": [
-        { "key": "Access-Control-Allow-Credentials", "value": "true" },
-        { "key": "Access-Control-Allow-Origin", "value": "*" },
-        { "key": "Access-Control-Allow-Methods", "value": "GET,OPTIONS,PATCH,DELETE,POST,PUT" },
-        { "key": "Access-Control-Allow-Headers", "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version" }
-      ]
     }
   ],
   "functions": {
-    "api/chat.js": {
-      "memory": 1024,
-      "maxDuration": 60
-    },
-    "api/geocode.js": {
-      "memory": 1024,
-      "maxDuration": 10
-    },
-    "api/isochrone.js": {
-      "memory": 1024,
-      "maxDuration": 10
-    },
-    "api/semantic-search.js": {
-      "memory": 1024,
-      "maxDuration": 10
-    },
-    "api/rag-search.js": {
-      "memory": 1024,
-      "maxDuration": 10
-    },
-    "api/reset.js": {
-      "memory": 1024,
-      "maxDuration": 10
-    },
-    "api2/chat.ts": {
+    "api/chat.ts": {
       "memory": 1024,
       "maxDuration": 60
     }
@@ -56,10 +23,6 @@
     {
       "source": "/api/(.*)",
       "destination": "/api/$1"
-    },
-    {
-      "source": "/api2/(.*)",
-      "destination": "/api2/$1"
     }
   ]
 }
