@@ -1,59 +1,46 @@
 .floating-header {
   position: fixed;
-  z-index: 500;
-  display: flex;
+  top: 2%;
+  right: 1%;
+  z-index: 1000;
   align-items: center;
-  pointer-events: none;
+  gap: 10px;
+  display: none;
 }
 
 .floating-header-title {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 14px;
+  font-size: 20px;
   font-weight: 400;
-  color: rgba(100, 100, 100, 0.8);
+  color: #404040;
   letter-spacing: 0.5px;
   margin: 0;
-  /* White outline like Google Maps */
-  text-shadow:
-    -1px -1px 0 white,
-    1px -1px 0 white,
-    -1px 1px 0 white,
-    1px 1px 0 white,
-    0 0 3px rgba(255, 255, 255, 0.8);
 }
 
 .floating-header-title .live {
-  color: rgba(100, 100, 100, 0.7);
+  color: rgba(242, 61, 151, 0.875);
 }
 
-/* Desktop - bottom-right of map */
-@media (min-width: 769px) {
-  .floating-header {
-    display: flex;
-    bottom: 20px;
-    right: 12px;
-  }
-
-  .floating-header-title {
-    font-size: 13px;
-  }
-}
-
-/* Mobile - just above the drawer panel */
+/* Mobile responsive */
 @media (max-width: 768px) {
   .floating-header {
-    left: 16px;
-    /* Position will be set dynamically based on drawer height */
-    bottom: calc(var(--drawer-height, 25vh) + 8px);
-    transition: bottom 0.3s ease;
+    display: flex; /* Show on mobile */
+    top: 0px;
+    left: 0px;
+    padding: 8px 14px;
+    gap: 8px;
+    align-items: flex-end;
   }
 
   .floating-header-title {
-    font-size: 12px;
-    color: rgba(80, 80, 80, 0.7);
+    font-size: 20px;
   }
 
-  .floating-header-title .live {
-    color: rgba(80, 80, 80, 0.7);
+  .floating-header-chatbot {
+    display: block;
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    filter: drop-shadow(0px 2px 6px rgba(0, 0, 0, 0.2));
   }
 }

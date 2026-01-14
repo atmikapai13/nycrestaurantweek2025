@@ -450,7 +450,7 @@
 @media (max-width: 768px) {
   .filter-bar-container {
     position: fixed;
-    top: 15px;
+    top: 35px;
     left: 10px;
     right: 10px;
     bottom: auto;
