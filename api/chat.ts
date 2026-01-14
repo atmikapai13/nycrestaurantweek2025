@@ -156,8 +156,11 @@ const google = createGoogleGenerativeAI({
  * Streaming chat endpoint using AI SDK + Google Gemini + MCP
  * Returns AI SDK stream format compatible with useChat hook
  */
-// Route is "/" because Vercel already routes /api/chat to this file
-app.post("/", async (c) => {
+// Handler for chat endpoint
+const chatHandler = async (c: any) => {
+  // Log the incoming path for debugging
+  console.log("📥 Request path:", c.req.path);
+  console.log("📥 Request URL:", c.req.url);
   // Validate request body with Zod
   const body = await c.req.json();
   const parseResult = safeParseChatRequest(body);
@@ -206,7 +209,6 @@ app.post("/", async (c) => {
   const analysisId = env.MCP_ANALYSIS_ID;
   let mcpTools: ToolSet = {};
   let datasetContext = "";
-  let mcpClient: Awaited<ReturnType<typeof createMCPClient>>;
   let sqlTables = "";
   let docCollections = "";
   let spatialReference = "";
@@ -214,45 +216,66 @@ app.post("/", async (c) => {
   // Initialize geometry cache for this request
   const geometryCache = new GeometryCache();
 
-  // 1. Connect and Fetch Tools/Resources (Let it fail if server is down)
-  const transport = new StreamableHTTPClientTransport(
-    new URL(env.MCP_SERVER_URL),
-    {
-      requestInit: {
-        headers: { Authorization: `Bearer ${env.MCP_API_KEY}` },
-      },
-    }
-  );
+  // 1. Connect and Fetch Tools/Resources with error handling
+  let mcpClient: Awaited<ReturnType<typeof createMCPClient>> | null = null;
+  let optimizedTools: ToolSet = {};
 
-  mcpClient = await createMCPClient({ transport });
-  console.log("✅ Connected to MCP");
+  // Validate MCP config before attempting connection
+  if (!env.MCP_SERVER_URL || !env.MCP_API_KEY) {
+    console.warn("⚠️ MCP not configured (missing MCP_SERVER_URL or MCP_API_KEY), continuing with local tools only");
+  } else {
+    try {
+      // Create abort controller for MCP connection timeout
+      const mcpController = new AbortController();
+      const mcpTimeoutId = setTimeout(() => mcpController.abort(), 10000); // 10s timeout
 
-  // Fetch Spatial Reference and Examples
-  try {
-    console.log("📂 Fetching spatial reference and examples...");
-    const [spatialFuncs, spatialExamples] = await Promise.all([
-      mcpClient.readResource({ uri: "spatial-functions://reference" }),
-      mcpClient.readResource({ uri: "spatial-query-examples://duckdb" }),
-    ]);
+      const transport = new StreamableHTTPClientTransport(
+        new URL(env.MCP_SERVER_URL),
+        {
+          requestInit: {
+            headers: { Authorization: `Bearer ${env.MCP_API_KEY}` },
+            signal: mcpController.signal,
+          },
+        }
+      );
 
-    if (spatialFuncs?.contents?.[0]?.text) {
-      spatialReference += `\n### DUCKDB SPATIAL FUNCTIONS REFERENCE:\n${spatialFuncs.contents[0].text}\n`;
+      mcpClient = await createMCPClient({ transport });
+      clearTimeout(mcpTimeoutId);
+      console.log("✅ Connected to MCP");
+
+      // Fetch Spatial Reference and Examples
+      try {
+        console.log("📂 Fetching spatial reference and examples...");
+        const [spatialFuncs, spatialExamples] = await Promise.all([
+          mcpClient.readResource({ uri: "spatial-functions://reference" }),
+          mcpClient.readResource({ uri: "spatial-query-examples://duckdb" }),
+        ]);
+
+        if (spatialFuncs?.contents?.[0]?.text) {
+          spatialReference += `\n### DUCKDB SPATIAL FUNCTIONS REFERENCE:\n${spatialFuncs.contents[0].text}\n`;
+        }
+        if (spatialExamples?.contents?.[0]?.text) {
+          spatialReference += `\n### SPATIAL QUERY EXAMPLES:\n${spatialExamples.contents[0].text}\n`;
+        }
+      } catch (err) {
+        console.error("⚠️ Failed to fetch spatial resources:", err);
+      }
+
+      mcpTools = await mcpClient.tools();
+      console.log("📦 MCP Tools:", Object.keys(mcpTools).join(", "));
+
+      // Wrap MCP tools with geometry optimization
+      optimizedTools = wrapToolsWithGeometryOptimization(
+        mcpTools,
+        geometryCache
+      );
+    } catch (mcpError) {
+      console.warn("⚠️ MCP connection failed, continuing with local tools only:", mcpError);
+      mcpClient = null;
+      mcpTools = {};
+      optimizedTools = {};
     }
-    if (spatialExamples?.contents?.[0]?.text) {
-      spatialReference += `\n### SPATIAL QUERY EXAMPLES:\n${spatialExamples.contents[0].text}\n`;
-    }
-  } catch (err) {
-    console.error("⚠️ Failed to fetch spatial resources:", err);
   }
-
-  mcpTools = await mcpClient.tools();
-  console.log("📦 MCP Tools:", Object.keys(mcpTools).join(", "));
-
-  // Wrap MCP tools with geometry optimization
-  const optimizedTools = wrapToolsWithGeometryOptimization(
-    mcpTools,
-    geometryCache
-  );
 
   // Create a custom tool for displaying restaurant cards
   const displayRestaurantsTool = {
@@ -832,6 +855,9 @@ Example BAD response (too verbose):
   };
   console.log("🛠️ All tools available:", Object.keys(allTools).join(", "));
 
+  // Track if MCP was closed in onFinish (successful stream completion)
+  let mcpClosedInOnFinish = false;
+
   try {
     const result = streamText({
       model: google("gemini-2.5-flash"),
@@ -840,7 +866,7 @@ Example BAD response (too verbose):
       tools: allTools,
       system: systemPrompt,
       stopWhen: stepCountIs(10),
-      abortSignal: AbortSignal.timeout(120_000),
+      abortSignal: AbortSignal.timeout(55_000), // Under Vercel's 60s limit
       onStepFinish: (step) => {
         console.log(
           `🎯 Step: ${step.finishReason}${
@@ -874,8 +900,11 @@ Example BAD response (too verbose):
         });
       },
       onFinish: async () => {
-        if (mcpClient) await mcpClient.close();
-        console.log("✅ MCP client closed");
+        if (mcpClient) {
+          await mcpClient.close();
+          mcpClosedInOnFinish = true;
+          console.log("✅ MCP client closed");
+        }
       },
     });
 
@@ -886,8 +915,24 @@ Example BAD response (too verbose):
       { error: error instanceof Error ? error.message : String(error) },
       500
     );
+  } finally {
+    // Ensure MCP client is closed even if an error occurred before onFinish
+    if (mcpClient && !mcpClosedInOnFinish) {
+      try {
+        await mcpClient.close();
+        console.log("✅ MCP client closed (in finally)");
+      } catch (closeError) {
+        console.warn("⚠️ Error closing MCP client:", closeError);
+      }
+    }
   }
-});
+};
+
+// Mount on "/chat" for local development (api/server.ts)
+app.post("/chat", chatHandler);
+// Catch-all for Vercel (file-based routing passes "/" or full path)
+app.post("/", chatHandler);
+app.post("/*", chatHandler);
 
 // Vercel configuration - use Node.js runtime for fs/path APIs
 export const config = {
