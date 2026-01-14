@@ -90,6 +90,13 @@ interface MapContextType {
   // Isochrone region slugs (restaurants inside visible polygons)
   isochroneRegionSlugs: string[] | null;
   setIsochroneRegionSlugs: (slugs: string[] | null) => void;
+
+  // Filter pool slugs (for passing to chat API)
+  filterPoolSlugs: string[];
+
+  // Drawer height state (for coordinating UI elements)
+  drawerHeight: number;
+  setDrawerHeight: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const MapContext = createContext<MapContextType | undefined>(undefined);
@@ -127,6 +134,9 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
   const [isochroneRegionSlugs, setIsochroneRegionSlugs] = useState<
     string[] | null
   >(null);
+
+  // Drawer height state (for coordinating UI elements)
+  const [drawerHeight, setDrawerHeight] = useState(40);
 
   // 1. Calculate which restaurants are inside ANY visible isochrone
   const visibleIsochroneSlugs = useMemo(() => {
@@ -340,6 +350,11 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
     highlightedRestaurantIds,
   ]);
 
+  // Compute filter pool slugs for chat API
+  const filterPoolSlugs = useMemo(() => {
+    return filteredRestaurants.map((r) => r.slug);
+  }, [filteredRestaurants]);
+
   const addLayers = useCallback(
     (newLayers: IsochroneLayer[], messageId: string) => {
       console.log(
@@ -463,6 +478,9 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
         setSelectedRestaurant,
         isochroneRegionSlugs,
         setIsochroneRegionSlugs,
+        filterPoolSlugs,
+        drawerHeight,
+        setDrawerHeight,
       }}
     >
       {children}

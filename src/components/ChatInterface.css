@@ -431,7 +431,7 @@
 .interlined-tool-status {
   margin: 4px 0;
   padding: 4px 8px;
-  background: rgba(255, 255, 255, 0.4);
+  
   border-radius: 8px;
   width: auto;
 }
@@ -488,7 +488,7 @@
   background: transparent;
   border-radius: 0;
   padding: 0;
-  margin: 16px 0 0 0;
+  margin: 8px 0 0 0;
   max-width: 100%;
   display: block;
 }
@@ -689,7 +689,7 @@
   }
 
   /* Drawer height states */
-  .drawer-10 {
+  .drawer-8 {
     height: 8vh;
   }
 
@@ -732,20 +732,12 @@
     min-height: 0;
   }
 
-  .drawer-10 .chat-messages {
-    display: none;
-  }
-
-  .drawer-10 .chat-input-container {
-    display: none;
-  }
-
-  /* Collapsed header - only visible on mobile when drawer is at height 10 */
+  /* Collapsed header - only visible on mobile when drawer is minimized at 8vh */
   .drawer-collapsed-header {
     display: none;
   }
 
-  .drawer-10 .drawer-collapsed-header {
+  .drawer-8 .drawer-collapsed-header {
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -755,8 +747,15 @@
     transition: opacity 0.2s;
   }
 
-  .drawer-10 .drawer-collapsed-header:hover {
+  .drawer-8 .drawer-collapsed-header:hover {
     opacity: 0.7;
+  }
+
+  /* Hide content when drawer is minimized at 8vh */
+  .drawer-8 .chat-messages,
+  .drawer-8 .chat-input-container,
+  .drawer-8 .intro-suggestions-wrapper {
+    display: none;
   }
 
   .drawer-collapsed-logo {

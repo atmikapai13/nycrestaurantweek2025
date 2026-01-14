@@ -60,27 +60,27 @@ export function getToolStatusMessage(
 ): string {
   const statusMessages: Record<string, { pending: string; done: string }> = {
     execute_sql: {
-      pending: "Remi is whisking through the database...",
-      done: "Remi found some fresh ingredients (data)!",
+      pending: "I'm scurrying through the database...",
+      done: "I've found some delectable spots!",
     },
     get_isochrone: {
-      pending: "Remi is measuring the city's heartbeat...",
-      done: "The area is mapped, chef!",
+      pending: "My friends in the subway have helped me map NYC pretty accurately...",
+      done: "The area is mapping, chef!",
     },
     get_isoline: {
-      pending: "Remi is measuring the city's heartbeat...",
-      done: "The area is mapped, chef!",
+      pending: "My friends in the subway have helped me map NYC pretty accurately...",
+      done: "The area is mapping, monsieur!",
     },
     geocode: {
-      pending: "Remi is locating the spot on the map...",
-      done: "Found the coordinates!",
+      pending: "I'm locating the spot on the map...",
+      done: "My friends in the subway helped me figure out the coordinates!",
     },
     search_documents: {
-      pending: "Remi is leafing through his recipe books (reviews)...",
-      done: "He's found some tasty rumors!",
+      pending: "I'm leafing through my recipe books...",
+      done: "I've found some tasty delights!",
     },
     displayRestaurants: {
-      pending: "Remi is plating your recommendations...",
+      pending: "I'm plating your recommendations...",
       done: "Bon appétit! Here are your options:",
     },
   };

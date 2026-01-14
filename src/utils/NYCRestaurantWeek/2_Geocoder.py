@@ -5,6 +5,7 @@ import threading
 from typing import List, Dict, Optional, Tuple
 import re
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from collections import defaultdict
 
 class RestaurantCoordinateExtractor:
     def __init__(self):
@@ -291,6 +292,58 @@ class RestaurantCoordinateExtractor:
         
         return results
     
+    def apply_coordinate_offsets(self, restaurants: List[Dict]) -> List[Dict]:
+        """
+        Apply small offsets to restaurants sharing the same coordinates.
+        This prevents markers from stacking on top of each other on the map.
+        Offset is ~10-15 meters in different directions (star pattern).
+        """
+        # Group restaurants by coordinates
+        coords = defaultdict(list)
+        for i, r in enumerate(restaurants):
+            lat = r.get('latitude')
+            lng = r.get('longitude')
+            if lat and lng:
+                key = (float(lat), float(lng))
+                coords[key].append(i)
+
+        # Offsets in a star pattern (~10-15 meters each direction)
+        # First restaurant stays at original, others spread out
+        offsets = [
+            (0, 0),               # 1st: original position
+            (0.00012, 0),         # 2nd: ~13m east
+            (-0.00012, 0),        # 3rd: ~13m west
+            (0, 0.00012),         # 4th: ~13m north
+            (0, -0.00012),        # 5th: ~13m south
+            (0.00009, 0.00009),   # 6th: ~14m northeast
+            (-0.00009, 0.00009),  # 7th: ~14m northwest
+            (0.00009, -0.00009),  # 8th: ~14m southeast
+            (-0.00009, -0.00009), # 9th: ~14m southwest
+        ]
+
+        adjusted_count = 0
+        for coord, indices in coords.items():
+            if len(indices) > 1:
+                print(f"📍 Adjusting {len(indices)} restaurants at {coord[0]:.6f}, {coord[1]:.6f}:")
+                for i, idx in enumerate(indices):
+                    offset_idx = i % len(offsets)
+                    lat_offset, lng_offset = offsets[offset_idx]
+
+                    old_lat = restaurants[idx]['latitude']
+                    old_lng = restaurants[idx]['longitude']
+
+                    restaurants[idx]['latitude'] = float(old_lat) + lat_offset
+                    restaurants[idx]['longitude'] = float(old_lng) + lng_offset
+
+                    if offset_idx > 0:
+                        adjusted_count += 1
+                        print(f"   ✓ {restaurants[idx]['name']}: offset ({lat_offset}, {lng_offset})")
+                    else:
+                        print(f"   - {restaurants[idx]['name']}: original position")
+
+        print(f"\n✅ Applied coordinate offsets to {adjusted_count} restaurants")
+        return restaurants
+
     def save_results(self, restaurants: List[Dict], filename: str = None):
         """Save results to JSON file"""
 
@@ -371,7 +424,10 @@ def main():
     
     # Extract coordinates
     restaurants_with_coords = extractor.extract_all_coordinates(restaurants)
-    
+
+    # Apply offsets to restaurants sharing the same coordinates
+    restaurants_with_coords = extractor.apply_coordinate_offsets(restaurants_with_coords)
+
     # Save results
     extractor.save_results(restaurants_with_coords)
     

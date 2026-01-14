@@ -179,6 +179,8 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       addLayers,
       isochroneRegionSlugs,
       clearAllLayers,
+      filterPoolSlugs,
+      restaurantWeekActive,
     } = useMap();
 
     // Random welcome message selection
@@ -215,11 +217,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       },
     ];
 
-    // Meta-learning suggestions shown after buy-me-coffee messages
-    const metaLearningSuggestions = [
-      "How do you work, Remi?",
-      "What was the genesis of this project?",
-    ];
 
     // Tips shown while loading
     const tips = [
@@ -268,11 +265,36 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       console.log("🔗 Using API endpoint:", API_ENDPOINT);
     }, []);
 
-    // Stable transport reference to prevent useChat from re-initializing
+    // Store filterPoolSlugs in a ref so transport can access current value
+    const filterPoolRef = useRef<string[]>([]);
+    useEffect(() => {
+      filterPoolRef.current = filterPoolSlugs;
+      console.log(`🎯 Filter pool updated: ${filterPoolSlugs.length} restaurants`);
+    }, [filterPoolSlugs]);
+
+    // Custom transport that injects filterPool into requests
     const transport = useMemo(
       () =>
         new DefaultChatTransport({
           api: API_ENDPOINT,
+          fetch: async (url, options) => {
+            // Parse the original body and inject filterPool
+            const originalBody = options?.body ? JSON.parse(options.body as string) : {};
+            const enhancedBody = {
+              ...originalBody,
+              context: {
+                ...originalBody.context,
+                filterPool: filterPoolRef.current,
+              },
+            };
+
+            console.log(`📤 Sending request with filterPool: ${filterPoolRef.current.length} slugs`);
+
+            return fetch(url, {
+              ...options,
+              body: JSON.stringify(enhancedBody),
+            });
+          },
         }),
       [API_ENDPOINT]
     );
@@ -347,12 +369,13 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
     const [currentTip, setCurrentTip] = useState("");
     const [customMessages, setCustomMessages] = useState<Message[]>([]); // For restaurant cards
+    const queuedCardsRef = useRef<Message[]>([]); // Queue cards while loading
 
     const lastMessageRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
-    // Mobile drawer state
-    const [drawerHeight, setDrawerHeight] = useState<8 | 40 | 80>(40);
+    // Mobile drawer state - use context for coordination with FilterBar
+    const { drawerHeight, setDrawerHeight } = useMap();
     const [isDragging, setIsDragging] = useState(false);
     const [dragStartY, setDragStartY] = useState(0);
     const [dragStartHeight, setDragStartHeight] = useState(40);
@@ -360,6 +383,11 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
     const [showResetConfirmation, setShowResetConfirmation] = useState(false);
     const drawerRef = useRef<HTMLDivElement>(null);
     const messagesContainerRef = useRef<HTMLDivElement>(null);
+
+    // Update CSS variable for drawer height (used by FloatingHeader)
+    useEffect(() => {
+      document.documentElement.style.setProperty('--drawer-height', `${drawerHeight}vh`);
+    }, [drawerHeight]);
 
     const isLoading = status === "submitted" || status === "streaming";
 
@@ -776,20 +804,35 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       } else {
         // Clear tip when loading finishes
         setCurrentTip("");
+
+        // Flush queued restaurant cards when loading completes
+        if (queuedCardsRef.current.length > 0) {
+          setCustomMessages((prev) => [...prev, ...queuedCardsRef.current]);
+          queuedCardsRef.current = [];
+        }
       }
     }, [isLoading]);
 
     // Expose addRestaurantCard method to parent via ref
     const addRestaurantCard = (restaurant: Restaurant) => {
-      setCustomMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content: "",
-          type: "restaurant_card",
-          restaurant,
-        },
-      ]);
+      // Expand drawer from 8vh to 40vh on mobile when marker is clicked
+      if (window.innerWidth <= 768 && drawerHeight === 8) {
+        setDrawerHeight(40);
+      }
+
+      const card: Message = {
+        role: "assistant",
+        content: "",
+        type: "restaurant_card",
+        restaurant,
+      };
+
+      // Queue cards while Remi is loading to prevent message splitting
+      if (isLoading) {
+        queuedCardsRef.current.push(card);
+      } else {
+        setCustomMessages((prev) => [...prev, card]);
+      }
 
       // Use double requestAnimationFrame to ensure layout is complete
       requestAnimationFrame(() => {
@@ -981,6 +1024,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
     };
 
     // Combine AI messages with custom messages (restaurant cards)
+    // Simple approach: AI messages first, then restaurant cards at the end
     const allMessages = useMemo(() => {
       // Convert AI SDK messages to our Message format
       const convertedAiMessages = aiMessages.map((msg) => {
@@ -1003,7 +1047,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
         };
       });
 
-      // Combine with custom messages (restaurant cards)
+      // Restaurant cards always appear at the end
       return [...convertedAiMessages, ...customMessages] as (Message & {
         id?: string;
         parts?: UIMessagePart<any, any>[];
@@ -1065,6 +1109,11 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                           if (onRestaurantSelect && msg.restaurant) {
                             onRestaurantSelect(msg.restaurant);
                           }
+                          // Collapse drawer to 40vh on mobile when clicking top section
+                          // (accordion clicks stopPropagation, so this only fires for non-accordion areas)
+                          if (window.innerWidth <= 768 && drawerHeight !== 40) {
+                            setDrawerHeight(40);
+                          }
                         }}
                         style={{ cursor: "pointer" }}
                       >
@@ -1101,6 +1150,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                   removeRestaurantCard(customMsgIndex);
                                 }
                               }}
+                              restaurantWeekActive={restaurantWeekActive}
                             />
                           </div>
                         </div>
@@ -1131,7 +1181,10 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                           >
                             {msg.parts && msg.parts.length > 0 ? (
                               <>
-                                {msg.parts.map((part, pIdx: number) => {
+                                {(() => {
+                                  // Track tool occurrences for varied messages
+                                  const toolCounts: Record<string, number> = {};
+                                  return msg.parts.map((part, pIdx: number) => {
                                   if (isTextPart(part)) {
                                     return (
                                       <div
@@ -1154,36 +1207,61 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                       ? part.toolName
                                       : (part as ToolInvocationPart).toolName;
 
+                                    // Track occurrence count for this tool
+                                    const toolKey = toolName === "get_isoline" ? "get_isochrone" : toolName;
+                                    toolCounts[toolKey] = (toolCounts[toolKey] || 0) + 1;
+                                    const occurrenceNum = toolCounts[toolKey];
+
+                                    // Varied messages for geocode
+                                    const geocodeDoneMessages = [
+                                      "My friends in the subway helped me figure out the coordinates!",
+                                      "Found the second spot too!",
+                                      "And there's the third location!",
+                                    ];
+
+                                    // Varied messages for isochrone
+                                    const isochroneDoneMessages = [
+                                      "We're about to map!",
+                                      "Mapping the second isochrone too!",
+                                      "All areas are about to map!",
+                                    ];
+
                                     if (toolName === "execute_sql") {
                                       statusText = isPending
-                                        ? "Remi is whisking through the database..."
-                                        : "Remi found some fresh ingredients (data)!";
+                                        ? "I'm scurrying through the database..."
+                                        : "I'm consulting Bourdain and Gusteau for good recs...";
                                     } else if (
                                       toolName === "get_isochrone" ||
                                       toolName === "get_isoline"
                                     ) {
                                       statusText = isPending
-                                        ? "Remi is measuring the city's heartbeat..."
-                                        : "The area is mapped, chef!";
+                                        ? "My friends in the subway have helped me map NYC pretty accurately..."
+                                        : isochroneDoneMessages[Math.min(occurrenceNum - 1, isochroneDoneMessages.length - 1)];
                                     } else if (toolName === "geocode") {
                                       statusText = isPending
-                                        ? "Remi is locating the spot on the map..."
-                                        : "Found the coordinates!";
+                                        ? "I'm locating the spot on the map..."
+                                        : geocodeDoneMessages[Math.min(occurrenceNum - 1, geocodeDoneMessages.length - 1)];
                                     } else if (
                                       toolName === "search_documents"
                                     ) {
                                       statusText = isPending
-                                        ? "Remi is leafing through his recipe books (reviews)..."
-                                        : "He's found some tasty rumors!";
+                                        ? "I'm leafing through my recipe books..."
+                                        : "I've found some delectable spots!";
                                     } else if (
                                       toolName === "displayRestaurants"
                                     ) {
                                       statusText = isPending
-                                        ? "Remi is plating your recommendations..."
+                                        ? "I'm plating your recommendations..."
                                         : "Bon appétit! Here are your options:";
+                                    } else if (
+                                      toolName === "lookup_restaurant"
+                                    ) {
+                                      statusText = isPending
+                                        ? "I'm looking up that restaurant..."
+                                        : "Found it! Here's what I know:";
                                     } else {
                                       statusText = isPending
-                                        ? `Remi is using his ${toolName} trick...`
+                                        ? `I'm using my ${toolName} trick...`
                                         : `The ${toolName} is served!`;
                                     }
 
@@ -1202,7 +1280,8 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                       </div>
                                     );
                                   } else if (
-                                    part.type === "tool-displayRestaurants"
+                                    part.type === "tool-displayRestaurants" ||
+                                    part.type === "tool-lookup_restaurant"
                                   ) {
                                     // Generative UI: Render restaurant cards
                                     switch (part.state) {
@@ -1212,7 +1291,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                             key={pIdx}
                                             className="tool-loading"
                                           >
-                                            🍽️ Searching for restaurants...
+                                            🍽️ {part.type === "tool-lookup_restaurant" ? "Looking up restaurant..." : "Searching for restaurants..."}
                                           </div>
                                         );
 
@@ -1238,6 +1317,11 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                                       onRestaurantSelect(
                                                         restaurant
                                                       );
+                                                    }
+                                                    // Collapse drawer to 40vh on mobile when clicking top section
+                                                    // (accordion clicks stopPropagation, so this only fires for non-accordion areas)
+                                                    if (window.innerWidth <= 768 && drawerHeight !== 40) {
+                                                      setDrawerHeight(40);
                                                     }
                                                   }}
                                                   style={{ cursor: "pointer" }}
@@ -1280,8 +1364,9 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                                   color: "#666",
                                                 }}
                                               >
-                                                No restaurants found for "
-                                                {part.output?.query}"
+                                                {part.type === "tool-lookup_restaurant"
+                                                  ? `I couldn't find a restaurant called "${part.output?.restaurant_name || 'that'}"`
+                                                  : `No restaurants found for "${part.output?.query}"`}
                                               </p>
                                             )}
                                           </div>
@@ -1303,7 +1388,8 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                     }
                                   }
                                   return null;
-                                })}
+                                });
+                                })()}
                               </>
                             ) : (
                               <div
@@ -1395,26 +1481,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                               </div>
                             )}
 
-                            {/* Meta-learning pills after buy-me-coffee messages */}
-                            {isBuyMeCoffeeMessage(msg.content) && (
-                              <div className="intro-suggestions-wrapper">
-                                <div className="suggestions-container suggestions-container-vertical">
-                                  {metaLearningSuggestions.map(
-                                    (suggestion, idx) => (
-                                      <button
-                                        key={idx}
-                                        className="suggestion-pill"
-                                        onClick={() =>
-                                          handleSuggestionClick(suggestion)
-                                        }
-                                      >
-                                        {suggestion}
-                                      </button>
-                                    )
-                                  )}
-                                </div>
-                              </div>
-                            )}
                           </div>
                         </div>
                       </div>

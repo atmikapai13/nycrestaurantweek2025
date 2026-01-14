@@ -42,25 +42,25 @@ This is a modern implementation of the chat API that replaces the original LangG
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│                     Frontend (React)                          │
-│  - Sends entire message history                               │
-│  - Waits for complete response (blocking)                     │
+│                     Frontend (React)                         │
+│  - Sends entire message history                              │
+│  - Waits for complete response (blocking)                    │
 └────────────────────────┬─────────────────────────────────────┘
                          │ POST /api/chat
                          │ (waits ~5-15 seconds)
                          ↓
 ┌──────────────────────────────────────────────────────────────┐
-│               api/chat.js (Vercel Function)                   │
+│               api/chat.js (Vercel Function)                  │
 │  ┌────────────────────────────────────────────────────────┐  │
-│  │         LangGraph Agent (state machine)                 │  │
-│  │  1. Load full conversation history                      │  │
-│  │  2. Call Gemini with 16 locally-defined tools           │  │
-│  │  3. Execute tools (16 functions in api/_lib/)           │  │
-│  │  4. Run state transitions (append-only state)           │  │
-│  │  5. Format response (custom format)                     │  │
-│  │  6. Return complete response after all steps            │  │
+│  │         LangGraph Agent (state machine)                │  │
+│  │  1. Load full conversation history                     │  │
+│  │  2. Call Gemini with 16 locally-defined tools          │  │
+│  │  3. Execute tools (16 functions in api/_lib/)          │  │
+│  │  4. Run state transitions (append-only state)          │  │
+│  │  5. Format response (custom format)                    │  │
+│  │  6. Return complete response after all steps           │  │
 │  └────────────────────────────────────────────────────────┘  │
-│                                                                │
+│                                                               │
 │  Tool Definitions (16 local functions):                       │
 │  - filter_restaurants.js                                      │
 │  - semantic_search_restaurants.js                             │
@@ -68,7 +68,7 @@ This is a modern implementation of the chat API that replaces the original LangG
 │  - geocode.js                                                 │
 │  - get_restaurant_details.js                                  │
 │  - ... (11 more)                                              │
-│                                                                │
+│                                                               │
 │  External APIs called directly:                               │
 │  ├─ Pinecone (vector search)                                  │
 │  ├─ Geoapify (geocoding, isochrones)                          │
@@ -141,42 +141,42 @@ This is a modern implementation of the chat API that replaces the original LangG
                          ↓
 ┌──────────────────────────────────────────────────────────────┐
 │        MCP Server (marauders-query-mcp) - Python/FastAPI     │
-│                                                                │
-│  Available Tools (discovered dynamically):                    │
-│  ├─ execute_sql: DuckDB spatial queries                       │
-│  ├─ search_documents: Pinecone vector search                  │
-│  ├─ geocode: Geoapify geocoding                               │
-│  ├─ get_isoline: Geoapify isochrone generation                │
-│  └─ displayRestaurants: Show restaurant cards                 │
-│                                                                │
-│  Data Layer:                                                   │
-│  ├─ DuckDB: Spatial SQL queries on restaurant data            │
-│  ├─ Pinecone: Vector search for reviews/vibes                 │
-│  └─ S3: Dataset storage and versioning                        │
+│                                                              │
+│  Available Tools (discovered dynamically):                   │
+│  ├─ execute_sql: DuckDB spatial queries                      │
+│  ├─ search_documents: Pinecone vector search                 │
+│  ├─ geocode: Geoapify geocoding                              │
+│  ├─ get_isoline: Geoapify isochrone generation               │
+│  └─ displayRestaurants: Show restaurant cards                │
+│                                                              │
+│  Data Layer:                                                 │
+│  ├─ DuckDB: Spatial SQL queries on restaurant data           │
+│  ├─ Pinecone: Vector search for reviews/vibes                │
+│  └─ S3: Dataset storage and versioning                       │
 └──────────────────────────────────────────────────────────────┘
                          │
                          ↓
 ┌──────────────────────────────────────────────────────────────┐
-│              Geometry Optimizer (Middleware)                  │
-│                                                                │
-│  1. Simplifies polygons (50KB → 500 bytes)                    │
-│  2. Caches with IDs (GEO_REF_ABC123)                          │
-│  3. Substitutes IDs in SQL queries                            │
-│  4. Reduces token usage by 99%                                │
+│              Geometry Optimizer (Middleware)                 │
+│                                                              │
+│  1. Simplifies polygons (50KB → 500 bytes)                   │
+│  2. Caches with IDs (GEO_REF_ABC123)                         │
+│  3. Substitutes IDs in SQL queries                           │
+│  4. Reduces token usage by 99%                               │
 └────────────────────────┬─────────────────────────────────────┘
                          │
                          ↓
 ┌──────────────────────────────────────────────────────────────┐
-│            Streaming Response (Server-Sent Events)            │
-│                                                                │
-│  Token 1: "Let"                                               │
-│  Token 2: " me"                                               │
-│  Token 3: " find"                                             │
-│  Tool Call: geocode(...)                                      │
+│            Streaming Response (Server-Sent Events)           │
+│                                                              │
+│  Token 1: "Let"                                              │
+│  Token 2: " me"                                              │
+│  Token 3: " find"                                            │
+│  Tool Call: geocode(...)                                     │
 │  Tool Result: { lat: 40.73, lng: -73.99 }                    │
-│  Token 4: " restaurants"                                      │
-│  ...                                                          │
-│  ↓ Frontend receives and renders progressively                │
+│  Token 4: " restaurants"                                     │
+│  ...                                                         │
+│  ↓ Frontend receives and renders progressively               │
 └──────────────────────────────────────────────────────────────┘
 ```
 

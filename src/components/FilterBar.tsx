@@ -48,9 +48,17 @@ export default function FilterBar() {
     highReviewCountActive,
     setHighReviewCountActive,
     setHighlightedRestaurantIds,
+    drawerHeight,
   } = useMap();
 
   const [isExpanded, setIsExpanded] = useState(true);
+
+  // Collapse hamburger menu when drawer is at 80vh (if currently expanded)
+  useEffect(() => {
+    if (drawerHeight === 80 && isExpanded) {
+      setIsExpanded(false);
+    }
+  }, [drawerHeight]);
   const filterBarRef = useRef<HTMLDivElement>(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(false);
@@ -73,8 +81,20 @@ export default function FilterBar() {
     });
   };
 
-  const onRestaurantWeekToggle = () =>
-    setRestaurantWeekActive(!restaurantWeekActive);
+  const onRestaurantWeekToggle = () => {
+    const newState = !restaurantWeekActive;
+    setRestaurantWeekActive(newState);
+    // When deactivating Restaurant Week, also deactivate related filters
+    if (!newState) {
+      setHasMenuActive(false);
+      // Clear Meal Types filter
+      setActiveFilters((prevFilters) => {
+        const newFilters = { ...prevFilters };
+        delete newFilters["Meal Types"];
+        return newFilters;
+      });
+    }
+  };
   const onFavoritesToggle = () => setFavoritesActive(!favoritesActive);
   const onHasMenuToggle = () => setHasMenuActive(!hasMenuActive);
   const onRemisRecsToggle = () => setHighlightedActive(!highlightedActive);
@@ -273,94 +293,113 @@ export default function FilterBar() {
       }));
   }, [allRestaurants, isochroneRegionSlugs]);
 
-  const participationWeeksOptions = useMemo(() => {
-    const isochroneRestaurants = getIsochroneRestaurants(
-      allRestaurants,
-      isochroneRegionSlugs
-    );
-    const availableWeeks = new Set<string>();
-    const weekCounts = new Map<string, number>();
-
-    allRestaurants.forEach((r) => {
-      if (r.participation_weeks && Array.isArray(r.participation_weeks)) {
-        r.participation_weeks.forEach((week) => {
-          weekCounts.set(week, (weekCounts.get(week) || 0) + 1);
-        });
-      }
-    });
-
-    if (isochroneRestaurants) {
-      isochroneRestaurants.forEach((r) => {
-        if (r.participation_weeks && Array.isArray(r.participation_weeks)) {
-          r.participation_weeks.forEach((week) => availableWeeks.add(week));
-        }
-      });
-    }
-
-    if (weekCounts.size === 0) {
-      return [{ value: "", label: "No weeks available", disabled: true }];
-    }
-
-    const sortDateRanges = (a: string, b: string) => {
-      const parseStartDate = (dateRange: string): Date => {
-        const startDateStr = dateRange.split(" - ")[0].trim();
-        const year = 2025;
-        const dateWithYear = `${startDateStr} ${year}`;
-        return new Date(dateWithYear);
-      };
-
-      const dateA = parseStartDate(a);
-      const dateB = parseStartDate(b);
-      return dateA.getTime() - dateB.getTime();
-    };
-
-    return Array.from(weekCounts.keys())
-      .sort(sortDateRanges)
-      .map((week) => ({
-        value: week,
-        label: week,
-        disabled: isochroneRestaurants !== null && !availableWeeks.has(week),
-      }));
-  }, [allRestaurants, isochroneRegionSlugs]);
-
   return (
     <div className="filter-bar-container">
-      <button
-        className="filter-hamburger-button"
-        onClick={toggleExpanded}
-        aria-label="Toggle filters"
-      >
-        <span className="hamburger-line"></span>
-        <span className="hamburger-line"></span>
-        <span className="hamburger-line"></span>
-      </button>
-
-      {showLeftArrow && isExpanded && (
+      {/* First row - always visible, never collapses */}
+      <div className="filter-row filter-row-main">
         <button
-          className="filter-scroll-arrow filter-scroll-left"
-          onClick={() => scrollFilterBar("left")}
-          aria-label="Scroll left"
+          className={`filter-pill-base restaurant-week-button ${
+            restaurantWeekActive ? "active" : ""
+          }`}
+          onClick={onRestaurantWeekToggle}
         >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
+          2026 Restaurant Week
         </button>
-      )}
 
-      <div
-        ref={filterBarRef}
-        className={`filter-bar ${isExpanded ? "expanded" : "collapsed"}`}
-      >
-        <div className="filter-row filter-row-markers">
+        <FilterDropdown
+          label={
+            <span
+              style={{ display: "flex", alignItems: "center", gap: "4px" }}
+            >
+              <span
+                style={{
+                  display: "inline-block",
+                  width: "10px",
+                  height: "10px",
+                  borderRadius: "50%",
+                  backgroundColor: "#c81224",
+                  border: "1px solid white",
+                  boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
+                }}
+              ></span>
+              Awarded
+            </span>
+          }
+          icon=""
+          options={[
+            {
+              value: "michelin",
+              label: "Michelin",
+              icon: "/MichelinStar.svg.png",
+            },
+            { value: "bib", label: "Bib Gourmand", icon: "/bibgourmand.png" },
+            { value: "nyt", label: "NYT Top 100", icon: "/nytimes.png" },
+          ]}
+          selectedValues={activeFilters["Badges"] || []}
+          onChange={(values) => handleFilterChange("Badges", values)}
+        />
+
+        <button
+          className={`filter-pill-base favorites-button ${
+            favoritesActive ? "active" : ""
+          }`}
+          onClick={onFavoritesToggle}
+        >
+          <span
+            style={{
+              display: "inline-block",
+              width: "10px",
+              height: "10px",
+              borderRadius: "50%",
+              backgroundColor: "#FF69B4",
+              marginRight: "6px",
+              border: "1px solid white",
+              boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
+            }}
+          ></span>
+          Favorites
+        </button>
+
+        {highlightedRestaurantIds.size > 0 && (
+          <button
+            className={`filter-pill-base remis-recs-button ${
+              highlightedActive ? "active" : ""
+            }`}
+            onClick={onRemisRecsToggle}
+          >
+            <span
+              style={{
+                display: "inline-block",
+                width: "10px",
+                height: "10px",
+                borderRadius: "50%",
+                backgroundColor: "#FF9100",
+                marginRight: "6px",
+                border: "1px solid white",
+                boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
+              }}
+            ></span>
+            Remi's Recs
+          </button>
+        )}
+      </div>
+
+      {/* Second row - collapsible with hamburger */}
+      <div className={`filter-row-collapsible ${isExpanded ? "expanded" : "collapsed"}`}>
+        <button
+          className="filter-hamburger-button"
+          onClick={toggleExpanded}
+          aria-label="Toggle filters"
+        >
+          <span className="hamburger-line"></span>
+          <span className="hamburger-line"></span>
+          <span className="hamburger-line"></span>
+        </button>
+
+        <div
+          ref={filterBarRef}
+          className={`filter-row filter-row-markers ${isExpanded ? "" : "hidden"}`}
+        >
           <FilterDropdown
             label="$$$"
             icon=""
@@ -394,120 +433,26 @@ export default function FilterBar() {
             onChange={(values) => handleFilterChange("Cuisine", values)}
           />
 
-          <FilterDropdown
-            label={
-              <span
-                style={{ display: "flex", alignItems: "center", gap: "4px" }}
+          {restaurantWeekActive && (
+            <>
+              <button
+                className={`filter-pill-base has-menu-button ${
+                  hasMenuActive ? "active" : ""
+                }`}
+                onClick={onHasMenuToggle}
               >
-                <span
-                  style={{
-                    display: "inline-block",
-                    width: "10px",
-                    height: "10px",
-                    borderRadius: "50%",
-                    backgroundColor: "#c81224",
-                    border: "1px solid white",
-                    boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
-                  }}
-                ></span>
-                Awarded
-              </span>
-            }
-            icon=""
-            options={[
-              {
-                value: "michelin",
-                label: "Michelin",
-                icon: "/MichelinStar.svg.png",
-              },
-              { value: "bib", label: "Bib Gourmand", icon: "/bibgourmand.png" },
-              { value: "nyt", label: "NYT Top 100", icon: "/nytimes.png" },
-            ]}
-            selectedValues={activeFilters["Badges"] || []}
-            onChange={(values) => handleFilterChange("Badges", values)}
-          />
+                Has Prix Fixe Menu
+              </button>
 
-          <button
-            className={`filter-pill-base favorites-button ${
-              favoritesActive ? "active" : ""
-            }`}
-            onClick={onFavoritesToggle}
-          >
-            <span
-              style={{
-                display: "inline-block",
-                width: "10px",
-                height: "10px",
-                borderRadius: "50%",
-                backgroundColor: "#FF69B4",
-                marginRight: "6px",
-                border: "1px solid white",
-                boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
-              }}
-            ></span>
-            Favorites
-          </button>
-
-          {highlightedRestaurantIds.size > 0 && (
-            <button
-              className={`filter-pill-base remis-recs-button ${
-                highlightedActive ? "active" : ""
-              }`}
-              onClick={onRemisRecsToggle}
-            >
-              <span
-                style={{
-                  display: "inline-block",
-                  width: "10px",
-                  height: "10px",
-                  borderRadius: "50%",
-                  backgroundColor: "#FF9100",
-                  marginRight: "6px",
-                  border: "1px solid white",
-                  boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
-                }}
-              ></span>
-              Remi's Recs
-            </button>
+              <FilterDropdown
+                label="Prix Fixe Types"
+                icon=""
+                options={mealTypesOptions}
+                selectedValues={activeFilters["Meal Types"] || []}
+                onChange={(values) => handleFilterChange("Meal Types", values)}
+              />
+            </>
           )}
-        </div>
-
-        <div className="filter-row filter-row-main">
-          <button
-            className={`filter-pill-base restaurant-week-button ${
-              restaurantWeekActive ? "active" : ""
-            }`}
-            onClick={onRestaurantWeekToggle}
-          >
-            <span className="new-badge">NEW</span> Restaurant Week (RW)
-          </button>
-
-          <button
-            className={`filter-pill-base has-menu-button ${
-              hasMenuActive ? "active" : ""
-            }`}
-            onClick={onHasMenuToggle}
-          >
-            RW Menu
-          </button>
-
-          <FilterDropdown
-            label="RW Specials"
-            icon=""
-            options={mealTypesOptions}
-            selectedValues={activeFilters["Meal Types"] || []}
-            onChange={(values) => handleFilterChange("Meal Types", values)}
-          />
-
-          <FilterDropdown
-            label="Participating Weeks"
-            icon=""
-            options={participationWeeksOptions}
-            selectedValues={activeFilters["Participation Weeks"] || []}
-            onChange={(values) =>
-              handleFilterChange("Participation Weeks", values)
-            }
-          />
 
           {(Object.keys(activeFilters).length > 0 ||
             restaurantWeekActive ||
@@ -523,28 +468,28 @@ export default function FilterBar() {
             </button>
           )}
         </div>
-      </div>
 
-      {showRightArrow && isExpanded && (
-        <button
-          className="filter-scroll-arrow filter-scroll-right"
-          onClick={() => scrollFilterBar("right")}
-          aria-label="Scroll right"
-        >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+        {showRightArrow && isExpanded && (
+          <button
+            className="filter-scroll-arrow filter-scroll-right"
+            onClick={() => scrollFilterBar("right")}
+            aria-label="Scroll right"
           >
-            <polyline points="9 18 15 12 9 6" />
-          </svg>
-        </button>
-      )}
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+        )}
+      </div>
     </div>
   );
 }

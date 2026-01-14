@@ -10,13 +10,14 @@ interface RestaurantCardProps {
   onToggleFavorite?: () => void
   onRequestReviewHighlights?: (prompt: string, slug: string) => void
   onExpandDrawer?: () => void
+  restaurantWeekActive?: boolean
 }
 
-export default function RestaurantCard({ restaurant, placeholderRestaurant, onClose, isFavorited = false, onToggleFavorite, onExpandDrawer }: RestaurantCardProps) {
+export default function RestaurantCard({ restaurant, placeholderRestaurant, onClose, isFavorited = false, onToggleFavorite, onExpandDrawer, restaurantWeekActive = false }: RestaurantCardProps) {
   const displayRestaurant = restaurant || placeholderRestaurant
   const [isContactsOpen, setIsContactsOpen] = useState(false)
   const [isReviewsOpen, setIsReviewsOpen] = useState(false)
-  const [isRestaurantWeekOpen, setIsRestaurantWeekOpen] = useState(false)
+  const [isRestaurantWeekOpen, setIsRestaurantWeekOpen] = useState(restaurantWeekActive)
   const [isAboutOpen, setIsAboutOpen] = useState(false)
 
   // Refs for accordion content
@@ -46,7 +47,8 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
   }
 
   // Handle review accordion toggle - expand drawer on mobile
-  const handleReviewToggle = () => {
+  const handleReviewToggle = (e: React.MouseEvent) => {
+    e.stopPropagation() // Prevent parent click handler from collapsing drawer
     const newState = !isReviewsOpen
     setIsReviewsOpen(newState)
 
@@ -67,7 +69,8 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
   }
 
   // Handle Restaurant Week accordion toggle - expand drawer on mobile
-  const handleRestaurantWeekToggle = () => {
+  const handleRestaurantWeekToggle = (e: React.MouseEvent) => {
+    e.stopPropagation() // Prevent parent click handler from collapsing drawer
     const newState = !isRestaurantWeekOpen
     setIsRestaurantWeekOpen(newState)
 
@@ -88,7 +91,8 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
   }
 
   // Handle About accordion toggle - expand drawer on mobile
-  const handleAboutToggle = () => {
+  const handleAboutToggle = (e: React.MouseEvent) => {
+    e.stopPropagation() // Prevent parent click handler from collapsing drawer
     const newState = !isAboutOpen
     setIsAboutOpen(newState)
 
@@ -120,7 +124,14 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
           </button>
         )}
         {onClose && (
-          <button className="btn-close-card" onClick={onClose} aria-label="Close">
+          <button
+            className="btn-close-card"
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent click from bubbling to parent card
+              onClose();
+            }}
+            aria-label="Close"
+          >
             ✕
           </button>
         )}
@@ -159,9 +170,9 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
       </p>
 
       {/* Yelp Rating & Find a Table */}
-      {(displayRestaurant.yelp_rating && displayRestaurant.yelp_review_count) || (displayRestaurant.table_res || displayRestaurant.opentable_id) ? (
+      {(displayRestaurant.yelp_rating != null && displayRestaurant.yelp_rating > 0 && displayRestaurant.yelp_review_count != null && displayRestaurant.yelp_review_count > 0) || (displayRestaurant.table_res || displayRestaurant.opentable_id) ? (
         <div className="yelp-price-row">
-          {displayRestaurant.yelp_rating && displayRestaurant.yelp_review_count && (
+          {displayRestaurant.yelp_rating != null && displayRestaurant.yelp_rating > 0 && displayRestaurant.yelp_review_count != null && displayRestaurant.yelp_review_count > 0 && (
             <span className="card-body-text review-text yelp-info"><b>Yelp:</b> {displayRestaurant.yelp_rating.toFixed(1)}★ ({displayRestaurant.yelp_review_count.toLocaleString()} Reviews)</span>
           )}
           {(displayRestaurant.table_res || displayRestaurant.opentable_id) && (
@@ -209,14 +220,12 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
             </svg>
           </button>
 
-          <div ref={restaurantWeekContentRef} className={`restaurant-week-accordion-content ${isRestaurantWeekOpen ? 'open' : ''}`}>
+          <div ref={restaurantWeekContentRef} className={`restaurant-week-accordion-content ${isRestaurantWeekOpen ? 'open' : ''}`} onClick={(e) => e.stopPropagation()}>
             <div className="meal-types-row">
               <div className="card-body-text review-text">
-                NYC Tourism hosts Restaurant Week biannually. Participating spots curate their own lunch and/or dinner offerings. Saturdays are not included.
-                <br /><br />
+                
                 For Spring 2026 Restaurant Week, {displayRestaurant.name} is participating{displayRestaurant.participation_weeks2 && (
-                  <> from <b>{displayRestaurant.participation_weeks2}</b></>
-                )}. This restaurant is offering the following menus: <b>{displayRestaurant.meal_types.join(', ')}</b>
+                  <> from <b>{displayRestaurant.participation_weeks2}</b></>)}, offering the following menus: <b>{displayRestaurant.meal_types.join(', ')}</b>
               </div>
             </div>
             {displayRestaurant.menu_url && displayRestaurant.menu_url.trim() !== '' && (
@@ -259,7 +268,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
             </svg>
           </button>
 
-          <div ref={reviewsContentRef} className={`review-accordion-content ${isReviewsOpen ? 'open' : ''}`}>
+          <div ref={reviewsContentRef} className={`review-accordion-content ${isReviewsOpen ? 'open' : ''}`} onClick={(e) => e.stopPropagation()}>
             {displayRestaurant.yelp_review_highlights && (
               <div className="review-item">
                 <div className="review-header">
@@ -315,7 +324,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
             </svg>
           </button>
 
-          <div ref={aboutContentRef} className={`about-accordion-content ${isAboutOpen ? 'open' : ''}`}>
+          <div ref={aboutContentRef} className={`about-accordion-content ${isAboutOpen ? 'open' : ''}`} onClick={(e) => e.stopPropagation()}>
             {/* Award Tags */}
             <div className="about-award-tags" style={{ display: 'flex', gap: '6px', marginBottom: '4px', flexWrap: 'wrap' }}>
               {displayRestaurant.michelin_award && ['ONE_STAR', 'TWO_STARS', 'THREE_STARS'].includes(displayRestaurant.michelin_award) && (
@@ -345,9 +354,15 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
       <div className="contact-accordion">
         <button
           className="contact-accordion-header"
-          onClick={() => {
+          onClick={(e) => {
+            e.stopPropagation() // Prevent parent click handler from collapsing drawer
             const newState = !isContactsOpen
             setIsContactsOpen(newState)
+
+            // Expand drawer to 80vh when opening accordion on mobile
+            if (newState && onExpandDrawer) {
+              onExpandDrawer()
+            }
 
             // Scroll expanded content into view after animation
             if (newState && contactsContentRef.current) {
@@ -378,7 +393,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
           </svg>
         </button>
 
-        <div ref={contactsContentRef} className={`contact-accordion-content ${isContactsOpen ? 'open' : ''}`}>
+        <div ref={contactsContentRef} className={`contact-accordion-content ${isContactsOpen ? 'open' : ''}`} onClick={(e) => e.stopPropagation()}>
           <div className="restaurant-icons-row">
         {displayRestaurant.website && (
           <a href={displayRestaurant.website} target="_blank" rel="noopener noreferrer" className="icon-link" title="Website">

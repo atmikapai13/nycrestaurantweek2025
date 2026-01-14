@@ -62,18 +62,33 @@ def generate_geojson(data: List[Dict], output_path: str):
 def generate_unstructured_markdown(data: List[Dict], output_path: str):
     """Generate an unstructured Markdown file from the restaurant data"""
     lines = ["# NYC Restaurants Yelp Guide\n"]
-    
+
     for restaurant in data:
         lines.append(f"## {restaurant.get('name', 'Unknown')}\n")
-        
+
+        # Cuisine type (critical for search)
+        cuisine = restaurant.get('cuisine', '')
+        if cuisine:
+            lines.append(f"**Cuisine:** {cuisine}\n")
+
         summary = restaurant.get('summary', '')
         if summary:
             lines.append(f"**Description:** {summary}\n")
-            
+
+        # Additional summary info
+        summary2 = restaurant.get('summary2', '')
+        if summary2:
+            lines.append(f"**Additional Info:** {summary2}\n")
+
+        # Collections/Vibes (critical for vibe-based search)
+        collections = restaurant.get('collections', [])
+        if collections and len(collections) > 0:
+            lines.append(f"**Vibes/Collections:** {', '.join(collections)}\n")
+
         highlights = restaurant.get('yelp_review_highlights', '')
         if highlights:
             lines.append(f"{highlights}\n")
-            
+
         neighborhood = restaurant.get('neighborhood', '')
         if neighborhood:
             lines.append(f"**Neighborhood:** {neighborhood}\n")

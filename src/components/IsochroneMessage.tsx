@@ -89,7 +89,7 @@ export function IsochroneMessage({ messageId }: IsochroneMessageProps) {
             </svg>
           )}
           <span style={{ marginLeft: '4px' }}>
-            {areLayersVisible ? 'Hide Polygons' : 'Show Polygons'}
+            {areLayersVisible ? 'Hide Isochrone' : 'Show Isochrone'}
           </span>
         </button>
       </div>

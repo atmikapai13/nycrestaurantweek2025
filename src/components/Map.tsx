@@ -1,10 +1,9 @@
-import { useEffect, useRef, useMemo } from "react";
+import { useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import type { Restaurant } from "../types/restaurant";
 import ChatInterface, { type ChatInterfaceHandle } from "./ChatInterface";
 import { MapLegend } from "./MapLegend";
-import { point, booleanPointInPolygon } from "@turf/turf";
 import { useMap, hasAnyAward, type IsochroneLayer } from "../contexts/MapContext";
 
 // Set your Mapbox access token
@@ -72,6 +71,7 @@ export default function Map({
     isochroneRegionSlugs,
     selectedRestaurant,
     setSelectedRestaurant,
+    restaurantWeekActive,
   } = useMap();
 
   // Refs for tracking previous isochrone states to prevent unnecessary re-renders
@@ -124,7 +124,7 @@ export default function Map({
         bearing,
         maxZoom: zoom, // Force exact zoom level
         minZoom: zoom, // Force exact zoom level
-        duration: 1000,
+        duration: 1500,
       });
     }
   };
@@ -181,7 +181,7 @@ export default function Map({
           ? { top: 80, bottom: 320, left: 20, right: 20 } // Mobile: pad bottom for drawer
           : { top: 100, bottom: 100, left: 480, right: 100 }, // Desktop: pad left for chat panel
         maxZoom: 16, // High zoom limit for neighborhood focus
-        duration: 1200,
+        duration: 1500,
       });
     }
   };
@@ -520,7 +520,7 @@ export default function Map({
               ? { top: 80, bottom: 320, left: 20, right: 20 } // Mobile: pad bottom for drawer (40vh ≈ 320px)
               : { top: 100, bottom: 100, left: 480, right: 100 }, // Desktop: pad left for chat panel
             maxZoom: maxZoomLevel,
-            duration: 1200, // Smooth 1.2s animation
+            duration: 1500, // Smooth 1.2s animation
           });
         }
       }
@@ -563,34 +563,28 @@ export default function Map({
     // Render restaurants with coordinates
     restaurantsToRender.forEach((restaurant) => {
       if (restaurant.latitude && restaurant.longitude) {
-        // 5-TIER COLOR LOGIC: Purple (selected), Red (favorites - always), Pink (highlighted), Orange (awards), Grey (rest)
         const isHighlighted = highlightedRestaurantIds?.has(restaurant.slug);
         const isSelected = selectedRestaurant?.slug === restaurant.slug;
         const isFavorite = favorites.includes(restaurant.name);
         const isAwardWinner = hasAnyAward(restaurant);
 
-        let markerColor = '#8f8f8f'  // Default grey
+        let markerColor = '#928f8e'  // Default grey
         let markerSize = '8px'       // Uniform size for all markers (when zoomed out)
         let zIndex = 0
 
+        // COLOR PRIORITY: Black (selected) > Pink (favorites) > Red (awards) > Orange (highlighted) > Grey (default)
         if (isSelected) {
-          // Selected restaurant: purple marker
-          markerColor = "#8b4dfe"; // Purple
-          zIndex = 3; // Highest layer (above all others)
+          markerColor = "#000000"; // Black
+          zIndex = 4;
         } else if (isFavorite) {
-          // Favorited restaurant: red marker (ALWAYS, not just when favorites mode active)
-          markerColor = "#c81224"; // Red for favorites
-          zIndex = 2; // Same layer as pink
-        } else if (awardsActive && isAwardWinner) {
-          // Awards mode active: orange markers for award winners (takes priority over pink)
-          markerColor = "#FF9100"; // Orange for award winners
-          zIndex = 2; // Same layer as pink/red
-        } else if (isHighlighted) {
-          markerColor = "#FF69B4"; // Pink for matches
-          zIndex = 2; // Higher layer (in front of awards/grey)
+          markerColor = "#ff67b2"; // Pink
+          zIndex = 3;
         } else if (isAwardWinner) {
-          markerColor = "#FF9100"; // Orange for award winners (when not in awards mode)
-          zIndex = 1.5; // Between grey and highlighted
+          markerColor = "#c81224"; // Red
+          zIndex = 2;
+        } else if (isHighlighted) {
+          markerColor = "#FF9100"; // Orange
+          zIndex = 1;
         }
 
         // Create marker wrapper for larger click area
@@ -661,6 +655,7 @@ export default function Map({
     highlightedActive,
     favorites,
     setSelectedRestaurant,
+    restaurantWeekActive,
   ]);
 
   // Zoom to selected restaurant when it changes
@@ -682,10 +677,10 @@ export default function Map({
       // Smooth fly to the restaurant location
       map.current.flyTo({
         center: [longitude, latitude],
-        zoom: 15.5, // Close zoom to see restaurant details
-        pitch: 45,
+        zoom: 14.8, // Close zoom to see restaurant details
+        pitch: 0,
         bearing: map.current.getBearing(), // Keep current bearing
-        duration: 1500, // Smooth 1.5s animation
+        duration: 1800, // Smooth 1.8s animation
         essential: true, // This animation is essential with respect to prefers-reduced-motion
         padding: isMobileView
           ? { top: 80, bottom: 320, left: 20, right: 20 } // Mobile: pad bottom for drawer
