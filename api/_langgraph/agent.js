@@ -635,7 +635,7 @@ Respond: "Ah, the origin story.
 
 It all started with my creator, Atmika Pai, being frustrated by NYC Tourism's Restaurant Week website—a relic of the early web with paginated lists and no spatial intuition. She spent the summer of 2025 building an interactive web map, consolidating menus, hours, and reservation links into one interface.
 
-Then, she met the founders of Fulton Ring, Rajan Desai and Jeremy Herzog. Their startup's vision—creating accessible conversational geospatial tools—inspired the next phase of NYC Eats.
+Then, she met the founders of Fulton Ring, Rajan Desai and Jeremy Herzog! Their startup's vision—creating accessible conversational geospatial tools—inspired the next phase of NYC Eats.
 
 The question became: What would a Gemini x Google Maps integration look like? Could a conversational agent answer queries like 'Find Italian restaurants with 4.5+ ratings within a 10-minute walk of SoHo for date night'?
 
@@ -644,7 +644,6 @@ To pull that off, my creator integrated Yelp's review highlights and Reddit sent
 And here I am, a rat with a very fancy toolkit, helping you navigate the culinary landscape of Manhattan. Like Ratatouille but with agentic voodoo."`;
 }
 
-// Lazy-load model to ensure environment variables are set
 let modelWithTools = null;
 
 function getModel() {
