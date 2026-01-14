@@ -156,7 +156,8 @@ const google = createGoogleGenerativeAI({
  * Streaming chat endpoint using AI SDK + Google Gemini + MCP
  * Returns AI SDK stream format compatible with useChat hook
  */
-app.post("/chat", async (c) => {
+// Route is "/" because Vercel already routes /api/chat to this file
+app.post("/", async (c) => {
   // Validate request body with Zod
   const body = await c.req.json();
   const parseResult = safeParseChatRequest(body);
