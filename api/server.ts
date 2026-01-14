@@ -1,6 +1,6 @@
 import { serve } from "@hono/node-server";
-import chat from "./chat";
-import { env, getGoogleApiKey } from "./env";
+import chat from "./chat.js";
+import { env, getGoogleApiKey } from "./env.js";
 
 const port = env.API2_PORT;
 

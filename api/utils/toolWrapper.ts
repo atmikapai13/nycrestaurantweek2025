@@ -4,7 +4,7 @@
  */
 
 import type { ToolSet } from 'ai';
-import { GeometryCache, recursivelyOptimizeGeometries } from './geometryOptimizer';
+import { GeometryCache, recursivelyOptimizeGeometries } from './geometryOptimizer.js';
 
 /**
  * Wrap MCP tools with geometry optimization middleware

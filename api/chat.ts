@@ -15,13 +15,13 @@ import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import type { Restaurant } from "../src/types/restaurant";
-import { GeometryCache } from "./utils/geometryOptimizer";
+import type { Restaurant } from "../src/types/restaurant.js";
+import { GeometryCache } from "./utils/geometryOptimizer.js";
 import { point, booleanPointInPolygon } from "@turf/turf";
 import type { Feature, Polygon, MultiPolygon } from "geojson";
-import { wrapToolsWithGeometryOptimization } from "./utils/toolWrapper";
-import { env, getGoogleApiKey } from "./env";
-import { safeParseChatRequest } from "./schemas/chat";
+import { wrapToolsWithGeometryOptimization } from "./utils/toolWrapper.js";
+import { env, getGoogleApiKey } from "./env.js";
+import { safeParseChatRequest } from "./schemas/chat.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
