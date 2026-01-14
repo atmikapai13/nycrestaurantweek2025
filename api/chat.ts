@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
+import { handle } from "hono/vercel";
 import {
   streamText,
   stepCountIs,
@@ -887,4 +888,11 @@ Example BAD response (too verbose):
   }
 });
 
-export default app;
+// Vercel configuration - use Node.js runtime for fs/path APIs
+export const config = {
+  runtime: "nodejs",
+};
+
+// Export handlers for Vercel
+export const GET = handle(app);
+export const POST = handle(app);
