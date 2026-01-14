@@ -894,6 +894,9 @@ export const config = {
   runtime: "nodejs",
 };
 
-// Export handlers for Vercel
+// Default export for local development (api/server.ts uses this)
+export default app;
+
+// Named exports for Vercel serverless functions
 export const GET = handle(app);
 export const POST = handle(app);
