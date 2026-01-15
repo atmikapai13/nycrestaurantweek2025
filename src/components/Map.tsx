@@ -201,15 +201,15 @@ export default function Map({
 
     // Increase size in mobile when zoomed in
     if (isMobileDevice && zoom >= 12.5) {
-      size *= 1.6;
-    } else if (zoom >= 12.0) {
       size *= 1.4;
+    } else if (zoom >= 12.0) {
+      size *= 1.0;
     }
     // Increase size in desktop when zoomed in
-    if (!isMobileDevice && zoom >= 14.0) {
-      size *= 1.3;
+    if (!isMobileDevice && zoom >= 13.5) {
+      size *= 1.5;
     } else if (zoom >= 12.0) {
-      size *= 0.9;
+      size *= 1.0;
     }
 
     return Math.round(size);
@@ -674,13 +674,17 @@ export default function Map({
       // Detect if mobile for responsive padding
       const isMobileView = window.innerWidth <= 768;
 
+      // Keep current zoom if already zoomed in past 14.1, otherwise zoom to 14.1
+      const currentZoom = map.current.getZoom();
+      const targetZoom = currentZoom > 14.1 ? currentZoom : 14.1;
+
       // Smooth fly to the restaurant location
       map.current.flyTo({
         center: [longitude, latitude],
-        zoom: 14.8, // Close zoom to see restaurant details
+        zoom: targetZoom,
         pitch: 0,
         bearing: map.current.getBearing(), // Keep current bearing
-        duration: 1800, // Smooth 1.8s animation
+        duration: 1900, // Smooth 1.8s animation
         essential: true, // This animation is essential with respect to prefers-reduced-motion
         padding: isMobileView
           ? { top: 80, bottom: 320, left: 20, right: 20 } // Mobile: pad bottom for drawer

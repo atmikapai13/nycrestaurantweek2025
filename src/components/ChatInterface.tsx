@@ -181,6 +181,8 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       clearAllLayers,
       filterPoolSlugs,
       restaurantWeekActive,
+      setRestaurantWeekActive,
+      setHighlightedRestaurantIds,
     } = useMap();
 
     // Random welcome message selection
@@ -537,8 +539,53 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                   }
                 }
               }
+
             } catch (err) {
               console.error("❌ Error processing tool result:", err);
+            }
+          }
+
+          // Handle local tools (type: "tool-{toolName}" format)
+          // semantic_search_restaurants - highlight results as yellow markers on map
+          if (
+            part.type === "tool-semantic_search_restaurants" &&
+            (part as any).state === "output-available" &&
+            !processedToolCallIds.current.has((part as any).toolCallId)
+          ) {
+            processedToolCallIds.current.add((part as any).toolCallId);
+            const output = (part as any).output;
+
+            // Highlight results as yellow markers (don't filter, just color them)
+            if (output?.restaurantSlugs && output.restaurantSlugs.length > 0) {
+              console.log(`🌟 Highlighting ${output.restaurantSlugs.length} restaurants from semantic search`);
+              setHighlightedRestaurantIds(new Set(output.restaurantSlugs));
+            }
+
+            // Auto-activate Restaurant Week filter if detected
+            if (output?.restaurantWeekDetected) {
+              console.log("🎄 Auto-activating Restaurant Week filter from semantic search");
+              setRestaurantWeekActive(true);
+            }
+          }
+
+          // displayRestaurants - only highlight for direct lookups (1 restaurant)
+          // For semantic search results, the highlights are already set above (up to 10)
+          if (
+            part.type === "tool-displayRestaurants" &&
+            (part as any).state === "output-available" &&
+            !processedToolCallIds.current.has((part as any).toolCallId)
+          ) {
+            processedToolCallIds.current.add((part as any).toolCallId);
+            const output = (part as any).output;
+
+            // Only highlight if this is a direct lookup (1-2 restaurants), not after semantic search
+            // Semantic search already set highlights for up to 10 restaurants
+            if (output?.restaurants && output.restaurants.length > 0 && output.restaurants.length <= 2) {
+              const slugs = output.restaurants.map((r: any) => r.slug).filter(Boolean);
+              if (slugs.length > 0) {
+                console.log(`🌟 Highlighting ${slugs.length} restaurant(s) from direct lookup`);
+                setHighlightedRestaurantIds(new Set(slugs));
+              }
             }
           }
         });
@@ -729,6 +776,25 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       }
     };
 
+    // Scroll to show the top of the last card (for restaurant cards on mobile)
+    const scrollToLastCardTop = () => {
+      if (messagesContainerRef.current) {
+        const container = messagesContainerRef.current;
+        // Select .chat-message elements (direct children of scroll container)
+        const chatMessages = container.querySelectorAll('.chat-message');
+        const lastChatMessage = chatMessages[chatMessages.length - 1] as HTMLElement;
+
+        if (lastChatMessage) {
+          // Scroll to position the top of the message at the top of the scroll area
+          // Subtract 40px to account for drawer handle height and give breathing room
+          container.scrollTo({
+            top: Math.max(0, lastChatMessage.offsetTop - 40),
+            behavior: "smooth",
+          });
+        }
+      }
+    };
+
     // Auto-scroll for new messages
     const prevMessagesLengthRef = useRef(aiMessages.length);
     const lastMessageContentRef = useRef<string>("");
@@ -776,13 +842,19 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       }
     }, []);
 
-    // Scroll to bottom when custom messages (restaurant cards) are added
+    // Scroll when custom messages (restaurant cards) are added
+    // On mobile: scroll to show top of card; on desktop: scroll to bottom
     useEffect(() => {
       if (customMessages.length > 0) {
+        const isMobile = window.innerWidth <= 768;
         // Use requestAnimationFrame to ensure DOM is fully updated and laid out
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
-            scrollToLastMessage();
+            if (isMobile) {
+              scrollToLastCardTop();
+            } else {
+              scrollToLastMessage();
+            }
           });
         });
       }
@@ -812,8 +884,10 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
     // Expose addRestaurantCard method to parent via ref
     const addRestaurantCard = (restaurant: Restaurant) => {
+      const isMobile = window.innerWidth <= 768;
+
       // Expand drawer from 8vh to 40vh on mobile when marker is clicked
-      if (window.innerWidth <= 768 && drawerHeight === 8) {
+      if (isMobile && drawerHeight === 8) {
         setDrawerHeight(40);
       }
 
@@ -834,7 +908,12 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       // Use double requestAnimationFrame to ensure layout is complete
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-          scrollToLastMessage();
+          // On mobile, scroll to show top of the card; on desktop, scroll to bottom
+          if (isMobile) {
+            scrollToLastCardTop();
+          } else {
+            scrollToLastMessage();
+          }
         });
       });
     };
@@ -1181,7 +1260,19 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                 {(() => {
                                   // Track tool occurrences for varied messages
                                   const toolCounts: Record<string, number> = {};
-                                  return msg.parts.map((part, pIdx: number) => {
+
+                                  // Sort parts: text first, then tool status, then tool results (cards)
+                                  // This ensures the intro text appears before restaurant cards
+                                  const sortedParts = [...msg.parts].sort((a, b) => {
+                                    const getPriority = (part: typeof a) => {
+                                      if (isTextPart(part)) return 0; // Text first
+                                      if (isToolInvocationPart(part) || isDynamicToolPart(part)) return 1; // Tool status second
+                                      return 2; // Tool results (cards) last
+                                    };
+                                    return getPriority(a) - getPriority(b);
+                                  });
+
+                                  return sortedParts.map((part, pIdx: number) => {
                                   if (isTextPart(part)) {
                                     return (
                                       <div
@@ -1288,7 +1379,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                             key={pIdx}
                                             className="tool-loading"
                                           >
-                                            🍽️ {part.type === "tool-lookup_restaurant" ? "Looking up restaurant..." : "Searching for restaurants..."}
+                                            🍽️ {part.type === "tool-lookup_restaurant" ? "Looking up restaurant..." : "Plating your recommendations..."}
                                           </div>
                                         );
 
@@ -1354,7 +1445,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                               )
                                             )}
                                             {displayRestaurantsPool.length ===
-                                              0 && (
+                                              0 && !part.output?.error && (
                                               <p
                                                 style={{
                                                   padding: "16px",
@@ -1363,7 +1454,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                               >
                                                 {part.type === "tool-lookup_restaurant"
                                                   ? `I couldn't find a restaurant called "${part.output?.restaurant_name || 'that'}"`
-                                                  : `No restaurants found for "${part.output?.query}"`}
+                                                  : `No restaurants found for "${part.output?.query || 'your search'}"`}
                                               </p>
                                             )}
                                           </div>
@@ -1388,13 +1479,17 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                 });
                                 })()}
                               </>
-                            ) : (
+                            ) : msg.content ? (
                               <div
                                 className="message-content"
                                 dangerouslySetInnerHTML={{
                                   __html: linkifyText(msg.content),
                                 }}
                               />
+                            ) : (
+                              <div className="message-content" style={{ color: "#888", fontStyle: "italic" }}>
+                                Hmm, let me try that again. Could you rephrase your question?
+                              </div>
                             )}
 
                             {/* Render loading ellipsis if merged */}

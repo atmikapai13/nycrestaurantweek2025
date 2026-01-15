@@ -23,6 +23,10 @@ export const env = {
   MCP_API_KEY: process.env.MCP_API_KEY || "",
   MCP_ANALYSIS_ID: process.env.MCP_ANALYSIS_ID || "",
 
+  // Pinecone configuration (for local semantic search)
+  PINECONE_API_KEY: process.env.PINECONE_API_KEY || "",
+  PINECONE_INDEX_NAME: process.env.PINECONE_INDEX_NAME || "nyc-eats",
+
   // API server configuration
   API2_PORT: parseInt(process.env.API2_PORT || "3001", 10),
   NODE_ENV: (process.env.NODE_ENV || "development") as "development" | "production" | "test",

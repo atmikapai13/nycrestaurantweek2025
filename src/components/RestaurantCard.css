@@ -649,7 +649,7 @@
   }
 
   .about-text {
-    padding-top: 6px;
+    padding-top: 4px;
   }
 
   .meal-types-text {
@@ -661,21 +661,34 @@
   }
 
   .review-item {
-    padding-top: 8px;
-    margin-bottom: 12px;
+    padding-top: 4px;
+    margin-bottom: 8px;
   }
 
   .meal-types-row {
-    padding-top: 8px;
+    padding-top: 4px;
   }
 
-  /* Add spacing between accordions */
+  /* Compact spacing between accordions on mobile */
   .review-accordion,
   .about-accordion,
   .restaurant-week-accordion,
   .contact-accordion {
-    margin-top: 6px;
-    padding-top: 6px;
+    margin-top: 2px;
+    padding-top: 2px;
+  }
+
+  /* Reduce accordion header padding on mobile */
+  .review-accordion-header,
+  .about-accordion-header,
+  .restaurant-week-accordion-header,
+  .contact-accordion-header {
+    padding: 6px 0;
+  }
+
+  /* Reduce icons row padding */
+  .restaurant-icons-row {
+    padding-top: 4px;
   }
 
   /* Find a Table button - bigger and more prominent */

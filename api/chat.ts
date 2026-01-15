@@ -23,6 +23,7 @@ import type { Feature, Polygon, MultiPolygon } from "geojson";
 import { wrapToolsWithGeometryOptimization } from "./utils/toolWrapper.js";
 import { env, getGoogleApiKey } from "./env.js";
 import { safeParseChatRequest } from "./schemas/chat.js";
+import { performRagSearch } from "./lib/ragSearchLogic.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -140,6 +141,27 @@ function fuzzyMatchRestaurant(input: string, searchPool: Restaurant[]): Restaura
   return null;
 }
 
+/**
+ * Detect if query mentions Restaurant Week keywords
+ * Used to auto-filter to RW participants even if filter bar isn't active
+ */
+function detectRestaurantWeekIntent(query: string): boolean {
+  const lowerQuery = query.toLowerCase();
+  const keywords = [
+    "restaurant week",
+    "restaurantweek",
+    "prix fixe",
+    "prixfixe",
+    "price fix",
+    "$30 lunch",
+    "$45 dinner",
+    "$60 dinner",
+    "rw 2026",
+    "rw2026",
+  ];
+  return keywords.some(kw => lowerQuery.includes(kw));
+}
+
 const app = new Hono();
 
 // Enable CORS
@@ -189,6 +211,130 @@ const chatHandler = async (c: any) => {
 
   const { messages: rawMessages, context } = parseResult.data;
   console.log(`📨 Received ${rawMessages.length} messages from client`);
+
+  // ============ PRE-PROCESS: Direct Restaurant Name Lookup ============
+  // Check if the user is asking for a specific restaurant by name
+  // This bypasses Gemini entirely for deterministic, reliable lookups
+  const lastUserMessage = rawMessages.filter(m => m.role === "user").pop();
+  const userQuery = lastUserMessage?.content?.toString().trim() || "";
+
+  // Pattern: "show me X", "find me X", "where is X", etc., or just "X" (single word/phrase)
+  const restaurantNamePatterns = [
+    /^(?:show\s*(?:me)?|find\s*(?:me)?|where\s*(?:is|can\s+i\s+find)?|tell\s+me\s+about|what\s+(?:is|about)|info\s+(?:on|about)|details\s+(?:on|for|about)|look\s*(?:up)?|search\s*(?:for)?|get\s*(?:me)?)\s+(.+?)[\?\.]?$/i,
+    /^(.+?)[\?\.]?$/i, // Fallback: entire query as potential name (for short queries like "hangawi")
+  ];
+
+  let extractedName: string | null = null;
+  for (const pattern of restaurantNamePatterns) {
+    const match = userQuery.match(pattern);
+    if (match && match[1]) {
+      extractedName = match[1].trim();
+      break;
+    }
+  }
+
+  // Try to fuzzy match the extracted name against our restaurant data
+  if (extractedName && extractedName.length >= 3) {
+    const matchedRestaurant = fuzzyMatchRestaurant(extractedName, allRestaurants);
+
+    // Only short-circuit if we have a confident match (not a cuisine type or generic term)
+    const genericTerms = new Set([
+      "italian", "japanese", "chinese", "korean", "mexican", "french", "indian", "thai",
+      "mediterranean", "american", "asian", "european", "latin", "spanish", "greek",
+      "vegetarian", "vegan", "seafood", "steakhouse", "pizza", "sushi", "ramen", "tacos",
+      "restaurants", "spots", "places", "food", "deals", "award", "michelin", "stars",
+      "cheap", "expensive", "fancy", "casual", "romantic", "cozy", "trendy", "best",
+      "near", "around", "close", "walking", "transit", "between", "midtown", "downtown",
+      "uptown", "village", "soho", "tribeca", "chelsea", "harlem", "uws", "ues", "les",
+    ]);
+
+    const isGenericTerm = genericTerms.has(extractedName.toLowerCase()) ||
+                          extractedName.split(/\s+/).some(word => genericTerms.has(word.toLowerCase()));
+
+    if (matchedRestaurant && !isGenericTerm) {
+      console.log(`🎯 PRE-PROCESS: Direct restaurant match! "${extractedName}" → "${matchedRestaurant.name}"`);
+
+      // Build restaurant card data
+      const restaurant: Restaurant = {
+        name: matchedRestaurant.name,
+        slug: matchedRestaurant.slug,
+        cuisine: matchedRestaurant.cuisine || "Unknown",
+        price: matchedRestaurant.price || "$$",
+        neighborhood: matchedRestaurant.neighborhood || "",
+        borough: matchedRestaurant.borough || "",
+        latitude: matchedRestaurant.latitude,
+        longitude: matchedRestaurant.longitude,
+        yelp_rating: matchedRestaurant.yelp_rating || 0,
+        yelp_review_count: matchedRestaurant.yelp_review_count || 0,
+        michelin_award: matchedRestaurant.michelin_award || "",
+        nyttop100_rank: matchedRestaurant.nyttop100_rank || "",
+        summary: matchedRestaurant.summary || "",
+        summary2: matchedRestaurant.summary2 || "",
+        yelp_review_highlights: matchedRestaurant.yelp_review_highlights || "",
+        opentable_id: matchedRestaurant.opentable_id || "",
+        telephone: matchedRestaurant.telephone || "",
+        address: matchedRestaurant.address || "",
+        collections: matchedRestaurant.collections || [],
+        meal_types: matchedRestaurant.meal_types || [],
+        participation_weeks: matchedRestaurant.participation_weeks || [],
+        participation_weeks2: matchedRestaurant.participation_weeks2 || "",
+        website: matchedRestaurant.website || "",
+        facebook_url: matchedRestaurant.facebook_url || "",
+        instagram_url: matchedRestaurant.instagram_url || "",
+        yelp_url: matchedRestaurant.yelp_url || "",
+        menu_url: matchedRestaurant.menu_url || "",
+      };
+
+      // Generate a charming response
+      const charmingIntros = [
+        `Ah, ${matchedRestaurant.name}! Excellent choice.`,
+        `${matchedRestaurant.name} - a fine establishment!`,
+        `You've got great taste! Here's ${matchedRestaurant.name}.`,
+        `${matchedRestaurant.name}, coming right up!`,
+      ];
+      const intro = charmingIntros[Math.floor(Math.random() * charmingIntros.length)];
+
+      // Return a streaming response that mimics AI SDK format
+      // This includes both the text response and tool result
+      const responseData = {
+        restaurants: [restaurant],
+        count: 1,
+        query: extractedName,
+      };
+
+      // Create AI SDK compatible streaming response
+      const encoder = new TextEncoder();
+      const stream = new ReadableStream({
+        start(controller) {
+          // Text part
+          controller.enqueue(encoder.encode(`0:${JSON.stringify(intro)}\n`));
+          // Tool call part (displayRestaurants)
+          const toolCallId = `call_${Date.now()}`;
+          controller.enqueue(encoder.encode(`9:${JSON.stringify({
+            toolCallId,
+            toolName: "displayRestaurants",
+            args: { restaurant_names: [matchedRestaurant.slug] },
+          })}\n`));
+          // Tool result part
+          controller.enqueue(encoder.encode(`a:${JSON.stringify({
+            toolCallId,
+            result: responseData,
+          })}\n`));
+          // Finish
+          controller.enqueue(encoder.encode(`d:${JSON.stringify({ finishReason: "stop", usage: { promptTokens: 0, completionTokens: 0 } })}\n`));
+          controller.close();
+        },
+      });
+
+      return new Response(stream, {
+        headers: {
+          "Content-Type": "text/plain; charset=utf-8",
+          "X-Vercel-AI-Data-Stream": "v1",
+        },
+      });
+    }
+  }
+  // ============ END PRE-PROCESS ============
 
   // Extract filterPool from context (restaurants matching current filter bar selections)
   const filterPool: string[] = (context as any)?.filterPool || [];
@@ -278,21 +424,36 @@ const chatHandler = async (c: any) => {
   }
 
   // Create a custom tool for displaying restaurant cards
-  const displayRestaurantsTool = {
+  const displayRestaurantsTool = createTool({
     description:
-      "Render interactive restaurant cards in the chat UI. Use this after finding restaurants via search_documents/execute_sql to display results.",
-    inputSchema: z.object({
+      "Display restaurant cards. REQUIRED: You MUST pass restaurant_names array. Example: displayRestaurants({ restaurant_names: ['Hangawi'] }) or displayRestaurants({ restaurant_names: ['carbone', 'lilia', 'don-angie'] })",
+    parameters: z.object({
       restaurant_names: z
         .array(z.string())
-        .describe("List of restaurant names or slugs to display as cards."),
+        .optional()
+        .default([])
+        .describe("REQUIRED array of restaurant names or slugs. Example: ['Hangawi', 'Carbone'] or ['hangawi', 'carbone']"),
       query: z
         .string()
         .optional()
-        .describe("The original search query (e.g., 'Italian restaurants')."),
+        .describe("Optional: The original search query"),
     }),
-    execute: async (params: { restaurant_names: string[]; query?: string }) => {
-      const { restaurant_names, query } = params;
+    execute: async (params: { restaurant_names?: string[]; query?: string }) => {
+      const { restaurant_names = [], query } = params || {};
       try {
+        if (!restaurant_names || !Array.isArray(restaurant_names) || restaurant_names.length === 0) {
+          console.log(`⚠️ displayRestaurants: No restaurant_names provided - returning clarification request`);
+          // Return a "success" with a message for the model to relay to user
+          // This prevents the model from looping and calling the tool again
+          return {
+            restaurants: [],
+            count: 0,
+            query: query || "",
+            needsClarification: true,
+            message: "I'd love to help! Could you tell me what kind of restaurant you're looking for? For example: a specific restaurant name (like 'Carbone'), a cuisine type (like 'Italian'), or a vibe (like 'cozy date spot')?"
+          };
+        }
+
         console.log(
           `🍽️ displayRestaurants resolving cards for: ${JSON.stringify(
             restaurant_names
@@ -304,26 +465,26 @@ const chatHandler = async (c: any) => {
           ? allRestaurants.filter((r) => filterPool.includes(r.slug))
           : allRestaurants;
 
-        // Match by slug or exact name
-        const foundRestaurants = searchPool.filter(
-          (r) =>
-            restaurant_names.includes(r.slug) ||
-            restaurant_names.some(
-              (name) => r.name.toLowerCase() === name.toLowerCase()
-            )
-        );
+        // Match by slug, exact name, OR fuzzy match - PRESERVE input order (important for semantic search ranking)
+        const foundRestaurants: Restaurant[] = [];
+        for (const name of restaurant_names) {
+          // First try exact match (slug or name)
+          let match = searchPool.find(
+            (r) => r.slug === name || r.name.toLowerCase() === name.toLowerCase()
+          );
+          // If no exact match, try fuzzy matching (handles typos, partial names)
+          if (!match) {
+            match = fuzzyMatchRestaurant(name, searchPool);
+          }
+          if (match && !foundRestaurants.some(r => r.slug === match!.slug)) {
+            foundRestaurants.push(match);
+          }
+        }
 
-        // Sort by yelp_rating (highest first) for best recommendations
-        foundRestaurants.sort((a, b) => {
-          const aRating = a.yelp_rating || 0;
-          const bRating = b.yelp_rating || 0;
-          return bRating - aRating;
-        });
-
-        console.log(`✅ Resolved ${foundRestaurants.length} restaurant cards`);
+        console.log(`✅ Resolved ${foundRestaurants.length} restaurant cards (preserving input order)`);
 
         // Return results with clean data structure (all fields needed for RestaurantCard)
-        // Limit to 5 cards - sorted by yelp_rating (highest first)
+        // Limit to 5 cards - order preserved from input (semantic relevance)
         const restaurants: Restaurant[] = foundRestaurants
           .slice(0, 5)
           .map((r) => ({
@@ -362,6 +523,7 @@ const chatHandler = async (c: any) => {
           restaurants,
           count: restaurants.length,
           query: query || "",
+          error: undefined as string | undefined,
         };
       } catch (error) {
         console.error("❌ Error in displayRestaurantsTool:", error);
@@ -369,36 +531,45 @@ const chatHandler = async (c: any) => {
           restaurants: [] as Restaurant[],
           count: 0,
           query: query || "",
-          error: String(error),
+          error: String(error) as string | undefined,
         };
       }
     },
-  };
+  });
 
   // Create a dedicated tool for looking up a specific restaurant by name
-  const lookupRestaurantTool = {
+  // Structure matches displayRestaurants for consistent frontend rendering
+  const lookupRestaurantTool = createTool({
     description:
-      "Look up a specific restaurant by name. Use this when the user asks about a particular restaurant (e.g., 'show me Hangawi', 'where is Carbone', 'tell me about Le Bernardin'). Supports fuzzy matching for typos and partial names.",
-    inputSchema: z.object({
+      "REQUIRED: Use this tool when user mentions ANY specific restaurant name. Trigger phrases: 'show me [name]', 'where is [name]', 'find [name]', 'tell me about [name]'. Examples: 'show me Hangawi' -> use this tool with restaurant_name='Hangawi'. 'where is Carbone?' -> use this tool with restaurant_name='Carbone'. Supports fuzzy matching for typos.",
+    parameters: z.object({
       restaurant_name: z
         .string()
-        .describe("The name of the restaurant to look up (e.g., 'Hangawi', 'Carbone', 'Le Bernardin')"),
+        .describe("The restaurant name extracted from the user's query. Examples: 'Hangawi', 'Carbone', 'Le Bernardin', 'Gramercy Tavern'"),
     }),
-    execute: async (params: { restaurant_name: string }) => {
-      const { restaurant_name } = params;
+    execute: async (params: { restaurant_name?: string } | undefined) => {
+      const { restaurant_name = "" } = params || {};
       try {
-        console.log(`🔍 lookup_restaurant: Looking up "${restaurant_name}"`);
+        if (!restaurant_name || typeof restaurant_name !== "string" || restaurant_name.trim() === "") {
+          console.log(`⚠️ lookup_restaurant: No restaurant_name provided`);
+          return {
+            restaurants: [] as Restaurant[],
+            count: 0,
+            restaurant_name: restaurant_name || "",
+            error: "Missing restaurant_name"
+          };
+        }
 
-        // Use fuzzy matching to find the restaurant
+        console.log(`🔍 lookup_restaurant: Looking up "${restaurant_name}"`);
         const match = fuzzyMatchRestaurant(restaurant_name, allRestaurants);
 
         if (!match) {
           console.log(`❌ No match found for "${restaurant_name}"`);
           return {
-            found: false,
-            message: `I couldn't find a restaurant called "${restaurant_name}" in our database. Try checking the spelling or searching with a different name.`,
-            restaurants: [],
+            restaurants: [] as Restaurant[],
             count: 0,
+            restaurant_name,
+            error: `No restaurant found matching "${restaurant_name}"`,
           };
         }
 
@@ -436,22 +607,127 @@ const chatHandler = async (c: any) => {
         };
 
         return {
-          found: true,
           restaurants: [restaurant],
           count: 1,
-          message: `Found ${match.name}!`,
+          restaurant_name,
+          error: undefined as string | undefined,
         };
       } catch (error) {
         console.error("❌ Error in lookupRestaurantTool:", error);
         return {
-          found: false,
-          message: `Error looking up restaurant: ${String(error)}`,
-          restaurants: [],
+          restaurants: [] as Restaurant[],
           count: 0,
+          restaurant_name: restaurant_name || "",
+          error: String(error),
         };
       }
     },
-  };
+  });
+
+  // Create semantic search tool using local RAG (replaces MCP's search_documents)
+  // Returns data in same format as get_isoline for consistent multi-tool orchestration
+  const semanticSearchRestaurantsTool = createTool({
+    description: `Search restaurants by vibe, ambiance, dietary preferences, or descriptive queries using semantic similarity.
+Use for: "cozy date spot", "best omakase", "vegetarian friendly", "vegan options", "gluten-free", "outdoor seating", "trendy rooftop".
+Returns restaurantSlugs array - IMMEDIATELY call displayRestaurants({ restaurant_names: restaurantSlugs }) after this.
+Automatically respects active filter bar selections.
+IMPORTANT: If user mentions "restaurant week", "prix fixe", or "$30/$45/$60 deals", set restaurantWeekIntent=true.`,
+    parameters: z.object({
+      query: z
+        .string()
+        .describe("Natural language search query (e.g., 'vegetarian friendly', 'vegan options', 'cozy romantic spot')"),
+      topK: z
+        .number()
+        .min(1)
+        .max(20)
+        .optional()
+        .default(10)
+        .describe("Number of results to return (default: 10, max: 20)"),
+      restaurantWeekIntent: z
+        .boolean()
+        .optional()
+        .default(false)
+        .describe("Set to true if user mentions 'restaurant week', 'prix fixe', '$30 lunch', '$45 dinner', or '$60 dinner'. Auto-filters to RW 2026 participants."),
+    }),
+    execute: async (params: { query: string; topK?: number; restaurantWeekIntent?: boolean }) => {
+      const { query, topK = 10, restaurantWeekIntent = false } = params || {};
+      try {
+        if (!query || typeof query !== "string" || query.trim() === "") {
+          console.log(`⚠️ semantic_search_restaurants: No query provided`);
+          return { restaurantSlugs: [], restaurants: [], count: 0, query: "", error: "Missing query" };
+        }
+
+        console.log(`🔍 semantic_search_restaurants: "${query}" (topK: ${topK}, restaurantWeekIntent: ${restaurantWeekIntent})`);
+
+        // Detect Restaurant Week intent from query keywords OR explicit parameter
+        const hasRWIntent = restaurantWeekIntent || detectRestaurantWeekIntent(query);
+
+        // Build restaurantIds: start with filterPool if present
+        let restaurantIds: string[] | null = hasFilterPool ? [...filterPool] : null;
+
+        // If RW intent detected, narrow to only RW participants
+        if (hasRWIntent) {
+          const rwSlugs = allRestaurants
+            .filter(r => r.meal_types && Array.isArray(r.meal_types) && r.meal_types.length > 0)
+            .map(r => r.slug);
+
+          if (restaurantIds) {
+            // Intersect with existing filterPool
+            restaurantIds = restaurantIds.filter(slug => rwSlugs.includes(slug));
+          } else {
+            // Use RW participants as the filter
+            restaurantIds = rwSlugs;
+          }
+          console.log(`🎄 Auto-detected Restaurant Week intent, filtering to ${restaurantIds.length} RW participants`);
+        } else if (hasFilterPool) {
+          console.log(`🎯 Scoping semantic search to filterPool of ${filterPool.length} restaurants`);
+        }
+
+        // Perform RAG search with 70% semantic + 30% keyword hybrid scoring
+        const result = await performRagSearch(query, topK, restaurantIds);
+
+        // Extract slugs for displayRestaurants (same pattern as get_isoline)
+        const restaurantSlugs = result.results.map((r) => r.slug);
+
+        // Map results to summary objects (not full objects - keeps response small)
+        const restaurants = result.results.map((r) => ({
+          name: r.name,
+          slug: r.slug,
+          cuisine: r.cuisine || "Unknown",
+          price: r.price || "$$",
+          neighborhood: r.neighborhood || "",
+          yelp_rating: r.yelp_rating || 0,
+          michelin_award: r.michelin_award || "",
+          nyttop100_rank: r.nyttop100_rank || "",
+        }));
+
+        console.log(`✅ semantic_search_restaurants: Found ${restaurants.length} matches, slugs: [${restaurantSlugs.slice(0, 3).join(", ")}${restaurantSlugs.length > 3 ? "..." : ""}]`);
+
+        return {
+          // restaurantSlugs: Pass this array to displayRestaurants({ restaurant_names: restaurantSlugs })
+          restaurantSlugs,
+          // restaurants: Summary info for context (cuisine mix, ratings, awards)
+          restaurants,
+          count: restaurants.length,
+          query,
+          filterPoolApplied: result.filterPoolApplied,
+          // Tell frontend to activate Restaurant Week filter if we detected it
+          restaurantWeekDetected: hasRWIntent,
+        };
+      } catch (error) {
+        console.error("❌ Error in semanticSearchRestaurantsTool:", error);
+        return {
+          restaurantSlugs: [] as string[],
+          restaurants: [] as { name: string; slug: string; cuisine: string; price: string; neighborhood: string; yelp_rating: number; michelin_award: string; nyttop100_rank: string }[],
+          count: 0,
+          query: query || "",
+          filterPoolApplied: false,
+          restaurantWeekDetected: false,
+          error: String(error),
+        };
+      }
+    },
+  });
 
   // 2. Fetch Dataset Schemas (Let it fail/throw)
   if (analysisId) {
@@ -506,22 +782,27 @@ const chatHandler = async (c: any) => {
   }
 
   // Build the tool instructions based on available dataset types
-  let toolInstructions = "";
-  if (sqlTables && docCollections) {
-    toolInstructions = `
-- execute_sql: Use for SQL queries INCLUDING specific restaurant lookups by name (e.g., WHERE LOWER(name) LIKE '%hangawi%'). Wrap UUIDs in double quotes.
-- search_documents: Use ONLY for Document Collections (for information gathering).
-- displayRestaurants: Show restaurant cards after finding restaurants via execute_sql. Always call this after SQL returns restaurant names.`;
-  } else if (sqlTables) {
-    toolInstructions = `
-- execute_sql: Use for spatial DuckDB queries INCLUDING specific restaurant lookups by name (e.g., WHERE LOWER(name) LIKE '%hangawi%'). Wrap UUIDs in double quotes.
-- search_documents: NOT AVAILABLE. No document collections found.
-- displayRestaurants: Show restaurant cards after finding restaurants via execute_sql. Always call this after SQL returns restaurant names.`;
-  } else if (docCollections) {
-    toolInstructions = `
-- execute_sql: NOT AVAILABLE. No SQL tables found. Use search_documents instead.
-- search_documents: Use for restaurant lookups and guide info (information gathering).
-- displayRestaurants: Show restaurant cards after searches. Always call this after finding restaurant names.`;
+  let toolInstructions = `
+- semantic_search_restaurants: **USE THIS for dietary preferences and vibes** - NOT execute_sql!
+  **MUST use for**: vegetarian, vegan, gluten-free, kosher, halal, pescatarian, dairy-free, nut-free, AND any vibe/ambiance queries.
+  Examples: "vegetarian friendly", "vegan options", "cozy date spot", "trendy rooftop", "quiet romantic".
+  **WHY**: Dietary info is in reviews/descriptions, NOT structured database fields. SQL CANNOT find vegetarian restaurants!
+  **CRITICAL**: If user mentions "restaurant week", "prix fixe", or "$30/$45/$60 deals", set restaurantWeekIntent=true.
+  Returns restaurantSlugs array. **IMMEDIATELY call displayRestaurants({ restaurant_names: restaurantSlugs }) after!**
+- displayRestaurants: **THE MAIN TOOL FOR SHOWING RESTAURANTS.** Use for:
+  1. Specific restaurant by name: displayRestaurants({ restaurant_names: ["Hangawi"] }) - supports fuzzy matching!
+  2. After semantic_search_restaurants: displayRestaurants({ restaurant_names: restaurantSlugs })
+  3. After execute_sql/get_isoline: displayRestaurants({ restaurant_names: [...] })
+  **ALWAYS call this to show restaurant cards!**`;
+
+  if (sqlTables) {
+    toolInstructions += `
+- execute_sql: Use ONLY for structured fields: neighborhood, price ($/$$/$$$/$$$$), cuisine TYPE (Italian, Japanese, etc.), awards.
+  **DO NOT use for**: vegetarian, vegan, dietary preferences, vibes, ambiance - these are NOT in the database schema!`;
+  }
+  if (docCollections) {
+    toolInstructions += `
+- search_documents: Use ONLY for Document Collections (for information gathering, NOT restaurant search).`;
   }
 
   // Build filter pool context for system prompt
@@ -539,6 +820,32 @@ The user has applied filters in the app. Your recommendations MUST only include 
 
 You are a restaurant concierge sommelier helping users discover restaurants and the best deals during NYC Restaurant Week.
 
+### ⚠️ CRITICAL RULES - NEVER VIOLATE THESE!
+1. **NEVER return an empty response** - You MUST always call a tool and respond!
+2. **ALWAYS extract information from the user's message** before calling tools.
+   - "show me hangawi" → Extract "hangawi" → displayRestaurants({ restaurant_names: ["hangawi"] })
+   - "show me italian" → Extract "italian" → execute_sql with cuisine filter
+3. **If you don't understand**, call askClarification({ question: "What kind of restaurant are you looking for?" })
+4. **NEVER call displayRestaurants with empty arguments** - always pass restaurant_names!
+
+**PATTERN MATCHING FOR SHORT QUERIES:**
+1. **CUISINE TYPE** ("show me italian", "mediterranean spots", "japanese restaurants"):
+   → execute_sql with cuisine filter, then displayRestaurants
+   Example: "show me italian" → execute_sql({ sql: "SELECT name FROM ... WHERE LOWER(cuisine) LIKE '%italian%'" })
+
+2. **SPECIFIC RESTAURANT NAME** ("show me hangawi", "where is carbone", "gramercy tavern"):
+   → displayRestaurants({ restaurant_names: ["hangawi"] }) directly
+
+3. **AWARD WINNERS** ("show me award-winners", "michelin restaurants", "top 100", "bib gourmand"):
+   → execute_sql with award filter: WHERE michelin_award != '' OR nyttop100_rank != ''
+   Example: "michelin stars" → execute_sql({ sql: "SELECT name FROM ... WHERE michelin_award != ''" })
+
+4. **VIBES/DIETARY** ("vegetarian", "cozy spot", "romantic", "vegan"):
+   → semantic_search_restaurants({ query: "vegetarian friendly" }), then displayRestaurants
+
+5. **LOCATION** ("near times square", "walking distance from chelsea"):
+   → geocode, then get_isoline, then displayRestaurants
+
 ### 🍽️ NYC RESTAURANT WEEK CONTEXT
 NYC Restaurant Week is a biannual event run by NYC Tourism + Conventions, Inc. The Spring 2026 edition runs from January 20 to February 12, 2026. Participating restaurants offer prix fixe lunch and/or dinner menus at special prices ($30, $45, or $60). This is a great opportunity for diners to explore award-winning restaurants at accessible price points.
 
@@ -553,19 +860,21 @@ ${spatialReference}
 
 Available Tools for analysis "${analysisId}":${toolInstructions}
 
-### 🍴 SPECIFIC RESTAURANT LOOKUPS (CRITICAL - ALWAYS DO THIS!)
-**TRIGGER PHRASES**: "show me [name]", "find [name]", "where is [name]", "tell me about [name]", "[name] restaurant"
+### 🍴 HOW TO DISTINGUISH RESTAURANT NAMES vs CUISINE TYPES
+**Restaurant names** are proper nouns (specific establishments): Hangawi, Carbone, Le Bernardin, Gramercy Tavern, Lilia, Don Angie
+**Cuisine types** are categories: Italian, Japanese, Mediterranean, Mexican, French, Korean, Indian
 
-When a user mentions a SPECIFIC restaurant name, you MUST IMMEDIATELY:
-1. Call execute_sql to search: \`SELECT name FROM "9971204a-e5b6-4739-be6e-c4d116c71088" WHERE LOWER(name) LIKE '%restaurant_name%'\`
-2. Then call displayRestaurants with the result
+**If unsure**, ask yourself: "Is this a specific place I could make a reservation at, or a type of food?"
+- "Hangawi" = specific Korean restaurant → displayRestaurants({ restaurant_names: ["Hangawi"] })
+- "Korean" = cuisine type → execute_sql with cuisine filter
 
-**Examples - ALWAYS follow this pattern:**
-- User: "show me Hangawi" → execute_sql({ sql: "SELECT name FROM \\"9971204a-e5b6-4739-be6e-c4d116c71088\\" WHERE LOWER(name) LIKE '%hangawi%'" })
-- User: "find Carbone" → execute_sql({ sql: "SELECT name FROM \\"9971204a-e5b6-4739-be6e-c4d116c71088\\" WHERE LOWER(name) LIKE '%carbone%'" })
-- User: "where is Le Bernardin" → execute_sql({ sql: "SELECT name FROM \\"9971204a-e5b6-4739-be6e-c4d116c71088\\" WHERE LOWER(name) LIKE '%bernardin%'" })
+**Examples:**
+- "show me Hangawi" → displayRestaurants({ restaurant_names: ["Hangawi"] })
+- "show me korean" → execute_sql({ sql: "SELECT name FROM ... WHERE LOWER(cuisine) LIKE '%korean%'" })
+- "where is Carbone?" → displayRestaurants({ restaurant_names: ["Carbone"] })
+- "italian spots" → execute_sql({ sql: "SELECT name FROM ... WHERE LOWER(cuisine) LIKE '%italian%'" })
 
-**WARNING**: Do NOT return empty responses! Do NOT try to geocode restaurant names! ALWAYS search the database first!
+**WARNING**: Do NOT geocode restaurant names - they are restaurants, not locations!
 
 - geocode: Convert street addresses and neighborhoods to coordinates. Always append ", New York City".
   * When users mention neighborhoods (e.g., "Greenwich Village", "Chelsea", "Williamsburg"), geocode the neighborhood name directly without asking for clarification. Use your best judgment for the neighborhood center.
@@ -638,20 +947,28 @@ When a user asks to find restaurants "between" two locations:
 
 Rules:
 1. ONLY use tools listed as available above.
-2. Use execute_sql for precise spatial queries and search_documents for descriptive lookups.
-3. You MUST use the displayRestaurants tool to show the restaurant cards to the user.
+2. **TOOL SELECTION** (CRITICAL):
+   - semantic_search_restaurants: vegetarian, vegan, dietary, vibes, ambiance, "cozy", "romantic", "trendy"
+   - execute_sql: neighborhood, price level, cuisine TYPE, awards, spatial queries
+   - **NEVER use execute_sql for dietary preferences** - the database has no vegetarian/vegan columns!
+3. **SHOWING RESTAURANT CARDS** (CRITICAL - USERS SEE NOTHING WITHOUT THIS!):
+   - semantic_search_restaurants → Returns restaurantSlugs. **Your VERY NEXT tool call MUST be displayRestaurants({ restaurant_names: restaurantSlugs }). DO NOT call execute_sql or any other tool first!**
+   - get_isoline → Returns restaurantSlugs. **Your VERY NEXT tool call MUST be displayRestaurants({ restaurant_names: restaurantSlugs }).**
+   - execute_sql → Returns names. **Your VERY NEXT tool call MUST be displayRestaurants with the names.**
+   - Specific restaurant name → displayRestaurants({ restaurant_names: ["name"] }) directly!
+   - **WARNING**: If you call semantic_search_restaurants but don't call displayRestaurants immediately after, THE USER WILL SEE NO RESTAURANT CARDS!
 4. **GEO_REF IDs expire after each response**. Never reference IDs from previous messages. Always call get_isoline fresh when needed.
 5. **NEVER** type out actual coordinates.
 6. **When users mention neighborhoods, geocode them directly**. Don't ask clarifying questions about specific addresses within the neighborhood. Trust your judgment!
 7. **NEVER mention technical details like GEO_REF IDs, table UUIDs, or internal tool mechanics to the user**. Keep your responses natural and conversational - the user doesn't need to know about the backend magic!
 8. Be concise, charming, and follow the recipe!
-9. **RESTAURANT NAME QUERIES**: When users ask about a specific restaurant by name (e.g., "where is Hangawi", "show me Carbone", "tell me about Le Bernardin"), use execute_sql with WHERE LOWER(name) LIKE '%restaurant_name%', then call displayRestaurants. Do NOT try to geocode restaurant names - they are restaurants, not locations!
+9. **RESTAURANT NAME QUERIES**: When users ask about a specific restaurant by name, use displayRestaurants({ restaurant_names: ["name"] }). Do NOT try to geocode restaurant names - they are restaurants, not locations!
 
 ### 📝 RESPONSE FORMAT RULES
-When displaying restaurant results (after isochrone, search, or filtering):
-1. **START** with a brief, charming one-liner like "We a handful of restaurants!" followed by a short comment about what you found (e.g., cuisine mix, neighborhood highlights, notable spots, award-winning restaurants).
-2. **CALL displayRestaurants** - the cards will show automatically (up to 5, sorted by rating).
-3. **DO NOT list restaurant names** in your text response - the cards already display them beautifully!
+When displaying restaurant results:
+1. **START** with a brief, charming one-liner about what you found (cuisine mix, neighborhood highlights, notable spots).
+2. **CALL displayRestaurants** with the restaurantSlugs from your search to show the cards.
+3. **DO NOT list restaurant names** in your text response - the cards display them beautifully!
 4. **DO NOT repeat** the restaurant list after the cards appear.
 5. Keep your text response SHORT - let the cards do the talking!
 
@@ -844,14 +1161,38 @@ Example BAD response (too verbose):
       }
     : undefined;
 
+  // Create a fallback tool for when the model needs clarification
+  const askClarificationTool = createTool({
+    description:
+      "Use this when you don't understand the user's request or need more information. This will ask the user to clarify.",
+    parameters: z.object({
+      question: z
+        .string()
+        .describe("The clarifying question to ask the user"),
+    }),
+    execute: async (params: { question?: string } | undefined) => {
+      const { question = "Could you tell me more about what you're looking for?" } = params || {};
+      console.log(`❓ askClarification: "${question}"`);
+      return {
+        clarificationNeeded: true,
+        question,
+      };
+    },
+  });
+
   // Combine MCP tools with our custom tools
+  // Note: We explicitly exclude search_documents from MCP and use our local semantic search instead
   const allTools = {
-    ...optimizedTools,
-    // Override with filtered versions if available
+    // Selectively include MCP tools (exclude search_documents)
+    ...(optimizedTools.geocode ? { geocode: optimizedTools.geocode } : {}),
+    // Override with filtered/wrapped versions
     ...(wrappedExecuteSql ? { execute_sql: wrappedExecuteSql } : {}),
-    ...(wrappedSearchDocuments ? { search_documents: wrappedSearchDocuments } : {}),
     ...(wrappedGetIsoline ? { get_isoline: wrappedGetIsoline } : {}),
+    // Local tools
     displayRestaurants: displayRestaurantsTool,
+    semantic_search_restaurants: semanticSearchRestaurantsTool,
+    askClarification: askClarificationTool,
+    // DO NOT include search_documents - replaced by semantic_search_restaurants
   };
   console.log("🛠️ All tools available:", Object.keys(allTools).join(", "));
 
