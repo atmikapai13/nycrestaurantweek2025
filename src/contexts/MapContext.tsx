@@ -136,7 +136,7 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
   >(null);
 
   // Drawer height state (for coordinating UI elements)
-  const [drawerHeight, setDrawerHeight] = useState(40);
+  const [drawerHeight, setDrawerHeight] = useState(30);
 
   // 1. Calculate which restaurants are inside ANY visible isochrone
   const visibleIsochroneSlugs = useMemo(() => {

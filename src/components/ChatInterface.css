@@ -693,6 +693,10 @@
     height: 8vh;
   }
 
+  .drawer-30 {
+    height: 30vh;
+  }
+
   .drawer-40 {
     height: 40vh;
   }
@@ -768,6 +772,10 @@
     font-size: 14px;
     font-weight: 600;
     color: #4B5563;
+  }
+
+  .drawer-30 .chat-messages {
+    max-height: calc(30vh - 110px);
   }
 
   .drawer-40 .chat-messages {

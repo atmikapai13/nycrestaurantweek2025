@@ -51,19 +51,26 @@ export default function FilterBar() {
     drawerHeight,
   } = useMap();
 
-  const [isExpanded, setIsExpanded] = useState(() => {
-    // Start collapsed on mobile (viewport width <= 768px)
-    return typeof window !== 'undefined' ? window.innerWidth > 768 : true;
-  });
+  const [isExpanded, setIsExpanded] = useState(true);
 
-  // Collapse hamburger menu when drawer is at 80vh, expand when at 8vh
+  // Track previous drawer height to detect changes
+  const prevDrawerHeightRef = useRef(drawerHeight);
+
+  // Collapse hamburger menu when drawer is at 80vh, expand when at 8vh, 30vh, or 40vh
   useEffect(() => {
+    const prevHeight = prevDrawerHeightRef.current;
+    prevDrawerHeightRef.current = drawerHeight;
+
+    // Only respond to actual changes, not initial mount
+    if (prevHeight === drawerHeight) return;
+
     if (drawerHeight === 80 && isExpanded) {
       setIsExpanded(false);
-    } else if (drawerHeight === 8 && !isExpanded) {
+    } else if ((drawerHeight === 8 || drawerHeight === 30 || drawerHeight === 40) && !isExpanded) {
       setIsExpanded(true);
     }
   }, [drawerHeight]);
+
   const filterBarRef = useRef<HTMLDivElement>(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(false);

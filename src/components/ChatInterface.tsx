@@ -375,7 +375,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
     const { drawerHeight, setDrawerHeight } = useMap();
     const [isDragging, setIsDragging] = useState(false);
     const [dragStartY, setDragStartY] = useState(0);
-    const [dragStartHeight, setDragStartHeight] = useState(40);
+    const [dragStartHeight, setDragStartHeight] = useState(30);
     const drawerRef = useRef<HTMLDivElement>(null);
     const messagesContainerRef = useRef<HTMLDivElement>(null);
 
@@ -1104,6 +1104,15 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
         parts?: UIMessagePart<any, any>[];
       })[];
     }, [aiMessages, customMessages]);
+
+    // Expand drawer to 40vh after first message on mobile
+    useEffect(() => {
+      const isMobile = window.innerWidth <= 768;
+      const hasUserMessage = allMessages.some(msg => msg.role === 'user');
+      if (isMobile && hasUserMessage && drawerHeight === 30) {
+        setDrawerHeight(40);
+      }
+    }, [allMessages, drawerHeight, setDrawerHeight]);
 
     const isLastMessageAssistant =
       allMessages.length > 0 &&
