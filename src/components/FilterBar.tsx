@@ -56,7 +56,7 @@ export default function FilterBar() {
   // Track previous drawer height to detect changes
   const prevDrawerHeightRef = useRef(drawerHeight);
 
-  // Collapse hamburger menu when drawer is at 80vh, expand when at 8vh, 30vh, or 40vh
+  // Collapse hamburger menu when drawer is at 80vh, expand when at 8vh or 30vh
   useEffect(() => {
     const prevHeight = prevDrawerHeightRef.current;
     prevDrawerHeightRef.current = drawerHeight;
@@ -66,7 +66,7 @@ export default function FilterBar() {
 
     if (drawerHeight === 80 && isExpanded) {
       setIsExpanded(false);
-    } else if ((drawerHeight === 8 || drawerHeight === 30 || drawerHeight === 40) && !isExpanded) {
+    } else if ((drawerHeight === 8 || drawerHeight === 30) && !isExpanded) {
       setIsExpanded(true);
     }
   }, [drawerHeight]);

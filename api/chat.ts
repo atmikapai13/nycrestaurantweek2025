@@ -846,7 +846,7 @@ You are a restaurant concierge sommelier helping users discover restaurants and 
 2. **ALWAYS extract information from the user's message** before calling tools.
    - "show me hangawi" → Extract "hangawi" → displayRestaurants({ restaurant_names: ["hangawi"] })
    - "show me italian" → Extract "italian" → execute_sql with cuisine filter
-3. **If you don't understand**, call askClarification({ question: "What kind of restaurant are you looking for?" })
+3. **If you don't understand**, ask the user a clarifying question in your text response.
 4. **NEVER call displayRestaurants with empty arguments** - always pass restaurant_names!
 
 ### 📝 TEXT OUTPUT RULES (these apply to your TEXT responses, NOT tool calling!)
@@ -1019,15 +1019,15 @@ User: "hole in the wall spots within 15 min walk"
 4. **NEVER apologize** - no "My apologies", "I'm sorry", "it seems I was too subtle".
 5. **NEVER write multiple paragraphs**.
 
-**AFTER displayRestaurants returns**: Look at the results (michelin_award, nyttop100_rank, summary fields) and add ONE punchy callout about something notable. Then STOP.
+**AFTER displayRestaurants returns**: Look at the results (michelin_award, nyttop100_rank, summary fields) and make ONE astute observation about something interesting - an award, a famous chef, a unique vibe, or why a spot stands out. Do NOT just list restaurant names. Then STOP.
 
-✅ GOOD flow:
-- [tools run silently]
-- displayRestaurants returns with data
-- "Found 5 spots. Pro tip: Lilia's got a Michelin star - Missy Robbins is pasta royalty."
-- [cards appear] → DONE
+✅ GOOD observations:
+- "Found 12 spots. Buddakan's dramatic communal dining room is worth it alone."
+- "8 matches - three have Michelin stars, and Carbone's spicy rigatoni is legendary."
+- "15 options here. La Sirene brings legit Brittany-style French to Hudson Street."
 
-❌ BAD: "Ah, a true aficionado! Let me find you some delightful spots where the good times roll..."
+❌ BAD (just listing names): "Here are a few of them, including Felice on Hudson, La Sirene, and Buddakan."
+❌ BAD (flowery): "Ah, a true aficionado! Let me find you some delightful spots where the good times roll..."
 
 **If search returns same results**: Just say "These are the best matches." Don't apologize.
 
@@ -1145,12 +1145,46 @@ When user asks for both location AND vibe (e.g., "hole in the wall spots within 
       }
     : undefined;
 
+  // Manhattan bounding box (simple rectangle check)
+  const MANHATTAN_BOUNDS = {
+    minLat: 40.6829,
+    maxLat: 40.8820,
+    minLng: -74.0200,
+    maxLng: -73.9067,
+  };
+
   // Wrap get_isoline to compute filterPool restaurants inside the polygon
   // This ensures the model gets accurate restaurant counts at isochrone creation time
   const wrappedGetIsoline = optimizedTools.get_isoline
     ? {
         ...optimizedTools.get_isoline,
         execute: async (args: Record<string, unknown>) => {
+          // Quick Manhattan boundary check before API call
+          // Check multiple possible parameter names
+          console.log("🗺️ get_isoline args:", JSON.stringify(args, null, 2));
+
+          const lat = Number(args.lat ?? args.latitude ?? args.origin_lat);
+          const lng = Number(args.lng ?? args.lon ?? args.longitude ?? args.origin_lng);
+
+          if (!isNaN(lat) && !isNaN(lng)) {
+            const outsideManhattan =
+              lat < MANHATTAN_BOUNDS.minLat ||
+              lat > MANHATTAN_BOUNDS.maxLat ||
+              lng < MANHATTAN_BOUNDS.minLng ||
+              lng > MANHATTAN_BOUNDS.maxLng;
+
+            if (outsideManhattan) {
+              console.log(`⚠️ get_isoline: Coordinates (${lat}, ${lng}) outside Manhattan bounds`);
+              return {
+                isError: true,
+                error: "Location is outside Manhattan. NYC Eats currently covers Manhattan only.",
+                outsideManhattan: true,
+              };
+            }
+          } else {
+            console.log(`⚠️ get_isoline: Could not extract lat/lng from args`);
+          }
+
           // 1. Call original get_isoline for polygon
           const result = await (optimizedTools.get_isoline as any).execute(args);
 
@@ -1233,25 +1267,6 @@ When user asks for both location AND vibe (e.g., "hole in the wall spots within 
       }
     : undefined;
 
-  // Create a fallback tool for when the model needs clarification
-  const askClarificationTool = createTool({
-    description:
-      "Use this when you don't understand the user's request or need more information. This will ask the user to clarify.",
-    parameters: z.object({
-      question: z
-        .string()
-        .describe("The clarifying question to ask the user"),
-    }),
-    execute: async (params: { question?: string } | undefined) => {
-      const { question = "Could you tell me more about what you're looking for?" } = params || {};
-      console.log(`❓ askClarification: "${question}"`);
-      return {
-        clarificationNeeded: true,
-        question,
-      };
-    },
-  });
-
   // Combine MCP tools with our custom tools
   // Note: We explicitly exclude search_documents from MCP and use our local semantic search instead
   const allTools = {
@@ -1263,7 +1278,6 @@ When user asks for both location AND vibe (e.g., "hole in the wall spots within 
     // Local tools
     displayRestaurants: displayRestaurantsTool,
     semantic_search_restaurants: semanticSearchRestaurantsTool,
-    askClarification: askClarificationTool,
     // DO NOT include search_documents - replaced by semantic_search_restaurants
   };
   console.log("🛠️ All tools available:", Object.keys(allTools).join(", "));
@@ -1274,6 +1288,7 @@ When user asks for both location AND vibe (e.g., "hole in the wall spots within 
       temperature: 0, // Deterministic responses
       messages: await convertToModelMessages(messages),
       tools: allTools,
+      toolChoice: "auto", //auto //required
       system: systemPrompt,
       stopWhen: stepCountIs(10),
       abortSignal: AbortSignal.timeout(55_000), // Under Vercel's 60s limit

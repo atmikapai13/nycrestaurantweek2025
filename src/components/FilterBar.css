@@ -10,6 +10,18 @@
   gap: 6px;
   align-items: flex-start;
   overflow: visible; /* Allow dropdowns to overflow */
+  pointer-events: none; /* Let touches pass through to map */
+}
+
+/* Re-enable pointer events on interactive children */
+.filter-bar-container * {
+  pointer-events: auto;
+}
+
+/* But disable on hidden filter row */
+.filter-row.hidden,
+.filter-row.hidden * {
+  pointer-events: none;
 }
 
 /* Filter Bar Wrapper - contains hamburger + all rows */
@@ -420,6 +432,7 @@
     flex-direction: column;
     gap: 6px;
     align-items: flex-start;
+    pointer-events: none; /* Let touches pass through to map */
   }
 
   .filter-bar-wrapper {

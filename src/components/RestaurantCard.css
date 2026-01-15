@@ -674,8 +674,8 @@
   .about-accordion,
   .restaurant-week-accordion,
   .contact-accordion {
-    margin-top: 2px;
-    padding-top: 2px;
+    margin-top: 0;
+    padding-top: 0;
   }
 
   /* Reduce accordion header padding on mobile */
@@ -683,7 +683,7 @@
   .about-accordion-header,
   .restaurant-week-accordion-header,
   .contact-accordion-header {
-    padding: 6px 0;
+    padding: 8px 0;
   }
 
   /* Reduce icons row padding */
