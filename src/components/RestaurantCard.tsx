@@ -10,14 +10,13 @@ interface RestaurantCardProps {
   onToggleFavorite?: () => void
   onRequestReviewHighlights?: (prompt: string, slug: string) => void
   onExpandDrawer?: () => void
-  restaurantWeekActive?: boolean
 }
 
-export default function RestaurantCard({ restaurant, placeholderRestaurant, onClose, isFavorited = false, onToggleFavorite, onExpandDrawer, restaurantWeekActive = false }: RestaurantCardProps) {
+export default function RestaurantCard({ restaurant, placeholderRestaurant, onClose, isFavorited = false, onToggleFavorite, onExpandDrawer }: RestaurantCardProps) {
   const displayRestaurant = restaurant || placeholderRestaurant
   const [isContactsOpen, setIsContactsOpen] = useState(false)
   const [isReviewsOpen, setIsReviewsOpen] = useState(false)
-  const [isRestaurantWeekOpen, setIsRestaurantWeekOpen] = useState(restaurantWeekActive)
+  const [isRestaurantWeekOpen, setIsRestaurantWeekOpen] = useState(false)
   const [isAboutOpen, setIsAboutOpen] = useState(false)
 
   // Refs for accordion content
@@ -203,7 +202,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
           >
             <span className="restaurant-week-accordion-title">
               <span className="new-badge">NEW</span>
-              Restaurant Week
+              2026 Spring Restaurant Week
             </span>
             <svg
               className={`restaurant-week-accordion-chevron ${isRestaurantWeekOpen ? 'open' : ''}`}

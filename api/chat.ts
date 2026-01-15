@@ -631,7 +631,8 @@ const chatHandler = async (c: any) => {
 Use for: "cozy date spot", "best omakase", "vegetarian friendly", "vegan options", "gluten-free", "outdoor seating", "trendy rooftop".
 Returns restaurantSlugs array - IMMEDIATELY call displayRestaurants({ restaurant_names: restaurantSlugs }) after this.
 Automatically respects active filter bar selections.
-IMPORTANT: If user mentions "restaurant week", "prix fixe", or "$30/$45/$60 deals", set restaurantWeekIntent=true.`,
+IMPORTANT: If user mentions "restaurant week", "prix fixe", or "$30/$45/$60 deals", set restaurantWeekIntent=true.
+IMPORTANT: If you just called get_isoline, pass its restaurantSlugs to scopeToSlugs to search ONLY within the isochrone area!`,
     parameters: z.object({
       query: z
         .string()
@@ -648,22 +649,37 @@ IMPORTANT: If user mentions "restaurant week", "prix fixe", or "$30/$45/$60 deal
         .optional()
         .default(false)
         .describe("Set to true if user mentions 'restaurant week', 'prix fixe', '$30 lunch', '$45 dinner', or '$60 dinner'. Auto-filters to RW 2026 participants."),
+      scopeToSlugs: z
+        .array(z.string())
+        .optional()
+        .describe("IMPORTANT: If you called get_isoline before this, pass its restaurantSlugs here to scope semantic search to the isochrone area. Example: After get_isoline returns { restaurantSlugs: ['a', 'b', 'c'] }, call semantic_search_restaurants({ query: '...', scopeToSlugs: ['a', 'b', 'c'] })"),
     }),
-    execute: async (params: { query: string; topK?: number; restaurantWeekIntent?: boolean }) => {
-      const { query, topK = 10, restaurantWeekIntent = false } = params || {};
+    execute: async (params: { query: string; topK?: number; restaurantWeekIntent?: boolean; scopeToSlugs?: string[] }) => {
+      const { query, topK = 10, restaurantWeekIntent = false, scopeToSlugs } = params || {};
       try {
         if (!query || typeof query !== "string" || query.trim() === "") {
           console.log(`⚠️ semantic_search_restaurants: No query provided`);
           return { restaurantSlugs: [], restaurants: [], count: 0, query: "", error: "Missing query" };
         }
 
-        console.log(`🔍 semantic_search_restaurants: "${query}" (topK: ${topK}, restaurantWeekIntent: ${restaurantWeekIntent})`);
+        console.log(`🔍 semantic_search_restaurants: "${query}" (topK: ${topK}, restaurantWeekIntent: ${restaurantWeekIntent}, scopeToSlugs: ${scopeToSlugs?.length ?? 'none'})`);
 
         // Detect Restaurant Week intent from query keywords OR explicit parameter
         const hasRWIntent = restaurantWeekIntent || detectRestaurantWeekIntent(query);
 
-        // Build restaurantIds: start with filterPool if present
-        let restaurantIds: string[] | null = hasFilterPool ? [...filterPool] : null;
+        // Build restaurantIds with priority: scopeToSlugs > filterPool > all
+        // scopeToSlugs takes highest priority (from isochrone results within same request)
+        let restaurantIds: string[] | null = null;
+
+        if (scopeToSlugs && scopeToSlugs.length > 0) {
+          // Highest priority: use slugs passed from get_isoline (same request)
+          restaurantIds = [...scopeToSlugs];
+          console.log(`🗺️ Scoping semantic search to ${scopeToSlugs.length} restaurants from isochrone`);
+        } else if (hasFilterPool) {
+          // Second priority: use filterPool from frontend context
+          restaurantIds = [...filterPool];
+          console.log(`🎯 Scoping semantic search to filterPool of ${filterPool.length} restaurants`);
+        }
 
         // If RW intent detected, narrow to only RW participants
         if (hasRWIntent) {
@@ -672,15 +688,13 @@ IMPORTANT: If user mentions "restaurant week", "prix fixe", or "$30/$45/$60 deal
             .map(r => r.slug);
 
           if (restaurantIds) {
-            // Intersect with existing filterPool
+            // Intersect with existing scope (isochrone or filterPool)
             restaurantIds = restaurantIds.filter(slug => rwSlugs.includes(slug));
           } else {
             // Use RW participants as the filter
             restaurantIds = rwSlugs;
           }
           console.log(`🎄 Auto-detected Restaurant Week intent, filtering to ${restaurantIds.length} RW participants`);
-        } else if (hasFilterPool) {
-          console.log(`🎯 Scoping semantic search to filterPool of ${filterPool.length} restaurants`);
         }
 
         // Perform RAG search with 70% semantic + 30% keyword hybrid scoring
@@ -711,6 +725,8 @@ IMPORTANT: If user mentions "restaurant week", "prix fixe", or "$30/$45/$60 deal
           count: restaurants.length,
           query,
           filterPoolApplied: result.filterPoolApplied,
+          // Indicates if we scoped to isochrone via scopeToSlugs parameter
+          scopedToIsochrone: scopeToSlugs && scopeToSlugs.length > 0,
           // Tell frontend to activate Restaurant Week filter if we detected it
           restaurantWeekDetected: hasRWIntent,
         };
@@ -722,6 +738,7 @@ IMPORTANT: If user mentions "restaurant week", "prix fixe", or "$30/$45/$60 deal
           count: 0,
           query: query || "",
           filterPoolApplied: false,
+          scopedToIsochrone: false,
           restaurantWeekDetected: false,
           error: String(error),
         };
@@ -788,6 +805,10 @@ IMPORTANT: If user mentions "restaurant week", "prix fixe", or "$30/$45/$60 deal
   Examples: "vegetarian friendly", "vegan options", "cozy date spot", "trendy rooftop", "quiet romantic".
   **WHY**: Dietary info is in reviews/descriptions, NOT structured database fields. SQL CANNOT find vegetarian restaurants!
   **CRITICAL**: If user mentions "restaurant week", "prix fixe", or "$30/$45/$60 deals", set restaurantWeekIntent=true.
+  **CRITICAL FOR ISOCHRONE+VIBE QUERIES**: If you called get_isoline first, you MUST pass its restaurantSlugs to scopeToSlugs!
+    Example: get_isoline returns { restaurantSlugs: ["a", "b", "c"] }
+    → semantic_search_restaurants({ query: "cozy", scopeToSlugs: ["a", "b", "c"] })
+    This ensures semantic search only looks at restaurants INSIDE the isochrone!
   Returns restaurantSlugs array. **IMMEDIATELY call displayRestaurants({ restaurant_names: restaurantSlugs }) after!**
 - displayRestaurants: **THE MAIN TOOL FOR SHOWING RESTAURANTS.** Use for:
   1. Specific restaurant by name: displayRestaurants({ restaurant_names: ["Hangawi"] }) - supports fuzzy matching!
@@ -821,12 +842,16 @@ The user has applied filters in the app. Your recommendations MUST only include 
 You are a restaurant concierge sommelier helping users discover restaurants and the best deals during NYC Restaurant Week.
 
 ### ⚠️ CRITICAL RULES - NEVER VIOLATE THESE!
-1. **NEVER return an empty response** - You MUST always call a tool and respond!
+1. **ALWAYS CALL TOOLS** - You MUST call tools to find restaurants! Never just respond with text.
 2. **ALWAYS extract information from the user's message** before calling tools.
    - "show me hangawi" → Extract "hangawi" → displayRestaurants({ restaurant_names: ["hangawi"] })
    - "show me italian" → Extract "italian" → execute_sql with cuisine filter
 3. **If you don't understand**, call askClarification({ question: "What kind of restaurant are you looking for?" })
 4. **NEVER call displayRestaurants with empty arguments** - always pass restaurant_names!
+
+### 📝 TEXT OUTPUT RULES (these apply to your TEXT responses, NOT tool calling!)
+5. **BE TERSE** - Max 2 sentences of text. No apologies. No repetition. Let cards speak.
+6. **NO NARRATION BETWEEN TOOLS** - Don't write text explaining each step. Call tools silently, then ONE brief text response at the end.
 
 **PATTERN MATCHING FOR SHORT QUERIES:**
 1. **CUISINE TYPE** ("show me italian", "mediterranean spots", "japanese restaurants"):
@@ -957,6 +982,27 @@ Rules:
    - execute_sql → Returns names. **Your VERY NEXT tool call MUST be displayRestaurants with the names.**
    - Specific restaurant name → displayRestaurants({ restaurant_names: ["name"] }) directly!
    - **WARNING**: If you call semantic_search_restaurants but don't call displayRestaurants immediately after, THE USER WILL SEE NO RESTAURANT CARDS!
+
+### 🚨 RESULT VALIDATION - TRUST YOUR TOOL RESULTS!
+**When semantic_search_restaurants returns results, those ARE your final results. Do NOT second-guess them with execute_sql!**
+
+semantic_search_restaurants searches review text, descriptions, and vibes - things SQL cannot query. If it returns 5 restaurants for "hole in the wall", those 5 restaurants ARE the answer.
+
+❌ WRONG (ignores successful semantic search):
+User: "hole in the wall spots within 15 min walk"
+1. get_isoline → 10 restaurants in area ✓
+2. semantic_search_restaurants("hole in the wall") → 5 matches ✓
+3. execute_sql(...WHERE "hole in the wall"...) → 0 results (SQL can't search vibes!)
+4. "Sorry, no results" ← WRONG! You had 5 results from step 2!
+
+✅ CORRECT (trust semantic search results):
+User: "hole in the wall spots within 15 min walk"
+1. get_isoline → 10 restaurants in area ✓
+2. semantic_search_restaurants("hole in the wall") → 5 matches ✓
+3. displayRestaurants({ restaurant_names: [the 5 slugs] }) ← USE THE RESULTS!
+4. "Found 5 cozy spots!" ← CORRECT!
+
+**KEY RULE**: If semantic_search_restaurants returns results (count > 0), IMMEDIATELY call displayRestaurants with those results. NEVER call execute_sql afterward for the same query - it will fail and you'll lose the good results!
 4. **GEO_REF IDs expire after each response**. Never reference IDs from previous messages. Always call get_isoline fresh when needed.
 5. **NEVER** type out actual coordinates.
 6. **When users mention neighborhoods, geocode them directly**. Don't ask clarifying questions about specific addresses within the neighborhood. Trust your judgment!
@@ -964,24 +1010,50 @@ Rules:
 8. Be concise, charming, and follow the recipe!
 9. **RESTAURANT NAME QUERIES**: When users ask about a specific restaurant by name, use displayRestaurants({ restaurant_names: ["name"] }). Do NOT try to geocode restaurant names - they are restaurants, not locations!
 
-### 📝 RESPONSE FORMAT RULES
-When displaying restaurant results:
-1. **START** with a brief, charming one-liner about what you found (cuisine mix, neighborhood highlights, notable spots).
-2. **CALL displayRestaurants** with the restaurantSlugs from your search to show the cards.
-3. **DO NOT list restaurant names** in your text response - the cards display them beautifully!
-4. **DO NOT repeat** the restaurant list after the cards appear.
-5. Keep your text response SHORT - let the cards do the talking!
+### 📝 RESPONSE FORMAT RULES - BE TERSE!
+**CRITICAL: Keep text SHORT. No fluff.**
 
-Example good response:
-"Bellissimo! We found a handful of restaurants within a 10-minute walk from SoHo. You've got a great mix of Italian trattorias, trendy Asian fusion spots, and classic French bistros. Here are the top-rated gems:"
-[cards appear automatically - no more text needed after]
+1. **Brief intro before tools** (1 sentence max, or none at all).
+2. **NEVER list restaurant names** in text - cards show them.
+3. **NEVER repeat yourself** - if you said it once, don't say it again.
+4. **NEVER apologize** - no "My apologies", "I'm sorry", "it seems I was too subtle".
+5. **NEVER write multiple paragraphs**.
 
-Example BAD response (too verbose):
-"Here are the restaurants: Restaurant A, Restaurant B, Restaurant C..." ❌
-[cards appear]
-"So as you can see, Restaurant A is Italian, Restaurant B is French..." ❌`;
+**AFTER displayRestaurants returns**: Look at the results (michelin_award, nyttop100_rank, summary fields) and add ONE punchy callout about something notable. Then STOP.
 
-  console.log("🔍 System prompt:", systemPrompt);
+✅ GOOD flow:
+- [tools run silently]
+- displayRestaurants returns with data
+- "Found 5 spots. Pro tip: Lilia's got a Michelin star - Missy Robbins is pasta royalty."
+- [cards appear] → DONE
+
+❌ BAD: "Ah, a true aficionado! Let me find you some delightful spots where the good times roll..."
+
+**If search returns same results**: Just say "These are the best matches." Don't apologize.
+
+**MULTI-TOOL QUERIES** (geocode → isoline → search):
+- Call all tools SILENTLY - no text between tool calls!
+- Only speak ONCE at the very end with results.
+❌ BAD: "First I'll geocode... [tool] Excellent, found it at 40.7... Now let me map... [tool] Great, mapped! Now searching..."
+✅ GOOD: [tools run silently] "Found 8 spots within 15 min walk for both of you:"
+
+### 🗺️ ISOCHRONE + SEMANTIC SEARCH COMBO (CRITICAL!)
+When user asks for both location AND vibe (e.g., "hole in the wall spots within 20 min walk of Chrysler Building"):
+
+✅ CORRECT FLOW:
+1. geocode("Chrysler Building, New York City") → { lat, lng }
+2. get_isoline({ lat, lng, minutes: 20, mode: "walking" }) → { restaurantSlugs: ["slug-a", "slug-b", ...] }
+3. semantic_search_restaurants({ query: "hole in the wall", scopeToSlugs: ["slug-a", "slug-b", ...] }) → results ONLY from isochrone!
+4. displayRestaurants({ restaurant_names: [results] })
+
+❌ WRONG (forgets to pass scopeToSlugs):
+1. geocode → ✓
+2. get_isoline → { restaurantSlugs: [...] } ✓
+3. semantic_search_restaurants({ query: "hole in the wall" }) → searches ALL restaurants, ignores isochrone!
+4. Results are from across Manhattan, not the isochrone area!
+
+**KEY**: The scopeToSlugs parameter is what connects get_isoline to semantic_search_restaurants. Without it, semantic search doesn't know about the isochrone!`;
+
 
   // Wrap search_documents to filter results by filterPool
   const wrappedSearchDocuments = optimizedTools.search_documents

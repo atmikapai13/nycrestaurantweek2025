@@ -12,6 +12,16 @@
   overflow: visible; /* Allow dropdowns to overflow */
 }
 
+/* Filter Bar Wrapper - contains hamburger + all rows */
+.filter-bar-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: flex-start;
+  overflow: visible;
+}
+
+
 /* Hamburger Menu Button */
 .filter-hamburger-button {
   width: 25px;
@@ -33,8 +43,7 @@
   transition: all 0.2s ease;
   padding: 0;
   flex-shrink: 0;
-  align-self: flex-end; /* Align with bottom row */
-  margin-bottom: 2px; /* Fine-tune vertical alignment */
+  margin-top: 1px; /* Align with first row pills */
 }
 
 .filter-hamburger-button:hover {
@@ -83,73 +92,26 @@
   pointer-events: auto;
 }
 
-/* Filter Rows */
+/* Filter Row */
 .filter-row {
   display: flex;
   flex-direction: row;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
-  flex-wrap: nowrap;
-}
-
-.filter-row-main {
-  /* Main filters row */
-}
-
-.filter-row-markers {
-  /* Marker-based filters row */
-}
-
-/* Collapsible row container (hamburger + filters) */
-.filter-row-collapsible {
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-  align-items: flex-end;
-  transition: all 0.3s ease;
-  overflow: visible;
-}
-
-/* Keep scroll arrow visible and not cut off */
-.filter-row-collapsible .filter-scroll-arrow {
-  flex-shrink: 0;
-  position: relative;
-  z-index: 10;
-}
-
-.filter-row-collapsible.collapsed .filter-row-markers {
-  max-width: 0;
-  opacity: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.filter-row-collapsible.expanded .filter-row-markers {
-  max-width: 800px;
-  opacity: 1;
-  overflow-x: auto;
+  flex-wrap: wrap;
   overflow-y: visible;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  pointer-events: none;
-  padding-right: 10px;
   padding-bottom: 250px;
   margin-bottom: -250px;
+  transition: all 0.3s ease;
 }
 
-.filter-row-collapsible.expanded .filter-row-markers > * {
-  pointer-events: auto;
-}
-
-.filter-row-collapsible.expanded .filter-row-markers::-webkit-scrollbar {
-  display: none;
-}
-
-.filter-row-markers.hidden {
+.filter-row.hidden {
   max-width: 0;
   opacity: 0;
   overflow: hidden;
   pointer-events: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
 }
 
 /* Hide scrollbar for Chrome/Safari */
@@ -441,10 +403,6 @@
   background: #5b5658;
 }
 
-/* Scroll Arrows - Hidden on desktop */
-.filter-scroll-arrow {
-  display: none;
-}
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
@@ -461,72 +419,17 @@
     align-items: flex-start;
   }
 
-  .filter-row-collapsible {
-    align-items: flex-end;
+  .filter-bar-wrapper {
+    align-items: flex-start;
+    position: relative;
   }
 
-  .filter-row-collapsible.collapsed .filter-row-markers {
-    max-width: 0;
-    opacity: 0;
-    overflow: hidden;
-    pointer-events: none;
-  }
-
-  .filter-row-collapsible.expanded .filter-row-markers {
-    max-width: calc(100vw - 60px);
-    opacity: 1;
-    overflow-x: auto;
-    overflow-y: visible;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    pointer-events: none;
+  .filter-row {
+    max-width: calc(100vw - 50px);
     padding-bottom: 200px;
     margin-bottom: -200px;
   }
 
-  .filter-row-collapsible.expanded .filter-row-markers > * {
-    pointer-events: auto;
-  }
-
-  .filter-row-collapsible.expanded .filter-row-markers::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* Scroll Arrows - Visible on mobile */
-  .filter-scroll-arrow {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(3px) saturate(100%);
-    -webkit-backdrop-filter: blur(3px) saturate(100%);
-    border: none;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
-    cursor: pointer;
-    color: #555;
-    opacity: 0.9;
-    transition: all 0.2s ease;
-    flex-shrink: 0;
-    z-index: 10;
-  }
-
-  .filter-scroll-arrow svg {
-    display: block;
-  }
-
-  .filter-scroll-arrow:hover {
-    opacity: 1;
-    color: #333;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
-  }
-
-  .filter-scroll-arrow:active {
-    background: rgba(222, 227, 228, 0.95);
-    transform: scale(0.92);
-  }
 
   .filter-hamburger-button {
     width: 25px;

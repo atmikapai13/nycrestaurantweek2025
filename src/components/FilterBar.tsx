@@ -51,12 +51,17 @@ export default function FilterBar() {
     drawerHeight,
   } = useMap();
 
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(() => {
+    // Start collapsed on mobile (viewport width <= 768px)
+    return typeof window !== 'undefined' ? window.innerWidth > 768 : true;
+  });
 
-  // Collapse hamburger menu when drawer is at 80vh (if currently expanded)
+  // Collapse hamburger menu when drawer is at 80vh, expand when at 8vh
   useEffect(() => {
     if (drawerHeight === 80 && isExpanded) {
       setIsExpanded(false);
+    } else if (drawerHeight === 8 && !isExpanded) {
+      setIsExpanded(true);
     }
   }, [drawerHeight]);
   const filterBarRef = useRef<HTMLDivElement>(null);
@@ -295,97 +300,7 @@ export default function FilterBar() {
 
   return (
     <div className="filter-bar-container">
-      {/* First row - always visible, never collapses */}
-      <div className="filter-row filter-row-main">
-        <button
-          className={`filter-pill-base restaurant-week-button ${
-            restaurantWeekActive ? "active" : ""
-          }`}
-          onClick={onRestaurantWeekToggle}
-        >
-          2026 Restaurant Week
-        </button>
-
-        <FilterDropdown
-          label={
-            <span
-              style={{ display: "flex", alignItems: "center", gap: "4px" }}
-            >
-              <span
-                style={{
-                  display: "inline-block",
-                  width: "10px",
-                  height: "10px",
-                  borderRadius: "50%",
-                  backgroundColor: "#c81224",
-                  border: "1px solid white",
-                  boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
-                }}
-              ></span>
-              Awarded
-            </span>
-          }
-          icon=""
-          options={[
-            {
-              value: "michelin",
-              label: "Michelin",
-              icon: "/MichelinStar.svg.png",
-            },
-            { value: "bib", label: "Bib Gourmand", icon: "/bibgourmand.png" },
-            { value: "nyt", label: "NYT Top 100", icon: "/nytimes.png" },
-          ]}
-          selectedValues={activeFilters["Badges"] || []}
-          onChange={(values) => handleFilterChange("Badges", values)}
-        />
-
-        <button
-          className={`filter-pill-base favorites-button ${
-            favoritesActive ? "active" : ""
-          }`}
-          onClick={onFavoritesToggle}
-        >
-          <span
-            style={{
-              display: "inline-block",
-              width: "10px",
-              height: "10px",
-              borderRadius: "50%",
-              backgroundColor: "#FF69B4",
-              marginRight: "6px",
-              border: "1px solid white",
-              boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
-            }}
-          ></span>
-          Favorites
-        </button>
-
-        {highlightedRestaurantIds.size > 0 && (
-          <button
-            className={`filter-pill-base remis-recs-button ${
-              highlightedActive ? "active" : ""
-            }`}
-            onClick={onRemisRecsToggle}
-          >
-            <span
-              style={{
-                display: "inline-block",
-                width: "10px",
-                height: "10px",
-                borderRadius: "50%",
-                backgroundColor: "#FF9100",
-                marginRight: "6px",
-                border: "1px solid white",
-                boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
-              }}
-            ></span>
-            Remi's Recs
-          </button>
-        )}
-      </div>
-
-      {/* Second row - collapsible with hamburger */}
-      <div className={`filter-row-collapsible ${isExpanded ? "expanded" : "collapsed"}`}>
+      <div className={`filter-bar-wrapper ${isExpanded ? "expanded" : "collapsed"}`}>
         <button
           className="filter-hamburger-button"
           onClick={toggleExpanded}
@@ -398,8 +313,97 @@ export default function FilterBar() {
 
         <div
           ref={filterBarRef}
-          className={`filter-row filter-row-markers ${isExpanded ? "" : "hidden"}`}
+          className={`filter-row ${isExpanded ? "" : "hidden"}`}
         >
+          <button
+            className={`filter-pill-base restaurant-week-button ${
+              restaurantWeekActive ? "active" : ""
+            }`}
+            onClick={onRestaurantWeekToggle}
+          >
+            Restaurant Week
+          </button>
+
+          <FilterDropdown
+            label={
+              <span
+                style={{ display: "flex", alignItems: "center", gap: "4px" }}
+              >
+                <span
+                  style={{
+                    display: "inline-block",
+                    width: "10px",
+                    height: "10px",
+                    borderRadius: "50%",
+                    backgroundColor: "#c81224",
+                    border: "1px solid white",
+                    boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
+                  }}
+                ></span>
+                Awarded
+              </span>
+            }
+            icon=""
+            options={[
+              {
+                value: "michelin",
+                label: "Michelin",
+                icon: "/MichelinStar.svg.png",
+              },
+              { value: "bib", label: "Bib Gourmand", icon: "/bibgourmand.png" },
+              { value: "nyt", label: "NYT Top 100", icon: "/nytimes.png" },
+            ]}
+            selectedValues={activeFilters["Badges"] || []}
+            onChange={(values) => handleFilterChange("Badges", values)}
+          />
+
+          <button
+            className={`filter-pill-base favorites-button ${
+              favoritesActive ? "active" : ""
+            }`}
+            onClick={onFavoritesToggle}
+            aria-label={favoritesActive ? "Hide favorites" : "Show favorites"}
+          >
+            <span
+              style={{
+                display: "inline-block",
+                width: "10px",
+                height: "10px",
+                borderRadius: "50%",
+                backgroundColor: "#FF69B4",
+                marginRight: "4px",
+                border: "1px solid white",
+                boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
+              }}
+            ></span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill={favoritesActive ? "#FF69B4" : "none"} stroke="#FF69B4" strokeWidth="2.0">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+          </button>
+
+          {highlightedRestaurantIds.size > 0 && (
+            <button
+              className={`filter-pill-base remis-recs-button ${
+                highlightedActive ? "active" : ""
+              }`}
+              onClick={onRemisRecsToggle}
+            >
+              <span
+                style={{
+                  display: "inline-block",
+                  width: "10px",
+                  height: "10px",
+                  borderRadius: "50%",
+                  backgroundColor: "#FF9100",
+                  marginRight: "6px",
+                  border: "1px solid white",
+                  boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
+                }}
+              ></span>
+              Remi's Recs
+            </button>
+          )}
+
           <FilterDropdown
             label="$$$"
             icon=""
@@ -416,6 +420,14 @@ export default function FilterBar() {
             onChange={(values) => handleFilterChange("Yelp Rating", values)}
           />
 
+          <FilterDropdown
+            label="Cuisine"
+            icon=""
+            options={cuisineOptions}
+            selectedValues={activeFilters["Cuisine"] || []}
+            onChange={(values) => handleFilterChange("Cuisine", values)}
+          />
+
           <button
             className={`filter-pill-base high-review-count-button ${
               highReviewCountActive ? "active" : ""
@@ -424,14 +436,6 @@ export default function FilterBar() {
           >
             500+ Reviews
           </button>
-
-          <FilterDropdown
-            label="Cuisine"
-            icon=""
-            options={cuisineOptions}
-            selectedValues={activeFilters["Cuisine"] || []}
-            onChange={(values) => handleFilterChange("Cuisine", values)}
-          />
 
           {restaurantWeekActive && (
             <>
@@ -463,32 +467,13 @@ export default function FilterBar() {
             <button
               className="filter-reset-button"
               onClick={handleResetFilters}
+              aria-label="Reset all filters"
             >
               Reset
             </button>
           )}
         </div>
 
-        {showRightArrow && isExpanded && (
-          <button
-            className="filter-scroll-arrow filter-scroll-right"
-            onClick={() => scrollFilterBar("right")}
-            aria-label="Scroll right"
-          >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <polyline points="9 18 15 12 9 6" />
-            </svg>
-          </button>
-        )}
       </div>
     </div>
   );

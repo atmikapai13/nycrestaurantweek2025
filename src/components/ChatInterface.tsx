@@ -180,7 +180,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       isochroneRegionSlugs,
       clearAllLayers,
       filterPoolSlugs,
-      restaurantWeekActive,
       setRestaurantWeekActive,
       setHighlightedRestaurantIds,
     } = useMap();
@@ -368,7 +367,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
     const [currentTip, setCurrentTip] = useState("");
     const [customMessages, setCustomMessages] = useState<Message[]>([]); // For restaurant cards
-    const queuedCardsRef = useRef<Message[]>([]); // Queue cards while loading
 
     const lastMessageRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -378,8 +376,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
     const [isDragging, setIsDragging] = useState(false);
     const [dragStartY, setDragStartY] = useState(0);
     const [dragStartHeight, setDragStartHeight] = useState(40);
-    const [pendingQuery, setPendingQuery] = useState<string | null>(null);
-    const [showResetConfirmation, setShowResetConfirmation] = useState(false);
     const drawerRef = useRef<HTMLDivElement>(null);
     const messagesContainerRef = useRef<HTMLDivElement>(null);
 
@@ -776,8 +772,8 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       }
     };
 
-    // Scroll to show the top of the last card (for restaurant cards on mobile)
-    const scrollToLastCardTop = () => {
+    // Scroll to show the top of the last message/card
+    const scrollToLastCardTop = (offset: number = 40) => {
       if (messagesContainerRef.current) {
         const container = messagesContainerRef.current;
         // Select .chat-message elements (direct children of scroll container)
@@ -786,9 +782,36 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
         if (lastChatMessage) {
           // Scroll to position the top of the message at the top of the scroll area
-          // Subtract 40px to account for drawer handle height and give breathing room
           container.scrollTo({
-            top: Math.max(0, lastChatMessage.offsetTop - 40),
+            top: Math.max(0, lastChatMessage.offsetTop - offset),
+            behavior: "smooth",
+          });
+        }
+      }
+    };
+
+    // Scroll to the first text content in the last assistant message (skips tool statuses)
+    const scrollToLastMessageText = () => {
+      if (messagesContainerRef.current) {
+        const container = messagesContainerRef.current;
+        // Find the last assistant message
+        const assistantMessages = container.querySelectorAll('.chat-message.assistant');
+        const lastAssistantMessage = assistantMessages[assistantMessages.length - 1] as HTMLElement;
+
+        if (lastAssistantMessage) {
+          // Find the first .message-content within it (the actual text, not tool statuses)
+          const firstTextContent = lastAssistantMessage.querySelector('.message-content') as HTMLElement;
+
+          // Calculate position relative to scroll container using getBoundingClientRect
+          const containerRect = container.getBoundingClientRect();
+          const targetElement = firstTextContent || lastAssistantMessage;
+          const targetRect = targetElement.getBoundingClientRect();
+
+          // Calculate the scroll position: current scroll + target's position relative to container
+          const scrollTarget = container.scrollTop + (targetRect.top - containerRect.top) - 40;
+
+          container.scrollTo({
+            top: Math.max(0, scrollTarget),
             behavior: "smooth",
           });
         }
@@ -809,7 +832,8 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
         // Check for tool results whenever messages update
         processToolResults();
 
-        setTimeout(() => scrollToLastMessage(), 100);
+        // Scroll to show the top of the new message so user can read from the beginning
+        setTimeout(() => scrollToLastCardTop(0), 100);
         prevMessagesLengthRef.current = aiMessages.length;
       }
     }, [aiMessages]);
@@ -828,10 +852,10 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
             .join("");
         }
 
-        // If content has changed (streaming), scroll to bottom
+        // If content has changed (streaming), scroll to Remi's text (skips tool statuses)
         if (currentContent !== lastMessageContentRef.current) {
           lastMessageContentRef.current = currentContent;
-          scrollToLastMessage();
+          scrollToLastMessageText();
         }
       }
     }, [aiMessages]);
@@ -873,17 +897,14 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       } else {
         // Clear tip when loading finishes
         setCurrentTip("");
-
-        // Flush queued restaurant cards when loading completes
-        if (queuedCardsRef.current.length > 0) {
-          setCustomMessages((prev) => [...prev, ...queuedCardsRef.current]);
-          queuedCardsRef.current = [];
-        }
       }
     }, [isLoading]);
 
     // Expose addRestaurantCard method to parent via ref
     const addRestaurantCard = (restaurant: Restaurant) => {
+      // Don't add cards while Remi is responding
+      if (isLoading) return;
+
       const isMobile = window.innerWidth <= 768;
 
       // Expand drawer from 8vh to 40vh on mobile when marker is clicked
@@ -898,12 +919,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
         restaurant,
       };
 
-      // Queue cards while Remi is loading to prevent message splitting
-      if (isLoading) {
-        queuedCardsRef.current.push(card);
-      } else {
-        setCustomMessages((prev) => [...prev, card]);
-      }
+      setCustomMessages((prev) => [...prev, card]);
 
       // Use double requestAnimationFrame to ensure layout is complete
       requestAnimationFrame(() => {
@@ -1014,54 +1030,13 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
       if (!userMessage || isLoading) return;
 
-      // Check if query conflicts with active isochrone
-      if (isochroneRegionSlugs && isochroneRegionSlugs.length > 0) {
-        const breakoutPhrases = [
-          "across all of nyc",
-          "across nyc",
-          "all of nyc",
-          "everywhere in nyc",
-          "citywide",
-          "all restaurants",
-          "throughout nyc",
-          "anywhere in nyc",
-        ];
-
-        const lowerMessage = userMessage.toLowerCase();
-        const hasBreakoutIntent = breakoutPhrases.some((phrase) =>
-          lowerMessage.includes(phrase)
-        );
-
-        if (hasBreakoutIntent) {
-          setPendingQuery(userMessage);
-          setShowResetConfirmation(true);
-          setInput("");
-          return;
-        }
-      }
+      // Clear restaurant cards when starting a new conversation turn
+      setCustomMessages([]);
 
       setInput("");
 
       // Send message using AI SDK
       sendMessage({ text: userMessage });
-    };
-
-    const handleConfirmReset = async () => {
-      setShowResetConfirmation(false);
-
-      if (pendingQuery) {
-        await handleClearHistory();
-
-        setTimeout(() => {
-          sendMessage({ text: pendingQuery });
-          setPendingQuery(null);
-        }, 100);
-      }
-    };
-
-    const handleCancelReset = () => {
-      setShowResetConfirmation(false);
-      setPendingQuery(null);
     };
 
     const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -1226,7 +1201,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                   removeRestaurantCard(customMsgIndex);
                                 }
                               }}
-                              restaurantWeekActive={restaurantWeekActive}
                             />
                           </div>
                         </div>
@@ -1261,13 +1235,11 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                   // Track tool occurrences for varied messages
                                   const toolCounts: Record<string, number> = {};
 
-                                  // Sort parts: text first, then tool status, then tool results (cards)
-                                  // This ensures the intro text appears before restaurant cards
+                                  // Sort parts: tool results (cards) come last, everything else maintains original order
                                   const sortedParts = [...msg.parts].sort((a, b) => {
                                     const getPriority = (part: typeof a) => {
-                                      if (isTextPart(part)) return 0; // Text first
-                                      if (isToolInvocationPart(part) || isDynamicToolPart(part)) return 1; // Tool status second
-                                      return 2; // Tool results (cards) last
+                                      if (isTextPart(part) || isToolInvocationPart(part) || isDynamicToolPart(part)) return 0;
+                                      return 1; // Tool results (cards) last
                                     };
                                     return getPriority(a) - getPriority(b);
                                   });
@@ -1384,6 +1356,11 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                         );
 
                                       case "output-available":
+                                        // Delay rendering cards until streaming ends (only for current message)
+                                        if (isLoading && isLastMessage) {
+                                          return null;
+                                        }
+
                                         const displayRestaurantsPool =
                                           part.output?.restaurants || [];
                                         return (
@@ -1675,27 +1652,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
           </div>
         </div>
 
-        {/* Confirmation Dialog */}
-        {showResetConfirmation && (
-          <div className="confirmation-overlay">
-            <div className="confirmation-dialog">
-              <h3>Clear Location Filter?</h3>
-              <p>
-                This query will search across all of NYC, which will clear your
-                current location filter and all other filters. Do you want to
-                continue?
-              </p>
-              <div className="confirmation-actions">
-                <button onClick={handleCancelReset} className="btn-secondary">
-                  Cancel
-                </button>
-                <button onClick={handleConfirmReset} className="btn-primary">
-                  Clear Filters & Search
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     );
   }
