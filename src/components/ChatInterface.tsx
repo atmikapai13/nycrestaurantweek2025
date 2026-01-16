@@ -194,19 +194,19 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       {
         label: "By Area",
         type: "guided" as const,
-        remiResponse: "<strong>Where are you?</strong> Tell me how far you're willing to travel, and I can recommend restaurants within your vicinity. \n\n *e.g. I'm by Roosevelt Island Tramway manhattan side. I'd like to find happy hour spots within 10 min walk from me.*",
+        remiResponse: "<strong>Where are you?</strong> Tell me how far you're willing to travel, and I can recommend restaurants within your vicinity. \n\n*e.g. I'm by Roosevelt Island Tramway manhattan side. I'd like to find happy hour spots within 10 min walk from me.*",
       },
       {
         label: "By Midpoint",
         type: "guided" as const,
-        remiResponse: 
-          "<strong>Meeting up with a friend?</strong> Tell me where you both are, and I'll find restaurants in between! \n\n e.g.: *\I'm by AMC Times Square, and my friend is at One Manhattan West. We can travel 15 minutes by subway. Find spots between us, Remi.*",
+        remiResponse:
+          "<strong>Meeting up with a friend?</strong> Tell me where you both are, and I'll find restaurants in between! \n\n*e.g. I'm by AMC Times Square, and my friend is at One Manhattan West. We can travel 15 minutes by subway. Find spots between us, Remi.*",
         
       },
       {
         label: "By Vibes",
         type: "guided" as const,
-        remiResponse: "<strong>Going for a vibe?</strong> I can find:\n\n• Happy hour spots\n• Cozy date night places\n• Vegan-friendly Restaurant Week deals",
+        remiResponse: "<strong>Going for a vibe?</strong> I can find:\n\n• Happy hour spots\n• Cozy date night places\n• Vegan-friendly 2026 Restaurant Week deals",
       },
     ];
 
@@ -1283,7 +1283,20 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                     return getPriority(a) - getPriority(b);
                                   });
 
-                                  return sortedParts.map((part, pIdx: number) => {
+                                  // Deduplicate consecutive text parts with same content (AI SDK streaming artifact)
+                                  const seenTextContent = new Set<string>();
+                                  const deduplicatedParts = sortedParts.filter((part) => {
+                                    if (isTextPart(part)) {
+                                      const text = part.text.trim();
+                                      if (seenTextContent.has(text)) {
+                                        return false; // Skip duplicate
+                                      }
+                                      seenTextContent.add(text);
+                                    }
+                                    return true;
+                                  });
+
+                                  return deduplicatedParts.map((part, pIdx: number) => {
                                   if (isTextPart(part)) {
                                     return (
                                       <div
