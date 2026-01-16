@@ -485,7 +485,7 @@
   font-weight: 500;
   padding: 0 8px;
   border: none;
-  border-radius: 5px;
+  border-radius: 20px;
   cursor: pointer;
   transition: all 0.2s ease;
   letter-spacing: 0.3px;

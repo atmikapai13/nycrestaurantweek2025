@@ -884,10 +884,12 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       }
     }, [customMessages]);
 
-    // Randomly show a tip when loading starts (60% chance)
+    // Show a tip when loading starts (mobile: 100%, desktop: 70%)
     useEffect(() => {
       if (isLoading) {
-        const shouldShowTip = Math.random() < 0.6;
+        const isMobile = window.innerWidth <= 768;
+        const probability = isMobile ? 1.0 : 0.7;
+        const shouldShowTip = Math.random() < probability;
         if (shouldShowTip) {
           const randomTip = tips[Math.floor(Math.random() * tips.length)];
           setCurrentTip(randomTip);
@@ -907,9 +909,9 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
       const isMobile = window.innerWidth <= 768;
 
-      // Expand drawer to 55vh on mobile when marker is clicked (from 8vh or 30vh landing)
+      // Expand drawer to 45vh on mobile when marker is clicked (from 8vh or 30vh landing)
       if (isMobile && (drawerHeight === 8 || drawerHeight === 30)) {
-        setDrawerHeight(55);
+        setDrawerHeight(45);
       }
 
       const card: Message = {
@@ -1001,7 +1003,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       if (clampedHeight < 25) {
         setDrawerHeight(8);
       } else if (clampedHeight < 60) {
-        setDrawerHeight(55);
+        setDrawerHeight(45);
       } else {
         setDrawerHeight(80);
       }
@@ -1105,12 +1107,12 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       })[];
     }, [aiMessages, customMessages]);
 
-    // Expand drawer to 55vh after first message on mobile
+    // Expand drawer to 45vh after first message on mobile
     useEffect(() => {
       const isMobile = window.innerWidth <= 768;
       const hasUserMessage = allMessages.some(msg => msg.role === 'user');
       if (isMobile && hasUserMessage && drawerHeight === 30) {
-        setDrawerHeight(55);
+        setDrawerHeight(45);
       }
     }, [allMessages, drawerHeight, setDrawerHeight]);
 
@@ -1139,7 +1141,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
           {/* Collapsed header */}
           <div
             className="drawer-collapsed-header"
-            onClick={() => setDrawerHeight(55)}
+            onClick={() => setDrawerHeight(45)}
           >
             <img
               src="/remi_transparent.png"
@@ -1169,10 +1171,10 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                           if (onRestaurantSelect && msg.restaurant) {
                             onRestaurantSelect(msg.restaurant);
                           }
-                          // Expand drawer to 55vh on mobile when clicking card
+                          // Expand drawer to 45vh on mobile when clicking card
                           // (accordion clicks stopPropagation, so this only fires for non-accordion areas)
-                          if (window.innerWidth <= 768 && drawerHeight !== 55) {
-                            setDrawerHeight(55);
+                          if (window.innerWidth <= 768 && drawerHeight !== 45) {
+                            setDrawerHeight(45);
                           }
                         }}
                         style={{ cursor: "pointer" }}
@@ -1392,10 +1394,10 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                                         restaurant
                                                       );
                                                     }
-                                                    // Expand drawer to 55vh on mobile when clicking card
+                                                    // Expand drawer to 45vh on mobile when clicking card
                                                     // (accordion clicks stopPropagation, so this only fires for non-accordion areas)
-                                                    if (window.innerWidth <= 768 && drawerHeight !== 55) {
-                                                      setDrawerHeight(55);
+                                                    if (window.innerWidth <= 768 && drawerHeight !== 45) {
+                                                      setDrawerHeight(45);
                                                     }
                                                   }}
                                                   style={{ cursor: "pointer" }}

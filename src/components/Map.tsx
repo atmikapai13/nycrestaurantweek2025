@@ -109,11 +109,7 @@ export default function Map({
       // Use fitBounds with padding to account for chat interface
       // This matches the padding used in isochrone operations (lines 367-372)
       // Force exact zoom level to match initial map setup
-      console.log("🗺️ Resetting map view:", {
-        center,
-        zoom,
-        bounds: bounds.toArray(),
-      });
+      
       map.current.fitBounds(bounds, {
         padding: isMobile
           ? { top: 80, bottom: 320, left: 20, right: 20 } // Mobile: pad bottom for drawer (40vh ≈ 320px)
@@ -141,10 +137,7 @@ export default function Map({
       restaurantSlugs.includes(r.slug)
     );
 
-    if (focusedRestaurants.length === 0) {
-      console.warn("No restaurants found matching the provided slugs");
-      return;
-    }
+    
 
     // DON'T set isochrone region here - that should only be set by actual isochrone queries
     // This function is called by RAG/semantic/filter results, which should highlight within existing isochrone
@@ -168,11 +161,7 @@ export default function Map({
 
       const isMobileView = window.innerWidth <= 768;
 
-      console.log("🗺️ Focusing map on restaurant bounds:", {
-        count: focusedRestaurants.length,
-        slugs: focusedRestaurants.map((r) => r.slug),
-        bounds: bounds.toArray(),
-      });
+     
 
       map.current.fitBounds(bounds, {
         padding: isMobileView
@@ -250,7 +239,7 @@ export default function Map({
 
     // Mobile-specific viewport: shifted south to account for 40% drawer at bottom
     const mobileCenter: [number, number] = [-73.992, 40.727]; // Shifted south to show lower Manhattan
-    const mobileZoom = 12.2;
+    const mobileZoom = 11.8;
     const mobilePitch = 45;
     const mobileBearing = 0;
 
@@ -319,10 +308,7 @@ export default function Map({
   useEffect(() => {
     if (!map.current) return;
 
-    console.log(
-      `🗺️ Map received ${isochroneLayers.length} layers:`,
-      isochroneLayers.map((l) => ({ id: l.id, label: l.label }))
-    );
+    
 
     // Compare layer arrays (check length and each layer's polygon)
     const layersEqual =
@@ -333,7 +319,7 @@ export default function Map({
 
     const mapInstance = map.current;
     if (layersEqual) {
-      console.log("⏭️ Layers unchanged, only updating visibility");
+      
       // If visibility changed but layers didn't, update visibility for all existing layers
       isochroneLayers.forEach((layer) => {
         const fillLayerId = `isochrone-fill-${layer.id}`;
@@ -373,7 +359,7 @@ export default function Map({
 
       existingLayers.forEach((layer: mapboxgl.Layer) => {
         if (mapInstance.getLayer(layer.id)) {
-          console.log(`🗑️ Removing old layer: ${layer.id}`);
+          
           mapInstance.removeLayer(layer.id);
         }
       });
@@ -385,7 +371,7 @@ export default function Map({
 
       existingSources.forEach((source: string) => {
         if (mapInstance.getSource(source)) {
-          console.log(`🗑️ Removing old source: ${source}`);
+          
           mapInstance.removeSource(source);
         }
       });
@@ -402,9 +388,7 @@ export default function Map({
         (l) => !l.id.includes("-person-")
       );
 
-      console.log(
-        `🎨 Rendering ${baseLayers.length} base layer(s) + ${resultLayers.length} result layer(s)`
-      );
+     
 
       // Add layers in order: base layers first, then result layers (so result is on top)
       const layersToAdd = [...baseLayers, ...resultLayers];
@@ -414,9 +398,7 @@ export default function Map({
         const fillLayerId = `isochrone-fill-${layer.id}`;
         const outlineLayerId = `isochrone-outline-${layer.id}`;
 
-        console.log(
-          `  ✏️ Adding layer: ${layer.id} (${layer.label}, color: ${layer.color})`
-        );
+        
 
         // Normalize polygon to GeoJSON Feature format for Mapbox
         const polygonFeature: GeoJSON.Feature<
@@ -477,10 +459,7 @@ export default function Map({
       // ... (existing fitBounds logic) ...
       // Fit map bounds to ALL polygons
       if (isochroneLayers.length > 0) {
-        console.log(
-          `🗺️ Fitting map to ${isochroneLayers.length} layer(s):`,
-          isochroneLayers.map((l) => l.id)
-        );
+        
         const bounds = new mapboxgl.LngLatBounds();
 
         isochroneLayers.forEach((layer) => {
@@ -516,7 +495,7 @@ export default function Map({
               });
             }
           } catch (error) {
-            console.error("Error processing layer geometry:", layer.id, error);
+            
           }
         });
 
@@ -528,16 +507,9 @@ export default function Map({
           // For single/double isochrone, use conservative zoom
           const maxZoomLevel = isochroneLayers.length >= 3 ? 15.5 : 16;
 
-          console.log(
-            `🔍 Zoom settings: maxZoom=${maxZoomLevel}, layers=${isochroneLayers.length}`
-          );
+          
 
-          console.log("🗺️ Fitting map to isochrone layers:", {
-            layerCount: isochroneLayers.length,
-            layerIds: isochroneLayers.map((l) => l.id),
-            bounds: bounds.toArray(),
-            maxZoom: maxZoomLevel,
-          });
+          
 
           mapInstance.fitBounds(bounds, {
             padding: isMobileView
@@ -689,11 +661,7 @@ export default function Map({
     const { latitude, longitude } = selectedRestaurant;
 
     if (latitude && longitude) {
-      console.log("🎯 Flying to selected restaurant:", {
-        name: selectedRestaurant.name,
-        coords: [longitude, latitude],
-        zoom: 15.5,
-      });
+     
 
       // Detect if mobile for responsive padding
       const isMobileView = window.innerWidth <= 768;

@@ -681,7 +681,8 @@
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
-    transition: height 0.3s ease;
+    transition: height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: height;
     display: flex;
     flex-direction: column;
   }
@@ -695,8 +696,8 @@
     height: 30vh;
   }
 
-  .drawer-55 {
-    height: 55vh;
+  .drawer-45 {
+    height: 45vh;
   }
 
   .drawer-80 {
@@ -776,8 +777,8 @@
     max-height: calc(30vh - 110px);
   }
 
-  .drawer-55 .chat-messages {
-    max-height: calc(55vh - 110px);
+  .drawer-45 .chat-messages {
+    max-height: calc(45vh - 110px);
   }
 
   .drawer-80 .chat-messages {
@@ -786,7 +787,7 @@
 
   .message-bubble {
     font-size: 13px;
-    line-height: 1.4;
+    line-height: 1.2;
   }
 
   .suggestion-pill {

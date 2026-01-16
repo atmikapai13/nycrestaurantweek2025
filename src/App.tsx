@@ -52,6 +52,17 @@ function AppContent() {
     }
   }, [allRestaurants, setFavorites]);
 
+  // iOS Safari URL bar collapse trick - scroll by 1px on load to trigger collapse
+  useEffect(() => {
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile) {
+      // Small timeout to ensure page is fully rendered
+      setTimeout(() => {
+        window.scrollTo(0, 1);
+      }, 100);
+    }
+  }, []);
+
   const toggleFavorite = (restaurantName: string) => {
     const newFavorites = favorites.includes(restaurantName)
       ? favorites.filter((name) => name !== restaurantName)

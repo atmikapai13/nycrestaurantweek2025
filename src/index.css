@@ -22,6 +22,18 @@ html, body {
   position: fixed;
 }
 
+/* iOS Safari URL bar collapse trick - allow minimal scroll on mobile */
+@media (max-width: 768px) {
+  html {
+    height: calc(100% + 1px);
+  }
+  body {
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',

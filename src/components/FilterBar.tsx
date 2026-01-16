@@ -48,6 +48,7 @@ export default function FilterBar() {
     highReviewCountActive,
     setHighReviewCountActive,
     setHighlightedRestaurantIds,
+    drawerHeight,
     setDrawerHeight,
   } = useMap();
 
@@ -59,8 +60,13 @@ export default function FilterBar() {
     return true; // Expanded on desktop
   });
 
-  // One-way logic: user expands filter bar → drawer to 8vh
-  // (handled in toggleExpanded function)
+  // Collapse filter bar when drawer expands to 80vh
+  useEffect(() => {
+    const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
+    if (isMobile && drawerHeight === 80 && isExpanded) {
+      setIsExpanded(false);
+    }
+  }, [drawerHeight, isExpanded]);
 
   const filterBarRef = useRef<HTMLDivElement>(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
