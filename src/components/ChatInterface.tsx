@@ -337,11 +337,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
     // Watch messages for new tool results
     useEffect(() => {
-      console.log("🔔 Messages updated - checking for tool results", {
-        messageCount: aiMessages.length,
-        isResetting,
-        hasMessages: aiMessages.length > 0,
-      });
+      
 
       // Only process if we have messages and are not already resetting
       if (aiMessages.length > 0 && !isResetting) {
@@ -357,19 +353,14 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
     // Manually seed messages on mount if empty
     useEffect(() => {
       if (aiMessages.length === 0) {
-        console.log("🌱 Seeding initial welcome message");
+        
         setMessages([initialMessage]);
       }
     }, []); // Only run once on mount
 
     // Debug: Log messages
     useEffect(() => {
-      console.log(
-        "🔍 AI Messages:",
-        aiMessages.length,
-        aiMessages
-        // JSON.stringify(aiMessages, null, 2)
-      );
+      
     }, [aiMessages]);
 
     const [currentTip, setCurrentTip] = useState("");
@@ -395,7 +386,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
     // Process tool results from AI SDK messages
     const processToolResults = () => {
-      console.log("🔍 processToolResults called - scanning messages...");
+      
 
       // Find NEW (unprocessed) isoline/isochrone parts from the LAST message only
       // This prevents processing the same parts multiple times and creating duplicate layers
@@ -416,9 +407,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
           !processedToolCallIds.current.has(p.toolCallId)
       );
 
-      console.log(
-        `📊 Found ${unprocessedIsolineParts.length} NEW isoline parts (${allIsolineParts.length} total in message)`
-      );
+      
 
       // If there are multiple isoline CALLS in the message, wait for ALL to complete
       let isolineParts: DynamicToolPart[];
@@ -428,9 +417,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
           hasDynamicToolOutput(p)
         ).length;
 
-        console.log(
-          `⏳ Multi-isoline query: ${completedCount}/${allIsolineParts.length} calls completed`
-        );
+        
 
         // Don't process until ALL isoline calls are complete
         if (completedCount < allIsolineParts.length) {
@@ -533,9 +520,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                   });
 
                   if (foundSlugs.length > 0) {
-                    console.log(
-                      `🔎 Found ${foundSlugs.length} restaurants in search results within active area`
-                    );
+                    
                     if (onMapFocus) {
                       onMapFocus(foundSlugs);
                     }
@@ -560,13 +545,13 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
             // Highlight results as yellow markers (don't filter, just color them)
             if (output?.restaurantSlugs && output.restaurantSlugs.length > 0) {
-              console.log(`🌟 Highlighting ${output.restaurantSlugs.length} restaurants from semantic search`);
+              
               setHighlightedRestaurantIds(new Set(output.restaurantSlugs));
             }
 
             // Auto-activate Restaurant Week filter if detected
             if (output?.restaurantWeekDetected) {
-              console.log("🎄 Auto-activating Restaurant Week filter from semantic search");
+              
               setRestaurantWeekActive(true);
             }
           }
@@ -586,7 +571,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
             if (output?.restaurants && output.restaurants.length > 0 && output.restaurants.length <= 2) {
               const slugs = output.restaurants.map((r: any) => r.slug).filter(Boolean);
               if (slugs.length > 0) {
-                console.log(`🌟 Highlighting ${slugs.length} restaurant(s) from direct lookup`);
+               
                 setHighlightedRestaurantIds(new Set(slugs));
               }
             }
@@ -596,26 +581,24 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
       // 2. Handle Isochrone/Isoline results with "Between Us" support
       if (isolineParts.length > 0) {
-        console.log(`🗺️ Processing ${isolineParts.length} isoline result(s)`);
+        
 
         // Find newest isoline part that hasn't been processed yet
         const newIsolineParts = isolineParts.filter(
           (p) => !processedToolCallIds.current.has(p.toolCallId)
         );
 
-        console.log(
-          `📝 New (unprocessed) isoline parts: ${newIsolineParts.length}`
-        );
+        
 
         if (newIsolineParts.length > 0) {
           // Mark all as processed
           newIsolineParts.forEach((p) => {
-            console.log(`✅ Marking ${p.toolCallId} as processed`);
+            
             processedToolCallIds.current.add(p.toolCallId);
           });
 
           if (isolineParts.length > 1) {
-            console.log("🗺️ Processing multiple isoline results (Between Us)");
+            
             const messageId = lastMessage.id;
             const layers: IsochroneLayer[] = isolineParts
               .filter(

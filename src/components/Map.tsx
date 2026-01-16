@@ -570,7 +570,7 @@ export default function Map({
 
         // COLOR PRIORITY: Black (selected) > Pink (favorites) > Red (awards) > Orange (highlighted) > Grey (default)
         if (isSelected) {
-          markerColor = "#000000"; // Black
+          markerColor = "#8b4dfe"; // Purple
           zIndex = 4;
         } else if (isFavorite) {
           markerColor = "#ff67b2"; // Pink
