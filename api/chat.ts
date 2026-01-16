@@ -1288,8 +1288,10 @@ When user asks for both location AND vibe (e.g., "hole in the wall spots within 
           }
 
           // Extract lat/lng from result (check various possible response formats)
-          // MCP tools may return in different structures
+          // MCP tools return in structuredContent.results[0].latitude/longitude
           const lat = Number(
+            (result as any).structuredContent?.results?.[0]?.latitude ??
+            (result as any).structuredContent?.results?.[0]?.lat ??
             (result as any).lat ??
             (result as any).latitude ??
             (result as any).results?.[0]?.lat ??
@@ -1300,6 +1302,9 @@ When user asks for both location AND vibe (e.g., "hole in the wall spots within 
             (result as any).features?.[0]?.geometry?.coordinates?.[1]
           );
           const lng = Number(
+            (result as any).structuredContent?.results?.[0]?.longitude ??
+            (result as any).structuredContent?.results?.[0]?.lng ??
+            (result as any).structuredContent?.results?.[0]?.lon ??
             (result as any).lng ??
             (result as any).lon ??
             (result as any).longitude ??
@@ -1313,17 +1318,40 @@ When user asks for both location AND vibe (e.g., "hole in the wall spots within 
             (result as any).features?.[0]?.geometry?.coordinates?.[0]
           );
 
-          console.log(`🔍 Extracted coordinates: lat=${lat}, lng=${lng}`);
+          // Also extract postcode for additional validation
+          const postcode = (result as any).structuredContent?.results?.[0]?.postcode ?? "";
+          const formattedAddress = (result as any).structuredContent?.results?.[0]?.formattedAddress ?? "";
+
+          console.log(`🔍 Extracted coordinates: lat=${lat}, lng=${lng}, postcode=${postcode}`);
+
+          // Check for non-Manhattan indicators
+          // Manhattan postcodes: 100xx, 101xx, 102xx
+          const isManhattanPostcode = /^10[012]\d{2}$/.test(postcode);
+          const hasBrooklynInAddress = /brooklyn/i.test(formattedAddress);
+          const hasQueensInAddress = /queens/i.test(formattedAddress);
+          const hasBronxInAddress = /bronx/i.test(formattedAddress);
+          const hasStatenIslandInAddress = /staten\s*island/i.test(formattedAddress);
+
+          // Brooklyn postcodes: 112xx, Queens: 11xxx (not 100-102), Bronx: 104xx, Staten Island: 103xx
+          const isBrooklynPostcode = /^112\d{2}$/.test(postcode);
+          const isQueensPostcode = /^11[3-9]\d{2}$/.test(postcode);
+          const isBronxPostcode = /^104\d{2}$/.test(postcode);
+          const isStatenIslandPostcode = /^103\d{2}$/.test(postcode);
+
+          const isOutsideManhattanByPostcode = isBrooklynPostcode || isQueensPostcode || isBronxPostcode || isStatenIslandPostcode;
+          const isOutsideManhattanByAddress = hasBrooklynInAddress || hasQueensInAddress || hasBronxInAddress || hasStatenIslandInAddress;
 
           if (!isNaN(lat) && !isNaN(lng)) {
-            const outsideManhattan =
+            const outsideManhattanByBounds =
               lat < MANHATTAN_BOUNDS.minLat ||
               lat > MANHATTAN_BOUNDS.maxLat ||
               lng < MANHATTAN_BOUNDS.minLng ||
               lng > MANHATTAN_BOUNDS.maxLng;
 
+            const outsideManhattan = outsideManhattanByBounds || isOutsideManhattanByPostcode || isOutsideManhattanByAddress;
+
             if (outsideManhattan) {
-              console.log(`⚠️ geocode: Coordinates (${lat}, ${lng}) outside Manhattan bounds`);
+              console.log(`⚠️ geocode: Location outside Manhattan - bounds: ${outsideManhattanByBounds}, postcode: ${isOutsideManhattanByPostcode} (${postcode}), address: ${isOutsideManhattanByAddress}`);
               return {
                 isError: true,
                 error: "Oops! That location is outside Manhattan. NYC Eats currently covers Manhattan only. If you're interested in helping expand coverage, leave a note and perhaps a coffee at buymeacoffee.com/atmikapai. Cheers!",

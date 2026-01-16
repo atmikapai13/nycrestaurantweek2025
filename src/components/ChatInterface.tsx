@@ -267,14 +267,14 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
     const API_ENDPOINT = API_CONFIG.CHAT_URL;
 
     useEffect(() => {
-      console.log("🔗 Using API endpoint:", API_ENDPOINT);
+      
     }, []);
 
     // Store filterPoolSlugs in a ref so transport can access current value
     const filterPoolRef = useRef<string[]>([]);
     useEffect(() => {
       filterPoolRef.current = filterPoolSlugs;
-      console.log(`🎯 Filter pool updated: ${filterPoolSlugs.length} restaurants`);
+      
     }, [filterPoolSlugs]);
 
     // Custom transport that injects filterPool into requests
@@ -293,7 +293,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
               },
             };
 
-            console.log(`📤 Sending request with filterPool: ${filterPoolRef.current.length} slugs`);
+            
 
             return fetch(url, {
               ...options,
