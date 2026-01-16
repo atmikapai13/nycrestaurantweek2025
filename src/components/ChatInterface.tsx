@@ -194,7 +194,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       {
         label: "By Area",
         type: "guided" as const,
-        remiResponse: "<strong>Which neighborhood are you in?</strong> Tell me how far you're willing to travel, and I can recommend some spots. \n\n e.g. I'm by Roosevelt Island Tramway manhattan side, willing to walk up to 10 min.",
+        remiResponse: "<strong>Where are you in?</strong> Tell me how far you're willing to travel, and I can recommend some spots by you. \n\n *e.g. I'm by Roosevelt Island Tramway manhattan side. I'd like to find spots within 10 min walk from me.*",
       },
       {
         label: "By Midpoint",

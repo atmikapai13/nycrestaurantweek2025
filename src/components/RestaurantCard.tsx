@@ -258,7 +258,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
           >
             <span className="restaurant-week-accordion-title">
               <span className="new-badge">NEW</span>
-              2026 Spring Restaurant Week
+              2026 Restaurant Week
             </span>
             <svg
               className={`restaurant-week-accordion-chevron ${isRestaurantWeekOpen ? 'open' : ''}`}
@@ -383,13 +383,22 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
             {/* Award Tags */}
             <div className="about-award-tags" style={{ display: 'flex', gap: '6px', marginBottom: '4px', flexWrap: 'wrap' }}>
               {displayRestaurant.michelin_award && ['ONE_STAR', 'TWO_STARS', 'THREE_STARS'].includes(displayRestaurant.michelin_award) && (
-                <span className="tag tag-michelin">Michelin</span>
+                <span className="tag tag-michelin">
+                  <img src="/MichelinStar.svg.png" alt="" className="tag-icon" />
+                  Michelin
+                </span>
               )}
               {displayRestaurant.michelin_award === 'BIB_GOURMAND' && (
-                <span className="tag tag-bib">Bib Gourmand</span>
+                <span className="tag tag-bib">
+                  <img src="/bibgourmand.png" alt="" className="tag-icon" />
+                  Bib Gourmand
+                </span>
               )}
               {displayRestaurant.nyttop100_rank && (
-                <span className="tag tag-nyt-rank">NYT Rank {displayRestaurant.nyttop100_rank}</span>
+                <span className="tag tag-nyt-rank">
+                  <img src="/nytimes.png" alt="" className="tag-icon" />
+                  NYT Rank {displayRestaurant.nyttop100_rank}
+                </span>
               )}
             </div>
             <p className="card-body-text review-text">

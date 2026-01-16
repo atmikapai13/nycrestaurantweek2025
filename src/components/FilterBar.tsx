@@ -456,7 +456,7 @@ export default function FilterBar() {
                 }`}
                 onClick={onHasMenuToggle}
               >
-                Has Prix Fixe Menu
+                Published Prix Fixe Menu
               </button>
 
               <FilterDropdown

@@ -918,7 +918,7 @@ Available Tools for analysis "${analysisId}":${toolInstructions}
 
 **Time only, no mode** (e.g., "restaurants within 20 min of Grand Central") → Ask for mode only: "Walking, subway, cycling, or driving for those 20 minutes?"
 
-**Neither mode nor time** (e.g., "restaurants in SoHo") → Ask for both conversationally: "How would you like to get around - walking, subway, cycling, or driving? And how far are you willing to travel?"
+**Neither mode nor time** (e.g., "restaurants in SoHo") → Ask for both conversationally: "How would you like to get around - walking, subway, cycling, or driving? And how many minutes are you willing to travel?"
 
 **Travel modes:** walking/walk/on foot → "walking" | subway/transit/train/MTA → "transit" | cycling/bike → "cycling" | driving/car/Uber/taxi → "driving"
 
@@ -1272,11 +1272,76 @@ When user asks for both location AND vibe (e.g., "hole in the wall spots within 
       }
     : undefined;
 
+  // Wrap geocode to validate coordinates are within Manhattan
+  const wrappedGeocode = optimizedTools.geocode
+    ? {
+        ...optimizedTools.geocode,
+        execute: async (args: Record<string, unknown>) => {
+          // Call original geocode
+          const result = await (optimizedTools.geocode as any).execute(args);
+
+          // Log the full result to understand its structure
+          console.log("🔍 geocode result:", JSON.stringify(result, null, 2));
+
+          if (!result || (result as any).isError) {
+            return result;
+          }
+
+          // Extract lat/lng from result (check various possible response formats)
+          // MCP tools may return in different structures
+          const lat = Number(
+            (result as any).lat ??
+            (result as any).latitude ??
+            (result as any).results?.[0]?.lat ??
+            (result as any).results?.[0]?.latitude ??
+            (result as any).coordinates?.lat ??
+            (result as any).coordinates?.latitude ??
+            (result as any).geometry?.coordinates?.[1] ?? // GeoJSON format [lng, lat]
+            (result as any).features?.[0]?.geometry?.coordinates?.[1]
+          );
+          const lng = Number(
+            (result as any).lng ??
+            (result as any).lon ??
+            (result as any).longitude ??
+            (result as any).results?.[0]?.lng ??
+            (result as any).results?.[0]?.lon ??
+            (result as any).results?.[0]?.longitude ??
+            (result as any).coordinates?.lng ??
+            (result as any).coordinates?.lon ??
+            (result as any).coordinates?.longitude ??
+            (result as any).geometry?.coordinates?.[0] ?? // GeoJSON format [lng, lat]
+            (result as any).features?.[0]?.geometry?.coordinates?.[0]
+          );
+
+          console.log(`🔍 Extracted coordinates: lat=${lat}, lng=${lng}`);
+
+          if (!isNaN(lat) && !isNaN(lng)) {
+            const outsideManhattan =
+              lat < MANHATTAN_BOUNDS.minLat ||
+              lat > MANHATTAN_BOUNDS.maxLat ||
+              lng < MANHATTAN_BOUNDS.minLng ||
+              lng > MANHATTAN_BOUNDS.maxLng;
+
+            if (outsideManhattan) {
+              console.log(`⚠️ geocode: Coordinates (${lat}, ${lng}) outside Manhattan bounds`);
+              return {
+                isError: true,
+                error: "Oops! That location is outside Manhattan. NYC Eats currently covers Manhattan only. If you're interested in helping expand coverage, leave a note and perhaps a coffee at buymeacoffee.com/atmikapai. Cheers!",
+                outsideManhattan: true,
+              };
+            }
+          }
+
+          return result;
+        },
+      }
+    : null;
+
   // Combine MCP tools with our custom tools
   // Note: We explicitly exclude search_documents from MCP and use our local semantic search instead
   const allTools = {
     // Selectively include MCP tools (exclude search_documents)
-    ...(optimizedTools.geocode ? { geocode: optimizedTools.geocode } : {}),
+    ...(wrappedGeocode ? { geocode: wrappedGeocode } : {}),
     // Override with filtered/wrapped versions
     ...(wrappedExecuteSql ? { execute_sql: wrappedExecuteSql } : {}),
     ...(wrappedGetIsoline ? { get_isoline: wrappedGetIsoline } : {}),
@@ -1289,22 +1354,30 @@ When user asks for both location AND vibe (e.g., "hole in the wall spots within 
 
   try {
     const result = streamText({
-      model: google("gemini-2.5-flash"),
+      model: google("gemini-2.5-flash"), // Try 2.0 if 2.5 is rate limited
       temperature: 0, // Deterministic responses
       messages: await convertToModelMessages(messages),
       tools: allTools,
-      toolChoice: "auto", //auto //required
+      toolChoice: "auto", // Force tool usage - model was stopping without acting
       system: systemPrompt,
       stopWhen: stepCountIs(10),
       abortSignal: AbortSignal.timeout(55_000), // Under Vercel's 60s limit
       onStepFinish: (step) => {
+        // Log full step info for debugging
         console.log(
           `🎯 Step: ${step.finishReason}${
             Array.isArray(step.toolCalls) && step.toolCalls.length
               ? ` | Tools: ${step.toolCalls.filter(Boolean).map((t) => t?.toolName ?? "unknown").join(", ")}`
               : ""
-          }`
+          }${step.text ? ` | Text: "${step.text.substring(0, 100)}..."` : ""}`
         );
+        // Log if step has any error or unexpected content
+        if ((step as any).error) {
+          console.error("❌ Step error:", (step as any).error);
+        }
+        if ((step as any).response?.headers) {
+          console.log("📋 Response headers:", JSON.stringify((step as any).response.headers));
+        }
         (Array.isArray(step.toolCalls) ? step.toolCalls : []).forEach((tc) => {
           if (!tc) return;
           // Log tool arguments

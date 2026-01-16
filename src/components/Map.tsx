@@ -238,7 +238,7 @@ export default function Map({
     const isMobile = window.innerWidth <= 768;
 
     // Mobile-specific viewport: shifted south to account for 40% drawer at bottom
-    const mobileCenter: [number, number] = [-73.992, 40.727]; // Shifted south to show lower Manhattan
+    const mobileCenter: [number, number] = [-73.988, 40.727]; // Shifted south to show lower Manhattan
     const mobileZoom = 11.8;
     const mobilePitch = 45;
     const mobileBearing = 0;

@@ -91,22 +91,34 @@
   color: #000000;
 }
 
+.tag-michelin,
+.tag-bib,
+.tag-nyt-rank {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .tag-michelin {
-  background-color: #ffb3b3;
+  background-color: hsla(0, 100%, 85%, 0.456);
   color: #000000;
 }
 
 .tag-bib {
-  background-color: #ffb3b3bb;
+  background-color: hsla(0, 100%, 85%, 0.456);
   color: #000000;
 }
 
 .tag-nyt-rank {
-  background-color: rgba(249, 152, 100, 0.495);
+  background-color: rgba(249, 152, 100, 0.395);
   color: #000000;
 }
 
-
+.tag-icon {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+}
 
 /* Restaurant Name */
 .restaurant-name {
@@ -676,6 +688,8 @@
 
   /* Keep unified body text consistent across mobile and desktop */
 
+  
+
   .restaurant-description {
     margin-bottom: 10px;
   }
@@ -746,6 +760,18 @@
   /* Reduce icons row padding */
   .restaurant-icons-row {
     padding-top: 4px;
+    gap: 8px;
+  }
+
+  /* Bigger social icons on mobile */
+  .icon-link {
+    width: 32px;
+    height: 32px;
+  }
+
+  .icon-link svg {
+    width: 18px;
+    height: 18px;
   }
 
   /* Find a Table button - bigger and more prominent */
