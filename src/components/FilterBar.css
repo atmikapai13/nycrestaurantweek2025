@@ -38,11 +38,10 @@
 }
 
 
-/* Hamburger Menu Button */
+/* Filter Toggle Button */
 .filter-hamburger-button {
-  width: 25px;
   height: 25px;
-  border-radius: 50%;
+  border-radius: 12px;
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(3px) saturate(100%);
   -webkit-backdrop-filter: blur(3px) saturate(100%);
@@ -50,14 +49,14 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   gap: 4px;
 
   cursor: pointer;
   transition: all 0.2s ease;
-  padding: 0;
+  padding: 0 10px 0 8px;
   flex-shrink: 0;
   margin-top: 1px; /* Align with first row pills */
 }
@@ -67,12 +66,20 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.hamburger-line {
-  width: 15px;
-  height: 2px;
-  background-color: #333;
-  border-radius: 1px;
-  transition: all 0.2s ease;
+.filter-hamburger-button svg {
+  color: #333;
+}
+
+.filter-button-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #333;
+  white-space: nowrap;
+}
+
+/* When expanded, make button more compact (icon only) */
+.filter-bar-wrapper.expanded .filter-hamburger-button {
+  padding: 0 6px;
 }
 
 /* FilterBar - Two Row Layout */
@@ -452,12 +459,7 @@
 
 
   .filter-hamburger-button {
-    width: 25px;
     height: 25px;
-  }
-
-  .hamburger-line {
-    width: 15px;
   }
 
   .filter-bar {

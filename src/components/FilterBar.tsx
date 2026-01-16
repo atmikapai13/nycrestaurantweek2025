@@ -317,9 +317,15 @@ export default function FilterBar() {
           onClick={toggleExpanded}
           aria-label="Toggle filters"
         >
-          <span className="hamburger-line"></span>
-          <span className="hamburger-line"></span>
-          <span className="hamburger-line"></span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <line x1="4" y1="6" x2="20" y2="6"/>
+            <line x1="4" y1="12" x2="20" y2="12"/>
+            <line x1="4" y1="18" x2="20" y2="18"/>
+            <circle cx="8" cy="6" r="2" fill="currentColor"/>
+            <circle cx="16" cy="12" r="2" fill="currentColor"/>
+            <circle cx="10" cy="18" r="2" fill="currentColor"/>
+          </svg>
+          {!isExpanded && <span className="filter-button-label">Refine</span>}
         </button>
 
         <div

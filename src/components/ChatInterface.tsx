@@ -224,7 +224,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
     // Tips shown while loading
     const tips = [
-      "Enjoying NYC Eats? Buy my creator a <a href=\"https://buymeacoffee.com/atmikapai\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #FF69B4; text-decoration: underline;\">coffee</a>. Cheers!",
+      
       "Tap a restaurant marker and hit the heart to favorite it.",
       "Your favorites appear as pink markers—toggle the heart filter to show only those.",
       "Award-winning spots—Michelin, Bib Gourmand, or New York Times Top 100—appear as red markers.",
@@ -237,7 +237,8 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       "Isochrones support walking, biking, transit, or driving—just tell me your preferred mode.",
       "Use the '500+ Reviews' in filter bar to find crowd-tested favorites.",
       "Ask me to find restaurants between two places—just give two addresses and travel times!",
-      "Some restaurants have published their prix fixe menus for Restaurant Week—use 'Has Prix Fixe Menu' in filter bar to find them!"
+      "Some restaurants have published their prix fixe menus for Restaurant Week—use 'Has Prix Fixe Menu' in filter bar to find them!",
+      "Enjoying NYC Eats? Buy my creator a <a href=\"https://buymeacoffee.com/atmikapai\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #FF69B4; text-decoration: underline;\">coffee</a>. Cheers!",
     ];
 
     
@@ -1467,16 +1468,14 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                             )}
                                             {displayRestaurantsPool.length ===
                                               0 && !part.output?.error && (
-                                              <p
-                                                style={{
-                                                  padding: "16px",
-                                                  color: "#666",
-                                                }}
-                                              >
-                                                {part.type === "tool-lookup_restaurant"
-                                                  ? `I couldn't find a restaurant called "${part.output?.restaurant_name || 'that'}"`
-                                                  : `No restaurants found for "${part.output?.query || 'your search'}"`}
-                                              </p>
+                                              // Log to console instead of showing in UI
+                                              console.log(
+                                                `[ChatInterface] No restaurants found:`,
+                                                part.type === "tool-lookup_restaurant"
+                                                  ? `lookup for "${part.output?.restaurant_name || 'unknown'}"`
+                                                  : `search for "${part.output?.query || 'unknown'}"`
+                                              ),
+                                              null
                                             )}
                                           </div>
                                         );
