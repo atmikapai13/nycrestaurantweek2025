@@ -13,8 +13,12 @@
   pointer-events: none; /* Let touches pass through to map */
 }
 
-/* Re-enable pointer events on interactive children */
-.filter-bar-container * {
+/* Re-enable pointer events ONLY on interactive elements (not wrappers with padding) */
+.filter-bar-container .filter-hamburger-button,
+.filter-bar-container .filter-pill-base,
+.filter-bar-container .filter-dropdown,
+.filter-bar-container .filter-dropdown-menu,
+.filter-bar-container .filter-reset-button {
   pointer-events: auto;
 }
 

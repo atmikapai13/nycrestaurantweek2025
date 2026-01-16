@@ -431,14 +431,6 @@ export default function FilterBar() {
             onChange={(values) => handleFilterChange("Yelp Rating", values)}
           />
 
-          <FilterDropdown
-            label="Cuisine"
-            icon=""
-            options={cuisineOptions}
-            selectedValues={activeFilters["Cuisine"] || []}
-            onChange={(values) => handleFilterChange("Cuisine", values)}
-          />
-
           <button
             className={`filter-pill-base high-review-count-button ${
               highReviewCountActive ? "active" : ""
@@ -447,6 +439,14 @@ export default function FilterBar() {
           >
             500+ Reviews
           </button>
+
+          <FilterDropdown
+            label="Cuisine"
+            icon=""
+            options={cuisineOptions}
+            selectedValues={activeFilters["Cuisine"] || []}
+            onChange={(values) => handleFilterChange("Cuisine", values)}
+          />
 
           {restaurantWeekActive && (
             <>

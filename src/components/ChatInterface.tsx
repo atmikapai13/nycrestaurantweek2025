@@ -186,51 +186,58 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
     // Random welcome message selection
     const welcomeMessages = [
-      '<span class="welcome-greeting">I\'m Remi!</span> <br>Let\'s help you find the best restaurants and 2026 Restaurant Week deals:',
+      '<span class="welcome-greeting">I\'m Remi!</span><br>Let\'s help you find the best restaurants and 2026 Restaurant Week deals:',
     ];
 
-    // Quick-start suggestions for new users
+    // Quick-start suggestions - clicking these triggers Remi to ask a guiding question
     const suggestions = [
       {
         label: "By Area",
-        prompt: [
-          "Here's an example scenario: 'I'm in Soho, hunting for spots I can reach in under 15 mins by subway. What's on the menu, Remi?'",
-          "Here's an example scenario: 'Any places within a 15 min subway of West Village?'",
-          "Here's an example scenario: 'Show me hole in the wall restaurants by Roosevelt Island Tramway by E61 st within 20 minute walk.'"
-        ],
+        type: "guided" as const,
+        remiResponse: "<strong>Which neighborhood are you in?</strong> I can find restaurants by you! \n\n",
       },
       {
-        label: "By Meeting Point",
-        prompt: [
-          "Here's an example scenario: 'My friend is in Midtown, I'm in Murray Hill — what's some restaurants in between us within a short 10 min transit?'",
-          "Here's an example scenario: 'I'm in Chelsea. Show me restaurants around the area excluding MSG, because it's always too busy. I'm willing to walk up to 20 mins.'",
-          "Here's an example scenario: 'I'm by AMC Times Square, and my friend is at One Manhattan West. We are willing to travel 15 minutes walking. Find spots between us, Remi.'"
-        ],
+        label: "By Midpoint",
+        type: "guided" as const,
+        remiResponse: 
+          "<strong>Meeting up with a friend?</strong> Tell me where you both are, and I'll find restaurants in between! \n\n e.g.: *\I'm by AMC Times Square, and my friend is at One Manhattan West. We can travel 15 minutes walking. Find spots between us, Remi.*",
+        
       },
       {
         label: "By Vibes",
-        prompt: [
-          "Here's an example scenario: 'Remi, give me couple places that are good for date night.'",
-          "Here's an example scenario: 'Remi, show me happy hour spots in Soho. Willing to travel 10 mins by subway.'",
-          "Here's an example scenario: 'Remi, find me a couple restaurants that are modest and cozy.'",
-          "Here's an example scenario: 'Remi, find me hole in the wall restaurants, and tell me what's your definition for it.'"
-        ],
+        type: "guided" as const,
+        remiResponse: "<strong>Going for a vibe?</strong> I can find:\n\n• Happy hour spots\n• Cozy date night places\n• Vegan-friendly Restaurant Week deals",
       },
+    ];
+
+    const test = [
+      "I'm in Soho, hunting for spots I can reach in under 15 mins by subway. What's on the menu, Remi?",
+      "Any places within a 15 min subway of West Village?",
+      "My friend is in Midtown, I'm in Murray Hill — what's some restaurants in between us within a short 10 min transit?",
+      "I'm by AMC Times Square, and my friend is at One Manhattan West. We are willing to travel 15 minutes walking. Find spots between us, Remi.",
+      "Remi, give me couple places that are good for date night.",
+      "Remi, show me happy hour spots in Soho. Willing to travel 10 mins by subway.",
+      "Remi, find me a couple restaurants that are modest and cozy.",
+      "Remi, find me hole in the wall restaurants, and tell me what's your definition for it."
     ];
 
 
     // Tips shown while loading
     const tips = [
-      "Tap a restaurant marker and hit the heart to save it to your favorites.",
-      "Click 'match your vibe' in the map legend to only see those restaurants.",
-      "Award-winning spots—Michelin, Bib Gourmand, or NYC Top 100—appear as orange pins.",
-      "Ask Remi about vibe and ambiance—think cozy, romantic, lively, and beyond.",
-      "Ask Remi about the best ramen or happy hour in town.",
-      "Once an isochrone is drawn, refine results by price, Yelp rating, or cuisine using the top filter bar.",
-      "Isochrone, simply put, is a map boundary showing how far you can travel within a set time.",
+      "Enjoying NYC Eats? Buy my creator a <a href=\"https://buymeacoffee.com/atmikapai\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #FF69B4; text-decoration: underline;\">coffee</a>. Cheers!",
+      "Tap a restaurant marker and hit the heart to favorite it.",
+      "Your favorites appear as pink markers—toggle the heart filter to show only those.",
+      "Award-winning spots—Michelin, Bib Gourmand, or New York Times Top 100—appear as red markers.",
+      "Ask me for a specific vibe or ambiance (cozy, romantic, lively).",
+      "Ask me for the best ramen or happy hour in town.",
+      "Once an isochrone is drawn, refine results by price, Yelp rating, or cuisine in the filter bar.",
+      "Isochrone is a map boundary showing how far you can travel within a set time.",
       "The current restaurant pool is limited to NYC Restaurant Week within Manhattan.",
-      "Click any restaurant on the map to see Yelp reviews, socials, and more.",
-      "Enjoying NYC Eats? Buy my creator a coffee at buymeacoffee.com/atmikapai. Cheers.",
+      "Tap on a restaurant for reviews, socials, and more.",
+      "Isochrones support walking, biking, transit, or driving—just tell me your preferred mode.",
+      "Use the '500+ Reviews' in filter bar to find crowd-tested favorites.",
+      "Ask me to find restaurants between two places—just give two addresses and travel times!",
+      "Some restaurants have published their prix fixe menus for Restaurant Week—use 'Has Prix Fixe Menu' in filter bar to find them!"
     ];
 
     
@@ -958,9 +965,15 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       // Italic: *text* → <em>text</em>
       result = result.replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, "<em>$1</em>");
 
-      // URLs with protocol
+      // Markdown links: [text](url) → <a href="url">text</a>
       result = result.replace(
-        /(https?:\/\/[^\s]+)/g,
+        /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,
+        '<a href="$2" target="_blank" rel="noopener noreferrer" style="color: #FF69B4; text-decoration: underline;">$1</a>'
+      );
+
+      // URLs with protocol (but not already inside href attributes)
+      result = result.replace(
+        /(?<!href=")(https?:\/\/[^\s<>"]+)/g,
         '<a href="$1" target="_blank" rel="noopener noreferrer" style="color: #FF69B4; text-decoration: underline;">$1</a>'
       );
 
@@ -1017,6 +1030,29 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       handleSend(suggestionText);
     };
 
+    // Handle guided suggestions where Remi asks a question
+    const handleGuidedSuggestion = (remiResponse: string) => {
+      // Expand drawer to 45vh on mobile
+      const isMobile = window.innerWidth <= 768;
+      if (isMobile && drawerHeight !== 45) {
+        setDrawerHeight(45);
+      }
+
+      const guidedMessage = {
+        id: `guided-${Date.now()}`,
+        role: "assistant" as const,
+        content: remiResponse,
+        createdAt: new Date(),
+        parts: [
+          {
+            type: "text" as const,
+            text: remiResponse,
+          },
+        ],
+      };
+      setMessages([...aiMessages, guidedMessage]);
+    };
+
     const handleRestaurantSuggestionClick = (
       suggestionText: string,
       _slug: string
@@ -1027,10 +1063,15 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
     const handleSend = async (
       textOverride?: string | React.MouseEvent | unknown
     ) => {
-      const userMessage =
+      let userMessage =
         typeof textOverride === "string" ? textOverride : input.trim();
 
       if (!userMessage || isLoading) return;
+
+      // Dev shortcut: "\test" sends a random test prompt
+      if (userMessage === "\\test") {
+        userMessage = test[Math.floor(Math.random() * test.length)];
+      }
 
       // Clear restaurant cards when starting a new conversation turn
       setCustomMessages([]);
@@ -1506,7 +1547,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                     >
                                       Tip:
                                     </span>{" "}
-                                    {currentTip}
+                                    <span dangerouslySetInnerHTML={{ __html: linkifyText(currentTip) }} />
                                   </div>
                                 )}
                               </div>
@@ -1544,14 +1585,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                         key={suggestionIdx}
                                         className="suggestion-pill"
                                         onClick={() => {
-                                          const randomPrompt =
-                                            suggestion.prompt[
-                                              Math.floor(
-                                                Math.random() *
-                                                  suggestion.prompt.length
-                                              )
-                                            ];
-                                          handleSuggestionClick(randomPrompt);
+                                          handleGuidedSuggestion(suggestion.remiResponse);
                                         }}
                                       >
                                         {suggestion.label}
@@ -1611,7 +1645,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                         >
                           Tip:
                         </span>{" "}
-                        {currentTip}
+                        <span dangerouslySetInnerHTML={{ __html: linkifyText(currentTip) }} />
                       </div>
                     )}
                   </div>

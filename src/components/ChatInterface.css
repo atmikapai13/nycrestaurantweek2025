@@ -486,7 +486,7 @@
   background: transparent;
   border-radius: 0;
   padding: 0;
-  margin: 8px 0 0 0;
+  margin: 0px 0 0 0;
   max-width: 100%;
   display: block;
 }
@@ -681,8 +681,7 @@
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
-    transition: height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    will-change: height;
+    transition: height 0.3s ease;
     display: flex;
     flex-direction: column;
   }
@@ -862,6 +861,12 @@
 
   .restaurant-suggestions {
     width: 100%;
+  }
+
+  /* Disable hover/active transform on restaurant cards on mobile */
+  .restaurant-cards-container .restaurant-card-message:hover,
+  .restaurant-cards-container .restaurant-card-message:active {
+    transform: none;
   }
 }
 
