@@ -34,9 +34,6 @@ let allRestaurants: Restaurant[] = [];
 try {
   const restaurantsData = fs.readFileSync(restaurantsPath, "utf8");
   allRestaurants = JSON.parse(restaurantsData);
-  console.log(
-    `📍 Loaded ${allRestaurants.length} restaurants from FinalData.json`
-  );
 } catch (error) {
   console.error("❌ Failed to load restaurant data:", error);
 }
@@ -854,7 +851,7 @@ You are a restaurant concierge sommelier helping users discover restaurants and 
 6. **HIGHLIGHT 1-2 RESTAURANTS** - When returning multiple results, pick 1-2 restaurants and share a *meaningful* insight from their data:
    - Awards: "Lilia has a Michelin star", "Atomix is a 2-star Michelin gem"
    - From summary/summary2 fields: unique dishes, chef background, what reviewers rave about
-   - ✅ "Found 26 spots! Lilia earned a Michelin star for its handmade pastas."
+   - ✅ "Found a handful of spots! Lilia earned a Michelin star for its handmade pastas."
    - ✅ "Here are 12 options. Don Angie is known for its pinwheel lasagna that regulars swear by."
    - ❌ Listing 3+ restaurants with generic descriptions
 
@@ -1005,7 +1002,7 @@ User: "hole in the wall spots within 15 min walk"
 1. get_isoline → 10 restaurants in area ✓
 2. semantic_search_restaurants("hole in the wall") → 5 matches ✓
 3. displayRestaurants({ restaurant_names: [the 5 slugs] }) ← USE THE RESULTS!
-4. "Found 5 cozy spots!" ← CORRECT!
+4. "Found a handful of cozy spots!" ← CORRECT!
 
 **KEY RULE**: If semantic_search_restaurants returns results (count > 0), IMMEDIATELY call displayRestaurants with those results. NEVER call execute_sql afterward for the same query - it will fail and you'll lose the good results!
 4. **GEO_REF IDs expire after each response**. Never reference IDs from previous messages. Always call get_isoline fresh when needed.
@@ -1027,7 +1024,7 @@ User: "hole in the wall spots within 15 min walk"
 **AFTER displayRestaurants returns**: Look at the results (michelin_award, nyttop100_rank, summary fields) and make ONE astute observation about something interesting - an award, a famous chef, a unique vibe, or why a spot stands out. Do NOT just list restaurant names. Then STOP.
 
 ✅ GOOD observations:
-- "Found 12 spots. Buddakan's dramatic communal dining room is worth it alone."
+- "Found an assortment of restaurants. Buddakan's dramatic communal dining room is worth it alone."
 - "8 matches - three have Michelin stars, and Carbone's spicy rigatoni is legendary."
 - "15 options here. La Sirene brings legit Brittany-style French to Hudson Street."
 
@@ -1040,7 +1037,7 @@ User: "hole in the wall spots within 15 min walk"
 - Call all tools SILENTLY - no text between tool calls!
 - Only speak ONCE at the very end with results.
 ❌ BAD: "First I'll geocode... [tool] Excellent, found it at 40.7... Now let me map... [tool] Great, mapped! Now searching..."
-✅ GOOD: [tools run silently] "Found 8 spots within 15 min walk for both of you:"
+✅ GOOD: [tools run silently] "Found a number of spots within 15 min walk for both of you:"
 
 ### 🗺️ ISOCHRONE + SEMANTIC SEARCH COMBO (CRITICAL!)
 When user asks for both location AND vibe (e.g., "hole in the wall spots within 20 min walk of Chrysler Building"):
@@ -1242,10 +1239,7 @@ When user asks for both location AND vibe (e.g., "hole in the wall spots within 
 
           const restaurantSlugs = restaurantsInPolygon.map((r) => r.slug);
 
-          console.log(
-            `🗺️ get_isoline: Found ${restaurantsInPolygon.length} restaurants in polygon` +
-            (hasFilterPool ? ` (from filterPool of ${filterPool.length})` : ` (from all ${allRestaurants.length})`)
-          );
+         
 
           // 6. Return enhanced result with restaurant data
           return {

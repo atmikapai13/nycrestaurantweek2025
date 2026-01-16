@@ -1,8 +1,13 @@
 import requests
 import json
 import time
+import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import List, Dict, Any
+
+# Get the directory where this script is located
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(SCRIPT_DIR, "..", "..", "data", "NYCRestaurantWeek")
 
 class FastRestaurantWeekScraper:
     def __init__(self):
@@ -158,8 +163,8 @@ def main():
         
         # Clean and save data
         clean_restaurants = scraper.clean_restaurant_data(raw_restaurants)
-        scraper.save_data(raw_restaurants, "../data/NYCRestaurantWeek/1_ScrapedRaw.json")
-        scraper.save_data(clean_restaurants, "../data/NYCRestaurantWeek/1_Scraped.json")
+        scraper.save_data(raw_restaurants, os.path.join(DATA_DIR, "1_ScrapedRaw.json"))
+        scraper.save_data(clean_restaurants, os.path.join(DATA_DIR, "1_Scraped.json"))
         
         # Print summary stats
         boroughs = {}

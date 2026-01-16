@@ -194,7 +194,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       {
         label: "By Area",
         type: "guided" as const,
-        remiResponse: "<strong>Where are you in?</strong> Tell me how far you're willing to travel, and I can recommend some spots by you. \n\n *e.g. I'm by Roosevelt Island Tramway manhattan side. I'd like to find spots within 10 min walk from me.*",
+        remiResponse: "<strong>Where are you?</strong> Tell me how far you're willing to travel, and I can recommend restaurants within your vicinity. \n\n *e.g. I'm by Roosevelt Island Tramway manhattan side. I'd like to find happy hour spots within 10 min walk from me.*",
       },
       {
         label: "By Midpoint",
@@ -1652,7 +1652,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Find a restaurant in NYC..."
+              placeholder="Search for a restaurant..."
               disabled={isLoading || isResetting}
               className="chat-input"
             />

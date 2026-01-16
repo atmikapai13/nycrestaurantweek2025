@@ -176,20 +176,26 @@ class RestaurantCharacteristicsExtractor:
             r'https?://(?:www\.)?facebook\.com/[^\s"<>]+',
             r'https?://(?:www\.)?fb\.com/[^\s"<>]+',
         ]
-        
+
         # Search in href attributes
         for link in soup.find_all('a', href=True):
             href = link['href']
             if 'facebook.com' in href or 'fb.com' in href:
+                # Skip placeholder nyctourism URLs
+                if 'nyctourism' in href.lower():
+                    continue
                 return href
-        
+
         # Search in page text
         page_text = soup.get_text()
         for pattern in facebook_patterns:
             matches = re.findall(pattern, page_text)
             if matches:
+                # Skip placeholder nyctourism URLs
+                if 'nyctourism' in matches[0].lower():
+                    continue
                 return matches[0]
-        
+
         return None
     
     def extract_instagram_url(self, soup: BeautifulSoup) -> Optional[str]:
@@ -199,20 +205,26 @@ class RestaurantCharacteristicsExtractor:
             r'https?://(?:www\.)?instagram\.com/[^\s"<>]+',
             r'https?://(?:www\.)?ig\.com/[^\s"<>]+',
         ]
-        
+
         # Search in href attributes
         for link in soup.find_all('a', href=True):
             href = link['href']
             if 'instagram.com' in href or 'ig.com' in href:
+                # Skip placeholder nyctourism URLs
+                if 'nyctourism' in href.lower():
+                    continue
                 return href
-        
+
         # Search in page text
         page_text = soup.get_text()
         for pattern in instagram_patterns:
             matches = re.findall(pattern, page_text)
             if matches:
+                # Skip placeholder nyctourism URLs
+                if 'nyctourism' in matches[0].lower():
+                    continue
                 return matches[0]
-        
+
         return None
     
     def extract_menu_url(self, soup: BeautifulSoup) -> Optional[str]:
