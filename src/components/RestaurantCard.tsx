@@ -10,14 +10,16 @@ interface RestaurantCardProps {
   onToggleFavorite?: () => void
   onRequestReviewHighlights?: (prompt: string, slug: string) => void
   onExpandDrawer?: () => void
+  collapsible?: boolean // For displayRestaurants cards - hide accordions behind +/- toggle
 }
 
-export default function RestaurantCard({ restaurant, placeholderRestaurant, onClose, isFavorited = false, onToggleFavorite, onExpandDrawer }: RestaurantCardProps) {
+export default function RestaurantCard({ restaurant, placeholderRestaurant, onClose, isFavorited = false, onToggleFavorite, onExpandDrawer, collapsible = false }: RestaurantCardProps) {
   const displayRestaurant = restaurant || placeholderRestaurant
   const [isContactsOpen, setIsContactsOpen] = useState(false)
   const [isReviewsOpen, setIsReviewsOpen] = useState(false)
   const [isRestaurantWeekOpen, setIsRestaurantWeekOpen] = useState(false)
   const [isAboutOpen, setIsAboutOpen] = useState(false)
+  const [isAccordionSectionOpen, setIsAccordionSectionOpen] = useState(false)
 
   // Refs for accordion content
   const reviewsContentRef = useRef<HTMLDivElement>(null)
@@ -168,13 +170,12 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
         }, '')}
       </p>
 
-      {/* Yelp Rating & Find a Table */}
-      {(displayRestaurant.yelp_rating != null && displayRestaurant.yelp_rating > 0 && displayRestaurant.yelp_review_count != null && displayRestaurant.yelp_review_count > 0) || (displayRestaurant.table_res || displayRestaurant.opentable_id) ? (
+      {/* Yelp Rating */}
+      {displayRestaurant.yelp_rating != null && displayRestaurant.yelp_rating > 0 && displayRestaurant.yelp_review_count != null && displayRestaurant.yelp_review_count > 0 && (
         <div className="yelp-price-row">
-          {displayRestaurant.yelp_rating != null && displayRestaurant.yelp_rating > 0 && displayRestaurant.yelp_review_count != null && displayRestaurant.yelp_review_count > 0 && (
-            <span className="card-body-text review-text yelp-info"><b>Yelp:</b> {displayRestaurant.yelp_rating.toFixed(1)}★ ({displayRestaurant.yelp_review_count.toLocaleString()} Reviews)</span>
-          )}
-          {(displayRestaurant.table_res || displayRestaurant.opentable_id) && (
+          <span className="card-body-text review-text yelp-info"><b>Yelp:</b> {displayRestaurant.yelp_rating.toFixed(1)}★ ({displayRestaurant.yelp_review_count.toLocaleString()} Reviews)</span>
+          {/* Find a Table button - inline for non-collapsible cards */}
+          {!collapsible && (displayRestaurant.table_res || displayRestaurant.opentable_id) && (
             <a
               href={
                 displayRestaurant.table_res && displayRestaurant.table_res.trim() !== ''
@@ -185,12 +186,61 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
               rel="noopener noreferrer"
               className="find-table-btn"
             >
-              Find a Table
+              Reserve
             </a>
           )}
+          {/* + more toggle inline with Yelp when collapsible and NO Reserve button */}
+          {collapsible && !(displayRestaurant.table_res || displayRestaurant.opentable_id) && (
+            <button
+              className="accordion-section-toggle"
+              onClick={(e) => {
+                e.stopPropagation()
+                setIsAccordionSectionOpen(!isAccordionSectionOpen)
+              }}
+              aria-expanded={isAccordionSectionOpen}
+              aria-label={isAccordionSectionOpen ? "Collapse details" : "Expand details"}
+            >
+              <span className="accordion-section-toggle-icon">{isAccordionSectionOpen ? '−' : '+'}</span>
+              <span className="accordion-section-toggle-label">{isAccordionSectionOpen ? 'less' : 'more'}</span>
+            </button>
+          )}
         </div>
-      ) : null}
+      )}
 
+      {/* Reserve + More toggle row for collapsible cards (only when Reserve exists) */}
+      {collapsible && (displayRestaurant.table_res || displayRestaurant.opentable_id) && (
+        <div className="collapsible-actions-row">
+          <a
+            href={
+              displayRestaurant.table_res && displayRestaurant.table_res.trim() !== ''
+                ? displayRestaurant.table_res
+                : `https://www.opentable.com/restaurant/profile/${displayRestaurant.opentable_id}`
+            }
+            target="_blank"
+            rel="noopener noreferrer"
+            className="find-table-btn"
+            onClick={(e) => e.stopPropagation()}
+          >
+            Reserve
+          </a>
+          <button
+            className="accordion-section-toggle"
+            onClick={(e) => {
+              e.stopPropagation()
+              setIsAccordionSectionOpen(!isAccordionSectionOpen)
+            }}
+            aria-expanded={isAccordionSectionOpen}
+            aria-label={isAccordionSectionOpen ? "Collapse details" : "Expand details"}
+          >
+            <span className="accordion-section-toggle-icon">{isAccordionSectionOpen ? '−' : '+'}</span>
+            <span className="accordion-section-toggle-label">{isAccordionSectionOpen ? 'less' : 'more'}</span>
+          </button>
+        </div>
+      )}
+
+      {/* Accordions wrapper - always visible when not collapsible, or when expanded */}
+      {(!collapsible || isAccordionSectionOpen) && (
+        <>
       {/* Restaurant Week Spring 2026 Accordion */}
       {displayRestaurant.meal_types && displayRestaurant.meal_types.length > 0 && (
         <div className="restaurant-week-accordion">
@@ -448,6 +498,8 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
           </div>
         </div>
       </div>
+        </>
+      )}
     </div>
   )
 } 

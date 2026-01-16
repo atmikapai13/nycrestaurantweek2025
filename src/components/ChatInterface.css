@@ -217,7 +217,6 @@
 /* Hover effect for clickable restaurant cards */
 .restaurant-card-message[style*="cursor: pointer"]:hover {
   transform: translateX(4px);
-  opacity: 0.9;
 }
 
 .restaurant-card-message[style*="cursor: pointer"]:active {
@@ -240,7 +239,6 @@
 
 .restaurant-cards-container .restaurant-card-message:hover {
   transform: translateX(4px);
-  opacity: 0.9;
 }
 
 .restaurant-cards-container .restaurant-card-message:active {

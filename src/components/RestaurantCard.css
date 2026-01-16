@@ -74,11 +74,11 @@
   padding: 1px 4px;
   border-radius: 3px;
   font-size: 7px;
-  font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.1px;
   color: white;
   line-height: 1.2;
+  font-weight: 400;
 }
 
 .tag-cuisine {
@@ -161,7 +161,25 @@
   align-items: center;
   font-size: 10px;
   color: #4B5563;
+  margin-top: 6px;
   margin-bottom: 2px;
+}
+
+/* Actions row for collapsible cards (Find a Table + More toggle) */
+.collapsible-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+}
+
+.collapsible-actions-row .find-table-btn {
+  margin-left: 0;
+}
+
+.collapsible-actions-row .accordion-section-toggle {
+  margin: 0;
+  margin-left: auto;
 }
 
 .yelp-info,
@@ -301,18 +319,19 @@
 .review-header {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
+  margin-bottom: 4px;
 }
 
 .review-source-icon {
-  width: 14px;
-  height: 14px;
+  width: 18px;
+  height: 18px;
   object-fit: contain;
   flex-shrink: 0;
 }
 
 .review-source-label {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   color: #4B5563;
   flex-shrink: 0;
@@ -465,7 +484,7 @@
   font-weight: 500;
   padding: 0 8px;
   border: none;
-  border-radius: 20px;
+  border-radius: 5px;
   cursor: pointer;
   transition: all 0.2s ease;
   letter-spacing: 0.3px;
@@ -533,6 +552,42 @@
   max-height: 100px;
 }
 
+/* Accordion Section Toggle (for collapsible cards) */
+.accordion-section-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  width: fit-content;
+  padding: 2px 8px;
+  margin: 6px 0 2px auto;
+  background: rgba(0, 0, 0, 0.04);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #999;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.accordion-section-toggle:hover {
+  background: rgba(0, 0, 0, 0.08);
+  color: #666;
+}
+
+.accordion-section-toggle-icon {
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.accordion-section-toggle-label {
+  font-size: 10px;
+  text-transform: lowercase;
+}
+
 /* Social/Contact Icons Row */
 .restaurant-icons-row {
   display: flex;
@@ -569,13 +624,13 @@
 /* Yelp, OpenTable, and Google Maps icons - grey style matching other icons */
 
 .find-table-btn {
-  background-color: rgba(34, 34, 34, 0.15);
-  color: #343333;
+  background-color: rgb(62, 62, 62);
+  color: #ffffff;
   font-size: 10px;
   font-weight: 500;
   padding: 0 8px;
   border: none;
-  border-radius: 20px;
+  border-radius: 5px;
   cursor: pointer;
   transition: all 0.2s ease;
   letter-spacing: 0.3px;
@@ -587,8 +642,8 @@
 }
 
 .find-table-btn:hover {
-  background-color: rgba(0, 0, 0, 0.25);
-  color: #000000;
+  background-color: rgb(0, 0, 0);
+  color: #ffffff;
   transform: scale(1.0);
 }
 
@@ -615,6 +670,7 @@
   .tag {
     font-size: 11px;
     padding: 5px 12px;
+    font-weight: 500;
   }
 
   /* Keep unified body text consistent across mobile and desktop */

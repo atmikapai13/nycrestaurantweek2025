@@ -1403,6 +1403,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                                   <div className="restaurant-card-wrapper">
                                                     <RestaurantCard
                                                       restaurant={restaurant}
+                                                      collapsible={true}
                                                       isFavorited={favorites.includes(
                                                         restaurant.name
                                                       )}
