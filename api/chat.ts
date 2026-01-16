@@ -1380,7 +1380,7 @@ When user asks for both location AND vibe (e.g., "hole in the wall spots within 
       temperature: 0, // Deterministic responses
       messages: await convertToModelMessages(messages),
       tools: allTools,
-      toolChoice: "auto", // Force tool usage - model was stopping without acting
+      toolChoice: "auto", // auto 
       system: systemPrompt,
       stopWhen: stepCountIs(10),
       abortSignal: AbortSignal.timeout(55_000), // Under Vercel's 60s limit

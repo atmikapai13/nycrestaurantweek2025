@@ -1055,8 +1055,8 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
       if (!userMessage || isLoading) return;
 
-      // Dev shortcut: "\test" sends a random test prompt
-      if (userMessage === "\\test") {
+      // Dev shortcut: "/test" sends a random test prompt
+      if (userMessage === "/test") {
         userMessage = test[Math.floor(Math.random() * test.length)];
       }
 
