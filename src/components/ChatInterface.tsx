@@ -1016,6 +1016,9 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
     // Handle guided suggestions where Remi asks a question
     const handleGuidedSuggestion = (remiResponse: string) => {
+      // Clear restaurant cards when starting a new guided conversation
+      setCustomMessages([]);
+
       // Expand drawer to 45vh on mobile
       const isMobile = window.innerWidth <= 768;
       if (isMobile && drawerHeight !== 45) {
