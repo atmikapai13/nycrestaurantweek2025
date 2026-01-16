@@ -907,9 +907,9 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
       const isMobile = window.innerWidth <= 768;
 
-      // Expand drawer from 8vh to 40vh on mobile when marker is clicked
-      if (isMobile && drawerHeight === 8) {
-        setDrawerHeight(40);
+      // Expand drawer to 55vh on mobile when marker is clicked (from 8vh or 30vh landing)
+      if (isMobile && (drawerHeight === 8 || drawerHeight === 30)) {
+        setDrawerHeight(55);
       }
 
       const card: Message = {
@@ -1001,7 +1001,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       if (clampedHeight < 25) {
         setDrawerHeight(8);
       } else if (clampedHeight < 60) {
-        setDrawerHeight(40);
+        setDrawerHeight(55);
       } else {
         setDrawerHeight(80);
       }
@@ -1105,12 +1105,12 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       })[];
     }, [aiMessages, customMessages]);
 
-    // Expand drawer to 40vh after first message on mobile
+    // Expand drawer to 55vh after first message on mobile
     useEffect(() => {
       const isMobile = window.innerWidth <= 768;
       const hasUserMessage = allMessages.some(msg => msg.role === 'user');
       if (isMobile && hasUserMessage && drawerHeight === 30) {
-        setDrawerHeight(40);
+        setDrawerHeight(55);
       }
     }, [allMessages, drawerHeight, setDrawerHeight]);
 
@@ -1139,7 +1139,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
           {/* Collapsed header */}
           <div
             className="drawer-collapsed-header"
-            onClick={() => setDrawerHeight(40)}
+            onClick={() => setDrawerHeight(55)}
           >
             <img
               src="/remi_transparent.png"
@@ -1169,10 +1169,10 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                           if (onRestaurantSelect && msg.restaurant) {
                             onRestaurantSelect(msg.restaurant);
                           }
-                          // Collapse drawer to 40vh on mobile when clicking top section
+                          // Expand drawer to 55vh on mobile when clicking card
                           // (accordion clicks stopPropagation, so this only fires for non-accordion areas)
-                          if (window.innerWidth <= 768 && drawerHeight !== 40) {
-                            setDrawerHeight(40);
+                          if (window.innerWidth <= 768 && drawerHeight !== 55) {
+                            setDrawerHeight(55);
                           }
                         }}
                         style={{ cursor: "pointer" }}
@@ -1392,10 +1392,10 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                                         restaurant
                                                       );
                                                     }
-                                                    // Collapse drawer to 40vh on mobile when clicking top section
+                                                    // Expand drawer to 55vh on mobile when clicking card
                                                     // (accordion clicks stopPropagation, so this only fires for non-accordion areas)
-                                                    if (window.innerWidth <= 768 && drawerHeight !== 40) {
-                                                      setDrawerHeight(40);
+                                                    if (window.innerWidth <= 768 && drawerHeight !== 55) {
+                                                      setDrawerHeight(55);
                                                     }
                                                   }}
                                                   style={{ cursor: "pointer" }}

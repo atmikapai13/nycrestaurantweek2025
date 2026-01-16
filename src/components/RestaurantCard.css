@@ -171,6 +171,7 @@
   align-items: center;
   justify-content: space-between;
   margin-top: 6px;
+  margin-bottom: 5px;
 }
 
 .collapsible-actions-row .find-table-btn {

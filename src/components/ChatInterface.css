@@ -695,8 +695,8 @@
     height: 30vh;
   }
 
-  .drawer-40 {
-    height: 40vh;
+  .drawer-55 {
+    height: 55vh;
   }
 
   .drawer-80 {
@@ -761,8 +761,8 @@
   }
 
   .drawer-collapsed-logo {
-    width: 28px;
-    height: 28px;
+    width: 36px;
+    height: 36px;
     object-fit: contain;
   }
 
@@ -776,8 +776,8 @@
     max-height: calc(30vh - 110px);
   }
 
-  .drawer-40 .chat-messages {
-    max-height: calc(40vh - 110px);
+  .drawer-55 .chat-messages {
+    max-height: calc(55vh - 110px);
   }
 
   .drawer-80 .chat-messages {

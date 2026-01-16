@@ -60,18 +60,16 @@ export default function Map({
     filteredRestaurants,
     favorites,
     favoritesActive,
-    
     awardsActive,
-    
     highlightedActive,
-    
     highlightedRestaurantIds,
     isochroneLayers,
     layerVisibilityMap,
-    
     selectedRestaurant,
     setSelectedRestaurant,
     restaurantWeekActive,
+    drawerHeight,
+    setDrawerHeight,
   } = useMap();
 
   // Refs for tracking previous isochrone states to prevent unnecessary re-renders
@@ -90,8 +88,8 @@ export default function Map({
     const isMobile = window.innerWidth <= 768;
 
     // Use EXACT same values as initial map setup (lines 212-221)
-    const center = isMobile ? [-73.99, 40.705] : [-74.014, 40.737];
-    const zoom = isMobile ? 11.5 : 12.58; // Mobile: 11.5, Desktop: 12.58
+    const center = isMobile ? [-73.992, 40.727] : [-74.014, 40.737];
+    const zoom = isMobile ? 12.2 : 12.58; 
     const pitch = 45;
     const bearing = 0;
 
@@ -251,8 +249,8 @@ export default function Map({
     const isMobile = window.innerWidth <= 768;
 
     // Mobile-specific viewport: shifted south to account for 40% drawer at bottom
-    const mobileCenter: [number, number] = [-73.99, 40.705]; // Shifted south to show lower Manhattan
-    const mobileZoom = 11.5;
+    const mobileCenter: [number, number] = [-73.992, 40.727]; // Shifted south to show lower Manhattan
+    const mobileZoom = 12.2;
     const mobilePitch = 45;
     const mobileBearing = 0;
 
@@ -290,6 +288,32 @@ export default function Map({
       window.removeEventListener("resize", updateMarkerSizes);
     };
   }, []);
+
+  // Collapse drawer to 8vh when USER interacts with map (zoom/pan) on mobile
+  // Only triggers for user-initiated interactions (has originalEvent), not programmatic ones (flyTo, fitBounds)
+  useEffect(() => {
+    if (!map.current) return;
+
+    const handleMapInteraction = (e: mapboxgl.MapMouseEvent | mapboxgl.MapTouchEvent) => {
+      // Only collapse for user-initiated interactions (has originalEvent)
+      // Programmatic changes (flyTo, fitBounds) don't have originalEvent
+      if (!e.originalEvent) return;
+
+      const isMobile = window.innerWidth <= 768;
+      if (isMobile && drawerHeight !== 8) {
+        setDrawerHeight(8);
+      }
+    };
+
+    const mapInstance = map.current;
+    mapInstance.on("dragstart", handleMapInteraction);
+    mapInstance.on("zoomstart", handleMapInteraction);
+
+    return () => {
+      mapInstance.off("dragstart", handleMapInteraction);
+      mapInstance.off("zoomstart", handleMapInteraction);
+    };
+  }, [drawerHeight, setDrawerHeight]);
 
   // Handle multi-layer isochrone visualization (from MapContext)
   useEffect(() => {
@@ -517,7 +541,7 @@ export default function Map({
 
           mapInstance.fitBounds(bounds, {
             padding: isMobileView
-              ? { top: 80, bottom: 320, left: 20, right: 20 } // Mobile: pad bottom for drawer (40vh ≈ 320px)
+              ? { top: 80, bottom: 360, left: 20, right: 20 } // Mobile: pad bottom for drawer (40vh ≈ 320px)
               : { top: 100, bottom: 100, left: 480, right: 100 }, // Desktop: pad left for chat panel
             maxZoom: maxZoomLevel,
             duration: 1500, // Smooth 1.2s animation
