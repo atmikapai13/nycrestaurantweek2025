@@ -723,6 +723,13 @@
     padding-top: 4px;
   }
 
+  /* Add padding below accordion content on mobile */
+  .review-accordion-content.open,
+  .about-accordion-content.open,
+  .restaurant-week-accordion-content.open {
+    padding-bottom: 12px;
+  }
+
   .meal-types-text {
     /* Inherits from .card-body-text */
   }
@@ -779,6 +786,7 @@
     font-size: 12px;
     padding: 4px 10px;
     font-weight: 600;
+    margin-bottom: 8px;
   }
 
   /* See Menu button - consistent with Find a Table */
