@@ -194,13 +194,13 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       {
         label: "By Area",
         type: "guided" as const,
-        remiResponse: "<strong>Which neighborhood are you in?</strong> I can find restaurants by you! \n\n",
+        remiResponse: "<strong>Which neighborhood are you in?</strong> Tell me how far you're willing to travel, and I can recommend some spots. \n\n e.g. I'm by Roosevelt Island Tramway manhattan side, willing to walk up to 10 min.",
       },
       {
         label: "By Midpoint",
         type: "guided" as const,
         remiResponse: 
-          "<strong>Meeting up with a friend?</strong> Tell me where you both are, and I'll find restaurants in between! \n\n e.g.: *\I'm by AMC Times Square, and my friend is at One Manhattan West. We can travel 15 minutes walking. Find spots between us, Remi.*",
+          "<strong>Meeting up with a friend?</strong> Tell me where you both are, and I'll find restaurants in between! \n\n e.g.: *\I'm by AMC Times Square, and my friend is at One Manhattan West. We can travel 15 minutes by subway. Find spots between us, Remi.*",
         
       },
       {
@@ -1328,7 +1328,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                     const geocodeDoneMessages = [
                                       "My friends in the subway helped me figure out the coordinates!",
                                       "Found the second spot too!",
-                                      "And there's the third location!",
+                                      "And there's the next location!",
                                     ];
 
                                     // Varied messages for isochrone
@@ -1338,10 +1338,18 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                       "All areas are about to map!",
                                     ];
 
+                                    // Varied messages for execute_sql
+                                    const sqlDoneMessages = [
+                                      "Perusing Yelp and Reddit Reviews...",
+                                      "Checking what the rats are raving about...",
+                                      "Consulting Bourdain's Kitchen Confidential...",
+                                      "Taking a look at Michelin Guide...",
+                                    ];
+
                                     if (toolName === "execute_sql") {
                                       statusText = isPending
                                         ? "I'm scurrying through the database..."
-                                        : "I'm consulting Bourdain and Gusteau for recs...";
+                                        : sqlDoneMessages[Math.min(occurrenceNum - 1, sqlDoneMessages.length - 1)];
                                     } else if (
                                       toolName === "get_isochrone" ||
                                       toolName === "get_isoline"

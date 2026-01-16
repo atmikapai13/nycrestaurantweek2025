@@ -113,6 +113,18 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
     }
   }
 
+  // Handle +more accordion section toggle - expand drawer on mobile
+  const handleAccordionSectionToggle = (e: React.MouseEvent) => {
+    e.stopPropagation() // Prevent parent click handler from collapsing drawer
+    const newState = !isAccordionSectionOpen
+    setIsAccordionSectionOpen(newState)
+
+    // Expand drawer to 80vh when opening on mobile
+    if (newState && onExpandDrawer) {
+      onExpandDrawer()
+    }
+  }
+
   return (
     <div className="restaurant-card">
       {/* Top right buttons */}
@@ -193,10 +205,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
           {collapsible && !(displayRestaurant.table_res || displayRestaurant.opentable_id) && (
             <button
               className="accordion-section-toggle"
-              onClick={(e) => {
-                e.stopPropagation()
-                setIsAccordionSectionOpen(!isAccordionSectionOpen)
-              }}
+              onClick={handleAccordionSectionToggle}
               aria-expanded={isAccordionSectionOpen}
               aria-label={isAccordionSectionOpen ? "Collapse details" : "Expand details"}
             >
@@ -225,10 +234,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
           </a>
           <button
             className="accordion-section-toggle"
-            onClick={(e) => {
-              e.stopPropagation()
-              setIsAccordionSectionOpen(!isAccordionSectionOpen)
-            }}
+            onClick={handleAccordionSectionToggle}
             aria-expanded={isAccordionSectionOpen}
             aria-label={isAccordionSectionOpen ? "Collapse details" : "Expand details"}
           >
