@@ -939,7 +939,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
       // Expand drawer to 45vh on mobile when marker is clicked (from 8vh or 30vh landing)
       if (isMobile && (drawerHeight === 8 || drawerHeight === 30)) {
-        setDrawerHeight(45);
+        setDrawerHeight(55);
       }
 
       const card: Message = {
@@ -1036,8 +1036,8 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
       if (clampedHeight < 25) {
         setDrawerHeight(8);
-      } else if (clampedHeight < 60) {
-        setDrawerHeight(45);
+      } else if (clampedHeight < 65) {
+        setDrawerHeight(55);
       } else {
         setDrawerHeight(80);
       }
@@ -1058,8 +1058,8 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
       // Expand drawer to 45vh on mobile
       const isMobile = window.innerWidth <= 768;
-      if (isMobile && drawerHeight !== 45) {
-        setDrawerHeight(45);
+      if (isMobile && drawerHeight !== 55) {
+        setDrawerHeight(55);
       }
 
       const guidedMessage = {
@@ -1143,7 +1143,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       const isMobile = window.innerWidth <= 768;
       const hasUserMessage = allMessages.some(msg => msg.role === 'user');
       if (isMobile && hasUserMessage && drawerHeight === 30) {
-        setDrawerHeight(45);
+        setDrawerHeight(55);
       }
     }, [allMessages, drawerHeight, setDrawerHeight]);
 
@@ -1172,7 +1172,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
           {/* Collapsed header */}
           <div
             className="drawer-collapsed-header"
-            onClick={() => setDrawerHeight(45)}
+            onClick={() => setDrawerHeight(55)}
           >
             <img
               src="/remi_transparent.png"
@@ -1204,8 +1204,8 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                           }
                           // Expand drawer to 45vh on mobile when clicking card
                           // (accordion clicks stopPropagation, so this only fires for non-accordion areas)
-                          if (window.innerWidth <= 768 && drawerHeight !== 45) {
-                            setDrawerHeight(45);
+                          if (window.innerWidth <= 768 && drawerHeight !== 55) {
+                            setDrawerHeight(55);
                           }
                         }}
                         style={{ cursor: "pointer" }}
@@ -1448,8 +1448,8 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                                     }
                                                     // Expand drawer to 45vh on mobile when clicking card
                                                     // (accordion clicks stopPropagation, so this only fires for non-accordion areas)
-                                                    if (window.innerWidth <= 768 && drawerHeight !== 45) {
-                                                      setDrawerHeight(45);
+                                                    if (window.innerWidth <= 768 && drawerHeight !== 55) {
+                                                      setDrawerHeight(55);
                                                     }
                                                   }}
                                                   style={{ cursor: "pointer" }}

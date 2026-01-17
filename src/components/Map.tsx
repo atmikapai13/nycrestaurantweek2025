@@ -185,10 +185,10 @@ export default function Map({
     let size = baseSize;
 
     // Increase size in mobile when zoomed in
-    if (isMobileDevice && zoom >= 12.5) {
-      size *= 1.4;
+    if (isMobileDevice && zoom >= 13.0) {
+      size *= 1.2;
     } else if (zoom >= 12.0) {
-      size *= 1.0;
+      size *= 0.9;
     }
     // Increase size in desktop when zoomed in
     if (!isMobileDevice && zoom >= 13.5) {
@@ -512,15 +512,11 @@ export default function Map({
 
           // For "between us" queries (3+ layers including intersection), zoom in closer
           // For single/double isochrone, use conservative zoom
-          const maxZoomLevel = isochroneLayers.length >= 3 ? 15.5 : 16;
-
-          
-
-          
+          const maxZoomLevel = isMobileView ? 22 : (isochroneLayers.length >= 3 ? 15.5 : 16);
 
           mapInstance.fitBounds(bounds, {
             padding: isMobileView
-              ? { top: 80, bottom: 400, left: 20, right: 20 } // Mobile: pad bottom for drawer (40vh ≈ 320px)
+              ? { top: 30, bottom: 150, left: 10, right: 10 } // Mobile: pad bottom for drawer (40vh ≈ 320px)
               : { top: 100, bottom: 100, left: 480, right: 100 }, // Desktop: pad left for chat panel
             maxZoom: maxZoomLevel,
             duration: 1500, // Smooth 1.2s animation

@@ -563,7 +563,7 @@
 
 .chat-input {
   flex: 1;
-  padding: 6px 10px;
+  padding: 4px 8px;
   border: none;
   border-radius: 12px;
   font-size: 14px;
@@ -685,8 +685,8 @@
     height: 30vh;
   }
 
-  .drawer-45 {
-    height: 45vh;
+  .drawer-55 {
+    height: 55vh;
   }
 
   .drawer-80 {
@@ -766,8 +766,8 @@
     max-height: calc(30vh - 110px);
   }
 
-  .drawer-45 .chat-messages {
-    max-height: calc(45vh - 110px);
+  .drawer-55 .chat-messages {
+    max-height: calc(55vh - 110px);
   }
 
   .drawer-80 .chat-messages {
@@ -784,9 +784,9 @@
   }
 
   .chat-input-container {
-    padding: 8px 12px;
+    padding: 6px 10px;
     width: auto;
-    margin: 0 10px;
+    margin: 0 8px;
     position: absolute;
     bottom: 15px;
     left: 0;
@@ -796,9 +796,10 @@
   }
 
   .chat-input {
-    min-height: 22px;
+    min-height: 20px;
     max-height: 90px;
     font-size: 16px; /* Prevent iOS zoom on focus */
+    line-height: 1.2;
   }
 
   /* Switch from desktop avatar (outside bubble) to mobile avatar (inside bubble) */
@@ -938,6 +939,13 @@
 
 .btn-primary:hover {
   background: #ff1493;
+}
+
+/* Short mobile screens - Hide collapsed header to prevent cutoff */
+@media (max-width: 768px) and (max-height: 766px) {
+  .drawer-8 .drawer-collapsed-header {
+    display: none;
+  }
 }
 
 /* Desktop - Hide collapsed header (only for mobile) */
