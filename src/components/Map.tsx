@@ -686,7 +686,7 @@ export default function Map({
         duration: 1900, // Smooth 1.8s animation
         essential: true, // This animation is essential with respect to prefers-reduced-motion
         padding: isMobileView
-          ? { top: 80, bottom: 320, left: 20, right: 20 } // Mobile: pad bottom for drawer
+          ? { top: 40, bottom: 350, left: 20, right: 20 } // Mobile: pad bottom for drawer
           : { top: 100, bottom: 100, left: 480, right: 100 }, // Desktop: pad left for chat panel
       });
     }
