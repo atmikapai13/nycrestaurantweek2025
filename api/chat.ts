@@ -855,6 +855,7 @@ The user has applied filters in the app. Your recommendations MUST only include 
 | Restaurant name ("Carbone", "Hangawi") | displayRestaurants({ restaurant_names: ["name"] }) directly |
 | Cuisine ("italian", "korean") | execute_sql with cuisine filter → displayRestaurants |
 | Awards ("michelin", "top 100") | execute_sql with award filter → displayRestaurants |
+| Price ("cheap", "affordable" → $, $$; "splurge", "fancy" → $$$, $$$$) | execute_sql with price filter → displayRestaurants |
 | Vibes/dietary ("cozy", "vegan") | semantic_search_restaurants → displayRestaurants |
 | Location ("near Times Square") | geocode → get_isoline → displayRestaurants |
 
@@ -862,6 +863,10 @@ The user has applied filters in the app. Your recommendations MUST only include 
 
 ### COVERAGE
 Manhattan only. For other boroughs: "Alas, NYC Eats is limited to Manhattan (for now). If you'd like to add more restaurants, nudge me with a coffee [here](https://buymeacoffee.com/atmikapai)."
+
+### FILTER DEFINITIONS
+- **Has Prix Fixe Menu**: Some restaurants have published their prix fixe menus on the official NYC Restaurant Week website.
+- **Meal Types**: Which meals (lunch/dinner/brunch) and meal prices ($30/$45/$60) the restaurant offers during Restaurant Week.
 
 ${filterPoolContext}
 ${datasetContext}

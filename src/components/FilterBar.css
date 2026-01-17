@@ -2,7 +2,8 @@
 .filter-bar-container {
   position: absolute;
   top: 3%;
-  left: 37%;
+  /* Position relative to chat panel: 20px (chat left) + min(35vw, 500px) (chat width) + 10px (gap) */
+  left: calc(20px + min(35vw, 500px) + 10px);
   right: 50px; /* Add right constraint with extra space for scroll arrow */
   z-index: 850;
   display: flex;
@@ -533,15 +534,26 @@
 
 /* NEW Badge for Restaurant Week Button */
 .new-badge {
-  background-color: #FF69B4;
+  background-color: #F5A9C4;
   color: white;
-  font-size: 6px;
+  font-size: 9px;
   font-weight: 700;
-  padding: 1px 3px;
-  border-radius: 2px;
+  padding: 3px 8px;
+  border-radius: 4px;
   text-transform: uppercase;
-  letter-spacing: 0.3px;
-  margin-right: 4px;
+  letter-spacing: 0.5px;
+  margin-right: 6px;
+  display: inline-block;
+  line-height: 1;
+}
+
+/* Mobile adjustments for NEW badge */
+@media (max-width: 768px) {
+  .new-badge {
+    font-size: 8px;
+    padding: 2px 6px;
+    margin-right: 4px;
+  }
 }
 
 /* Reset Button */
@@ -566,4 +578,13 @@
   color: #ffffff;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Tablet screens - adjust filter bar position for wider chat panel */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .filter-bar-container {
+    /* Chat panel is 45%/600px max on tablets, so adjust left position */
+    left: calc(20px + min(45vw, 600px) + 10px);
+    right: 10px;
+  }
 }

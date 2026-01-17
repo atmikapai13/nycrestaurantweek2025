@@ -46,7 +46,94 @@ export default function FilterBar() {
     setHighReviewCountActive,
     drawerHeight,
     setDrawerHeight,
+    favorites,
   } = useMap();
+
+  // Helper to filter restaurants by all active filters except one (for dynamic counts)
+  const getFilteredRestaurantsExcluding = (excludeFilter: string): Restaurant[] => {
+    // Start with isochrone-scoped restaurants or all
+    let filtered = isochroneRegionSlugs
+      ? allRestaurants.filter((r) => isochroneRegionSlugs.includes(r.slug))
+      : allRestaurants;
+
+    // Apply dropdown filters (except the excluded one)
+    Object.entries(activeFilters).forEach(([filterType, values]) => {
+      if (filterType === excludeFilter || values.length === 0) return;
+
+      filtered = filtered.filter((restaurant) => {
+        switch (filterType) {
+          case "Cuisine":
+            if (!restaurant.cuisine) return false;
+            return values.some(
+              (value) =>
+                restaurant.cuisine === value ||
+                restaurant.cuisine.toLowerCase().includes(value.toLowerCase())
+            );
+          case "Meal Types":
+            return (
+              restaurant.meal_types &&
+              Array.isArray(restaurant.meal_types) &&
+              values.some((meal) => restaurant.meal_types?.includes(meal))
+            );
+          case "Price":
+            return values.includes(
+              (restaurant as any).price ?? restaurant.price_range
+            );
+          case "Yelp Rating": {
+            const rating = (restaurant as any).yelp_rating as number | undefined;
+            if (typeof rating !== "number") return false;
+            const thresholds = values
+              .map((v) => parseFloat(v))
+              .filter((n) => !Number.isNaN(n));
+            if (thresholds.length === 0) return true;
+            const minThreshold = Math.min(...thresholds);
+            return rating >= minThreshold;
+          }
+          case "Badges":
+            return values.some((badge) => {
+              switch (badge) {
+                case "michelin":
+                  return (
+                    restaurant.michelin_award &&
+                    ["ONE_STAR", "TWO_STARS", "THREE_STARS"].includes(
+                      restaurant.michelin_award
+                    )
+                  );
+                case "bib":
+                  return restaurant.michelin_award === "BIB_GOURMAND";
+                case "nyt":
+                  return Boolean(restaurant.nyttop100_rank);
+                default:
+                  return false;
+              }
+            });
+          default:
+            return true;
+        }
+      });
+    });
+
+    // Apply toggle filters
+    if (restaurantWeekActive) {
+      filtered = filtered.filter(
+        (r) => r.meal_types && Array.isArray(r.meal_types) && r.meal_types.length > 0
+      );
+    }
+    if (favoritesActive) {
+      filtered = filtered.filter((r) => favorites.includes(r.name));
+    }
+    if (hasMenuActive) {
+      filtered = filtered.filter((r) => r.menu_url && r.menu_url.trim() !== "");
+    }
+    if (highReviewCountActive) {
+      filtered = filtered.filter((r) => {
+        const reviewCount = (r as any).yelp_review_count as number | undefined;
+        return typeof reviewCount === "number" && reviewCount >= 500;
+      });
+    }
+
+    return filtered;
+  };
 
   // Start collapsed on mobile landing page
   const [isExpanded, setIsExpanded] = useState(() => {
@@ -174,35 +261,37 @@ export default function FilterBar() {
   }, [allRestaurants, isochroneRegionSlugs]);
 
   const cuisineOptions = useMemo(() => {
-    const isochroneRestaurants = getIsochroneRestaurants(
-      allRestaurants,
-      isochroneRegionSlugs
-    );
-    const availableCuisines = new Set<string>();
-    const allCuisines = new Set<string>();
-    const cuisineCounts = new Map<string, number>();
+    // Get restaurants filtered by all active filters EXCEPT cuisine
+    const filteredRestaurants = getFilteredRestaurantsExcluding("Cuisine");
 
+    // Collect all cuisines from the full dataset (for the option list)
+    const allCuisines = new Set<string>();
     allRestaurants.forEach((r) => {
       if (r.cuisine) allCuisines.add(r.cuisine);
     });
 
-    let countSource = allRestaurants;
-    if (isochroneRestaurants && isochroneRestaurants.length > 0) {
-      countSource = isochroneRestaurants;
-      isochroneRestaurants.forEach((r) => {
-        if (r.cuisine) availableCuisines.add(r.cuisine);
-      });
-    }
-
-    countSource.forEach((r) => {
+    // Count cuisines from the filtered set (dynamic counts)
+    const cuisineCounts = new Map<string, number>();
+    const availableCuisines = new Set<string>();
+    filteredRestaurants.forEach((r) => {
       if (r.cuisine) {
         cuisineCounts.set(r.cuisine, (cuisineCounts.get(r.cuisine) || 0) + 1);
+        availableCuisines.add(r.cuisine);
       }
     });
 
     if (allCuisines.size === 0) {
       return [{ value: "", label: "No cuisines available", disabled: true }];
     }
+
+    // Check if any filters are active (to determine if we should disable unavailable options)
+    const hasActiveFilters =
+      isochroneRegionSlugs !== null ||
+      restaurantWeekActive ||
+      favoritesActive ||
+      hasMenuActive ||
+      highReviewCountActive ||
+      Object.keys(activeFilters).some(k => k !== "Cuisine" && activeFilters[k]?.length > 0);
 
     return Array.from(allCuisines)
       .sort((a, b) => a.localeCompare(b))
@@ -211,11 +300,19 @@ export default function FilterBar() {
         return {
           value: cuisine,
           label: count > 0 ? `${cuisine} · ${count}` : cuisine,
-          disabled:
-            isochroneRestaurants !== null && !availableCuisines.has(cuisine),
+          disabled: hasActiveFilters && !availableCuisines.has(cuisine),
         };
       });
-  }, [allRestaurants, isochroneRegionSlugs]);
+  }, [
+    allRestaurants,
+    isochroneRegionSlugs,
+    activeFilters,
+    restaurantWeekActive,
+    favoritesActive,
+    hasMenuActive,
+    highReviewCountActive,
+    favorites,
+  ]);
 
   const ratingOptions = useMemo(() => {
     const isochroneRestaurants = getIsochroneRestaurants(
@@ -320,6 +417,7 @@ export default function FilterBar() {
             }`}
             onClick={onRestaurantWeekToggle}
           >
+            <span className="new-badge">NEW</span>
             Restaurant Week
           </button>
 

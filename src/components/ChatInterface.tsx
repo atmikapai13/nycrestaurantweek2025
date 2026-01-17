@@ -6,7 +6,6 @@ import {
   forwardRef,
   useMemo,
 } from "react";
-import { flushSync } from "react-dom";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { intersectPolygons } from "../utils/geospatial";
@@ -166,12 +165,11 @@ function computeResultMetadata(restaurants: Restaurant[]) {
 interface ChatInterfaceProps {
   onRestaurantSelect: (restaurant: Restaurant) => void;
   onMapFocus?: (restaurantIds: string[]) => void;
-  onResetAll?: () => void;
   onToggleFavorite?: (restaurantName: string) => void;
 }
 
 const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
-  ({ onRestaurantSelect, onMapFocus, onResetAll, onToggleFavorite }, ref) => {
+  ({ onRestaurantSelect, onMapFocus, onToggleFavorite }, ref) => {
     // Use MapContext for data and state management
     const {
       allRestaurants,
@@ -390,22 +388,16 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
     const processedToolCallIds = useRef<Set<string>>(new Set());
 
     const [input, setInput] = useState("");
-    const [isResetting, setIsResetting] = useState(false);
 
     // Watch messages for new tool results
     useEffect(() => {
-      
-
-      // Only process if we have messages and are not already resetting
-      if (aiMessages.length > 0 && !isResetting) {
+      if (aiMessages.length > 0) {
         console.log("✅ Triggering processToolResults()");
         processToolResults();
       } else {
-        console.log(
-          "⏸️ Skipping processToolResults (no messages or resetting)"
-        );
+        console.log("⏸️ Skipping processToolResults (no messages)");
       }
-    }, [aiMessages, isResetting]);
+    }, [aiMessages]);
 
     // Manually seed messages on mount if empty
     useEffect(() => {
@@ -424,7 +416,23 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
     const [customMessages, setCustomMessages] = useState<Message[]>([]); // For restaurant cards
 
     const lastMessageRef = useRef<HTMLDivElement>(null);
-    const inputRef = useRef<HTMLInputElement>(null);
+    const inputRef = useRef<HTMLTextAreaElement>(null);
+
+    // Auto-resize textarea based on content
+    const autoResizeTextarea = () => {
+      const textarea = inputRef.current;
+      if (textarea) {
+        // Reset height to auto to get the correct scrollHeight
+        textarea.style.height = 'auto';
+        const isMobile = window.innerWidth <= 768;
+        const minHeight = 24; // Single line height
+        const maxHeight = isMobile ? 90 : 120; // Mobile: ~3-4 lines, Desktop: ~4-5 lines
+        const newHeight = Math.min(Math.max(textarea.scrollHeight, minHeight), maxHeight);
+        textarea.style.height = `${newHeight}px`;
+        // Only enable scrolling when at max height
+        textarea.style.overflowY = newHeight >= maxHeight ? 'auto' : 'hidden';
+      }
+    };
 
     // Mobile drawer state - use context for coordination with FilterBar
     const { drawerHeight, setDrawerHeight } = useMap();
@@ -1098,40 +1106,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       sendMessage({ text: userMessage });
     };
 
-    const handleKeyPress = (e: React.KeyboardEvent) => {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        handleSend();
-      }
-    };
-
-    const handleClearHistory = async () => {
-      setIsResetting(true);
-
-      try {
-        console.log("🧹 Starting reset...");
-
-        // Clear chat state
-        flushSync(() => {
-          setMessages([initialMessage]);
-          setCustomMessages([]);
-        });
-
-        console.log("✅ Frontend chat state cleared");
-
-        // Use MapContext to clear all layers
-        clearAllLayers();
-
-        // Trigger full app reset
-        if (onResetAll) {
-          onResetAll();
-        }
-
-        console.log("✅ Full reset complete");
-      } finally {
-        setIsResetting(false);
-      }
-    };
 
     // Combine AI messages with custom messages (restaurant cards)
     // Simple approach: AI messages first, then restaurant cards at the end
@@ -1691,44 +1665,40 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
           {/* Input */}
           <div className="chat-input-container">
-            <input
+            <textarea
               ref={inputRef}
-              type="text"
               value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyPress={handleKeyPress}
+              onChange={(e) => {
+                setInput(e.target.value);
+                autoResizeTextarea();
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSend();
+                  // Reset textarea height after sending
+                  if (inputRef.current) {
+                    inputRef.current.style.height = 'auto';
+                  }
+                }
+              }}
               placeholder="Search for a restaurant..."
-              disabled={isLoading || isResetting}
+              disabled={isLoading}
               className="chat-input"
+              rows={1}
             />
             <button
-              onClick={handleSend}
-              disabled={isLoading || isResetting || !input.trim()}
+              onClick={() => {
+                handleSend();
+                // Reset textarea height after sending
+                if (inputRef.current) {
+                  inputRef.current.style.height = 'auto';
+                }
+              }}
+              disabled={isLoading || !input.trim()}
               className="chat-send-button"
             >
               ➤
-            </button>
-            <button
-              onClick={handleClearHistory}
-              className="chat-clear-button"
-              title="Reset Chat"
-              disabled={isResetting}
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
-                <path d="M21 3v5h-5" />
-                <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
-                <path d="M3 21v-5h5" />
-              </svg>
             </button>
           </div>
         </div>
