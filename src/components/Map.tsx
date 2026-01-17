@@ -110,7 +110,7 @@ export default function Map({
       
       map.current.fitBounds(bounds, {
         padding: isMobile
-          ? { top: 80, bottom: 320, left: 20, right: 20 } // Mobile: pad bottom for drawer (40vh ≈ 320px)
+          ? { top: 40, bottom: 350, left: 20, right: 20 } // Mobile: pad bottom for drawer (40vh ≈ 320px)
           : { top: 100, bottom: 100, left: 480, right: 100 }, // Desktop: pad left for chat panel
         pitch,
         bearing,
@@ -192,9 +192,9 @@ export default function Map({
     }
     // Increase size in desktop when zoomed in
     if (!isMobileDevice && zoom >= 13.5) {
-      size *= 1.5;
+      size *= 1.6;
     } else if (zoom >= 12.0) {
-      size *= 1.0;
+      size *= 1.2;
     }
 
     return Math.round(size);
@@ -512,11 +512,11 @@ export default function Map({
 
           // For "between us" queries (3+ layers including intersection), zoom in closer
           // For single/double isochrone, use conservative zoom
-          const maxZoomLevel = isMobileView ? 20 : (isochroneLayers.length >= 3 ? 15.5 : 16);
+          const maxZoomLevel = isMobileView ? 17 : (isochroneLayers.length >= 3 ? 15.5 : 16);
 
           mapInstance.fitBounds(bounds, {
             padding: isMobileView
-              ? { top: 10, bottom: 250, left: 10, right: 10 } // Mobile: pad bottom for drawer (40vh ≈ 320px)
+              ? { top: 40, bottom: 350, left: 20, right: 20 }  // Mobile: pad bottom for drawer (40vh ≈ 320px)
               : { top: 100, bottom: 100, left: 480, right: 100 }, // Desktop: pad left for chat panel
             maxZoom: maxZoomLevel,
             duration: 1500, // Smooth 1.2s animation
