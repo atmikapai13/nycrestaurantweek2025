@@ -218,7 +218,7 @@ export default function Map({
         // Apply 1.3x multiplier and thicker border for selected markers (scales with zoom)
         const isSelected = markerEl.getAttribute("data-is-selected") === "true";
         if (isSelected) {
-          newSize = Math.round(newSize * 1.4);
+          newSize = Math.round(newSize * 1.25);
           markerEl.style.border = "1.5px solid white";
         } else {
           markerEl.style.border = "1px solid white";
@@ -681,7 +681,7 @@ export default function Map({
       map.current.flyTo({
         center: [longitude, latitude],
         zoom: targetZoom,
-        pitch: 0,
+        pitch: 45,
         bearing: map.current.getBearing(), // Keep current bearing
         duration: 1900, // Smooth 1.8s animation
         essential: true, // This animation is essential with respect to prefers-reduced-motion
