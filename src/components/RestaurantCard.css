@@ -311,6 +311,8 @@
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.3s ease-out;
+  display: flex;
+  flex-direction: column;
 }
 
 .review-accordion-content.open {
@@ -490,6 +492,14 @@
   /* Inherits from .card-body-text */
 }
 
+.restaurant-week-buttons {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
 .see-menu-btn {
   background-color: rgba(34, 34, 34, 0.15);
   color: #343333;
@@ -513,6 +523,22 @@
   background-color: rgba(0, 0, 0, 0.25);
   color: #000000;
   transform: scale(1.0);
+}
+
+.see-menu-btn img {
+  height: 14px;
+  width: auto;
+  object-fit: contain;
+}
+
+.see-menu-btn svg {
+  width: 12px;
+  height: 12px;
+}
+
+.see-menu-btn .arrow {
+  font-size: 11px;
+  margin-left: 2px;
 }
 
 /* Contact & Links Accordion */

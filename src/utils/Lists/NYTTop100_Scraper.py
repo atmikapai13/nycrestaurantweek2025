@@ -4,6 +4,17 @@ import json
 import re
 import time
 
+def generate_nyt_slug(name):
+    """Generate URL slug from restaurant name (lowercase, spaces to hyphens)"""
+    if not name:
+        return ''
+    # Lowercase, replace spaces with hyphens, remove special characters except hyphens
+    slug = name.lower().strip()
+    slug = re.sub(r'[^a-z0-9\s-]', '', slug)  # Remove special chars
+    slug = re.sub(r'\s+', '-', slug)  # Spaces to hyphens
+    slug = re.sub(r'-+', '-', slug)  # Multiple hyphens to single
+    return slug.strip('-')
+
 def scrape_nytimes_restaurants(url):
     """
     Scrape the NY Times Best NYC Restaurants list and return as JSON
@@ -66,9 +77,11 @@ def scrape_nytimes_restaurants(url):
                     if name_span:
                         name = name_span.get_text().strip()
                         if name and len(name) > 1:
+                            slug = generate_nyt_slug(name)
                             restaurants.append({
                                 'rank': rank,
-                                'name': name
+                                'name': name,
+                                'nyt_url': f"https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#{slug}"
                             })
                             print(f"  #{rank}: {name}")
                 
@@ -102,9 +115,11 @@ def scrape_nytimes_restaurants(url):
                         
                         # Check if we already have this restaurant
                         if not any(r['name'] == name for r in restaurants):
+                            slug = generate_nyt_slug(name)
                             restaurants.append({
                                 'rank': rank,
-                                'name': name
+                                'name': name,
+                                'nyt_url': f"https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#{slug}"
                             })
                             print(f"  #{rank}: {name}")
         
@@ -122,9 +137,11 @@ def scrape_nytimes_restaurants(url):
                     rank = int(rank_str)
                     name = name.strip()
                     if name and not any(r['name'] == name for r in restaurants):
+                        slug = generate_nyt_slug(name)
                         restaurants.append({
                             'rank': rank,
-                            'name': name
+                            'name': name,
+                            'nyt_url': f"https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#{slug}"
                         })
                         print(f"  #{rank}: {name}")
                 except:
@@ -138,9 +155,11 @@ def scrape_nytimes_restaurants(url):
                 for i, name in enumerate(matches2, 1):
                     name = name.strip()
                     if name and len(name) > 1 and not any(r['name'] == name for r in restaurants):
+                        slug = generate_nyt_slug(name)
                         restaurants.append({
                             'rank': i,
-                            'name': name
+                            'name': name,
+                            'nyt_url': f"https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#{slug}"
                         })
                         print(f"  #{i}: {name}")
         

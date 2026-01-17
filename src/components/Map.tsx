@@ -61,8 +61,6 @@ export default function Map({
     favorites,
     favoritesActive,
     awardsActive,
-    highlightedActive,
-    highlightedRestaurantIds,
     isochroneLayers,
     layerVisibilityMap,
     selectedRestaurant,
@@ -215,7 +213,16 @@ export default function Map({
         const baseSize = parseInt(
           markerEl.getAttribute("data-base-size") || "6"
         );
-        const newSize = getMarkerSize(baseSize, zoom, mobile);
+        let newSize = getMarkerSize(baseSize, zoom, mobile);
+
+        // Apply 1.3x multiplier and thicker border for selected markers (scales with zoom)
+        const isSelected = markerEl.getAttribute("data-is-selected") === "true";
+        if (isSelected) {
+          newSize = Math.round(newSize * 1.4);
+          markerEl.style.border = "1.5px solid white";
+        } else {
+          markerEl.style.border = "1px solid white";
+        }
 
         // Update the inner marker size (the visual marker)
         markerEl.style.width = `${newSize}px`;
@@ -513,7 +520,7 @@ export default function Map({
 
           mapInstance.fitBounds(bounds, {
             padding: isMobileView
-              ? { top: 80, bottom: 360, left: 20, right: 20 } // Mobile: pad bottom for drawer (40vh ≈ 320px)
+              ? { top: 80, bottom: 400, left: 20, right: 20 } // Mobile: pad bottom for drawer (40vh ≈ 320px)
               : { top: 100, bottom: 100, left: 480, right: 100 }, // Desktop: pad left for chat panel
             maxZoom: maxZoomLevel,
             duration: 1500, // Smooth 1.2s animation
@@ -539,38 +546,45 @@ export default function Map({
     markerElements.current = [];
 
     // Check if any filter modes are active
-    const hasActiveFilters =
-      favoritesActive || awardsActive || highlightedActive;
-    const hasHighlighted = highlightedRestaurantIds && highlightedRestaurantIds.size > 0;
+    const hasActiveFilters = favoritesActive || awardsActive;
 
     let restaurantsToRender = filteredRestaurants;
 
     if (hasActiveFilters) {
       // Filter mode active: apply OR logic to the already filtered pool
       restaurantsToRender = filteredRestaurants.filter((r) => {
-        if (highlightedActive && hasHighlighted && highlightedRestaurantIds.has(r.slug))
-          return true;
         if (awardsActive && hasAnyAward(r)) return true;
         if (favoritesActive && favorites.includes(r.name)) return true;
         return false;
       });
     }
 
+    // Sort restaurants so higher priority markers render last (on top)
+    // Order: default (0) → awards (1) → favorites (2) → selected (3)
+    const sortedRestaurants = [...restaurantsToRender].sort((a, b) => {
+      const getPriority = (r: Restaurant) => {
+        if (selectedRestaurant?.slug === r.slug) return 3;
+        if (favorites.includes(r.name)) return 2;
+        if (hasAnyAward(r)) return 1;
+        return 0;
+      };
+      return getPriority(a) - getPriority(b);
+    });
+
     // Render restaurants with coordinates
-    restaurantsToRender.forEach((restaurant) => {
+    sortedRestaurants.forEach((restaurant) => {
       if (restaurant.latitude && restaurant.longitude) {
-        const isHighlighted = highlightedRestaurantIds?.has(restaurant.slug);
         const isSelected = selectedRestaurant?.slug === restaurant.slug;
         const isFavorite = favorites.includes(restaurant.name);
         const isAwardWinner = hasAnyAward(restaurant);
 
         let markerColor = '#928f8e'  // Default grey
-        let markerSize = '8px'       // Uniform size for all markers (when zoomed out)
+        const baseMarkerSize = 8;    // Uniform base size for all markers (scales with zoom)
         let zIndex = 0
 
-        // COLOR PRIORITY: Black (selected) > Pink (favorites) > Red (awards) > Orange (highlighted) > Grey (default)
+        // COLOR PRIORITY: Orange (selected) > Pink (favorites) > Red (awards) > Grey (default)
         if (isSelected) {
-          markerColor = "#8b4dfe"; // Purple
+          markerColor = "#FF9100"; // Orange
           zIndex = 4;
         } else if (isFavorite) {
           markerColor = "#ff67b2"; // Pink
@@ -578,9 +592,6 @@ export default function Map({
         } else if (isAwardWinner) {
           markerColor = "#c81224"; // Red
           zIndex = 2;
-        } else if (isHighlighted) {
-          markerColor = "#FF9100"; // Orange
-          zIndex = 1;
         }
 
         // Create marker wrapper for larger click area
@@ -594,8 +605,8 @@ export default function Map({
         // Create the actual marker element
         const markerEl = document.createElement("div");
         markerEl.className = "restaurant-marker";
-        markerEl.style.width = markerSize;
-        markerEl.style.height = markerSize;
+        markerEl.style.width = `${baseMarkerSize}px`;
+        markerEl.style.height = `${baseMarkerSize}px`;
         markerEl.style.borderRadius = "50%";
         markerEl.style.backgroundColor = markerColor;
         markerEl.style.border = "1px solid white";
@@ -605,9 +616,11 @@ export default function Map({
         // Add the marker to the wrapper
         markerWrapper.appendChild(markerEl);
 
-        // Store base size for dynamic resizing
-        const baseSize = parseInt(markerSize);
-        markerEl.setAttribute("data-base-size", baseSize.toString());
+        // Store base size and selection state for dynamic resizing
+        markerEl.setAttribute("data-base-size", baseMarkerSize.toString());
+        if (isSelected) {
+          markerEl.setAttribute("data-is-selected", "true");
+        }
 
         // Create marker using the wrapper
         const marker = new mapboxgl.Marker(markerWrapper)
@@ -643,12 +656,10 @@ export default function Map({
     updateMarkerSizes();
   }, [
     filteredRestaurants,
-    highlightedRestaurantIds,
     onRestaurantSelect,
     selectedRestaurant,
     favoritesActive,
     awardsActive,
-    highlightedActive,
     favorites,
     setSelectedRestaurant,
     restaurantWeekActive,

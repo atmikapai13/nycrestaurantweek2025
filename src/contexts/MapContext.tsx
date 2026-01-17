@@ -51,10 +51,8 @@ interface MapContextType {
   favoritesActive: boolean;
   restaurantWeekActive: boolean;
   hasMenuActive: boolean;
-  highlightedActive: boolean;
   awardsActive: boolean;
   highReviewCountActive: boolean;
-  highlightedRestaurantIds: Set<string>;
 
   // Filter actions
   setActiveFilters: React.Dispatch<
@@ -66,12 +64,8 @@ interface MapContextType {
   setFavoritesActive: React.Dispatch<React.SetStateAction<boolean>>;
   setRestaurantWeekActive: React.Dispatch<React.SetStateAction<boolean>>;
   setHasMenuActive: React.Dispatch<React.SetStateAction<boolean>>;
-  setHighlightedActive: React.Dispatch<React.SetStateAction<boolean>>;
   setAwardsActive: React.Dispatch<React.SetStateAction<boolean>>;
   setHighReviewCountActive: React.Dispatch<React.SetStateAction<boolean>>;
-  setHighlightedRestaurantIds: React.Dispatch<
-    React.SetStateAction<Set<string>>
-  >;
 
   // Layer state
   isochroneLayers: IsochroneLayer[];
@@ -117,12 +111,8 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
   const [favoritesActive, setFavoritesActive] = useState(false);
   const [restaurantWeekActive, setRestaurantWeekActive] = useState(false);
   const [hasMenuActive, setHasMenuActive] = useState(false);
-  const [highlightedActive, setHighlightedActive] = useState(false);
   const [awardsActive, setAwardsActive] = useState(false);
   const [highReviewCountActive, setHighReviewCountActive] = useState(false);
-  const [highlightedRestaurantIds, setHighlightedRestaurantIds] = useState<
-    Set<string>
-  >(new Set());
 
   // Layer state
   const [isochroneLayers, setIsochroneLayers] = useState<IsochroneLayer[]>([]);
@@ -287,9 +277,6 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
     if (hasMenuActive) {
       filtered = filtered.filter((r) => r.menu_url && r.menu_url.trim() !== "");
     }
-    if (highlightedActive) {
-      filtered = filtered.filter((r) => highlightedRestaurantIds.has(r.slug));
-    }
     if (awardsActive) {
       filtered = filtered.filter((r) => {
         const hasMichelin =
@@ -342,12 +329,10 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
     restaurantWeekActive,
     favoritesActive,
     hasMenuActive,
-    highlightedActive,
     awardsActive,
     highReviewCountActive,
     legendFilters,
     favorites,
-    highlightedRestaurantIds,
   ]);
 
   // Compute filter pool slugs for chat API
@@ -460,14 +445,10 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
         setRestaurantWeekActive,
         hasMenuActive,
         setHasMenuActive,
-        highlightedActive,
-        setHighlightedActive,
         awardsActive,
         setAwardsActive,
         highReviewCountActive,
         setHighReviewCountActive,
-        highlightedRestaurantIds,
-        setHighlightedRestaurantIds,
         isochroneLayers,
         layerVisibilityMap,
         addLayers,

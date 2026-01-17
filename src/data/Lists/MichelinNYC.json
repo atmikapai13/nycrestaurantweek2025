@@ -24,7 +24,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/icca"
   },
   {
     "name": "Atera",
@@ -46,34 +47,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
-  },
-  {
-    "name": "Shion 69 Leonard Street",
-    "slug": "shoji-at-69-leonard",
-    "michelin_award": "ONE_STAR",
-    "cuisines": [
-      {
-        "code": "TYC_1068",
-        "label": "Japanese",
-        "slug": "japanese"
-      },
-      {
-        "code": "TYC_1115",
-        "label": "Sushi",
-        "slug": "sushi"
-      }
-    ],
-    "chef": null,
-    "city": {
-      "name": "New York",
-      "slug": "new-york",
-      "exonyms": [
-        "Nueva York",
-        "New York"
-      ]
-    },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/atera"
   },
   {
     "name": "Huso",
@@ -95,7 +70,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/huso-1218089"
   },
   {
     "name": "Jungsik New York",
@@ -122,7 +98,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/jungsik-new-york"
   },
   {
     "name": "Crown Shy",
@@ -149,7 +126,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/crown-shy"
   },
   {
     "name": "Saga",
@@ -171,7 +149,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/saga"
   },
   {
     "name": "Bridges",
@@ -193,7 +172,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/bridges-1216261"
   },
   {
     "name": "Dim Sum Go Go",
@@ -220,7 +200,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/dim-sum-go-go"
   },
   {
     "name": "Yamada",
@@ -242,7 +223,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/yamada"
   },
   {
     "name": "Le Coucou",
@@ -264,7 +246,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/le-coucou"
   },
   {
     "name": "Muku",
@@ -286,7 +269,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/muku"
   },
   {
     "name": "L’Abeille",
@@ -313,7 +297,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/l’abeille"
   },
   {
     "name": "Nyonya",
@@ -335,7 +320,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/nyonya"
   },
   {
     "name": "Corima",
@@ -362,7 +348,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/corima"
   },
   {
     "name": "Thai Diner",
@@ -389,7 +376,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/thai-diner"
   },
   {
     "name": "Cervo’s",
@@ -416,7 +404,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/cervo-s"
   },
   {
     "name": "Potluck Club",
@@ -443,7 +432,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/potluck-club"
   },
   {
     "name": "Tolo",
@@ -465,7 +455,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/tolo"
   },
   {
     "name": "Dirt Candy",
@@ -481,7 +472,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/dirt-candy"
   },
   {
     "name": "Pinch Chinese",
@@ -508,7 +500,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/pinch-chinese"
   },
   {
     "name": "César",
@@ -535,7 +528,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/cesar"
   },
   {
     "name": "Torrisi",
@@ -562,7 +556,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/torrisi"
   },
   {
     "name": "Russ & Daughters Cafe",
@@ -584,7 +579,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/russ-daughters-cafe"
   },
   {
     "name": "Estela",
@@ -611,7 +607,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/estela"
   },
   {
     "name": "Dhamaka",
@@ -633,7 +630,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/dhamaka"
   },
   {
     "name": "Torien",
@@ -660,7 +658,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/torien"
   },
   {
     "name": "8282",
@@ -687,7 +686,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/8282"
   },
   {
     "name": "Laliko",
@@ -709,7 +709,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/laliko"
   },
   {
     "name": "C as in Charlie",
@@ -731,7 +732,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/c-as-in-charlie"
   },
   {
     "name": "Una Pizza Napoletana",
@@ -753,7 +755,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/una-pizza-napoletana"
   },
   {
     "name": "Sami & Susu",
@@ -775,7 +778,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/sami-susu"
   },
   {
     "name": "Atla",
@@ -802,7 +806,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/atla"
   },
   {
     "name": "Nami Nori",
@@ -829,7 +834,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/nami-nori"
   },
   {
     "name": "Yoshino",
@@ -856,7 +862,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/yoshino-1185037"
   },
   {
     "name": "Katz's",
@@ -878,7 +885,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/katz-s"
   },
   {
     "name": "Bungalow",
@@ -900,7 +908,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/bungalow"
   },
   {
     "name": "63 Clinton",
@@ -922,7 +931,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/63-clinton"
   },
   {
     "name": "Sushi Nakazawa New York",
@@ -949,7 +959,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/sushi-nakazawa"
   },
   {
     "name": "Little Myanmar",
@@ -971,7 +982,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/little-myanmar"
   },
   {
     "name": "Family Meal at Blue Hill",
@@ -993,7 +1005,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/blue-hill"
   },
   {
     "name": "Jeju Noodle Bar",
@@ -1015,7 +1028,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/jeju-noodle-bar"
   },
   {
     "name": "Frevo",
@@ -1037,7 +1051,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/frevo"
   },
   {
     "name": "Shmoné",
@@ -1064,7 +1079,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/shmone"
   },
   {
     "name": "CheLi",
@@ -1091,7 +1107,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/cheli"
   },
   {
     "name": "Soda Club",
@@ -1113,7 +1130,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/soda-club"
   },
   {
     "name": "Tuome",
@@ -1140,7 +1158,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/tuome"
   },
   {
     "name": "MáLà Project",
@@ -1167,7 +1186,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/mala-project"
   },
   {
     "name": "Ruffian",
@@ -1194,7 +1214,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/ruffian"
   },
   {
     "name": "Noreetuh",
@@ -1216,7 +1237,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/noreetuh"
   },
   {
     "name": "Sobaya",
@@ -1243,7 +1265,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/soba-ya"
   },
   {
     "name": "Superiority Burger",
@@ -1265,7 +1288,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/superiority-burger"
   },
   {
     "name": "Bar Miller",
@@ -1292,7 +1316,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/bar-miller"
   },
   {
     "name": "Tsukimi",
@@ -1319,7 +1344,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/tsukimi"
   },
   {
     "name": "Pranakhon",
@@ -1341,7 +1367,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/pranakhon"
   },
   {
     "name": "Semma",
@@ -1368,7 +1395,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/semma"
   },
   {
     "name": "Momofuku Noodle Bar",
@@ -1390,7 +1418,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/momofuku-noodle-bar"
   },
   {
     "name": "Bánh Anh Em",
@@ -1412,7 +1441,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/banh-anh-em"
   },
   {
     "name": "Yellow Rose",
@@ -1434,7 +1464,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/yellow-rose"
   },
   {
     "name": "Odre",
@@ -1456,7 +1487,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/odre"
   },
   {
     "name": "Kosaka",
@@ -1483,7 +1515,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/kosaka"
   },
   {
     "name": "Ishq",
@@ -1505,7 +1538,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/ishq"
   },
   {
     "name": "Casa Mono",
@@ -1532,7 +1566,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/casa-mono"
   },
   {
     "name": "La Dong",
@@ -1554,7 +1589,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/la-dong"
   },
   {
     "name": "Sal Tang's",
@@ -1573,7 +1609,8 @@
       "slug": "brooklyn",
       "exonyms": []
     },
-    "area_name": "Brooklyn"
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/sal-tang-s"
   },
   {
     "name": "Oiji Mi",
@@ -1600,7 +1637,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/oiji-mi"
   },
   {
     "name": "bōm",
@@ -1627,7 +1665,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/bom"
   },
   {
     "name": "Gramercy Tavern",
@@ -1654,7 +1693,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/gramercy-tavern"
   },
   {
     "name": "Rezdôra",
@@ -1681,7 +1721,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/rezdora-osteria-emiliana"
   },
   {
     "name": "Noda",
@@ -1708,7 +1749,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/noda"
   },
   {
     "name": "odo",
@@ -1735,7 +1777,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/odo"
   },
   {
     "name": "Untable",
@@ -1754,7 +1797,8 @@
       "slug": "brooklyn",
       "exonyms": []
     },
-    "area_name": "Brooklyn"
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/untable"
   },
   {
     "name": "Noz 17",
@@ -1781,7 +1825,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/noz17"
   },
   {
     "name": "Coqodaq",
@@ -1803,7 +1848,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/coqodaq"
   },
   {
     "name": "Aska",
@@ -1827,7 +1873,8 @@
       "slug": "brooklyn",
       "exonyms": []
     },
-    "area_name": "Brooklyn"
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/aska"
   },
   {
     "name": "Cote",
@@ -1854,7 +1901,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/cote"
   },
   {
     "name": "Jua",
@@ -1881,7 +1929,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/jua"
   },
   {
     "name": "Shota Omakase",
@@ -1905,7 +1954,8 @@
       "slug": "brooklyn",
       "exonyms": []
     },
-    "area_name": "Brooklyn"
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/shota-omakase"
   },
   {
     "name": "Eleven Madison Park",
@@ -1927,7 +1977,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/eleven-madison-park"
   },
   {
     "name": "Francie",
@@ -1951,7 +2002,8 @@
       "slug": "brooklyn",
       "exonyms": []
     },
-    "area_name": "Brooklyn"
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/francie"
   },
   {
     "name": "Miss Ada",
@@ -1975,7 +2027,8 @@
       "slug": "brooklyn",
       "exonyms": []
     },
-    "area_name": "Brooklyn"
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/miss-ada"
   },
   {
     "name": "Atomix",
@@ -2002,7 +2055,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/atomix"
   },
   {
     "name": "Norma Gastronomia Siciliana",
@@ -2029,7 +2083,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/norma-gastronomia-siciliana"
   },
   {
     "name": "HanGawi",
@@ -2051,7 +2106,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/hangawi"
   },
   {
     "name": "The Four Horsemen",
@@ -2075,7 +2131,8 @@
       "slug": "brooklyn",
       "exonyms": []
     },
-    "area_name": "Brooklyn"
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/the-four-horsemen"
   },
   {
     "name": "Joo Ok",
@@ -2102,7 +2159,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/joo-ok-1214822"
   },
   {
     "name": "Nōksu",
@@ -2129,7 +2187,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/noksu"
   },
   {
     "name": "Hometown Bar B Que New York",
@@ -2148,7 +2207,8 @@
       "slug": "brooklyn",
       "exonyms": []
     },
-    "area_name": "Brooklyn"
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/hometown-bar-b-que"
   },
   {
     "name": "Café Mars",
@@ -2172,7 +2232,8 @@
       "slug": "brooklyn",
       "exonyms": []
     },
-    "area_name": "Brooklyn"
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/cafe-mars"
   },
   {
     "name": "Shalom Japan",
@@ -2196,7 +2257,8 @@
       "slug": "brooklyn",
       "exonyms": []
     },
-    "area_name": "Brooklyn"
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/shalom-japan"
   },
   {
     "name": "Cho Dang Gol",
@@ -2218,7 +2280,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/cho-dang-gol"
   },
   {
     "name": "Tonchin",
@@ -2245,7 +2308,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/tonchin"
   },
   {
     "name": "Little Alley",
@@ -2272,7 +2336,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/little-alley"
   },
   {
     "name": "Haenyeo",
@@ -2296,7 +2361,8 @@
       "slug": "brooklyn",
       "exonyms": []
     },
-    "area_name": "Brooklyn"
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/haenyeo"
   },
   {
     "name": "Oxomoco",
@@ -2320,7 +2386,8 @@
       "slug": "brooklyn",
       "exonyms": []
     },
-    "area_name": "Brooklyn"
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/oxomoco"
   },
   {
     "name": "Tempura Matsui",
@@ -2347,7 +2414,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/tempura-matsui"
   },
   {
     "name": "Restaurant Yuu",
@@ -2371,7 +2439,8 @@
       "slug": "brooklyn",
       "exonyms": []
     },
-    "area_name": "Brooklyn"
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/restaurant-yuu"
   },
   {
     "name": "Peppercorn Station",
@@ -2398,7 +2467,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/peppercorn-station"
   },
   {
     "name": "Chef's Table at Brooklyn Fare",
@@ -2420,7 +2490,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/chef-s-table-at-brooklyn-fare"
   },
   {
     "name": "Speedy Romeo",
@@ -2439,7 +2510,8 @@
       "slug": "brooklyn",
       "exonyms": []
     },
-    "area_name": "Brooklyn"
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/speedy-romeo"
   },
   {
     "name": "Taqueria El Chato",
@@ -2458,7 +2530,8 @@
       "slug": "brooklyn",
       "exonyms": []
     },
-    "area_name": "Brooklyn"
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/taqueria-el-chato"
   },
   {
     "name": "Alta Calidad",
@@ -2482,7 +2555,8 @@
       "slug": "brooklyn",
       "exonyms": []
     },
-    "area_name": "Brooklyn"
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/alta-calidad"
   },
   {
     "name": "Pierozek",
@@ -2506,7 +2580,8 @@
       "slug": "brooklyn",
       "exonyms": []
     },
-    "area_name": "Brooklyn"
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/pierozek"
   },
   {
     "name": "Sushi Sho",
@@ -2533,7 +2608,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/sushi-sho-1213976"
   },
   {
     "name": "Gabriel Kreuther",
@@ -2560,7 +2636,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/gabriel-kreuther"
   },
   {
     "name": "Le Pavillon",
@@ -2587,7 +2664,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/le-pavillon-1192744"
   },
   {
     "name": "Jōji",
@@ -2614,7 +2692,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/joji"
   },
   {
     "name": "Bonnie's",
@@ -2638,7 +2717,8 @@
       "slug": "brooklyn",
       "exonyms": []
     },
-    "area_name": "Brooklyn"
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/bonnie-s"
   },
   {
     "name": "Win Son",
@@ -2662,7 +2742,8 @@
       "slug": "brooklyn",
       "exonyms": []
     },
-    "area_name": "Brooklyn"
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/win-son"
   },
   {
     "name": "Meju",
@@ -2686,7 +2767,8 @@
       "slug": "queens",
       "exonyms": []
     },
-    "area_name": "Queens"
+    "area_name": "Queens",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/meju"
   },
   {
     "name": "Kochi",
@@ -2713,7 +2795,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/kochi"
   },
   {
     "name": "Mari",
@@ -2735,7 +2818,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/mari"
   },
   {
     "name": "Hupo",
@@ -2759,7 +2843,8 @@
       "slug": "queens",
       "exonyms": []
     },
-    "area_name": "Queens"
+    "area_name": "Queens",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/hupo"
   },
   {
     "name": "Runner Up",
@@ -2783,7 +2868,8 @@
       "slug": "brooklyn",
       "exonyms": []
     },
-    "area_name": "Brooklyn"
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/runner-up"
   },
   {
     "name": "Kung Fu Little Steamed Buns Ramen",
@@ -2810,7 +2896,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/kung-fu-little-steamed-buns-ramen"
   },
   {
     "name": "Le Bernardin",
@@ -2832,7 +2919,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/le-bernardin"
   },
   {
     "name": "Chalong",
@@ -2859,7 +2947,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/chalong"
   },
   {
     "name": "LORE",
@@ -2883,7 +2972,8 @@
       "slug": "brooklyn",
       "exonyms": []
     },
-    "area_name": "Brooklyn"
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/lore"
   },
   {
     "name": "The Modern",
@@ -2905,7 +2995,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/the-modern"
   },
   {
     "name": "YingTao",
@@ -2932,7 +3023,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/yingtao"
   },
   {
     "name": "Aquavit",
@@ -2959,7 +3051,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/aquavit"
   },
   {
     "name": "Chavela’s",
@@ -2978,7 +3071,8 @@
       "slug": "brooklyn",
       "exonyms": []
     },
-    "area_name": "Brooklyn"
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/chavela-s"
   },
   {
     "name": "Roberta's",
@@ -2997,7 +3091,8 @@
       "slug": "brooklyn",
       "exonyms": []
     },
-    "area_name": "Brooklyn"
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/roberta-s"
   },
   {
     "name": "Agi's Counter",
@@ -3021,7 +3116,8 @@
       "slug": "brooklyn",
       "exonyms": []
     },
-    "area_name": "Brooklyn"
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/agi-s-counter"
   },
   {
     "name": "Sobre Masa",
@@ -3040,7 +3136,8 @@
       "slug": "brooklyn",
       "exonyms": []
     },
-    "area_name": "Brooklyn"
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/sobre-masa"
   },
   {
     "name": "Per Se",
@@ -3067,7 +3164,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/per-se"
   },
   {
     "name": "Masa",
@@ -3094,7 +3192,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/masa"
   },
   {
     "name": "Jean-Georges",
@@ -3121,7 +3220,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/jean-georges"
   },
   {
     "name": "Café Boulud",
@@ -3143,7 +3243,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/cafe-boulud"
   },
   {
     "name": "Lungi",
@@ -3170,7 +3271,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/lungi"
   },
   {
     "name": "Bayon",
@@ -3192,7 +3294,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/bayon"
   },
   {
     "name": "Daniel",
@@ -3214,7 +3317,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/daniel"
   },
   {
     "name": "Bohemian Spirit",
@@ -3236,7 +3340,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/bohemian-spirit"
   },
   {
     "name": "Gordo's Cantina",
@@ -3255,7 +3360,8 @@
       "slug": "brooklyn",
       "exonyms": []
     },
-    "area_name": "Brooklyn"
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/gordo-s-cantina"
   },
   {
     "name": "Sushi Noz",
@@ -3282,7 +3388,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/sushi-noz"
   },
   {
     "name": "Essential by Christophe",
@@ -3309,7 +3416,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/essential-by-christophe"
   },
   {
     "name": "Covacha",
@@ -3336,7 +3444,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/covacha"
   },
   {
     "name": "Cardamom",
@@ -3355,7 +3464,8 @@
       "slug": "queens",
       "exonyms": []
     },
-    "area_name": "Queens"
+    "area_name": "Queens",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/cardamom"
   },
   {
     "name": "Tha Phraya",
@@ -3377,7 +3487,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/tha-phraya"
   },
   {
     "name": "Chuan Tian Xia",
@@ -3401,7 +3512,8 @@
       "slug": "brooklyn",
       "exonyms": []
     },
-    "area_name": "Brooklyn"
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/chuan-tian-xia"
   },
   {
     "name": "Olmo",
@@ -3420,7 +3532,8 @@
       "slug": "brooklyn",
       "exonyms": []
     },
-    "area_name": "Brooklyn"
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/olmo-1244242"
   },
   {
     "name": "Rolo's",
@@ -3439,7 +3552,8 @@
       "slug": "queens",
       "exonyms": []
     },
-    "area_name": "Queens"
+    "area_name": "Queens",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/rolo-s"
   },
   {
     "name": "Tanoreen",
@@ -3458,7 +3572,8 @@
       "slug": "brooklyn",
       "exonyms": []
     },
-    "area_name": "Brooklyn"
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/tanoreen"
   },
   {
     "name": "Yemenat",
@@ -3477,7 +3592,8 @@
       "slug": "brooklyn",
       "exonyms": []
     },
-    "area_name": "Brooklyn"
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/yemenat"
   },
   {
     "name": "Sagara",
@@ -3496,7 +3612,8 @@
       "slug": "staten-island",
       "exonyms": []
     },
-    "area_name": "Staten Island"
+    "area_name": "Staten Island",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/sagara"
   },
   {
     "name": "Phayul",
@@ -3515,7 +3632,8 @@
       "slug": "queens",
       "exonyms": []
     },
-    "area_name": "Queens"
+    "area_name": "Queens",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/phayul"
   },
   {
     "name": "Zaab Zaab",
@@ -3539,7 +3657,8 @@
       "slug": "queens",
       "exonyms": []
     },
-    "area_name": "Queens"
+    "area_name": "Queens",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/zaab-zaab"
   },
   {
     "name": "SaRanRom Thai",
@@ -3558,7 +3677,8 @@
       "slug": "queens",
       "exonyms": []
     },
-    "area_name": "Queens"
+    "area_name": "Queens",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/saranrom-thai"
   },
   {
     "name": "Oso",
@@ -3585,7 +3705,8 @@
         "New York"
       ]
     },
-    "area_name": "Manhattan"
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/oso"
   },
   {
     "name": "Caleta 111 Cevicheria",
@@ -3604,7 +3725,8 @@
       "slug": "queens",
       "exonyms": []
     },
-    "area_name": "Queens"
+    "area_name": "Queens",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/caleta-111-cevicheria"
   },
   {
     "name": "Jiang Nan",
@@ -3628,7 +3750,8 @@
       "slug": "queens",
       "exonyms": []
     },
-    "area_name": "Queens"
+    "area_name": "Queens",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/jiang-nan"
   },
   {
     "name": "Alley 41",
@@ -3652,7 +3775,8 @@
       "slug": "queens",
       "exonyms": []
     },
-    "area_name": "Queens"
+    "area_name": "Queens",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/alley-41"
   },
   {
     "name": "Tong Sam Gyup Goo Yi",
@@ -3676,7 +3800,8 @@
       "slug": "queens",
       "exonyms": []
     },
-    "area_name": "Queens"
+    "area_name": "Queens",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/tong-sam-gyup-goo-yi"
   },
   {
     "name": "Legend of Taste",
@@ -3700,6 +3825,7 @@
       "slug": "queens",
       "exonyms": []
     },
-    "area_name": "Queens"
+    "area_name": "Queens",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/legend-of-taste"
   }
 ]

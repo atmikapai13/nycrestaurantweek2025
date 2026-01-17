@@ -1,408 +1,508 @@
 {
   "title": "Best NYC Restaurants 2025 - New York Times",
   "source_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html",
-  "scraped_date": "2026-01-10 00:20:30",
+  "scraped_date": "2026-01-17 11:05:46",
   "total_restaurants": 100,
   "restaurants": [
     {
       "rank": 1,
-      "name": "Semma"
+      "name": "Semma",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#semma"
     },
     {
       "rank": 2,
-      "name": "Atomix"
+      "name": "Atomix",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#atomix"
     },
     {
       "rank": 3,
-      "name": "Le Bernardin"
+      "name": "Le Bernardin",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#le-bernardin"
     },
     {
       "rank": 4,
-      "name": "Kabawa"
+      "name": "Kabawa",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#kabawa"
     },
     {
       "rank": 5,
-      "name": "Ha’s Snack Bar"
+      "name": "Ha’s Snack Bar",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#has-snack-bar"
     },
     {
       "rank": 6,
-      "name": "King"
+      "name": "King",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#king"
     },
     {
       "rank": 7,
-      "name": "Penny"
+      "name": "Penny",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#penny"
     },
     {
       "rank": 8,
-      "name": "Sushi Sho"
+      "name": "Sushi Sho",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#sushi-sho"
     },
     {
       "rank": 9,
-      "name": "Szechuan Mountain House"
+      "name": "Szechuan Mountain House",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#szechuan-mountain-house"
     },
     {
       "rank": 10,
-      "name": "Tatiana by Kwame Onwuachi"
+      "name": "Tatiana by Kwame Onwuachi",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#tatiana-by-kwame-onwuachi"
     },
     {
       "rank": 11,
-      "name": "188 Bakery Cuchifritos"
+      "name": "188 Bakery Cuchifritos",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#188-bakery-cuchifritos"
     },
     {
       "rank": 12,
-      "name": "A&A Bake and Doubles"
+      "name": "A&A Bake and Doubles",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#aa-bake-and-doubles"
     },
     {
       "rank": 13,
-      "name": "AbuQir Seafood"
+      "name": "AbuQir Seafood",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#abuqir-seafood"
     },
     {
       "rank": 14,
-      "name": "Aska"
+      "name": "Aska",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#aska"
     },
     {
       "rank": 15,
-      "name": "Atoboy"
+      "name": "Atoboy",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#atoboy"
     },
     {
       "rank": 16,
-      "name": "Barbuto"
+      "name": "Barbuto",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#barbuto"
     },
     {
       "rank": 17,
-      "name": "Barney Greengrass"
+      "name": "Barney Greengrass",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#barney-greengrass"
     },
     {
       "rank": 18,
-      "name": "Birria-Landia"
+      "name": "Birria-Landia",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#birria-landia"
     },
     {
       "rank": 19,
-      "name": "Borgo"
+      "name": "Borgo",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#borgo"
     },
     {
       "rank": 20,
-      "name": "Bridges"
+      "name": "Bridges",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#bridges"
     },
     {
       "rank": 21,
-      "name": "Bungalow"
+      "name": "Bungalow",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#bungalow"
     },
     {
       "rank": 22,
-      "name": "Cafe Kestrel"
+      "name": "Cafe Kestrel",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#cafe-kestrel"
     },
     {
       "rank": 23,
-      "name": "Cafe Mado"
+      "name": "Cafe Mado",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#cafe-mado"
     },
     {
       "rank": 24,
-      "name": "Carnitas Ramirez"
+      "name": "Carnitas Ramirez",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#carnitas-ramirez"
     },
     {
       "rank": 25,
-      "name": "Casa Mono and Bar Jamón"
+      "name": "Casa Mono and Bar Jamón",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#casa-mono-and-bar-jamn"
     },
     {
       "rank": 26,
-      "name": "Cervo’s"
+      "name": "Cervo’s",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#cervos"
     },
     {
       "rank": 27,
-      "name": "Chambers"
+      "name": "Chambers",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#chambers"
     },
     {
       "rank": 28,
-      "name": "Chez Ma Tante"
+      "name": "Chez Ma Tante",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#chez-ma-tante"
     },
     {
       "rank": 29,
-      "name": "Cho Dang Gol"
+      "name": "Cho Dang Gol",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#cho-dang-gol"
     },
     {
       "rank": 30,
-      "name": "Chongqing Lao Zao"
+      "name": "Chongqing Lao Zao",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#chongqing-lao-zao"
     },
     {
       "rank": 31,
-      "name": "Çka Ka Qëllu"
+      "name": "Çka Ka Qëllu",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#ka-ka-qllu"
     },
     {
       "rank": 32,
-      "name": "Claud"
+      "name": "Claud",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#claud"
     },
     {
       "rank": 33,
-      "name": "Cocina Consuelo"
+      "name": "Cocina Consuelo",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#cocina-consuelo"
     },
     {
       "rank": 34,
-      "name": "Court Street Grocers"
+      "name": "Court Street Grocers",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#court-street-grocers"
     },
     {
       "rank": 35,
-      "name": "Crown Shy"
+      "name": "Crown Shy",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#crown-shy"
     },
     {
       "rank": 36,
-      "name": "Daniel"
+      "name": "Daniel",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#daniel"
     },
     {
       "rank": 37,
-      "name": "Dera"
+      "name": "Dera",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#dera"
     },
     {
       "rank": 38,
-      "name": "Dhamaka"
+      "name": "Dhamaka",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#dhamaka"
     },
     {
       "rank": 39,
-      "name": "Don Peppe"
+      "name": "Don Peppe",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#don-peppe"
     },
     {
       "rank": 40,
-      "name": "Ewe’s Delicious Treats"
+      "name": "Ewe’s Delicious Treats",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#ewes-delicious-treats"
     },
     {
       "rank": 41,
-      "name": "Eyval"
+      "name": "Eyval",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#eyval"
     },
     {
       "rank": 42,
-      "name": "The Four Horsemen"
+      "name": "The Four Horsemen",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#the-four-horsemen"
     },
     {
       "rank": 43,
-      "name": "Four Twenty Five"
+      "name": "Four Twenty Five",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#four-twenty-five"
     },
     {
       "rank": 44,
-      "name": "Frenchette"
+      "name": "Frenchette",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#frenchette"
     },
     {
       "rank": 45,
-      "name": "Gage & Tollner"
+      "name": "Gage & Tollner",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#gage-tollner"
     },
     {
       "rank": 46,
-      "name": "Golden Diner"
+      "name": "Golden Diner",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#golden-diner"
     },
     {
       "rank": 47,
-      "name": "Gramercy Tavern"
+      "name": "Gramercy Tavern",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#gramercy-tavern"
     },
     {
       "rank": 48,
-      "name": "Great N.Y. Noodletown"
+      "name": "Great N.Y. Noodletown",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#great-ny-noodletown"
     },
     {
       "rank": 49,
-      "name": "The Grill"
+      "name": "The Grill",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#the-grill"
     },
     {
       "rank": 50,
-      "name": "Hainan Chicken House"
+      "name": "Hainan Chicken House",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#hainan-chicken-house"
     },
     {
       "rank": 51,
-      "name": "Hamburger America"
+      "name": "Hamburger America",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#hamburger-america"
     },
     {
       "rank": 52,
-      "name": "Hellbender"
+      "name": "Hellbender",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#hellbender"
     },
     {
       "rank": 53,
-      "name": "Ho Foods"
+      "name": "Ho Foods",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#ho-foods"
     },
     {
       "rank": 54,
-      "name": "Houseman"
+      "name": "Houseman",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#houseman"
     },
     {
       "rank": 55,
-      "name": "Jean-Georges"
+      "name": "Jean-Georges",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#jean-georges"
     },
     {
       "rank": 56,
-      "name": "Jeju Noodle Bar"
+      "name": "Jeju Noodle Bar",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#jeju-noodle-bar"
     },
     {
       "rank": 57,
-      "name": "Jungsik"
+      "name": "Jungsik",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#jungsik"
     },
     {
       "rank": 58,
-      "name": "Keens"
+      "name": "Keens",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#keens"
     },
     {
       "rank": 59,
-      "name": "Kisa"
+      "name": "Kisa",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#kisa"
     },
     {
       "rank": 60,
-      "name": "Koloman"
+      "name": "Koloman",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#koloman"
     },
     {
       "rank": 61,
-      "name": "Kono"
+      "name": "Kono",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#kono"
     },
     {
       "rank": 62,
-      "name": "Kopitiam"
+      "name": "Kopitiam",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#kopitiam"
     },
     {
       "rank": 63,
-      "name": "Laghman Express"
+      "name": "Laghman Express",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#laghman-express"
     },
     {
       "rank": 64,
-      "name": "Lakruwana"
+      "name": "Lakruwana",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#lakruwana"
     },
     {
       "rank": 65,
-      "name": "Le Coucou"
+      "name": "Le Coucou",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#le-coucou"
     },
     {
       "rank": 66,
-      "name": "Le Veau d’Or"
+      "name": "Le Veau d’Or",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#le-veau-dor"
     },
     {
       "rank": 67,
-      "name": "Levant"
+      "name": "Levant",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#levant"
     },
     {
       "rank": 68,
-      "name": "Lilia"
+      "name": "Lilia",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#lilia"
     },
     {
       "rank": 69,
-      "name": "Little Myanmar"
+      "name": "Little Myanmar",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#little-myanmar"
     },
     {
       "rank": 70,
-      "name": "Lola’s"
+      "name": "Lola’s",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#lolas"
     },
     {
       "rank": 71,
-      "name": "Lucia Pizza of Avenue X"
+      "name": "Lucia Pizza of Avenue X",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#lucia-pizza-of-avenue-x"
     },
     {
       "rank": 72,
-      "name": "Mắm"
+      "name": "Mắm",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#mm"
     },
     {
       "rank": 73,
-      "name": "Okdongsik"
+      "name": "Okdongsik",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#okdongsik"
     },
     {
       "rank": 74,
-      "name": "Okiboru House of Tsukemen"
+      "name": "Okiboru House of Tsukemen",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#okiboru-house-of-tsukemen"
     },
     {
       "rank": 75,
-      "name": "Old Sport"
+      "name": "Old Sport",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#old-sport"
     },
     {
       "rank": 76,
-      "name": "Raf’s"
+      "name": "Raf’s",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#rafs"
     },
     {
       "rank": 77,
-      "name": "Raku"
+      "name": "Raku",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#raku"
     },
     {
       "rank": 78,
-      "name": "Randazzo’s Clam Bar"
+      "name": "Randazzo’s Clam Bar",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#randazzos-clam-bar"
     },
     {
       "rank": 79,
-      "name": "S & P Lunch"
+      "name": "S & P Lunch",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#s-p-lunch"
     },
     {
       "rank": 80,
-      "name": "Sailor"
+      "name": "Sailor",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#sailor"
     },
     {
       "rank": 81,
-      "name": "Salty Lunch Lady’s Little Luncheonette"
+      "name": "Salty Lunch Lady’s Little Luncheonette",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#salty-lunch-ladys-little-luncheonette"
     },
     {
       "rank": 82,
-      "name": "Shaw-naé’s House"
+      "name": "Shaw-naé’s House",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#shaw-nas-house"
     },
     {
       "rank": 83,
-      "name": "Shukette"
+      "name": "Shukette",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#shukette"
     },
     {
       "rank": 84,
-      "name": "Sofreh"
+      "name": "Sofreh",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#sofreh"
     },
     {
       "rank": 85,
-      "name": "Superiority Burger"
+      "name": "Superiority Burger",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#superiority-burger"
     },
     {
       "rank": 86,
-      "name": "Sushi Noz"
+      "name": "Sushi Noz",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#sushi-noz"
     },
     {
       "rank": 87,
-      "name": "Sushi Ouji"
+      "name": "Sushi Ouji",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#sushi-ouji"
     },
     {
       "rank": 88,
-      "name": "Taiwanese Gourmet"
+      "name": "Taiwanese Gourmet",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#taiwanese-gourmet"
     },
     {
       "rank": 89,
-      "name": "Temple Canteen"
+      "name": "Temple Canteen",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#temple-canteen"
     },
     {
       "rank": 90,
-      "name": "Thai Diner"
+      "name": "Thai Diner",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#thai-diner"
     },
     {
       "rank": 91,
-      "name": "Third Falcon"
+      "name": "Third Falcon",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#third-falcon"
     },
     {
       "rank": 92,
-      "name": "Torrisi"
+      "name": "Torrisi",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#torrisi"
     },
     {
       "rank": 93,
-      "name": "Trinciti Roti Shop"
+      "name": "Trinciti Roti Shop",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#trinciti-roti-shop"
     },
     {
       "rank": 94,
-      "name": "Txikito"
+      "name": "Txikito",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#txikito"
     },
     {
       "rank": 95,
-      "name": "Una Pizza Napoletana"
+      "name": "Una Pizza Napoletana",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#una-pizza-napoletana"
     },
     {
       "rank": 96,
-      "name": "Via Carota"
+      "name": "Via Carota",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#via-carota"
     },
     {
       "rank": 97,
-      "name": "Village Café"
+      "name": "Village Café",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#village-caf"
     },
     {
       "rank": 98,
-      "name": "White Bear"
+      "name": "White Bear",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#white-bear"
     },
     {
       "rank": 99,
-      "name": "Yoon Haeundae Galbi"
+      "name": "Yoon Haeundae Galbi",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#yoon-haeundae-galbi"
     },
     {
       "rank": 100,
-      "name": "Zaab Zaab"
+      "name": "Zaab Zaab",
+      "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#zaab-zaab"
     }
   ]
 }

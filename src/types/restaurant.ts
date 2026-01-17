@@ -27,11 +27,14 @@ export interface Restaurant {
   price_range?: string;
   facebook_url?: string;
   instagram_url?: string;
+  nytourism_url?: string;
   // Michelin data (from join_michelin_data.py)
   michelin_award?: string;
   michelin_slug?: string;
+  michelin_url?: string;
   // NYT Top 100 data (from join_nyt_data.py)
   nyttop100_rank?: string;
+  nyt_url?: string;
   // Yelp data
   yelp_rating?: number;
   yelp_review_count?: number;

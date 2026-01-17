@@ -247,7 +247,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
       {/* Accordions wrapper - always visible when not collapsible, or when expanded */}
       {(!collapsible || isAccordionSectionOpen) && (
         <>
-      {/* Restaurant Week Spring 2026 Accordion */}
+      {/* Restaurant Week Winter 2026 Accordion */}
       {displayRestaurant.meal_types && displayRestaurant.meal_types.length > 0 && (
         <div className="restaurant-week-accordion">
           <button
@@ -278,22 +278,33 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
           <div ref={restaurantWeekContentRef} className={`restaurant-week-accordion-content ${isRestaurantWeekOpen ? 'open' : ''}`} onClick={(e) => e.stopPropagation()}>
             <div className="meal-types-row">
               <div className="card-body-text review-text">
-                
-                For Spring 2026 Restaurant Week, {displayRestaurant.name} is participating{displayRestaurant.participation_weeks2 && (
+
+                For Winter 2026 Restaurant Week, {displayRestaurant.name} is participating{displayRestaurant.participation_weeks2 && (
                   <> from <b>{displayRestaurant.participation_weeks2}</b></>)}, offering the following menus: <b>{displayRestaurant.meal_types.join(', ')}</b>
               </div>
             </div>
-            {displayRestaurant.menu_url && displayRestaurant.menu_url.trim() !== '' && (
-              <a
-                href={displayRestaurant.menu_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="see-menu-btn"
-                style={{ display: 'block', marginTop: '8px', marginLeft: 'auto', width: 'fit-content' }}
-              >
-                See Prix Fixe Menu
-              </a>
-            )}
+            <div className="restaurant-week-buttons">
+              {displayRestaurant.menu_url && displayRestaurant.menu_url.trim() !== '' && (
+                <a
+                  href={displayRestaurant.menu_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="see-menu-btn"
+                >
+                  See Prix Fixe Menu
+                </a>
+              )}
+              {displayRestaurant.nytourism_url && displayRestaurant.nytourism_url.trim() !== '' && (
+                <a
+                  href={displayRestaurant.nytourism_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="see-menu-btn"
+                >
+                  Learn More ↗
+                </a>
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -349,6 +360,18 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
                   }, '')}
                 </span>
               </div>
+            )}
+            {displayRestaurant.yelp_url && displayRestaurant.yelp_url.trim() !== '' && (
+              <a
+                href={displayRestaurant.yelp_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="see-menu-btn"
+                style={{ marginTop: '8px', marginLeft: 'auto' }}
+              >
+                <img src="/yelp_logo.png" alt="Yelp" />
+                <span className="arrow">↗</span>
+              </a>
             )}
           </div>
         </div>
@@ -410,6 +433,47 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
                 return acc + (index > 0 ? ' ' : '') + sentenceWithPeriod;
               }, '')}
             </p>
+            {(displayRestaurant.website || displayRestaurant.michelin_award || displayRestaurant.nyttop100_rank) && (
+              <div className="restaurant-week-buttons">
+                {displayRestaurant.website && displayRestaurant.website.trim() !== '' && (
+                  <a
+                    href={displayRestaurant.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="see-menu-btn"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10"/>
+                      <line x1="2" y1="12" x2="22" y2="12"/>
+                      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                    </svg>
+                    <span className="arrow">↗</span>
+                  </a>
+                )}
+                {displayRestaurant.michelin_award && (
+                  <a
+                    href={displayRestaurant.michelin_url || `https://guide.michelin.com/en/new-york-state/new-york/restaurant/${displayRestaurant.michelin_slug || displayRestaurant.slug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="see-menu-btn"
+                  >
+                    <img src={displayRestaurant.michelin_award === 'BIB_GOURMAND' ? '/bibgourmand.png' : '/MichelinStar.svg.png'} alt="Michelin" />
+                    <span className="arrow">↗</span>
+                  </a>
+                )}
+                {displayRestaurant.nyttop100_rank && (
+                  <a
+                    href={displayRestaurant.nyt_url || `https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#${displayRestaurant.name.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="see-menu-btn"
+                  >
+                    <img src="/nytimes.png" alt="NYT" />
+                    <span className="arrow">↗</span>
+                  </a>
+                )}
+              </div>
+            )}
           </div>
         </div>
       )}

@@ -191,12 +191,14 @@ def join_michelin_data(characteristics_data: List[Dict], michelin_data: List[Dic
             # Add Michelin fields with 'michelin_' prefix to avoid conflicts
             joined_item['michelin_award'] = michelin_match.get('michelin_award', '')
             joined_item['michelin_slug'] = michelin_match.get('slug', '')
+            joined_item['michelin_url'] = michelin_match.get('michelin_url', '')
             matched_count += 1
             print(f"✅ Matched: '{char_item.get(join_key, '')}' ↔ '{michelin_match.get('name', '')}' (Award: {michelin_match.get('michelin_award', '')})")
         else:
             # Add empty Michelin fields for unmatched restaurants
             joined_item['michelin_award'] = ''
             joined_item['michelin_slug'] = ''
+            joined_item['michelin_url'] = ''
             
             # Check for potential matches (fuzzy matching)
             original_name = char_item.get(join_key, '')
@@ -285,13 +287,15 @@ def join_nyt_data(joined_data: List[Dict], nyt_data: List[Dict]) -> List[Dict]:
         nyt_match = find_best_nyt_match(item.get('name', ''), nyt_data)
         
         if nyt_match:
-            # Add NYT rank field
+            # Add NYT rank and URL fields
             final_item['nyttop100_rank'] = nyt_match.get('rank', '')
+            final_item['nyt_url'] = nyt_match.get('nyt_url', '')
             matched_count += 1
             print(f"✅ Matched: '{item.get('name', '')}' ↔ '{nyt_match.get('name', '')}' (Rank: {nyt_match.get('rank', '')})")
         else:
-            # Add empty NYT rank for unmatched restaurants
+            # Add empty NYT fields for unmatched restaurants
             final_item['nyttop100_rank'] = ''
+            final_item['nyt_url'] = ''
             
             # Check for potential matches (fuzzy matching)
             original_name = item.get('name', '')
@@ -484,7 +488,8 @@ def merge_2025_2026_data(data_2026: List[Dict], data_2025: List[Dict]) -> List[D
         'website', 'meal_types', 'participation_weeks', 'participation_weeks2',
         'menu_url', 'address', 'latitude', 'longitude', 'telephone',
         'facebook_url', 'instagram_url', 'opentable_id', 'michelin_award',
-        'nyttop100_rank', 'primary_location', 'michelin_slug'
+        'nyttop100_rank', 'primary_location', 'michelin_slug', 'nytourism_url',
+        'michelin_url', 'nyt_url'
     ]
 
     # Fields to take from 2025 only

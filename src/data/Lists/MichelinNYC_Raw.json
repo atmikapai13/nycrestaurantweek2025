@@ -82,49 +82,6 @@
   },
   {
     "_geoloc": {
-      "lat": 40.71757,
-      "lng": -74.00549
-    },
-    "area_name": "Manhattan",
-    "chef": null,
-    "city": {
-      "name": "New York",
-      "slug": "new-york",
-      "exonyms": [
-        "Nueva York",
-        "New York"
-      ]
-    },
-    "distinction": {
-      "label": "One Star: High quality cooking",
-      "slug": "1-star-michelin",
-      "icon": "m"
-    },
-    "michelin_award": "ONE_STAR",
-    "name": "Shion 69 Leonard Street",
-    "slug": "shoji-at-69-leonard",
-    "cuisines": [
-      {
-        "code": "TYC_1068",
-        "label": "Japanese",
-        "slug": "japanese"
-      },
-      {
-        "code": "TYC_1115",
-        "label": "Sushi",
-        "slug": "sushi"
-      }
-    ],
-    "objectID": "126223",
-    "_snippetResult": {
-      "main_desc": {
-        "value": "Note: Temporarily closedThere are just eight seats and a distinctive",
-        "matchLevel": "none"
-      }
-    }
-  },
-  {
-    "_geoloc": {
       "lat": 40.7173975,
       "lng": -74.0105841
     },
@@ -2056,7 +2013,7 @@
     "objectID": "126063",
     "_snippetResult": {
       "main_desc": {
-        "value": "There are a ton of Japanese restaurants that line this",
+        "value": "There are countless Japanese restaurants that line this stretch of",
         "matchLevel": "none"
       }
     }
@@ -2984,7 +2941,7 @@
     "objectID": "126042",
     "_snippetResult": {
       "main_desc": {
-        "value": "It's very hard to snag a table at this",
+        "value": "It can be difficult to snag a table at this",
         "matchLevel": "none"
       }
     }
@@ -3195,8 +3152,8 @@
   },
   {
     "_geoloc": {
-      "lat": 40.7103459,
-      "lng": -73.9637588
+      "lat": 40.7101902,
+      "lng": -73.9640864
     },
     "area_name": "Brooklyn",
     "chef": null,
@@ -4564,7 +4521,7 @@
     "objectID": "126351",
     "_snippetResult": {
       "main_desc": {
-        "value": "Sometimes you can hear the sound of sizzling woks in",
+        "value": "Sometimes you can hear the sound of sizzling woks drifting",
         "matchLevel": "none"
       }
     }

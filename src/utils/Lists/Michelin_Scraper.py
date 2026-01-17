@@ -173,14 +173,16 @@ class MichelinAlgoliaScraper:
         for restaurant in restaurants:
             try:
                 # Extract basic fields
+                slug = restaurant.get('slug', '')
                 clean_data = {
                     'name': restaurant.get('name', ''),
-                    'slug': restaurant.get('slug', ''),
+                    'slug': slug,
                     'michelin_award': restaurant.get('michelin_award', ''),
                     'cuisines': restaurant.get('cuisines', ''),
                     'chef': restaurant.get('chef', ''),
                     'city': restaurant.get('city', ''),
-                    'area_name': restaurant.get('area_name', '')
+                    'area_name': restaurant.get('area_name', ''),
+                    'michelin_url': f"https://guide.michelin.com/en/new-york-state/new-york/restaurant/{slug}" if slug else ''
                 }
                 
                 # Try to find description in various possible fields

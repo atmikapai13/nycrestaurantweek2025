@@ -837,6 +837,7 @@
     padding-left: 70px;
     padding-top: 12px;
     padding-bottom: 10px;
+    min-height: 70px; /* Ensure bubble contains the 50px avatar positioned at top: 10px */
   }
 
   /* Restaurant card full width on mobile */
@@ -864,8 +865,7 @@
   }
 
   /* Disable hover/active transform on restaurant cards on mobile */
-  .restaurant-cards-container .restaurant-card-message:hover,
-  .restaurant-cards-container .restaurant-card-message:active {
+  .restaurant-cards-container .restaurant-card-message:hover{
     transform: none;
   }
 }

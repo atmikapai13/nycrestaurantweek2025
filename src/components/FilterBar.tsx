@@ -36,18 +36,14 @@ export default function FilterBar() {
     isochroneRegionSlugs,
     activeFilters,
     setActiveFilters,
-    highlightedRestaurantIds,
     restaurantWeekActive,
     setRestaurantWeekActive,
     favoritesActive,
     setFavoritesActive,
     hasMenuActive,
     setHasMenuActive,
-    highlightedActive,
-    setHighlightedActive,
     highReviewCountActive,
     setHighReviewCountActive,
-    setHighlightedRestaurantIds,
     drawerHeight,
     setDrawerHeight,
   } = useMap();
@@ -74,11 +70,6 @@ export default function FilterBar() {
 
   // Handlers for filter changes
   const handleFilterChange = (filterType: string, values: string[]) => {
-    if (filterType === "Semantic Search Results") {
-      setHighlightedRestaurantIds(new Set(values));
-      return;
-    }
-
     setActiveFilters((prevFilters) => {
       const newFilters = { ...prevFilters };
       if (values.length === 0) {
@@ -106,7 +97,6 @@ export default function FilterBar() {
   };
   const onFavoritesToggle = () => setFavoritesActive(!favoritesActive);
   const onHasMenuToggle = () => setHasMenuActive(!hasMenuActive);
-  const onRemisRecsToggle = () => setHighlightedActive(!highlightedActive);
   const onHighReviewCountToggle = () =>
     setHighReviewCountActive(!highReviewCountActive);
 
@@ -146,7 +136,6 @@ export default function FilterBar() {
     setRestaurantWeekActive(false);
     setFavoritesActive(false);
     setHasMenuActive(false);
-    setHighlightedActive(false);
     setHighReviewCountActive(false);
   };
 
@@ -205,13 +194,6 @@ export default function FilterBar() {
       });
     }
 
-    if (highlightedRestaurantIds && highlightedRestaurantIds.size > 0) {
-      const highlightedRestaurants = allRestaurants.filter((r) =>
-        highlightedRestaurantIds.has(r.slug)
-      );
-      countSource = highlightedRestaurants;
-    }
-
     countSource.forEach((r) => {
       if (r.cuisine) {
         cuisineCounts.set(r.cuisine, (cuisineCounts.get(r.cuisine) || 0) + 1);
@@ -233,7 +215,7 @@ export default function FilterBar() {
             isochroneRestaurants !== null && !availableCuisines.has(cuisine),
         };
       });
-  }, [allRestaurants, isochroneRegionSlugs, highlightedRestaurantIds]);
+  }, [allRestaurants, isochroneRegionSlugs]);
 
   const ratingOptions = useMemo(() => {
     const isochroneRestaurants = getIsochroneRestaurants(
@@ -398,29 +380,6 @@ export default function FilterBar() {
             </svg>
           </button>
 
-          {highlightedRestaurantIds.size > 0 && (
-            <button
-              className={`filter-pill-base remis-recs-button ${
-                highlightedActive ? "active" : ""
-              }`}
-              onClick={onRemisRecsToggle}
-            >
-              <span
-                style={{
-                  display: "inline-block",
-                  width: "10px",
-                  height: "10px",
-                  borderRadius: "50%",
-                  backgroundColor: "#FF9100",
-                  marginRight: "6px",
-                  border: "1px solid white",
-                  boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
-                }}
-              ></span>
-              Remi's Recs
-            </button>
-          )}
-
           <FilterDropdown
             label="$$$"
             icon=""
@@ -479,7 +438,6 @@ export default function FilterBar() {
             restaurantWeekActive ||
             favoritesActive ||
             hasMenuActive ||
-            highlightedActive ||
             highReviewCountActive) && (
             <button
               className="filter-reset-button"

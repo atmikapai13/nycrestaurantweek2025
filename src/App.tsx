@@ -14,7 +14,6 @@ function AppContent() {
     setSearchTerm,
     favorites,
     setFavorites,
-    setHighlightedRestaurantIds,
     setSelectedRestaurant,
   } = useMap();
 
@@ -94,13 +93,6 @@ function AppContent() {
   };
 
   const handleFilterChange = (filterType: string, values: string[]) => {
-    // Special case: "Semantic Search Results" means highlight, not filter
-    if (filterType === "Semantic Search Results") {
-      setHighlightedRestaurantIds(new Set(values));
-      return;
-    }
-
-    // All other filters work normally (hide restaurants)
     setActiveFilters((prevFilters) => {
       const newFilters = { ...prevFilters };
       if (values.length === 0) {
@@ -121,7 +113,6 @@ function AppContent() {
     setLegendFilters([]);
     setSearchTerm("");
     setSelectedRestaurant(null);
-    setHighlightedRestaurantIds(new Set()); // Clear highlights
 
     // Also reset map state (isochrones, view) if the callback is available
     if (mapResetRef.current) {

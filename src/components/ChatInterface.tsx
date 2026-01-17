@@ -181,7 +181,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       clearAllLayers,
       filterPoolSlugs,
       setRestaurantWeekActive,
-      setHighlightedRestaurantIds,
     } = useMap();
 
     // Random welcome message selection
@@ -206,19 +205,76 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       {
         label: "By Vibes",
         type: "guided" as const,
-        remiResponse: "<strong>Going for a vibe?</strong> I can find:\n\n• Happy hour spots\n• Cozy date night places\n• Vegan-friendly 2026 Restaurant Week deals",
+        remiResponse: "<strong>Going for a vibe?</strong> I can find:\n\n• Happy hour spots\n• Cozy date night places\n• Vegan-friendly Restaurant Week deals",
       },
     ];
 
     const test = [
+      // Location-based (isochrone)
       "I'm in Soho, hunting for spots I can reach in under 15 mins by subway. What's on the menu, Remi?",
       "Any places within a 15 min subway of West Village?",
+      "What's near Grand Central? I can walk 10 minutes.",
+      "Show me restaurants within 20 min cycling from Chelsea Market.",
+
+      // Between two locations (intersection)
       "My friend is in Midtown, I'm in Murray Hill — what's some restaurants in between us within a short 10 min transit?",
       "I'm by AMC Times Square, and my friend is at One Manhattan West. We are willing to travel 15 minutes walking. Find spots between us, Remi.",
+      "Find spots between Union Square and Gramercy, 10 min walk each.",
+
+      // Vibes & ambiance (semantic search)
       "Remi, give me couple places that are good for date night.",
-      "Remi, show me happy hour spots in Soho. Willing to travel 10 mins by subway.",
       "Remi, find me a couple restaurants that are modest and cozy.",
-      "Remi, find me hole in the wall restaurants, and tell me what's your definition for it."
+      "Remi, find me hole in the wall restaurants, and tell me what's your definition for it.",
+      "Looking for somewhere trendy and Instagram-worthy.",
+      "I need a quiet spot for a business dinner.",
+      "Where can I find a lively atmosphere with great cocktails?",
+      "Anything good for big events?",
+
+      // Location + vibes combo
+      "Remi, show me happy hour spots in Soho. Willing to travel 10 mins by subway.",
+      "Cozy date spots within 15 min walk of Washington Square Park.",
+      "Romantic restaurants near Lincoln Center, 10 min walking.",
+
+      // Specific restaurant queries
+      "Show me Carbone.",
+      "Where is Gramercy Tavern?",
+      "Tell me about Le Bernardin.",
+      "What's the deal with Hangawi?",
+
+      // Cuisine queries
+      "Show me Italian restaurants.",
+      "Any good Korean spots?",
+      "I'm craving Japanese — what do you have?",
+      "Mediterranean places in the East Village.",
+      "Best Thai food in Midtown?",
+
+      // Award winners
+      "Show me Michelin star restaurants.",
+      "What are the NYT Top 100 picks?",
+      "Bib Gourmand spots near me — I'm at Penn Station, 15 min walk.",
+      "Any award-winning Italian places?",
+
+      // Dietary & preferences (semantic)
+      "Vegetarian-friendly spots, please.",
+      "Where can I find good vegan options?",
+      "Gluten-free friendly restaurants in Lower East Side.",
+
+      // Price-based
+      "Cheap eats in Chinatown.",
+      "Splurge-worthy spots for a special occasion.",
+      "Mid-range Italian near Union Square.",
+
+      // Complex multi-criteria
+      "Michelin restaurants within 10 min walk of Bryant Park.",
+      "Cozy Italian spots with good wine near Greenwich Village, 15 min subway.",
+      "Date night Japanese within 20 min of my place at 72nd and Broadway.",
+      "Happy hour near FiDi with outdoor seating.",
+
+      // Edge cases
+      "What's good?",
+      "Surprise me, Remi!",
+      "I don't know what I want.",
+      "Anything in Brooklyn?"
     ];
 
 
@@ -544,39 +600,12 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
             processedToolCallIds.current.add((part as any).toolCallId);
             const output = (part as any).output;
 
-            // Highlight results as yellow markers (don't filter, just color them)
-            if (output?.restaurantSlugs && output.restaurantSlugs.length > 0) {
-              
-              setHighlightedRestaurantIds(new Set(output.restaurantSlugs));
-            }
-
             // Auto-activate Restaurant Week filter if detected
             if (output?.restaurantWeekDetected) {
-              
               setRestaurantWeekActive(true);
             }
           }
 
-          // displayRestaurants - only highlight for direct lookups (1 restaurant)
-          // For semantic search results, the highlights are already set above (up to 10)
-          if (
-            part.type === "tool-displayRestaurants" &&
-            (part as any).state === "output-available" &&
-            !processedToolCallIds.current.has((part as any).toolCallId)
-          ) {
-            processedToolCallIds.current.add((part as any).toolCallId);
-            const output = (part as any).output;
-
-            // Only highlight if this is a direct lookup (1-2 restaurants), not after semantic search
-            // Semantic search already set highlights for up to 10 restaurants
-            if (output?.restaurants && output.restaurants.length > 0 && output.restaurants.length <= 2) {
-              const slugs = output.restaurants.map((r: any) => r.slug).filter(Boolean);
-              if (slugs.length > 0) {
-               
-                setHighlightedRestaurantIds(new Set(slugs));
-              }
-            }
-          }
         });
       });
 

@@ -521,13 +521,12 @@
 }
 
 /* Toggle Button Base Styling
-   STANDARD PATTERN: All toggle buttons (Restaurant Week, Award Winners, Favorites, Has Menu, Remi's Recs, High Review Count, etc.)
+   STANDARD PATTERN: All toggle buttons (Restaurant Week, Award Winners, Favorites, Has Menu, High Review Count, etc.)
    inherit from .filter-pill-base for consistent sizing with dropdowns */
 .restaurant-week-button,
 .award-winners-button,
 .favorites-button,
 .has-menu-button,
-.remis-recs-button,
 .high-review-count-button {
   /* All base styles inherited from .filter-pill-base */
 }

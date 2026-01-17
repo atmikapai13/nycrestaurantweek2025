@@ -5624,36 +5624,6 @@ Yelp categorizes this spot as French, Cocktail Bars, and Steakhouses. In Yelp re
 
 **Cuisine:** Italian
 
-**Description:** For La Pizza & La Pasta, Eataly has teamed up with experts Rossopomodoro to present classic Neapolitan pizza, while their Fresh Pasta Counter offers expertly prepared pasta dishes with a choice of fresh pasta made in-house or the highest quality dry pastas cooked al dente.
-
-**Additional Info:** For La Pizza & La Pasta, Eataly has teamed up with experts Rossopomodoro to present classic Neapolitan pizza, while their Fresh Pasta Counter offers expertly prepared pasta dishes with a choice of fresh pasta made in-house or the highest quality dry pastas cooked al dente. Enjoy antipasti salads using only the freshest of ingredients, including sweet San Marzano tomatoes and other chef-selected market vegetables. Don’t forget to ask the waiters to help you pair it with an Italian beer or a glass of white or red wine.
-
-**Neighborhood:** Flatiron District
-
-**Address:** 200 5th Avenue, New York, New York 10016, United States
-
-**Coordinates:** 40.742002, -73.989787
-
-**Available:** N/A
-
-**Michelin Award:** N/A
-
-**NYT Top 100 Rank:** N/A
-
-**OpenTable ID:** 152827
-
-**Website:** [https://www.eataly.com/us_en/stores/nyc-flatiron/restaurants/la-pizza-and-la-pasta](https://www.eataly.com/us_en/stores/nyc-flatiron/restaurants/la-pizza-and-la-pasta)
-
-**Facebook:** [https://www.facebook.com/EatalyNYCFlatiron](https://www.facebook.com/EatalyNYCFlatiron)
-
-**Instagram:** [https://instagram.com/eatalynewyorkcity](https://instagram.com/eatalynewyorkcity)
-
----
-
-## La Pizza & La Pasta
-
-**Cuisine:** Italian
-
 **Description:** Eataly has teamed up with experts Rossopomodoro to present classic Neapolitan pizza, while their Fresh Pasta Counter offers expertly prepared pasta dishes.
 
 **Additional Info:** For La Pizza & La Pasta, Eataly has teamed up with experts Rossopomodoro to present classic Neapolitan pizza, while their Fresh Pasta Counter offers expertly prepared pasta dishes with a choice of fresh pasta made in-house or the highest quality dry pastas cooked al dente. Enjoy antipasti salads using only the freshest of ingredients, including sweet San Marzano tomatoes and other chef-selected market vegetables. Don’t forget to ask the waiters to help you pair it with an Italian beer or a glass of white or red wine.
@@ -5673,6 +5643,36 @@ Yelp categorizes this spot as French, Cocktail Bars, and Steakhouses. In Yelp re
 **OpenTable ID:** 1014574
 
 **Website:** [https://www.eataly.com/us_en/stores/nyc-downtown/restaurants/downtown-pizza-pasta](https://www.eataly.com/us_en/stores/nyc-downtown/restaurants/downtown-pizza-pasta)
+
+**Facebook:** [https://www.facebook.com/EatalyNYCFlatiron](https://www.facebook.com/EatalyNYCFlatiron)
+
+**Instagram:** [https://instagram.com/eatalynewyorkcity](https://instagram.com/eatalynewyorkcity)
+
+---
+
+## La Pizza & La Pasta
+
+**Cuisine:** Italian
+
+**Description:** For La Pizza & La Pasta, Eataly has teamed up with experts Rossopomodoro to present classic Neapolitan pizza, while their Fresh Pasta Counter offers expertly prepared pasta dishes with a choice of fresh pasta made in-house or the highest quality dry pastas cooked al dente.
+
+**Additional Info:** For La Pizza & La Pasta, Eataly has teamed up with experts Rossopomodoro to present classic Neapolitan pizza, while their Fresh Pasta Counter offers expertly prepared pasta dishes with a choice of fresh pasta made in-house or the highest quality dry pastas cooked al dente. Enjoy antipasti salads using only the freshest of ingredients, including sweet San Marzano tomatoes and other chef-selected market vegetables. Don’t forget to ask the waiters to help you pair it with an Italian beer or a glass of white or red wine.
+
+**Neighborhood:** Flatiron District
+
+**Address:** 200 5th Avenue, New York, New York 10016, United States
+
+**Coordinates:** 40.742002, -73.989787
+
+**Available:** N/A
+
+**Michelin Award:** N/A
+
+**NYT Top 100 Rank:** N/A
+
+**OpenTable ID:** 152827
+
+**Website:** [https://www.eataly.com/us_en/stores/nyc-flatiron/restaurants/la-pizza-and-la-pasta](https://www.eataly.com/us_en/stores/nyc-flatiron/restaurants/la-pizza-and-la-pasta)
 
 **Facebook:** [https://www.facebook.com/EatalyNYCFlatiron](https://www.facebook.com/EatalyNYCFlatiron)
 
@@ -11347,7 +11347,7 @@ Yelp categorizes this spot as Indonesian, Cocktail Bars, and Asian Fusion. In Ye
 
 **Additional Info:** Step into the Italian countryside at Serra by Birreria, Eataly's "greenhouse" pop-up on the roof. The restaurant will transport you from the hot pavement of Manhattan to the rolling fields of Italy. Sit down at rustic tables in the shade, and share down-to-earth dishes made with simple but quality ingredients from our favorite farmers in Italy and the US and served family-style, just like in the countryside.
 
-**Vibes/Collections:** summer-vibes, for-the-foodies
+**Vibes/Collections:** for-the-foodies, summer-vibes
 
 Yelp categorizes this spot as Italian, Pizza, Grocery. In Yelp reviews, pasta is mentioned in 31.5% of reviews, with one diner highlighting the pesto pasta with shrimp and pine nuts. Pizza comes up in 20.4% of reviews, where a reviewer enjoyed the Lambrusco, margherita pizza, broccolini, and focaccia.
 
@@ -18671,8 +18671,6 @@ Yelp categorizes this spot as Indian. In Yelp reviews, both Paneer Tikka and ser
 
 **Description:** 1803 transports guests from the Big Apple to the Big Easy with its stunning balcony seating, covered outdoor seating, and prohibition speakeasy bar, with Cajun-Creole dishes and NOLA classics and live jazz.
 
-**Additional Info:** Inspired by New Orleans' vibrant culinary scene and rich culture, and named for the Louisiana Purchase, 1803 transports guests from the Big Apple to the Big Easy with its stunning balcony seating, covered outdoor seating, and prohibition speakeasy bar, Bon Courage. The good times keep on rolling with live music and special events daily, a stellar menu highlighted by Cajun-Creole dishes and NOLA classics (think seafood gumbo and beignets), and delicious, carefully crafted cocktails.
-
 **Neighborhood:** Tribeca
 
 **Address:** 82 Reade Street, New York, New York 10007, United States
@@ -18686,10 +18684,6 @@ Yelp categorizes this spot as Indian. In Yelp reviews, both Paneer Tikka and ser
 **NYT Top 100 Rank:** N/A
 
 **Website:** [https://1803nyc.com](https://1803nyc.com)
-
-**Facebook:** [https://www.facebook.com/1803nyc](https://www.facebook.com/1803nyc)
-
-**Instagram:** [https://instagram.com/1803nyc](https://instagram.com/1803nyc)
 
 ---
 

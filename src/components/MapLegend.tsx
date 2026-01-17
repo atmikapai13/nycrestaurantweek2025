@@ -6,9 +6,6 @@ export const MapLegend: React.FC = () => {
     allRestaurants,
     filteredRestaurants,
     isochroneRegionSlugs,
-    highlightedRestaurantIds,
-    highlightedActive,
-    setHighlightedActive,
     awardsActive,
     setAwardsActive,
     favorites,
@@ -43,21 +40,6 @@ export const MapLegend: React.FC = () => {
                 : `${allRestaurants.length} restaurants`}
             </span>
           </div>
-
-          {/* match your taste - clickable to filter to only highlighted restaurants */}
-          {highlightedRestaurantIds && highlightedRestaurantIds.size > 0 && (
-            <div
-              className="legend-item"
-              onClick={() => setHighlightedActive(!highlightedActive)}
-              style={{
-                cursor: 'pointer',
-                fontWeight: highlightedActive ? 600 : 400
-              }}
-            >
-              <div className="legend-marker" style={{ backgroundColor: '#FF69B4', width: '8px', height: '8px' }}></div>
-              <span>{highlightedRestaurantIds.size} match your taste</span>
-            </div>
-          )}
 
           {/* Award winners - clickable */}
           {awardWinnersCount > 0 && (

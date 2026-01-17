@@ -88,6 +88,9 @@ class RestaurantCharacteristicsExtractor:
                 if description:
                     characteristics['summary2'] = description
 
+                # 7. Add NYC Tourism Restaurant Week URL
+                characteristics['nytourism_url'] = restaurant_url
+
                 # Update restaurant with new characteristics
                 restaurant_copy = restaurant.copy()
                 restaurant_copy.update(characteristics)
