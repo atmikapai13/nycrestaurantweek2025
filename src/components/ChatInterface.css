@@ -798,7 +798,7 @@
   .chat-input {
     min-height: 20px;
     max-height: 90px;
-    font-size: 16px; /* Prevent iOS zoom on focus */
+    font-size: 14px; /* Prevent iOS zoom on focus */
     line-height: 1.2;
   }
 
