@@ -251,8 +251,8 @@ export default function Map({
     const mobileBearing = 0;
 
     // Desktop viewport
-    const desktopCenter: [number, number] = [-74.014, 40.737];
-    const desktopZoom = 12.58;
+    const desktopCenter: [number, number] = [-74.030, 40.757];
+    const desktopZoom = 11.8;
     const desktopPitch = 45;
     const desktopBearing = 0;
 
@@ -686,7 +686,7 @@ export default function Map({
         duration: 1900, // Smooth 1.8s animation
         essential: true, // This animation is essential with respect to prefers-reduced-motion
         padding: isMobileView
-          ? { top: 40, bottom: 350, left: 20, right: 20 } // Mobile: pad bottom for drawer
+          ? { top: 10, bottom: 450, left: 20, right: 20 } // Mobile: pad bottom for drawer
           : { top: 100, bottom: 100, left: 480, right: 100 }, // Desktop: pad left for chat panel
       });
     }

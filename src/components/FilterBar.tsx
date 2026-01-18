@@ -238,27 +238,53 @@ export default function FilterBar() {
   };
 
   const priceOptions = useMemo(() => {
-    const isochroneRestaurants = getIsochroneRestaurants(
-      allRestaurants,
-      isochroneRegionSlugs
-    );
-    const availablePrices = new Set<string>();
+    // Get restaurants filtered by all active filters EXCEPT price
+    const filteredRestaurants = getFilteredRestaurantsExcluding("Price");
 
-    if (isochroneRestaurants) {
-      isochroneRestaurants.forEach((r) => {
-        const price = (r as any).price ?? r.price_range;
-        if (price) availablePrices.add(price);
-      });
-    }
+    // Count prices from the filtered set
+    const priceCounts = new Map<string, number>();
+    const availablePrices = new Set<string>();
+    filteredRestaurants.forEach((r) => {
+      const price = (r as any).price ?? r.price_range;
+      if (price) {
+        priceCounts.set(price, (priceCounts.get(price) || 0) + 1);
+        availablePrices.add(price);
+      }
+    });
+
+    // Check if any filters are active (to determine if we should disable empty options)
+    const hasActiveFilters =
+      isochroneRegionSlugs !== null ||
+      restaurantWeekActive ||
+      favoritesActive ||
+      hasMenuActive ||
+      highReviewCountActive ||
+      Object.keys(activeFilters).some(
+        (k) => k !== "Price" && activeFilters[k]?.length > 0
+      );
 
     const allPrices = ["$", "$$", "$$$", "$$$$"];
 
-    return allPrices.map((price) => ({
-      value: price,
-      label: price,
-      disabled: isochroneRestaurants !== null && !availablePrices.has(price),
-    }));
-  }, [allRestaurants, isochroneRegionSlugs]);
+    return allPrices.map((price) => {
+      const count = priceCounts.get(price) || 0;
+      return {
+        value: price,
+        label: count > 0 ? (
+          <>{price} <span style={{ color: '#888' }}>· {count}</span></>
+        ) : price,
+        disabled: hasActiveFilters && !availablePrices.has(price),
+      };
+    });
+  }, [
+    allRestaurants,
+    isochroneRegionSlugs,
+    activeFilters,
+    restaurantWeekActive,
+    favoritesActive,
+    hasMenuActive,
+    highReviewCountActive,
+    favorites,
+  ]);
 
   const cuisineOptions = useMemo(() => {
     // Get restaurants filtered by all active filters EXCEPT cuisine
@@ -299,7 +325,9 @@ export default function FilterBar() {
         const count = cuisineCounts.get(cuisine) || 0;
         return {
           value: cuisine,
-          label: count > 0 ? `${cuisine} · ${count}` : cuisine,
+          label: count > 0 ? (
+            <>{cuisine} <span style={{ color: '#888' }}>· {count}</span></>
+          ) : cuisine,
           disabled: hasActiveFilters && !availableCuisines.has(cuisine),
         };
       });
@@ -315,18 +343,27 @@ export default function FilterBar() {
   ]);
 
   const ratingOptions = useMemo(() => {
-    const isochroneRestaurants = getIsochroneRestaurants(
-      allRestaurants,
-      isochroneRegionSlugs
-    );
-    const hasRatingInRange = (minRating: number): boolean => {
-      if (!isochroneRestaurants) return true;
+    // Get restaurants filtered by all active filters EXCEPT Yelp Rating
+    const filteredRestaurants = getFilteredRestaurantsExcluding("Yelp Rating");
 
-      return isochroneRestaurants.some((r) => {
+    // Count restaurants at each rating threshold
+    const countAtThreshold = (minRating: number): number => {
+      return filteredRestaurants.filter((r) => {
         const rating = (r as any).yelp_rating as number | undefined;
         return typeof rating === "number" && rating >= minRating;
-      });
+      }).length;
     };
+
+    // Check if any filters are active
+    const hasActiveFilters =
+      isochroneRegionSlugs !== null ||
+      restaurantWeekActive ||
+      favoritesActive ||
+      hasMenuActive ||
+      highReviewCountActive ||
+      Object.keys(activeFilters).some(
+        (k) => k !== "Yelp Rating" && activeFilters[k]?.length > 0
+      );
 
     const allRatings = [
       { value: "3.0", label: "★★★", threshold: 3.0 },
@@ -335,43 +372,68 @@ export default function FilterBar() {
       { value: "4.5", label: "★★★★☆", threshold: 4.5 },
     ];
 
-    return allRatings.map((rating) => ({
-      value: rating.value,
-      label: rating.label,
-      disabled: !hasRatingInRange(rating.threshold),
-    }));
-  }, [allRestaurants, isochroneRegionSlugs]);
+    return allRatings.map((rating) => {
+      const count = countAtThreshold(rating.threshold);
+      return {
+        value: rating.value,
+        label: count > 0 ? (
+          <>{rating.label} <span style={{ color: '#888' }}>· {count}</span></>
+        ) : rating.label,
+        disabled: hasActiveFilters && count === 0,
+      };
+    });
+  }, [
+    allRestaurants,
+    isochroneRegionSlugs,
+    activeFilters,
+    restaurantWeekActive,
+    favoritesActive,
+    hasMenuActive,
+    highReviewCountActive,
+    favorites,
+  ]);
 
   const mealTypesOptions = useMemo(() => {
-    const isochroneRestaurants = getIsochroneRestaurants(
-      allRestaurants,
-      isochroneRegionSlugs
-    );
-    const availableMealTypes = new Set<string>();
-    const mealTypeCounts = new Map<string, number>();
+    // Get restaurants filtered by all active filters EXCEPT Meal Types
+    const filteredRestaurants = getFilteredRestaurantsExcluding("Meal Types");
 
+    // Collect all meal types from full dataset (for the option list)
+    const allMealTypes = new Set<string>();
     allRestaurants.forEach((r) => {
+      if (r.meal_types && Array.isArray(r.meal_types)) {
+        r.meal_types.forEach((mealType) => allMealTypes.add(mealType));
+      }
+    });
+
+    // Count meal types from the filtered set
+    const mealTypeCounts = new Map<string, number>();
+    const availableMealTypes = new Set<string>();
+    filteredRestaurants.forEach((r) => {
       if (r.meal_types && Array.isArray(r.meal_types)) {
         r.meal_types.forEach((mealType) => {
           mealTypeCounts.set(mealType, (mealTypeCounts.get(mealType) || 0) + 1);
+          availableMealTypes.add(mealType);
         });
       }
     });
 
-    if (isochroneRestaurants) {
-      isochroneRestaurants.forEach((r) => {
-        if (r.meal_types && Array.isArray(r.meal_types)) {
-          r.meal_types.forEach((mealType) => availableMealTypes.add(mealType));
-        }
-      });
-    }
-
-    if (mealTypeCounts.size === 0) {
+    if (allMealTypes.size === 0) {
       return [{ value: "", label: "No meal types available", disabled: true }];
     }
 
+    // Check if any filters are active
+    const hasActiveFilters =
+      isochroneRegionSlugs !== null ||
+      restaurantWeekActive ||
+      favoritesActive ||
+      hasMenuActive ||
+      highReviewCountActive ||
+      Object.keys(activeFilters).some(
+        (k) => k !== "Meal Types" && activeFilters[k]?.length > 0
+      );
+
     const customOrder = ["$30", "$45", "$60", "brunch", "lunch", "dinner"];
-    return Array.from(mealTypeCounts.keys())
+    return Array.from(allMealTypes)
       .sort((a, b) => {
         const aIndex = customOrder.indexOf(a.toLowerCase());
         const bIndex = customOrder.indexOf(b.toLowerCase());
@@ -380,13 +442,95 @@ export default function FilterBar() {
         if (bIndex !== -1) return 1;
         return a.localeCompare(b);
       })
-      .map((mealType) => ({
-        value: mealType,
-        label: mealType,
-        disabled:
-          isochroneRestaurants !== null && !availableMealTypes.has(mealType),
-      }));
-  }, [allRestaurants, isochroneRegionSlugs]);
+      .map((mealType) => {
+        const count = mealTypeCounts.get(mealType) || 0;
+        return {
+          value: mealType,
+          label: count > 0 ? (
+            <>{mealType} <span style={{ color: '#888' }}>· {count}</span></>
+          ) : mealType,
+          disabled: hasActiveFilters && !availableMealTypes.has(mealType),
+        };
+      });
+  }, [
+    allRestaurants,
+    isochroneRegionSlugs,
+    activeFilters,
+    restaurantWeekActive,
+    favoritesActive,
+    hasMenuActive,
+    highReviewCountActive,
+    favorites,
+  ]);
+
+  const badgeOptions = useMemo(() => {
+    // Get restaurants filtered by all active filters EXCEPT Badges
+    const filteredRestaurants = getFilteredRestaurantsExcluding("Badges");
+
+    // Count each badge type
+    let michelinCount = 0;
+    let bibCount = 0;
+    let nytCount = 0;
+
+    filteredRestaurants.forEach((r) => {
+      if (r.michelin_award && ["ONE_STAR", "TWO_STARS", "THREE_STARS"].includes(r.michelin_award)) {
+        michelinCount++;
+      }
+      if (r.michelin_award === "BIB_GOURMAND") {
+        bibCount++;
+      }
+      if (r.nyttop100_rank) {
+        nytCount++;
+      }
+    });
+
+    // Check if any filters are active
+    const hasActiveFilters =
+      isochroneRegionSlugs !== null ||
+      restaurantWeekActive ||
+      favoritesActive ||
+      hasMenuActive ||
+      highReviewCountActive ||
+      Object.keys(activeFilters).some(
+        (k) => k !== "Badges" && activeFilters[k]?.length > 0
+      );
+
+    return [
+      {
+        value: "michelin",
+        label: michelinCount > 0 ? (
+          <>Michelin <span style={{ color: '#888' }}>· {michelinCount}</span></>
+        ) : "Michelin",
+        icon: "/MichelinStar.svg.png",
+        disabled: hasActiveFilters && michelinCount === 0,
+      },
+      {
+        value: "bib",
+        label: bibCount > 0 ? (
+          <>Bib Gourmand <span style={{ color: '#888' }}>· {bibCount}</span></>
+        ) : "Bib Gourmand",
+        icon: "/bibgourmand.png",
+        disabled: hasActiveFilters && bibCount === 0,
+      },
+      {
+        value: "nyt",
+        label: nytCount > 0 ? (
+          <>NYT Top 100 <span style={{ color: '#888' }}>· {nytCount}</span></>
+        ) : "NYT Top 100",
+        icon: "/nytimes.png",
+        disabled: hasActiveFilters && nytCount === 0,
+      },
+    ];
+  }, [
+    allRestaurants,
+    isochroneRegionSlugs,
+    activeFilters,
+    restaurantWeekActive,
+    favoritesActive,
+    hasMenuActive,
+    highReviewCountActive,
+    favorites,
+  ]);
 
   return (
     <div className="filter-bar-container">
@@ -441,15 +585,7 @@ export default function FilterBar() {
               </span>
             }
             icon=""
-            options={[
-              {
-                value: "michelin",
-                label: "Michelin",
-                icon: "/MichelinStar.svg.png",
-              },
-              { value: "bib", label: "Bib Gourmand", icon: "/bibgourmand.png" },
-              { value: "nyt", label: "NYT Top 100", icon: "/nytimes.png" },
-            ]}
+            options={badgeOptions}
             selectedValues={activeFilters["Badges"] || []}
             onChange={(values) => handleFilterChange("Badges", values)}
           />

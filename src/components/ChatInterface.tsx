@@ -1556,7 +1556,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                     >
                                       Tip:
                                     </span>{" "}
-                                    <span dangerouslySetInnerHTML={{ __html: linkifyText(currentTip) }} />
+                                    <span style={{ color: '#666' }} dangerouslySetInnerHTML={{ __html: linkifyText(currentTip) }} />
                                   </div>
                                 )}
                               </div>
@@ -1654,7 +1654,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                         >
                           Tip:
                         </span>{" "}
-                        <span dangerouslySetInnerHTML={{ __html: linkifyText(currentTip) }} />
+                        <span style={{ color: '#666' }} dangerouslySetInnerHTML={{ __html: linkifyText(currentTip) }} />
                       </div>
                     )}
                   </div>

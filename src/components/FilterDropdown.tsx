@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 
 export interface FilterOption {
   value: string
-  label: string
+  label: string | React.ReactNode
   disabled?: boolean
   icon?: string
 }
