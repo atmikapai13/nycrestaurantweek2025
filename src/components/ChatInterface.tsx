@@ -414,6 +414,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
     const [currentTip, setCurrentTip] = useState("");
     const [customMessages, setCustomMessages] = useState<Message[]>([]); // For restaurant cards
+    const [accordionCollapseKey, setAccordionCollapseKey] = useState(0); // Increment to collapse all accordions
 
     const lastMessageRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -912,23 +913,23 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       }
     }, [customMessages]);
 
-    // Show a tip when loading starts (mobile: 100%, desktop: 70%)
-    useEffect(() => {
-      if (isLoading) {
-        const isMobile = window.innerWidth <= 768;
-        const probability = isMobile ? 1.0 : 0.7;
-        const shouldShowTip = Math.random() < probability;
-        if (shouldShowTip) {
-          const randomTip = tips[Math.floor(Math.random() * tips.length)];
-          setCurrentTip(randomTip);
-        } else {
-          setCurrentTip("");
-        }
-      } else {
-        // Clear tip when loading finishes
-        setCurrentTip("");
-      }
-    }, [isLoading]);
+    // Tips disabled for demo
+    // useEffect(() => {
+    //   if (isLoading) {
+    //     const isMobile = window.innerWidth <= 768;
+    //     const probability = isMobile ? 1.0 : 0.7;
+    //     const shouldShowTip = Math.random() < probability;
+    //     if (shouldShowTip) {
+    //       const randomTip = tips[Math.floor(Math.random() * tips.length)];
+    //       setCurrentTip(randomTip);
+    //     } else {
+    //       setCurrentTip("");
+    //     }
+    //   } else {
+    //     // Clear tip when loading finishes
+    //     setCurrentTip("");
+    //   }
+    // }, [isLoading]);
 
     // Expose addRestaurantCard method to parent via ref
     const addRestaurantCard = (restaurant: Restaurant) => {
@@ -1202,7 +1203,9 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                           if (onRestaurantSelect && msg.restaurant) {
                             onRestaurantSelect(msg.restaurant);
                           }
-                          // Expand drawer to 45vh on mobile when clicking card
+                          // Collapse all accordions
+                          setAccordionCollapseKey(prev => prev + 1);
+                          // Expand drawer to 55vh on mobile when clicking card
                           // (accordion clicks stopPropagation, so this only fires for non-accordion areas)
                           if (window.innerWidth <= 768 && drawerHeight !== 55) {
                             setDrawerHeight(55);
@@ -1243,6 +1246,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                   removeRestaurantCard(customMsgIndex);
                                 }
                               }}
+                              collapseKey={accordionCollapseKey}
                             />
                           </div>
                         </div>
@@ -1446,7 +1450,9 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                                         restaurant
                                                       );
                                                     }
-                                                    // Expand drawer to 45vh on mobile when clicking card
+                                                    // Collapse all accordions
+                                                    setAccordionCollapseKey(prev => prev + 1);
+                                                    // Expand drawer to 55vh on mobile when clicking card
                                                     // (accordion clicks stopPropagation, so this only fires for non-accordion areas)
                                                     if (window.innerWidth <= 768 && drawerHeight !== 55) {
                                                       setDrawerHeight(55);
@@ -1480,6 +1486,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                                           setDrawerHeight(80);
                                                         }
                                                       }}
+                                                      collapseKey={accordionCollapseKey}
                                                     />
                                                   </div>
                                                 </div>

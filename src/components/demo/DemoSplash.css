@@ -1,0 +1,104 @@
+/* DemoSplash - Animated splash screen for demo video */
+
+.demo-splash {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #FDFAFB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.demo-splash-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Remi container - acts as the mask/clip for the text */
+.demo-remi-container {
+  position: relative;
+  z-index: 10;
+  /* Remi stays fixed in place */
+}
+
+.demo-remi-image {
+  height: 200px;
+  width: auto;
+  display: block;
+}
+
+/* Text container - positioned to the right of Remi initially */
+.demo-text-container {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-20px);
+  display: flex;
+  align-items: center;
+  z-index: 5;
+  white-space: nowrap;
+
+  /* Font styling to match app */
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 48px;
+  font-weight: 700;
+
+  /* Transition for the slide animation */
+  transition: transform 2.5s ease-in-out, opacity 2s ease-in-out;
+  transition-delay: 0s, 0.5s; /* Opacity fades slightly after movement starts */
+}
+
+/* Animated state - slide left and fade */
+.demo-text-container.animate-out {
+  transform: translateX(-350px);
+  opacity: 0;
+}
+
+/* Text colors */
+.demo-text-nyc {
+  color: #1a1a1a;
+}
+
+.demo-text-eats {
+  color: #1a1a1a;
+}
+
+.demo-text-live {
+  color: #E91E8C;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .demo-remi-image {
+    height: 150px;
+  }
+
+  .demo-text-container {
+    font-size: 36px;
+    transform: translateX(-15px);
+  }
+
+  .demo-text-container.animate-out {
+    transform: translateX(-280px);
+  }
+}
+
+@media (max-width: 480px) {
+  .demo-remi-image {
+    height: 120px;
+  }
+
+  .demo-text-container {
+    font-size: 28px;
+    transform: translateX(-10px);
+  }
+
+  .demo-text-container.animate-out {
+    transform: translateX(-220px);
+  }
+}

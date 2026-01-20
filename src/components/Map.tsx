@@ -192,7 +192,7 @@ export default function Map({
     }
     // Increase size in desktop when zoomed in
     if (!isMobileDevice && zoom >= 13.5) {
-      size *= 1.6;
+      size *= 1.2;
     } else if (zoom >= 12.0) {
       size *= 1.2;
     }
@@ -218,7 +218,7 @@ export default function Map({
         // Apply 1.3x multiplier and thicker border for selected markers (scales with zoom)
         const isSelected = markerEl.getAttribute("data-is-selected") === "true";
         if (isSelected) {
-          newSize = Math.round(newSize * 1.25);
+          newSize = Math.round(newSize * 1.7);
           markerEl.style.border = "1.5px solid white";
         } else {
           markerEl.style.border = "1px solid white";
@@ -248,11 +248,11 @@ export default function Map({
     const mobileCenter: [number, number] = [-73.988, 40.727]; // Shifted south to show lower Manhattan
     const mobileZoom = 11.8;
     const mobilePitch = 45;
-    const mobileBearing = 0;
+    const mobileBearing = 10;
 
     // Desktop viewport
     const desktopCenter: [number, number] = [-74.030, 40.757];
-    const desktopZoom = 11.8;
+    const desktopZoom = 11.5;
     const desktopPitch = 45;
     const desktopBearing = 0;
 
@@ -266,7 +266,7 @@ export default function Map({
       bearing: isMobile ? mobileBearing : desktopBearing,
       minZoom: 10, // Prevent zooming out to the whole world
       customAttribution:
-        '© <a href="https://atmikapai.dev/" target="_blank">Atmika Pai</a> © <a href="https://marauders.earth/" target="_blank">Marauders.Earth</a> © <a href="https://www.fultonring.com/" target="_blank">Fulton Ring</a>',
+        '© <a href="https://www.linkedin.com/in/atmikapai/" target="_blank">Atmika Pai</a> © <a href="https://marauders.earth/" target="_blank">Marauders.Earth</a> © <a href="https://www.fultonring.com/" target="_blank">Fulton Ring</a> © <a href="https://urban.tech.cornell.edu/" target="_blank">Urban Tech Hub, Cornell Tech</a>',
     });
 
     // Add zoom event listener to update marker sizes
@@ -512,12 +512,12 @@ export default function Map({
 
           // For "between us" queries (3+ layers including intersection), zoom in closer
           // For single/double isochrone, use conservative zoom
-          const maxZoomLevel = isMobileView ? 17 : (isochroneLayers.length >= 3 ? 15.5 : 16);
+          const maxZoomLevel = isMobileView ? 17 : (isochroneLayers.length >= 3 ? 16: 17);
 
           mapInstance.fitBounds(bounds, {
             padding: isMobileView
               ? { top: 40, bottom: 350, left: 20, right: 20 }  // Mobile: pad bottom for drawer (40vh ≈ 320px)
-              : { top: 100, bottom: 100, left: 480, right: 100 }, // Desktop: pad left for chat panel
+              : { top: 50, bottom: 50, left: 480, right: 50 }, // Desktop: pad left for chat panel
             maxZoom: maxZoomLevel,
             duration: 1500, // Smooth 1.2s animation
           });
@@ -556,11 +556,11 @@ export default function Map({
     }
 
     // Sort restaurants so higher priority markers render last (on top)
-    // Order: default (0) → awards (1) → favorites (2) → selected (3)
+    // Order: default (0) → awards (1) → selected (2) → favorites (3)
     const sortedRestaurants = [...restaurantsToRender].sort((a, b) => {
       const getPriority = (r: Restaurant) => {
-        if (selectedRestaurant?.slug === r.slug) return 3;
-        if (favorites.includes(r.name)) return 2;
+        if (favorites.includes(r.name)) return 3;
+        if (selectedRestaurant?.slug === r.slug) return 2;
         if (hasAnyAward(r)) return 1;
         return 0;
       };
@@ -575,15 +575,15 @@ export default function Map({
         const isAwardWinner = hasAnyAward(restaurant);
 
         let markerColor = '#928f8e'  // Default grey
-        const baseMarkerSize = 8;    // Uniform base size for all markers (scales with zoom)
+        const baseMarkerSize = 7;    // Uniform base size for all markers (scales with zoom)
         let zIndex = 0
 
-        // COLOR PRIORITY: Orange (selected) > Pink (favorites) > Red (awards) > Grey (default)
-        if (isSelected) {
-          markerColor = "#FF9100"; // Orange
-          zIndex = 4;
-        } else if (isFavorite) {
+        // COLOR PRIORITY: Pink (favorites) > Orange (selected) > Red (awards) > Grey (default)
+        if (isFavorite) {
           markerColor = "#ff67b2"; // Pink
+          zIndex = 4;
+        } else if (isSelected) {
+          markerColor = "#FF9100"; // Orange
           zIndex = 3;
         } else if (isAwardWinner) {
           markerColor = "#c81224"; // Red
@@ -675,15 +675,15 @@ export default function Map({
 
       // Keep current zoom if already zoomed in past 14.1, otherwise zoom to 14.1
       const currentZoom = map.current.getZoom();
-      const targetZoom = currentZoom > 14.1 ? currentZoom : 14.1;
+      const targetZoom = currentZoom > 14.0 ? currentZoom : 14.0;
 
       // Smooth fly to the restaurant location
       map.current.flyTo({
         center: [longitude, latitude],
         zoom: targetZoom,
-        pitch: 45,
+        pitch: isMobileView ? 0 : 65,
         bearing: map.current.getBearing(), // Keep current bearing
-        duration: 1900, // Smooth 1.8s animation
+        duration: 2300, // Smooth 1.8s animation
         essential: true, // This animation is essential with respect to prefers-reduced-motion
         padding: isMobileView
           ? { top: 10, bottom: 450, left: 20, right: 20 } // Mobile: pad bottom for drawer

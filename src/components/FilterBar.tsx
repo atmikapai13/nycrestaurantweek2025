@@ -143,10 +143,10 @@ export default function FilterBar() {
     return true; // Expanded on desktop
   });
 
-  // Collapse filter bar when drawer expands to 80vh
+  // Collapse filter bar when drawer expands to 55vh or 80vh
   useEffect(() => {
     const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
-    if (isMobile && drawerHeight === 80 && isExpanded) {
+    if (isMobile && (drawerHeight === 55 || drawerHeight === 80) && isExpanded) {
       setIsExpanded(false);
     }
   }, [drawerHeight, isExpanded]);

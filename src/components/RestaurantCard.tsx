@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import type { Restaurant } from '../types/restaurant'
 import './RestaurantCard.css'
 
@@ -11,9 +11,10 @@ interface RestaurantCardProps {
   onRequestReviewHighlights?: (prompt: string, slug: string) => void
   onExpandDrawer?: () => void
   collapsible?: boolean // For displayRestaurants cards - hide accordions behind +/- toggle
+  collapseKey?: number // When this changes, collapse all accordions
 }
 
-export default function RestaurantCard({ restaurant, placeholderRestaurant, onClose, isFavorited = false, onToggleFavorite, onExpandDrawer, collapsible = false }: RestaurantCardProps) {
+export default function RestaurantCard({ restaurant, placeholderRestaurant, onClose, isFavorited = false, onToggleFavorite, onExpandDrawer, collapsible = false, collapseKey }: RestaurantCardProps) {
   const displayRestaurant = restaurant || placeholderRestaurant
   const [isContactsOpen, setIsContactsOpen] = useState(false)
   const [isReviewsOpen, setIsReviewsOpen] = useState(false)
@@ -26,6 +27,17 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
   const restaurantWeekContentRef = useRef<HTMLDivElement>(null)
   const aboutContentRef = useRef<HTMLDivElement>(null)
   const contactsContentRef = useRef<HTMLDivElement>(null)
+
+  // Collapse all accordions when collapseKey changes
+  useEffect(() => {
+    if (collapseKey !== undefined) {
+      setIsContactsOpen(false)
+      setIsReviewsOpen(false)
+      setIsRestaurantWeekOpen(false)
+      setIsAboutOpen(false)
+      setIsAccordionSectionOpen(false)
+    }
+  }, [collapseKey])
 
   if (!displayRestaurant) return null
 
