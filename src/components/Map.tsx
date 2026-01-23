@@ -676,9 +676,13 @@ export default function Map({
       const currentZoom = map.current.getZoom();
       const isMobileView = window.innerWidth <= 768;
 
-      // Skip flyTo if already zoomed in past threshold - user is likely already viewing the area
+      // Check if restaurant is visible in current viewport
+      const bounds = map.current.getBounds();
+      const isInViewport = bounds.contains([longitude, latitude]);
+
+      // Skip flyTo only if zoomed in past threshold AND restaurant is already visible
       const skipZoomThreshold = isMobileView ? 13.5 : 15;
-      if (currentZoom > skipZoomThreshold) return;
+      if (currentZoom > skipZoomThreshold && isInViewport) return;
 
       // Keep current zoom if already zoomed in, otherwise zoom to target (13 for mobile, 14.1 for desktop)
       const minZoom = isMobileView ? 13.8 : 14.1;
