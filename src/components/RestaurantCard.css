@@ -59,7 +59,6 @@
   backdrop-filter: blur(3px) saturate(100%);
   -webkit-backdrop-filter: blur(3px) saturate(100%);
   border: 2px solid rgba(242, 61, 150, 0.4);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 /* Restaurant Tags */

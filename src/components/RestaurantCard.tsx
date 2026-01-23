@@ -244,6 +244,23 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
         </div>
       )}
 
+      {/* Fallback +more toggle for collapsible cards with no Yelp data and no Reserve button */}
+      {collapsible &&
+       !(displayRestaurant.yelp_rating != null && displayRestaurant.yelp_rating > 0 && displayRestaurant.yelp_review_count != null && displayRestaurant.yelp_review_count > 0) &&
+       !(displayRestaurant.table_res || displayRestaurant.opentable_id) && (
+        <div className="collapsible-actions-row">
+          <button
+            className="accordion-section-toggle"
+            onClick={handleAccordionSectionToggle}
+            aria-expanded={isAccordionSectionOpen}
+            aria-label={isAccordionSectionOpen ? "Collapse details" : "Expand details"}
+          >
+            <span className="accordion-section-toggle-icon">{isAccordionSectionOpen ? '−' : '+'}</span>
+            <span className="accordion-section-toggle-label">{isAccordionSectionOpen ? 'less' : 'more'}</span>
+          </button>
+        </div>
+      )}
+
       {/* Accordions wrapper - always visible when not collapsible, or when expanded */}
       {(!collapsible || isAccordionSectionOpen) && (
         <>

@@ -4,7 +4,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import type { Restaurant } from "../types/restaurant";
 import ChatInterface, { type ChatInterfaceHandle } from "./ChatInterface";
 import { MapLegend } from "./MapLegend";
-import { useMap, hasAnyAward, type IsochroneLayer } from "../contexts/MapContext";
+import { useMap, hasAnyAward, type IsochroneLayer, type GeocodedMarker } from "../contexts/MapContext";
 
 // Set your Mapbox access token
 mapboxgl.accessToken =
@@ -53,6 +53,7 @@ export default function Map({
   const markers = useRef<mapboxgl.Marker[]>([]);
   const markerElements = useRef<HTMLDivElement[]>([]);
   const chatInterfaceRef = useRef<ChatInterfaceHandle>(null);
+  const geocodedPins = useRef<mapboxgl.Marker[]>([]); // Native teardrop pins for geocoded locations
 
   // Use MapContext for state and actions
   const {
@@ -68,6 +69,8 @@ export default function Map({
     restaurantWeekActive,
     drawerHeight,
     setDrawerHeight,
+    geocodedMarkers,
+    clearGeocodedMarkers,
   } = useMap();
 
   // Refs for tracking previous isochrone states to prevent unnecessary re-renders
@@ -81,6 +84,8 @@ export default function Map({
     // Layer clearing is now handled by MapContext.clearAllLayers()
     // Clear selected restaurant
     setSelectedRestaurant(null);
+    // Clear geocoded location pins
+    clearGeocodedMarkers();
 
     // Detect mobile viewport
     const isMobile = window.innerWidth <= 768;
@@ -266,7 +271,7 @@ export default function Map({
       bearing: isMobile ? mobileBearing : desktopBearing,
       minZoom: 10, // Prevent zooming out to the whole world
       customAttribution:
-        '© <a href="https://atmikapai.dev/" target="_blank">Atmika Pai</a> © <a href="https://marauders.earth/" target="_blank">Marauders.Earth</a> © <a href="https://www.fultonring.com/" target="_blank">Fulton Ring</a>',
+        '© <a href="https://atmikapai.dev/" target="_blank">Atmika Pai</a> © <a href="https://marauders.earth/" target="_blank">Marauders.Earth</a> © <a href="https://www.fultonring.com/" target="_blank">Fulton Ring</a> © <a href="https://urban.tech.cornell.edu/" target="_blank">Cornell Tech</a>',
     });
 
     // Add zoom event listener to update marker sizes
@@ -681,9 +686,9 @@ export default function Map({
       map.current.flyTo({
         center: [longitude, latitude],
         zoom: targetZoom,
-        pitch: 45,
+        pitch: isMobileView? 0 : 45,
         bearing: map.current.getBearing(), // Keep current bearing
-        duration: 1900, // Smooth 1.8s animation
+        duration: 2000, // Smooth 1.8s animation
         essential: true, // This animation is essential with respect to prefers-reduced-motion
         padding: isMobileView
           ? { top: 10, bottom: 450, left: 20, right: 20 } // Mobile: pad bottom for drawer
@@ -691,6 +696,30 @@ export default function Map({
       });
     }
   }, [selectedRestaurant]);
+
+  // Render geocoded location pins (native Mapbox teardrop markers with isochrone-matching colors)
+  useEffect(() => {
+    if (!map.current) return;
+
+    // Clear existing geocoded pins
+    geocodedPins.current.forEach((pin) => pin.remove());
+    geocodedPins.current = [];
+
+    // Add new pins for each geocoded marker
+    geocodedMarkers.forEach((marker) => {
+      // Use native Mapbox teardrop marker - grey with white center
+      const pin = new mapboxgl.Marker({ color: "#625f60", scale: 0.8 })
+        .setLngLat([marker.longitude, marker.latitude])
+        .addTo(map.current!);
+
+      // Set highest z-index so pin appears above restaurant markers
+      pin.getElement().style.zIndex = "10";
+
+      geocodedPins.current.push(pin);
+    });
+
+    console.log(`📍 Rendered ${geocodedMarkers.length} geocoded pin(s)`);
+  }, [geocodedMarkers]);
 
   return (
     <div className="map-wrapper">

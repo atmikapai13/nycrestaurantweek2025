@@ -17,9 +17,12 @@
 /* Re-enable pointer events ONLY on interactive elements (not wrappers with padding) */
 .filter-bar-container .filter-hamburger-button,
 .filter-bar-container .filter-pill-base,
+.filter-bar-container .share-button,
 .filter-bar-container .filter-dropdown,
 .filter-bar-container .filter-dropdown-menu,
-.filter-bar-container .filter-reset-button {
+.filter-bar-container .filter-reset-button,
+.filter-bar-container .favorites-button-wrapper,
+.filter-bar-container .favorites-dropdown-menu {
   pointer-events: auto;
 }
 
@@ -36,6 +39,29 @@
   gap: 8px;
   align-items: flex-start;
   overflow: visible;
+}
+
+/* When collapsed, stack buttons vertically */
+.filter-bar-wrapper.collapsed {
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Container for Refine + Share buttons - always stacked vertically */
+.filter-controls-column {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+  pointer-events: auto;
+}
+
+/* Container for buttons shown when collapsed */
+.collapsed-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  pointer-events: auto;
 }
 
 
@@ -530,6 +556,73 @@
 .has-menu-button,
 .high-review-count-button {
   /* All base styles inherited from .filter-pill-base */
+}
+
+/* Share Button */
+.share-button {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.share-button svg {
+  flex-shrink: 0;
+}
+
+/* Share Button - Copied State (matches pink active state) */
+.share-button.copied {
+  background: rgba(255, 105, 180, 0.2);
+  border-color: rgba(255, 105, 180, 0.5);
+  color: #333;
+}
+
+/* Favorites Dropdown Menu - matches filter-dropdown-menu styling */
+.favorites-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 160px;
+  max-width: 200px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px) saturate(180%);
+  -webkit-backdrop-filter: blur(10px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+  padding: 4px;
+  z-index: 2000;
+  animation: dropdownFadeIn 0.2s ease;
+}
+
+.favorites-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  padding: 4px 6px;
+  background: none;
+  border: none;
+  border-radius: 5px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  color: #333;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  white-space: nowrap;
+}
+
+.favorites-dropdown-item:hover {
+  background: rgb(222, 227, 228);
+}
+
+.favorites-dropdown-item svg {
+  flex-shrink: 0;
+}
+
+/* Favorites button wrapper for dropdown positioning */
+.favorites-button-wrapper {
+  position: relative;
+  overflow: visible;
 }
 
 /* NEW Badge for Restaurant Week Button */

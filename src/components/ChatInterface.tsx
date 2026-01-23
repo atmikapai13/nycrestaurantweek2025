@@ -18,6 +18,7 @@ import {
 } from "../contexts/MapContext";
 import { IsochroneMessage } from "./IsochroneMessage";
 import RestaurantCard from "./RestaurantCard";
+import RestaurantCarousel from "./RestaurantCarousel";
 import type { UIMessagePart } from "ai";
 import {
   type DynamicToolPart,
@@ -179,6 +180,9 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       clearAllLayers,
       filterPoolSlugs,
       setRestaurantWeekActive,
+      addGeocodedMarker,
+      clearGeocodedMarkers,
+      geocodedMarkers,
     } = useMap();
 
     // Random welcome message selection
@@ -585,10 +589,41 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                   });
 
                   if (foundSlugs.length > 0) {
-                    
+
                     if (onMapFocus) {
                       onMapFocus(foundSlugs);
                     }
+                  }
+                }
+              }
+
+              // Handle geocode results - drop a teardrop pin at the geocoded location
+              // Colors match isochrone colors: person 1 = pink, person 2 = blue
+              if (part.toolName === "geocode") {
+                processedToolCallIds.current.add(part.toolCallId);
+                const geocodeResult = result as {
+                  query: string;
+                  results: Array<{
+                    latitude: number;
+                    longitude: number;
+                    formatted_address?: string;
+                  }>;
+                };
+                if (geocodeResult.results && geocodeResult.results.length > 0) {
+                  const firstResult = geocodeResult.results[0];
+                  if (firstResult.latitude && firstResult.longitude) {
+                    // Count existing geocoded markers to determine color
+                    // This works because markers are cleared on new queries
+                    const isochoneColors = ["#FF69B4", "#4169E1"]; // Pink for person 1, Blue for person 2
+                    const currentCount = geocodedMarkers.length;
+                    const color = isochoneColors[currentCount % isochoneColors.length];
+
+                    addGeocodedMarker({
+                      latitude: firstResult.latitude,
+                      longitude: firstResult.longitude,
+                      label: geocodeResult.query || firstResult.formatted_address || "Location",
+                      color,
+                    });
                   }
                 }
               }
@@ -1056,9 +1091,9 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       // Clear restaurant cards when starting a new guided conversation
       setCustomMessages([]);
 
-      // Expand drawer to 45vh on mobile
+      // Expand drawer to 55vh on mobile (only from smaller states)
       const isMobile = window.innerWidth <= 768;
-      if (isMobile && drawerHeight !== 55) {
+      if (isMobile && (drawerHeight === 8 || drawerHeight === 30)) {
         setDrawerHeight(55);
       }
 
@@ -1097,8 +1132,9 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
         userMessage = test[Math.floor(Math.random() * test.length)];
       }
 
-      // Clear restaurant cards when starting a new conversation turn
+      // Clear restaurant cards and geocoded pins when starting a new conversation turn
       setCustomMessages([]);
+      clearGeocodedMarkers();
 
       setInput("");
 
@@ -1185,6 +1221,11 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
           {/* Messages */}
           <div ref={messagesContainerRef} className="chat-messages">
             {allMessages.map((msg, idx) => {
+              // Skip restaurant_card messages - they're rendered as a carousel below
+              if (msg.type === "restaurant_card" && msg.restaurant) {
+                return null;
+              }
+
               const isLastMessage = idx === allMessages.length - 1;
 
               return (
@@ -1194,60 +1235,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                   ref={isLastMessage ? lastMessageRef : null}
                 >
                   {msg.role === "assistant" ? (
-                    msg.type === "restaurant_card" && msg.restaurant ? (
-                      <div
-                        className="restaurant-card-message"
-                        onClick={() => {
-                          // Zoom to restaurant on map when card is clicked
-                          if (onRestaurantSelect && msg.restaurant) {
-                            onRestaurantSelect(msg.restaurant);
-                          }
-                          // Expand drawer to 45vh on mobile when clicking card
-                          // (accordion clicks stopPropagation, so this only fires for non-accordion areas)
-                          if (window.innerWidth <= 768 && drawerHeight !== 55) {
-                            setDrawerHeight(55);
-                          }
-                        }}
-                        style={{ cursor: "pointer" }}
-                      >
-                        <div className="message-avatar-outside desktop-only">
-                          <img src="/remi.png" alt="remi" />
-                        </div>
-                        <div className="restaurant-card-content">
-                          <div className="restaurant-card-wrapper">
-                            <RestaurantCard
-                              restaurant={msg.restaurant}
-                              isFavorited={favorites.includes(
-                                msg.restaurant.name
-                              )}
-                              onToggleFavorite={
-                                onToggleFavorite
-                                  ? () => onToggleFavorite(msg.restaurant!.name)
-                                  : undefined
-                              }
-                              onRequestReviewHighlights={
-                                handleRestaurantSuggestionClick
-                              }
-                              onExpandDrawer={() => {
-                                if (window.innerWidth <= 768) {
-                                  setDrawerHeight(80);
-                                }
-                              }}
-                              onClose={() => {
-                                // Find the index of this custom message and remove it
-                                const customMsgIndex = customMessages.findIndex(
-                                  (cm) =>
-                                    cm.restaurant?.slug === msg.restaurant?.slug
-                                );
-                                if (customMsgIndex !== -1) {
-                                  removeRestaurantCard(customMsgIndex);
-                                }
-                              }}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
                       <div
                         style={{
                           display: "flex",
@@ -1426,76 +1413,44 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
                                         const displayRestaurantsPool =
                                           part.output?.restaurants || [];
+
+                                        if (displayRestaurantsPool.length === 0) {
+                                          if (!part.output?.error) {
+                                            console.log(
+                                              `[ChatInterface] No restaurants found:`,
+                                              part.type === "tool-lookup_restaurant"
+                                                ? `lookup for "${part.output?.restaurant_name || 'unknown'}"`
+                                                : `search for "${part.output?.query || 'unknown'}"`
+                                            );
+                                          }
+                                          return null;
+                                        }
+
                                         return (
                                           <div
                                             key={pIdx}
                                             className="restaurant-cards-container"
                                           >
-                                            {displayRestaurantsPool.map(
-                                              (
-                                                restaurant: Restaurant,
-                                                rIdx: number
-                                              ) => (
-                                                <div
-                                                  key={restaurant.slug || rIdx}
-                                                  className="restaurant-card-message"
-                                                  onClick={() => {
-                                                    // Zoom to restaurant on map when card is clicked
-                                                    if (onRestaurantSelect) {
-                                                      onRestaurantSelect(
-                                                        restaurant
-                                                      );
-                                                    }
-                                                    // Expand drawer to 45vh on mobile when clicking card
-                                                    // (accordion clicks stopPropagation, so this only fires for non-accordion areas)
-                                                    if (window.innerWidth <= 768 && drawerHeight !== 55) {
-                                                      setDrawerHeight(55);
-                                                    }
-                                                  }}
-                                                  style={{ cursor: "pointer" }}
-                                                >
-                                                  <div className="restaurant-card-wrapper">
-                                                    <RestaurantCard
-                                                      restaurant={restaurant}
-                                                      collapsible={true}
-                                                      isFavorited={favorites.includes(
-                                                        restaurant.name
-                                                      )}
-                                                      onToggleFavorite={
-                                                        onToggleFavorite
-                                                          ? () =>
-                                                              onToggleFavorite(
-                                                                restaurant.name
-                                                              )
-                                                          : undefined
-                                                      }
-                                                      onRequestReviewHighlights={
-                                                        handleRestaurantSuggestionClick
-                                                      }
-                                                      onExpandDrawer={() => {
-                                                        if (
-                                                          window.innerWidth <=
-                                                          768
-                                                        ) {
-                                                          setDrawerHeight(80);
-                                                        }
-                                                      }}
-                                                    />
-                                                  </div>
-                                                </div>
-                                              )
-                                            )}
-                                            {displayRestaurantsPool.length ===
-                                              0 && !part.output?.error && (
-                                              // Log to console instead of showing in UI
-                                              console.log(
-                                                `[ChatInterface] No restaurants found:`,
-                                                part.type === "tool-lookup_restaurant"
-                                                  ? `lookup for "${part.output?.restaurant_name || 'unknown'}"`
-                                                  : `search for "${part.output?.query || 'unknown'}"`
-                                              ),
-                                              null
-                                            )}
+                                            <RestaurantCarousel
+                                              restaurants={displayRestaurantsPool}
+                                              onRestaurantSelect={(restaurant) => {
+                                                if (onRestaurantSelect) {
+                                                  onRestaurantSelect(restaurant);
+                                                }
+                                                // Expand drawer to 55vh on mobile when navigating cards (only from smaller states)
+                                                if (window.innerWidth <= 768 && (drawerHeight === 8 || drawerHeight === 30)) {
+                                                  setDrawerHeight(55);
+                                                }
+                                              }}
+                                              favorites={favorites}
+                                              onToggleFavorite={onToggleFavorite}
+                                              onRequestReviewHighlights={handleRestaurantSuggestionClick}
+                                              onExpandDrawer={() => {
+                                                if (window.innerWidth <= 768) {
+                                                  setDrawerHeight(80);
+                                                }
+                                              }}
+                                            />
                                           </div>
                                         );
 
@@ -1608,7 +1563,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                           </div>
                         </div>
                       </div>
-                    )
                   ) : (
                     <div
                       className="message-bubble user-bubble"
@@ -1620,6 +1574,49 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                 </div>
               );
             })}
+
+            {/* Custom restaurant cards carousel (from marker clicks) */}
+            {(() => {
+              const customRestaurants = customMessages
+                .filter((msg) => msg.type === "restaurant_card" && msg.restaurant)
+                .map((msg) => msg.restaurant)
+                .filter((r): r is Restaurant => r !== undefined);
+
+              if (customRestaurants.length === 0) return null;
+
+              return (
+                <div className="chat-message assistant" ref={lastMessageRef}>
+                  <div className="restaurant-card-message">
+                    <div className="message-avatar-outside desktop-only">
+                      <img src="/remi.png" alt="remi" />
+                    </div>
+                    <div className="restaurant-card-content">
+                      <RestaurantCarousel
+                        restaurants={customRestaurants}
+                        startFromLast={true}
+                        collapsible={false}
+                        onRestaurantSelect={(restaurant) => {
+                          if (onRestaurantSelect) {
+                            onRestaurantSelect(restaurant);
+                          }
+                          if (window.innerWidth <= 768 && (drawerHeight === 8 || drawerHeight === 30)) {
+                            setDrawerHeight(55);
+                          }
+                        }}
+                        favorites={favorites}
+                        onToggleFavorite={onToggleFavorite}
+                        onRequestReviewHighlights={handleRestaurantSuggestionClick}
+                        onExpandDrawer={() => {
+                          if (window.innerWidth <= 768) {
+                            setDrawerHeight(80);
+                          }
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
 
             {isLoading && !canMergeLoading && (
               <div className="chat-message assistant">

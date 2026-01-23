@@ -38,6 +38,14 @@ export interface IsochroneLayer {
   messageId?: string; // Track which message created this layer
 }
 
+export interface GeocodedMarker {
+  id: string;
+  latitude: number;
+  longitude: number;
+  label: string; // The query or formatted address
+  color: string; // Marker color to match isochrone
+}
+
 interface MapContextType {
   // Data state
   allRestaurants: Restaurant[];
@@ -91,6 +99,11 @@ interface MapContextType {
   // Drawer height state (for coordinating UI elements)
   drawerHeight: number;
   setDrawerHeight: React.Dispatch<React.SetStateAction<number>>;
+
+  // Geocoded location markers (teardrop pins)
+  geocodedMarkers: GeocodedMarker[];
+  addGeocodedMarker: (marker: Omit<GeocodedMarker, "id">) => void;
+  clearGeocodedMarkers: () => void;
 }
 
 const MapContext = createContext<MapContextType | undefined>(undefined);
@@ -127,6 +140,9 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
 
   // Drawer height state (for coordinating UI elements)
   const [drawerHeight, setDrawerHeight] = useState(30);
+
+  // Geocoded location markers
+  const [geocodedMarkers, setGeocodedMarkers] = useState<GeocodedMarker[]>([]);
 
   // 1. Calculate which restaurants are inside ANY visible isochrone
   const visibleIsochroneSlugs = useMemo(() => {
@@ -426,6 +442,20 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
     setIsochroneRegionSlugs(null);
   }, []);
 
+  const addGeocodedMarker = useCallback(
+    (marker: Omit<GeocodedMarker, "id">) => {
+      const id = `geocode-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+      console.log(`📍 MapContext: Adding geocoded marker at ${marker.label}`);
+      setGeocodedMarkers((prev) => [...prev, { ...marker, id }]);
+    },
+    []
+  );
+
+  const clearGeocodedMarkers = useCallback(() => {
+    console.log("📍 MapContext: Clearing geocoded markers");
+    setGeocodedMarkers([]);
+  }, []);
+
   return (
     <MapContext.Provider
       value={{
@@ -462,6 +492,9 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
         filterPoolSlugs,
         drawerHeight,
         setDrawerHeight,
+        geocodedMarkers,
+        addGeocodedMarker,
+        clearGeocodedMarkers,
       }}
     >
       {children}

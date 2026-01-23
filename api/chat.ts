@@ -155,6 +155,10 @@ function detectRestaurantWeekIntent(query: string): boolean {
     "$60 dinner",
     "rw 2026",
     "rw2026",
+    "deals",
+    "restaurant week offerings",
+    "restaurant week spots",
+    "res week"
   ];
   return keywords.some(kw => lowerQuery.includes(kw));
 }

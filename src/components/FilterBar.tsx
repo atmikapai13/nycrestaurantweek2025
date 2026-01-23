@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect, useRef } from "react";
+import { useMemo, useState, useEffect, useRef, useCallback } from "react";
 import FilterDropdown from "./FilterDropdown";
 import type { Restaurant } from "../types/restaurant";
 import { useMap } from "../contexts/MapContext";
@@ -135,13 +135,57 @@ export default function FilterBar() {
     return filtered;
   };
 
-  // Start collapsed on mobile landing page
+  // Start expanded on desktop, collapsed on mobile
   const [isExpanded, setIsExpanded] = useState(() => {
-    if (typeof window !== "undefined" && window.innerWidth <= 768) {
-      return false; // Collapsed on mobile
+    if (typeof window !== "undefined") {
+      return window.innerWidth > 768;
     }
-    return true; // Expanded on desktop
+    return true; // Default to expanded for SSR
   });
+
+  // Share button state
+  const [copied, setCopied] = useState(false);
+  const [favoritesDropdownOpen, setFavoritesDropdownOpen] = useState(false);
+  const favoritesDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Click outside to close favorites dropdown
+  useEffect(() => {
+    if (!favoritesDropdownOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (favoritesDropdownRef.current && !favoritesDropdownRef.current.contains(event.target as Node)) {
+        setFavoritesDropdownOpen(false);
+      }
+    };
+
+    // Small delay prevents immediate close on same click that opened dropdown
+    const timer = setTimeout(() => {
+      document.addEventListener('mousedown', handleClickOutside);
+    }, 0);
+
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [favoritesDropdownOpen]);
+
+  const handleShare = useCallback(async () => {
+    // Generate URL with slugs
+    const slugs = favorites
+      .map((name) => allRestaurants.find((r) => r.name === name)?.slug)
+      .filter((slug): slug is string => slug !== undefined);
+
+    const shareUrl = `${window.location.origin}${window.location.pathname}#favorites=${slugs.join(",")}`;
+
+    // Copy to clipboard
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy to clipboard:", err);
+    }
+  }, [favorites, allRestaurants]);
 
   // Collapse filter bar when drawer expands to 80vh
   useEffect(() => {
@@ -590,29 +634,70 @@ export default function FilterBar() {
             onChange={(values) => handleFilterChange("Badges", values)}
           />
 
-          <button
-            className={`filter-pill-base favorites-button ${
-              favoritesActive ? "active" : ""
-            }`}
-            onClick={onFavoritesToggle}
-            aria-label={favoritesActive ? "Hide favorites" : "Show favorites"}
-          >
-            <span
-              style={{
-                display: "inline-block",
-                width: "10px",
-                height: "10px",
-                borderRadius: "50%",
-                backgroundColor: "#FF69B4",
-                marginRight: "4px",
-                border: "1px solid white",
-                boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
+          <div className="favorites-button-wrapper" ref={favoritesDropdownRef}>
+            <button
+              className={`filter-pill-base filter-pill-button favorites-button ${
+                favoritesActive ? "active" : ""
+              } ${favoritesDropdownOpen ? "dropdown-open" : ""}`}
+              onClick={() => {
+                if (favorites.length > 0) {
+                  setFavoritesDropdownOpen(!favoritesDropdownOpen);
+                }
+                onFavoritesToggle();
               }}
-            ></span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill={favoritesActive ? "#FF69B4" : "none"} stroke="#FF69B4" strokeWidth="2.0">
-              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-            </svg>
-          </button>
+              aria-label={favoritesActive ? "Hide favorites" : "Show favorites"}
+            >
+              <span
+                style={{
+                  display: "inline-block",
+                  width: "10px",
+                  height: "10px",
+                  borderRadius: "50%",
+                  backgroundColor: "#FF69B4",
+                  border: "1px solid white",
+                  boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
+                }}
+              ></span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill={favoritesActive ? "#FF69B4" : "none"} stroke="#FF69B4" strokeWidth="2.0">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+              </svg>
+              {favorites.length > 0 && <span className="filter-pill-arrow">{favoritesDropdownOpen ? '▲' : '▼'}</span>}
+            </button>
+
+            {/* Favorites dropdown menu */}
+            {favoritesDropdownOpen && favorites.length > 0 && (
+              <div className="favorites-dropdown-menu">
+                <button
+                  className="favorites-dropdown-item"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleShare();
+                    setFavoritesDropdownOpen(false);
+                  }}
+                >
+                  {copied ? (
+                    <>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.0">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                      URL Copied! Share away.
+                    </>
+                  ) : (
+                    <>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.0">
+                        <circle cx="18" cy="5" r="3" />
+                        <circle cx="6" cy="12" r="3" />
+                        <circle cx="18" cy="19" r="3" />
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                      </svg>
+                      Share with Friends
+                    </>
+                  )}
+                </button>
+              </div>
+            )}
+          </div>
 
           <FilterDropdown
             label="$$$"
