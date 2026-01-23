@@ -274,7 +274,6 @@
 .filter-dropdown-menu {
   position: absolute;
   top: calc(100% + 4px);
-  left: 0;
   min-width: 140px;
   max-width: 250px;
   max-height: 250px;
@@ -290,6 +289,17 @@
   z-index: 2000; /* Increased z-index to appear above map and other UI elements */
 
   animation: dropdownFadeIn 0.2s ease;
+}
+
+/* Dynamic alignment based on viewport position */
+.filter-dropdown-menu.align-left {
+  left: 0;
+  right: auto;
+}
+
+.filter-dropdown-menu.align-right {
+  right: 0;
+  left: auto;
 }
 
 @keyframes dropdownFadeIn {
@@ -580,9 +590,7 @@
 .favorites-dropdown-menu {
   position: absolute;
   top: calc(100% + 4px);
-  left: 0;
-  min-width: 160px;
-  max-width: 200px;
+  min-width: 180px;
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(10px) saturate(180%);
   -webkit-backdrop-filter: blur(10px) saturate(180%);
@@ -617,6 +625,17 @@
 
 .favorites-dropdown-item svg {
   flex-shrink: 0;
+}
+
+/* Dynamic alignment for favorites dropdown */
+.favorites-dropdown-menu.align-left {
+  left: 0;
+  right: auto;
+}
+
+.favorites-dropdown-menu.align-right {
+  right: 0;
+  left: auto;
 }
 
 /* Favorites button wrapper for dropdown positioning */

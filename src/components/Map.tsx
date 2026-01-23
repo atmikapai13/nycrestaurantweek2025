@@ -673,20 +673,22 @@ export default function Map({
     const { latitude, longitude } = selectedRestaurant;
 
     if (latitude && longitude) {
-     
-
-      // Detect if mobile for responsive padding
+      const currentZoom = map.current.getZoom();
       const isMobileView = window.innerWidth <= 768;
 
-      // Keep current zoom if already zoomed in past 14.1, otherwise zoom to 14.1
-      const currentZoom = map.current.getZoom();
-      const targetZoom = currentZoom > 14.1 ? currentZoom : 14.1;
+      // Skip flyTo if already zoomed in past threshold - user is likely already viewing the area
+      const skipZoomThreshold = isMobileView ? 13.5 : 15;
+      if (currentZoom > skipZoomThreshold) return;
+
+      // Keep current zoom if already zoomed in, otherwise zoom to target (13 for mobile, 14.1 for desktop)
+      const minZoom = isMobileView ? 13.8 : 14.1;
+      const targetZoom = currentZoom > minZoom ? currentZoom : minZoom;
 
       // Smooth fly to the restaurant location
       map.current.flyTo({
         center: [longitude, latitude],
         zoom: targetZoom,
-        pitch: isMobileView? 0 : 45,
+        pitch: 45,
         bearing: map.current.getBearing(), // Keep current bearing
         duration: 2000, // Smooth 1.8s animation
         essential: true, // This animation is essential with respect to prefers-reduced-motion

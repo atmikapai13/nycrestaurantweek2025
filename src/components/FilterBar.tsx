@@ -146,7 +146,25 @@ export default function FilterBar() {
   // Share button state
   const [copied, setCopied] = useState(false);
   const [favoritesDropdownOpen, setFavoritesDropdownOpen] = useState(false);
+  const [favoritesAlignRight, setFavoritesAlignRight] = useState(false);
   const favoritesDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Calculate favorites dropdown alignment based on viewport position
+  useEffect(() => {
+    if (favoritesDropdownOpen && favoritesDropdownRef.current) {
+      const rect = favoritesDropdownRef.current.getBoundingClientRect();
+      const viewportWidth = window.innerWidth;
+      const dropdownWidth = 180; // Approximate dropdown menu width
+      const padding = 10;
+
+      // If dropdown would overflow right edge, align to right
+      const wouldOverflowRight = rect.left + dropdownWidth > viewportWidth - padding;
+      // If dropdown is in right half of screen, align right
+      const isInRightHalf = rect.left > viewportWidth / 2;
+
+      setFavoritesAlignRight(wouldOverflowRight || isInRightHalf);
+    }
+  }, [favoritesDropdownOpen]);
 
   // Click outside to close favorites dropdown
   useEffect(() => {
@@ -666,13 +684,14 @@ export default function FilterBar() {
 
             {/* Favorites dropdown menu */}
             {favoritesDropdownOpen && favorites.length > 0 && (
-              <div className="favorites-dropdown-menu">
+              <div className={`favorites-dropdown-menu ${favoritesAlignRight ? 'align-right' : 'align-left'}`}>
                 <button
                   className="favorites-dropdown-item"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleShare();
-                    setFavoritesDropdownOpen(false);
+                    // Delay closing so user sees "Copied!" confirmation
+                    setTimeout(() => setFavoritesDropdownOpen(false), 1200);
                   }}
                 >
                   {copied ? (

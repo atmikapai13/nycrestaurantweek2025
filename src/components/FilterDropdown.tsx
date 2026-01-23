@@ -25,8 +25,26 @@ export default function FilterDropdown({
   placeholder
 }: FilterDropdownProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const [alignRight, setAlignRight] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const menuRef = useRef<HTMLDivElement>(null)
+
+  // Calculate dropdown alignment based on viewport position
+  useEffect(() => {
+    if (isOpen && dropdownRef.current) {
+      const rect = dropdownRef.current.getBoundingClientRect()
+      const viewportWidth = window.innerWidth
+      const dropdownWidth = 200 // Approximate dropdown menu width
+      const padding = 10
+
+      // If dropdown would overflow right edge, align to right
+      const wouldOverflowRight = rect.left + dropdownWidth > viewportWidth - padding
+      // If dropdown is in left half of screen, align left; otherwise align right
+      const isInRightHalf = rect.left > viewportWidth / 2
+
+      setAlignRight(wouldOverflowRight || isInRightHalf)
+    }
+  }, [isOpen])
 
   // Auto-scroll into view when dropdown opens on mobile
   useEffect(() => {
@@ -163,7 +181,7 @@ export default function FilterDropdown({
         <div
           ref={menuRef}
           id={`${label}-dropdown-menu`}
-          className="filter-dropdown-menu"
+          className={`filter-dropdown-menu ${alignRight ? 'align-right' : 'align-left'}`}
           role="listbox"
           aria-label={`${label} options`}
         >

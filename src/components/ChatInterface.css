@@ -739,10 +739,6 @@
     transition: opacity 0.2s;
   }
 
-  .drawer-8 .drawer-collapsed-header:hover {
-    opacity: 0.7;
-  }
-
   /* Hide content when drawer is minimized at 8vh */
   .drawer-8 .chat-messages,
   .drawer-8 .chat-input-container,
