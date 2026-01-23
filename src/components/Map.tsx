@@ -70,6 +70,7 @@ export default function Map({
     drawerHeight,
     setDrawerHeight,
     geocodedMarkers,
+    markerVisibilityMap,
     clearGeocodedMarkers,
   } = useMap();
 
@@ -711,8 +712,12 @@ export default function Map({
     geocodedPins.current.forEach((pin) => pin.remove());
     geocodedPins.current = [];
 
-    // Add new pins for each geocoded marker
-    geocodedMarkers.forEach((marker) => {
+    // Add new pins for each visible geocoded marker
+    const visibleMarkers = geocodedMarkers.filter(
+      (marker) => markerVisibilityMap.get(marker.id) !== false
+    );
+
+    visibleMarkers.forEach((marker) => {
       // Use native Mapbox teardrop marker - grey with white center
       const pin = new mapboxgl.Marker({ color: "#625f60", scale: 0.8 })
         .setLngLat([marker.longitude, marker.latitude])
@@ -724,8 +729,8 @@ export default function Map({
       geocodedPins.current.push(pin);
     });
 
-    console.log(`📍 Rendered ${geocodedMarkers.length} geocoded pin(s)`);
-  }, [geocodedMarkers]);
+    console.log(`📍 Rendered ${visibleMarkers.length}/${geocodedMarkers.length} geocoded pin(s)`);
+  }, [geocodedMarkers, markerVisibilityMap]);
 
   return (
     <div className="map-wrapper">

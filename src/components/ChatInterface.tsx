@@ -623,6 +623,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                       longitude: firstResult.longitude,
                       label: geocodeResult.query || firstResult.formatted_address || "Location",
                       color,
+                      messageId: msg.id, // Link to message for visibility toggling
                     });
                   }
                 }

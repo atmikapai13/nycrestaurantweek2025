@@ -44,6 +44,7 @@ export interface GeocodedMarker {
   longitude: number;
   label: string; // The query or formatted address
   color: string; // Marker color to match isochrone
+  messageId?: string; // Track which message created this marker (for visibility toggling)
 }
 
 interface MapContextType {
@@ -102,6 +103,7 @@ interface MapContextType {
 
   // Geocoded location markers (teardrop pins)
   geocodedMarkers: GeocodedMarker[];
+  markerVisibilityMap: Map<string, boolean>;
   addGeocodedMarker: (marker: Omit<GeocodedMarker, "id">) => void;
   clearGeocodedMarkers: () => void;
 }
@@ -143,6 +145,7 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
 
   // Geocoded location markers
   const [geocodedMarkers, setGeocodedMarkers] = useState<GeocodedMarker[]>([]);
+  const [markerVisibilityMap, setMarkerVisibilityMap] = useState<Map<string, boolean>>(new Map());
 
   // 1. Calculate which restaurants are inside ANY visible isochrone
   const visibleIsochroneSlugs = useMemo(() => {
@@ -417,6 +420,14 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
       `🗺️ MapContext: Toggling visibility for ${layerIds.length} layers`
     );
 
+    // Find messageIds of layers being toggled
+    const messageIds = new Set<string>();
+    isochroneLayers.forEach((layer) => {
+      if (layerIds.includes(layer.id) && layer.messageId) {
+        messageIds.add(layer.messageId);
+      }
+    });
+
     setLayerVisibilityMap((prev) => {
       const newMap = new Map(prev);
 
@@ -431,14 +442,32 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
       console.log(
         `🗺️ MapContext: Set layers to ${!allVisible ? "visible" : "hidden"}`
       );
+
+      // Also toggle geocoded markers with matching messageIds
+      if (messageIds.size > 0) {
+        setMarkerVisibilityMap((prevMarkers) => {
+          const newMarkerMap = new Map(prevMarkers);
+          geocodedMarkers.forEach((marker) => {
+            if (marker.messageId && messageIds.has(marker.messageId)) {
+              newMarkerMap.set(marker.id, !allVisible);
+            }
+          });
+          console.log(
+            `📍 MapContext: Set markers to ${!allVisible ? "visible" : "hidden"}`
+          );
+          return newMarkerMap;
+        });
+      }
+
       return newMap;
     });
-  }, []);
+  }, [isochroneLayers, geocodedMarkers]);
 
   const clearAllLayers = useCallback(() => {
     console.log("🗺️ MapContext: Clearing all layers");
     setIsochroneLayers([]);
     setLayerVisibilityMap(new Map());
+    setMarkerVisibilityMap(new Map());
     setIsochroneRegionSlugs(null);
   }, []);
 
@@ -493,6 +522,7 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
         drawerHeight,
         setDrawerHeight,
         geocodedMarkers,
+        markerVisibilityMap,
         addGeocodedMarker,
         clearGeocodedMarkers,
       }}
