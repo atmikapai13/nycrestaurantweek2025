@@ -37,8 +37,8 @@ import "./ChatInterface.css";
 
 // Isochrone layer styling
 const ISOCHRONE_COLORS = {
-  fill: "#7B5B9A",   // Muted purple
-  stroke: "#4A3660", // Darker purple for outline
+  fill: "#b38afe",   // Electric purple
+  stroke: "#5E35B1", // Deeper purple for outline
 };
 
 interface Message {
