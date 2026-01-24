@@ -191,10 +191,10 @@ export default function Map({
     isMobileDevice: boolean
   ) => {
     // Scale smoothly based on zoom level
-    // At zoom 10: 0.7x, zoom 12: 1x, zoom 14: 1.4x, zoom 16: 1.8x
+    // Mobile: smaller when zoomed out to reduce clustering
     const minZoom = 10;
     const maxZoom = 16;
-    const minScale = 0.7;
+    const minScale = isMobileDevice ? 0.45 : 0.7;
     const maxScale = isMobileDevice ? 1.5 : 1.8;
 
     const clampedZoom = Math.max(minZoom, Math.min(maxZoom, zoom));
