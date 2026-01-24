@@ -35,6 +35,12 @@ import {
 } from "../types/ai-message";
 import "./ChatInterface.css";
 
+// Isochrone layer styling
+const ISOCHRONE_COLORS = {
+  fill: "#7B5B9A",   // Muted purple
+  stroke: "#4A3660", // Darker purple for outline
+};
+
 interface Message {
   role: "user" | "assistant";
   content: string;
@@ -183,6 +189,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       addGeocodedMarker,
       clearGeocodedMarkers,
       geocodedMarkers,
+      userLocation,
     } = useMap();
 
     // Random welcome message selection
@@ -333,8 +340,14 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
     const filterPoolRef = useRef<string[]>([]);
     useEffect(() => {
       filterPoolRef.current = filterPoolSlugs;
-      
+
     }, [filterPoolSlugs]);
+
+    // Store userLocation in a ref so transport can access current value
+    const userLocationRef = useRef<{ latitude: number; longitude: number } | null>(null);
+    useEffect(() => {
+      userLocationRef.current = userLocation;
+    }, [userLocation]);
 
     // Custom transport that injects filterPool into requests
     const transport = useMemo(
@@ -349,6 +362,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
               context: {
                 ...originalBody.context,
                 filterPool: filterPoolRef.current,
+                userLocation: userLocationRef.current,
               },
             };
 
@@ -700,8 +714,8 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                   id: `${messageId}-person-${i + 1}`,
                   polygon: geometry as GeoJSONGeometry, // GeoJSON geometry from API
                   label: `Person ${i + 1}`,
-                  color: i === 0 ? "#FF69B4" : "#4169E1",
-                  strokeColor: i === 0 ? "#FF1493" : "#00008B",
+                  color: ISOCHRONE_COLORS.fill,
+                  strokeColor: ISOCHRONE_COLORS.stroke,
                   opacity: 0.2,
                 };
               });
@@ -732,8 +746,8 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                   id: `${messageId}-intersection`,
                   polygon: intersection as GeoJSONGeometry, // Result from Turf.js intersection
                   label: "Overlap",
-                  color: "#8A2BE2",
-                  strokeColor: "#4B0082",
+                  color: ISOCHRONE_COLORS.fill,
+                  strokeColor: ISOCHRONE_COLORS.stroke,
                   opacity: 0.4,
                 });
 
@@ -748,6 +762,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
                 console.log("🗺️ Using MapContext to add layers");
                 addLayers(layers, messageId);
+                clearGeocodedMarkers(); // Remove center markers once isochrones are rendered
 
                 console.log(
                   `📌 Added ${layers.length} layers for message ${messageId}`
@@ -759,6 +774,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                   "🗺️ Using MapContext to add layers (no intersection)"
                 );
                 addLayers(layers, messageId);
+                clearGeocodedMarkers(); // Remove center markers once isochrones are rendered
 
                 console.log(
                   `📌 Added ${layers.length} layers for message ${messageId}`
@@ -801,13 +817,14 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                 id: layerId,
                 polygon: geometry as GeoJSONGeometry, // GeoJSON geometry from API
                 label: "Nearby",
-                color: "#FF69B4",
-                strokeColor: "#FF1493",
+                color: ISOCHRONE_COLORS.fill,
+                strokeColor: ISOCHRONE_COLORS.stroke,
                 opacity: 0.3,
               };
 
               console.log("🗺️ Using MapContext to add single layer");
               addLayers([singleLayer], messageId);
+              clearGeocodedMarkers(); // Remove center markers once isochrone is rendered
 
               console.log(
                 `📌 Added single isochrone layer ${layerId} for message ${messageId}`

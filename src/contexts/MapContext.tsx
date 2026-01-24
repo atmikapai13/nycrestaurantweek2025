@@ -106,6 +106,10 @@ interface MapContextType {
   markerVisibilityMap: Map<string, boolean>;
   addGeocodedMarker: (marker: Omit<GeocodedMarker, "id">) => void;
   clearGeocodedMarkers: () => void;
+
+  // User's current location (from browser geolocation)
+  userLocation: { latitude: number; longitude: number } | null;
+  setUserLocation: (location: { latitude: number; longitude: number } | null) => void;
 }
 
 const MapContext = createContext<MapContextType | undefined>(undefined);
@@ -146,6 +150,9 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
   // Geocoded location markers
   const [geocodedMarkers, setGeocodedMarkers] = useState<GeocodedMarker[]>([]);
   const [markerVisibilityMap, setMarkerVisibilityMap] = useState<Map<string, boolean>>(new Map());
+
+  // User's current location (from browser geolocation)
+  const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
 
   // 1. Calculate which restaurants are inside ANY visible isochrone
   const visibleIsochroneSlugs = useMemo(() => {
@@ -525,6 +532,8 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
         markerVisibilityMap,
         addGeocodedMarker,
         clearGeocodedMarkers,
+        userLocation,
+        setUserLocation,
       }}
     >
       {children}

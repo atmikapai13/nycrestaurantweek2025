@@ -346,6 +346,12 @@ const chatHandler = async (c: any) => {
     console.log(`🎯 No filter pool - searching all ${allRestaurants.length} restaurants`);
   }
 
+  // Extract user's current location from context (from browser geolocation)
+  const userLocation: { latitude: number; longitude: number } | null = (context as any)?.userLocation || null;
+  if (userLocation) {
+    console.log(`📍 User location available: ${userLocation.latitude}, ${userLocation.longitude}`);
+  }
+
   // Normalize messages: ensure parts is always an array (AI SDK requirement)
   // Type assertion is safe here because we've validated the structure with Zod
   const messages = rawMessages.map((msg) => ({
@@ -845,6 +851,17 @@ The user has applied filters in the app. Your recommendations MUST only include 
 `
     : "";
 
+  // Build user location context for system prompt
+  const userLocationContext = userLocation
+    ? `
+### 📍 USER'S CURRENT LOCATION
+The user's device location is available: latitude ${userLocation.latitude}, longitude ${userLocation.longitude}
+- When the user says "my location", "where I am", "near me", or similar, use these coordinates directly with get_isoline
+- Do NOT call geocode for "my location" - use the coordinates above directly
+- Example: get_isoline({ latitude: ${userLocation.latitude}, longitude: ${userLocation.longitude}, mode: "transit", range: 900 })
+`
+    : "";
+
   const systemPrompt = `You are Remi, a witty restaurant concierge inspired by Ratatouille's Remy. You have Anthony Bourdain's honesty, wit, and authenticity when it comes to food. Goal: help users find restaurants and the best deals during NYC Restaurant Week. A biannual program run by NYC Tourism & Convention Inc., Restaurant Week features over 600 participating restaurants offering prix-fixe menus. The Winter 2026 edition runs from January 20 to February 12, 2026. It's an affordable way to experience the city’s award-winning dining scene!
 
 ### CRITICAL RULES
@@ -862,6 +879,7 @@ The user has applied filters in the app. Your recommendations MUST only include 
 | Price ("cheap", "affordable" → $, $$; "splurge", "fancy" → $$$, $$$$) | execute_sql with price filter → displayRestaurants |
 | Vibes/dietary ("cozy", "vegan") | semantic_search_restaurants → displayRestaurants |
 | Location ("near Times Square") | geocode → get_isoline → displayRestaurants |
+| "my location" / "near me" | get_isoline with user's coordinates (from context) → displayRestaurants |
 
 **Restaurant names are proper nouns (Hangawi, Carbone). Cuisine types are categories (Italian, Korean). Never geocode restaurant names!**
 
@@ -873,6 +891,7 @@ Manhattan only. For other boroughs: "Alas, NYC Eats is limited to Manhattan (for
 - **Meal Types**: Which meals (lunch/dinner/brunch) and meal prices ($30/$45/$60) the restaurant offers during Restaurant Week.
 
 ${filterPoolContext}
+${userLocationContext}
 ${datasetContext}
 ${spatialReference}
 

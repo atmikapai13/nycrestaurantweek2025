@@ -1,0 +1,16 @@
+/* User location marker - standard blue pulsing dot */
+.user-location-marker {
+  width: 16px;
+  height: 16px;
+  background: #007AFF;
+  border: 3px solid white;
+  border-radius: 50%;
+  box-shadow: 0 0 0 rgba(0, 122, 255, 0.4);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(0, 122, 255, 0.4); }
+  70% { box-shadow: 0 0 0 15px rgba(0, 122, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 122, 255, 0); }
+}

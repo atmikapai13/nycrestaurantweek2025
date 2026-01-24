@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import "./Map.css";
 import type { Restaurant } from "../types/restaurant";
 import ChatInterface, { type ChatInterfaceHandle } from "./ChatInterface";
 import { MapLegend } from "./MapLegend";
@@ -72,6 +73,7 @@ export default function Map({
     geocodedMarkers,
     markerVisibilityMap,
     clearGeocodedMarkers,
+    setUserLocation,
   } = useMap();
 
   // Refs for tracking previous isochrone states to prevent unnecessary re-renders
@@ -188,22 +190,18 @@ export default function Map({
     zoom: number,
     isMobileDevice: boolean
   ) => {
-    let size = baseSize;
+    // Scale smoothly based on zoom level
+    // At zoom 10: 0.7x, zoom 12: 1x, zoom 14: 1.4x, zoom 16: 1.8x
+    const minZoom = 10;
+    const maxZoom = 16;
+    const minScale = 0.7;
+    const maxScale = isMobileDevice ? 1.5 : 1.8;
 
-    // Increase size in mobile when zoomed in
-    if (isMobileDevice && zoom >= 13.0) {
-      size *= 1.2;
-    } else if (zoom >= 12.0) {
-      size *= 0.9;
-    }
-    // Increase size in desktop when zoomed in
-    if (!isMobileDevice && zoom >= 13.5) {
-      size *= 1.6;
-    } else if (zoom >= 12.0) {
-      size *= 1.2;
-    }
+    const clampedZoom = Math.max(minZoom, Math.min(maxZoom, zoom));
+    const t = (clampedZoom - minZoom) / (maxZoom - minZoom);
+    const scale = minScale + t * (maxScale - minScale);
 
-    return Math.round(size);
+    return Math.round(baseSize * scale);
   };
 
   // Function to update all marker sizes
@@ -282,6 +280,33 @@ export default function Map({
 
     // Add resize event listener for mobile detection
     window.addEventListener("resize", updateMarkerSizes);
+
+    // Auto-detect user location and show on map
+    map.current.on("load", () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+
+            // Store user location in context for chat queries
+            setUserLocation({ latitude, longitude });
+            console.log(`📍 User location detected: ${latitude}, ${longitude}`);
+
+            // Add user location marker (blue pulsing dot)
+            const userLocationEl = document.createElement("div");
+            userLocationEl.className = "user-location-marker";
+
+            new mapboxgl.Marker({ element: userLocationEl })
+              .setLngLat([longitude, latitude])
+              .addTo(map.current!);
+          },
+          (error) => {
+            console.log("Geolocation not available:", error.message);
+          },
+          { enableHighAccuracy: true, timeout: 10000 }
+        );
+      }
+    });
 
     return () => {
       if (map.current) {
@@ -581,76 +606,90 @@ export default function Map({
         const isAwardWinner = hasAnyAward(restaurant);
 
         let markerColor = '#928f8e'  // Default grey
-        const baseMarkerSize = 8;    // Uniform base size for all markers (scales with zoom)
+        let baseMarkerSize = 8;      // Slightly smaller than red/pink markers
         let zIndex = 0
 
-        // COLOR PRIORITY: Orange (selected) > Pink (favorites) > Red (awards) > Grey (default)
-        if (isSelected) {
-          markerColor = "#FF9100"; // Orange
-          zIndex = 4;
-        } else if (isFavorite) {
+        // COLOR PRIORITY: Pink (favorites) > Red (awards) > Grey (default)
+        // Selected markers keep their original color and become teardrops
+        if (isFavorite) {
           markerColor = "#ff67b2"; // Pink
-          zIndex = 3;
+          baseMarkerSize = 10;      // Larger size for favorites
+          zIndex = isSelected ? 4 : 3;
         } else if (isAwardWinner) {
           markerColor = "#c81224"; // Red
-          zIndex = 2;
+          baseMarkerSize = 9;      // Larger size for award winners
+          zIndex = isSelected ? 4 : 2;
+        } else if (isSelected) {
+          zIndex = 4; // Grey teardrop when selected
         }
 
-        // Create marker wrapper for larger click area
-        const markerWrapper = document.createElement("div");
-        markerWrapper.style.padding = isMobile() ? "10px" : "8px";
-        markerWrapper.style.display = "flex";
-        markerWrapper.style.alignItems = "center";
-        markerWrapper.style.justifyContent = "center";
-        markerWrapper.style.cursor = "pointer";
+        let marker: mapboxgl.Marker;
+        let markerEl: HTMLDivElement | null = null;
 
-        // Create the actual marker element
-        const markerEl = document.createElement("div");
-        markerEl.className = "restaurant-marker";
-        markerEl.style.width = `${baseMarkerSize}px`;
-        markerEl.style.height = `${baseMarkerSize}px`;
-        markerEl.style.borderRadius = "50%";
-        markerEl.style.backgroundColor = markerColor;
-        markerEl.style.border = "1px solid white";
-        markerEl.style.boxShadow = "0 2px 4px rgba(0,0,0,0.2)";
-        markerEl.style.zIndex = zIndex.toString();
-
-        // Add the marker to the wrapper
-        markerWrapper.appendChild(markerEl);
-
-        // Store base size and selection state for dynamic resizing
-        markerEl.setAttribute("data-base-size", baseMarkerSize.toString());
         if (isSelected) {
-          markerEl.setAttribute("data-is-selected", "true");
+          // Selected restaurant: use native Mapbox teardrop marker with its original color
+          marker = new mapboxgl.Marker({ color: markerColor, scale: 0.8 })
+            .setLngLat([restaurant.longitude, restaurant.latitude])
+            .addTo(map.current!);
+
+          // Set high z-index for selected marker
+          marker.getElement().style.zIndex = "5";
+          marker.getElement().style.cursor = "pointer";
+
+          // Add click handler to deselect
+          marker.getElement().addEventListener("click", () => {
+            setSelectedRestaurant(null);
+          });
+        } else {
+          // Non-selected: use circular marker with click area wrapper
+          const markerWrapper = document.createElement("div");
+          markerWrapper.style.padding = isMobile() ? "10px" : "8px";
+          markerWrapper.style.display = "flex";
+          markerWrapper.style.alignItems = "center";
+          markerWrapper.style.justifyContent = "center";
+          markerWrapper.style.cursor = "pointer";
+
+          // Create the actual marker element
+          markerEl = document.createElement("div");
+          markerEl.className = "restaurant-marker";
+          markerEl.style.width = `${baseMarkerSize}px`;
+          markerEl.style.height = `${baseMarkerSize}px`;
+          markerEl.style.borderRadius = "50%";
+          markerEl.style.backgroundColor = markerColor;
+          markerEl.style.border = "1px solid white";
+          markerEl.style.boxShadow = "0 2px 4px rgba(0,0,0,0.2)";
+          markerEl.style.zIndex = zIndex.toString();
+
+          // Add the marker to the wrapper
+          markerWrapper.appendChild(markerEl);
+
+          // Store base size for dynamic resizing
+          markerEl.setAttribute("data-base-size", baseMarkerSize.toString());
+
+          // Create marker using the wrapper
+          marker = new mapboxgl.Marker(markerWrapper)
+            .setLngLat([restaurant.longitude, restaurant.latitude])
+            .addTo(map.current!);
+
+          // Add click handler to the wrapper - show restaurant card in chat
+          markerWrapper.addEventListener("click", () => {
+            // Update selection state (triggers marker re-render)
+            setSelectedRestaurant(restaurant);
+
+            // Call onRestaurantSelect to trigger zoom/focus effect
+            onRestaurantSelect(restaurant);
+
+            // Add restaurant card to chat
+            if (chatInterfaceRef.current) {
+              chatInterfaceRef.current.addRestaurantCard(restaurant);
+            }
+          });
         }
-
-        // Create marker using the wrapper
-        const marker = new mapboxgl.Marker(markerWrapper)
-          .setLngLat([restaurant.longitude, restaurant.latitude])
-          .addTo(map.current!);
-
-        // Add click handler to the wrapper - show restaurant card in chat
-        markerWrapper.addEventListener("click", () => {
-          // If clicking already-selected restaurant, deselect it
-          if (selectedRestaurant?.slug === restaurant.slug) {
-            setSelectedRestaurant(null); // Clear selection
-            return;
-          }
-
-          // Update selection state (triggers marker re-render)
-          setSelectedRestaurant(restaurant);
-
-          // Call onRestaurantSelect to trigger zoom/focus effect
-          onRestaurantSelect(restaurant);
-
-          // Add restaurant card to chat
-          if (chatInterfaceRef.current) {
-            chatInterfaceRef.current.addRestaurantCard(restaurant);
-          }
-        });
 
         markers.current.push(marker);
-        markerElements.current.push(markerEl);
+        if (markerEl) {
+          markerElements.current.push(markerEl);
+        }
       }
     });
 
@@ -704,7 +743,7 @@ export default function Map({
     }
   }, [selectedRestaurant]);
 
-  // Render geocoded location pins (native Mapbox teardrop markers with isochrone-matching colors)
+  // Render geocoded location pins (native Mapbox teardrop markers showing isochrone centers)
   useEffect(() => {
     if (!map.current) return;
 
@@ -718,18 +757,13 @@ export default function Map({
     );
 
     visibleMarkers.forEach((marker) => {
-      // Use native Mapbox teardrop marker - grey with white center
       const pin = new mapboxgl.Marker({ color: "#625f60", scale: 0.8 })
         .setLngLat([marker.longitude, marker.latitude])
         .addTo(map.current!);
 
-      // Set highest z-index so pin appears above restaurant markers
       pin.getElement().style.zIndex = "10";
-
       geocodedPins.current.push(pin);
     });
-
-    console.log(`📍 Rendered ${visibleMarkers.length}/${geocodedMarkers.length} geocoded pin(s)`);
   }, [geocodedMarkers, markerVisibilityMap]);
 
   return (
