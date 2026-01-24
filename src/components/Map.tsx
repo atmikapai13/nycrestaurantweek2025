@@ -606,18 +606,18 @@ export default function Map({
         const isAwardWinner = hasAnyAward(restaurant);
 
         let markerColor = '#928f8e'  // Default grey
-        let baseMarkerSize = 8;      // Slightly smaller than red/pink markers
+        let baseMarkerSize = 10;     // Base size for grey markers
         let zIndex = 0
 
         // COLOR PRIORITY: Pink (favorites) > Red (awards) > Grey (default)
         // Selected markers keep their original color and become teardrops
         if (isFavorite) {
           markerColor = "#ff67b2"; // Pink
-          baseMarkerSize = 10;      // Larger size for favorites
+          baseMarkerSize = 12;     // Larger size for favorites
           zIndex = isSelected ? 4 : 3;
         } else if (isAwardWinner) {
           markerColor = "#c81224"; // Red
-          baseMarkerSize = 9;      // Larger size for award winners
+          baseMarkerSize = 12;     // Same size as favorites
           zIndex = isSelected ? 4 : 2;
         } else if (isSelected) {
           zIndex = 4; // Grey teardrop when selected
