@@ -369,6 +369,10 @@ const chatHandler = async (c: any) => {
   // Initialize geometry cache for this request
   const geometryCache = new GeometryCache();
 
+  // Request-scoped isochrone slugs (set by get_isoline, used by execute_sql/semantic_search)
+  // Stores arrays from each isochrone call - intersection is computed for multi-party scenarios
+  const allIsochroneSlugs: string[][] = [];
+
   // 1. Connect and Fetch Tools/Resources with error handling
   let mcpClient: Awaited<ReturnType<typeof createMCPClient>> | null = null;
   let optimizedTools: ToolSet = {};
@@ -642,6 +646,9 @@ Example: If get_isoline returned { restaurantSlugs: ["slug-a","slug-b","slug-c"]
   semantic_search_restaurants({ query: "cozy", scopeToSlugs: ["slug-a","slug-b","slug-c"] })
 Failure to pass scopeToSlugs after get_isoline will search ALL 637 restaurants instead of just those in the isochrone!
 
+**"SHOW ME MORE" REQUESTS**: Pass only the slugs that were DISPLAYED via displayRestaurants (not the full search results).
+Example: displayRestaurants showed 5 restaurants → excludeSlugs should have those 5 slugs only.
+
 Returns restaurantSlugs array - IMMEDIATELY call displayRestaurants({ restaurant_names: restaurantSlugs }) after this.
 IMPORTANT: If user mentions "restaurant week", "prix fixe", or "$30/$45/$60 deals", set restaurantWeekIntent=true.`,
     parameters: z.object({
@@ -664,9 +671,13 @@ IMPORTANT: If user mentions "restaurant week", "prix fixe", or "$30/$45/$60 deal
         .array(z.string())
         .optional()
         .describe("**REQUIRED after get_isoline!** Pass the exact restaurantSlugs array from get_isoline's response. Without this, search covers ALL restaurants, ignoring the isochrone boundary. Example: get_isoline returned { restaurantSlugs: ['resto-a', 'resto-b'] } → pass scopeToSlugs: ['resto-a', 'resto-b']"),
+      excludeSlugs: z
+        .array(z.string())
+        .optional()
+        .describe("For 'show me more' requests: pass ONLY the slugs from the previous displayRestaurants call (the ones user actually saw), NOT the full search results."),
     }),
-    execute: async (params: { query: string; topK?: number; restaurantWeekIntent?: boolean; scopeToSlugs?: string[] }) => {
-      const { query, topK = 10, restaurantWeekIntent = false, scopeToSlugs } = params || {};
+    execute: async (params: { query: string; topK?: number; restaurantWeekIntent?: boolean; scopeToSlugs?: string[]; excludeSlugs?: string[] }) => {
+      const { query, topK = 10, restaurantWeekIntent = false, scopeToSlugs, excludeSlugs } = params || {};
       try {
         if (!query || typeof query !== "string" || query.trim() === "") {
           console.log(`⚠️ semantic_search_restaurants: No query provided`);
@@ -678,16 +689,28 @@ IMPORTANT: If user mentions "restaurant week", "prix fixe", or "$30/$45/$60 deal
         // Detect Restaurant Week intent from query keywords OR explicit parameter
         const hasRWIntent = restaurantWeekIntent || detectRestaurantWeekIntent(query);
 
-        // Build restaurantIds with priority: scopeToSlugs > filterPool > all
-        // scopeToSlugs takes highest priority (from isochrone results within same request)
+        // Build restaurantIds with priority: scopeToSlugs > isochroneSlugs > filterPool > all
+        // scopeToSlugs takes highest priority (explicitly passed from get_isoline by model)
+        // isochroneSlugs is auto-injected fallback (from get_isoline in same request)
         let restaurantIds: string[] | null = null;
 
         if (scopeToSlugs && scopeToSlugs.length > 0) {
-          // Highest priority: use slugs passed from get_isoline (same request)
+          // Highest priority: use slugs explicitly passed by model
           restaurantIds = [...scopeToSlugs];
-          console.log(`🗺️ Scoping semantic search to ${scopeToSlugs.length} restaurants from isochrone`);
+          console.log(`🗺️ Scoping semantic search to ${scopeToSlugs.length} restaurants from scopeToSlugs`);
+        } else if (allIsochroneSlugs.length > 0) {
+          // Auto-inject: compute intersection of all isochrones (for multi-party scenarios)
+          if (allIsochroneSlugs.length === 1) {
+            restaurantIds = [...allIsochroneSlugs[0]];
+          } else {
+            // Intersection: restaurants reachable from ALL locations
+            restaurantIds = allIsochroneSlugs.reduce((acc, slugs) =>
+              acc.filter(slug => slugs.includes(slug))
+            );
+          }
+          console.log(`🗺️ Auto-injecting ${restaurantIds.length} isochrone slugs into semantic search (from ${allIsochroneSlugs.length} isochrone(s))`);
         } else if (hasFilterPool) {
-          // Second priority: use filterPool from frontend context
+          // Third priority: use filterPool from frontend context
           restaurantIds = [...filterPool];
           console.log(`🎯 Scoping semantic search to filterPool of ${filterPool.length} restaurants`);
         }
@@ -709,13 +732,25 @@ IMPORTANT: If user mentions "restaurant week", "prix fixe", or "$30/$45/$60 deal
         }
 
         // Perform RAG search with 70% semantic + 30% keyword hybrid scoring
-        const result = await performRagSearch(query, topK, restaurantIds);
+        // Request extra results if we need to exclude some
+        const extraForExclusion = excludeSlugs?.length || 0;
+        const result = await performRagSearch(query, topK + extraForExclusion, restaurantIds);
+
+        // Filter out excluded slugs (for "show me more" requests)
+        let filteredResults = result.results;
+        if (excludeSlugs && excludeSlugs.length > 0) {
+          filteredResults = result.results.filter(r => !excludeSlugs.includes(r.slug));
+          console.log(`🚫 Excluded ${excludeSlugs.length} previously shown slugs, ${filteredResults.length} remaining`);
+        }
+
+        // Limit to topK after exclusion
+        filteredResults = filteredResults.slice(0, topK);
 
         // Extract slugs for displayRestaurants (same pattern as get_isoline)
-        const restaurantSlugs = result.results.map((r) => r.slug);
+        const restaurantSlugs = filteredResults.map((r) => r.slug);
 
         // Map results to summary objects (not full objects - keeps response small)
-        const restaurants = result.results.map((r) => ({
+        const restaurants = filteredResults.map((r) => ({
           name: r.name,
           slug: r.slug,
           cuisine: r.cuisine || "Unknown",
@@ -832,8 +867,8 @@ IMPORTANT: If user mentions "restaurant week", "prix fixe", or "$30/$45/$60 deal
 
   if (sqlTables) {
     toolInstructions += `
-- execute_sql: Use ONLY for structured fields: neighborhood, price ($/$$/$$$/$$$$), cuisine TYPE (Italian, Japanese, etc.), awards.
-  **DO NOT use for**: vegetarian, vegan, dietary preferences, vibes, ambiance - these are NOT in the database schema!`;
+- execute_sql: Use ONLY for structured fields: price ($/$$/$$$/$$$$), cuisine TYPE (Italian, Japanese, etc.), awards.
+  **DO NOT use for**: vegetarian, vegan, dietary preferences, vibes, ambiance, or neighborhood/location queries - ALWAYS geocode for locations!`;
   }
   if (docCollections) {
     toolInstructions += `
@@ -862,7 +897,7 @@ The user's device location is available: latitude ${userLocation.latitude}, long
 `
     : "";
 
-  const systemPrompt = `You are Remi, a witty restaurant concierge inspired by Ratatouille's Remy. You have Anthony Bourdain's honesty, wit, and authenticity when it comes to food. Goal: help users find restaurants and the best deals during NYC Restaurant Week. A biannual program run by NYC Tourism & Convention Inc., Restaurant Week features over 600 participating restaurants offering prix-fixe menus. The Winter 2026 edition runs from January 20 to February 12, 2026. It's an affordable way to experience the city’s award-winning dining scene!
+  const systemPrompt = `You are Remi, a witty restaurant concierge inspired by Ratatouille's Remy. You have Anthony Bourdain's honesty, wit, and authenticity when it comes to food. Goal: help users find restaurants and the best deals during NYC Restaurant Week. A biannual program run by NYC Tourism & Convention Inc., Restaurant Week features over 600 participating restaurants offering prix-fixe lunch, brunch, dinner menus. The Winter 2026 edition runs from January 20 to February 12, 2026. It's an affordable way to experience the city's dining scene!
 
 ### CRITICAL RULES
 1. **ALWAYS call tools** - never respond with text only. Extract info from user message before calling tools.
@@ -870,7 +905,12 @@ The user's device location is available: latitude ${userLocation.latitude}, long
 3. **BE TERSE** - Max 2-3 sentences. No apologies. Highlight 1-2 restaurants with meaningful insight (award, famous dish or chef, unique vibe).
 4. **Never call displayRestaurants with empty arguments** - always pass restaurant_names!
 
-### QUERY PATTERNS
+### TOOL SELECTION
+- **semantic_search_restaurants**: vibes, dietary, ambiance ("cozy", "romantic", "vegan") - SQL cannot search these!
+- **execute_sql**: cuisine, price, awards, yelp rating, restaurant week prix fix dinner types (NEVER use neighborhood - always geocode for location queries)
+- **Trust semantic search results** - if it returns matches, use them! Don't second-guess with execute_sql.
+
+### QUERY PATTERNS WITH TOOL SELECTION
 | Query Type | Action |
 |------------|--------|
 | Restaurant name ("Carbone", "Hangawi") | displayRestaurants({ restaurant_names: ["name"] }) directly |
@@ -887,8 +927,8 @@ The user's device location is available: latitude ${userLocation.latitude}, long
 Manhattan only. For other boroughs: "Alas, NYC Eats is limited to Manhattan (for now). If you'd like to add more restaurants, nudge me with a coffee [here](https://buymeacoffee.com/atmikapai)."
 
 ### FILTER DEFINITIONS
-- **Has Prix Fixe Menu**: Some restaurants have published their prix fixe menus on the official NYC Restaurant Week website.
-- **Meal Types**: Which meals (lunch/dinner/brunch) and meal prices ($30/$45/$60) the restaurant offers during Restaurant Week.
+- **Published Prix Fixe Menu**: Restaurants that have published their prix fixe menus on the official Restaurant Week website.
+- **Meal Types**: Meals (lunch/dinner/brunch) and prices ($30/$45/$60) the restaurant offers during Restaurant Week.
 
 ${filterPoolContext}
 ${userLocationContext}
@@ -897,12 +937,9 @@ ${spatialReference}
 
 Available Tools for analysis "${analysisId}":${toolInstructions}
 
-### ISOCHRONE RULES
-- Mode + time given → execute immediately
-- Mode only → default 15 min, mention in response
-- Time only → ask for mode
-- Neither → ask for both
-- Modes: walk → "walking" | subway/transit → "transit" | bike → "cycling" | car/uber → "driving"
+### ISOCHRONE
+Default 15min if time not given; ask user for mode of transit always if not specified.
+Modes: walk→"walking" | subway/transit/bus →"transit" | bike→"cycling" | car/uber→"driving"
 
 ### GEO_REF SPATIAL QUERIES
 get_isoline returns a GEO_REF ID (e.g., "GEO_REF_ABC12"). Use in SQL: \`ST_GeomFromGeoJSON(GEO_REF_ABC12)\`
@@ -910,11 +947,6 @@ get_isoline returns a GEO_REF ID (e.g., "GEO_REF_ABC12"). Use in SQL: \`ST_GeomF
 **GEO_REF IDs are REQUEST-SCOPED** - they expire after each response! For follow-up queries, re-call get_isoline to get fresh IDs.
 
 "Between" queries: geocode both locations → get_isoline twice → \`ST_Intersection(ST_GeomFromGeoJSON(ID1), ST_GeomFromGeoJSON(ID2))\` → displayRestaurants
-
-### TOOL SELECTION
-- **semantic_search_restaurants**: vibes, dietary, ambiance ("cozy", "romantic", "vegan") - SQL cannot search these!
-- **execute_sql**: cuisine, price, neighborhood, awards, spatial queries
-- **Trust semantic search results** - if it returns matches, use them! Don't second-guess with execute_sql.
 
 ### ISOCHRONE + SEMANTIC SEARCH (CRITICAL TOOL CHAINING)
 For location + vibe queries ("cozy spots near Times Square", "date night Japanese within 20 min of my place"):
@@ -929,13 +961,15 @@ For location + vibe queries ("cozy spots near Times Square", "date night Japanes
 ### RESPONSE RULES
 - Brief intro (1 sentence max) or none
 - Never list restaurant names in text - cards show them
-- Never repeat yourself or apologize
+- Never repeat yourself
 - After displayRestaurants: ONE astute observation, then STOP
 - Multi-tool queries: call tools silently, speak once at end
 
-✅ "Found 8 spots - Carbone's spicy rigatoni is legendary."
-❌ "Here are Felice, La Sirene, and Buddakan." (just listing)
-❌ "Ah, a true aficionado! Let me find delightful spots..." (flowery)
+### AREA SUMMARY QUERIES (Exception to "be terse")
+For "describe this area", "what's in this isochrone", or "what kind of restaurants" queries, give a RICH overview:
+- Cuisine breakdown (top 3-5 cuisines with counts), **Award highlights**: "X Michelin-starred spots, Y Bib Gourmands", Price range mix (budget-friendly $, mid-range $$, splurge $$$+)
+- Notable standouts worth mentioning by name
+Users asking about an area want details - this is the ONE exception to brevity!
 
 Never mention GEO_REF IDs, table UUIDs, or internal mechanics to users.`;
 
@@ -989,6 +1023,72 @@ Never mention GEO_REF IDs, table UUIDs, or internal mechanics to users.`;
         execute: async (args: Record<string, unknown>) => {
           let sql = args.sql as string;
 
+          console.log(`📝 execute_sql ORIGINAL: ${sql}`);
+
+          // Auto-transform cuisine exact matches to ILIKE partial matches
+          // This handles cases like cuisine = 'Japanese' matching 'Japanese / Sushi'
+          if (sql) {
+            // Handle: cuisine = 'Japanese' → cuisine ILIKE '%Japanese%'
+            sql = sql.replace(
+              /cuisine\s*=\s*'([^']+)'/gi,
+              (match, cuisineValue) => {
+                console.log(`🍽️ Transforming cuisine = '${cuisineValue}' to ILIKE '%${cuisineValue}%'`);
+                return `cuisine ILIKE '%${cuisineValue}%'`;
+              }
+            );
+
+            // Handle: cuisine IN ('Japanese', 'Italian') → (cuisine ILIKE '%Japanese%' OR cuisine ILIKE '%Italian%')
+            sql = sql.replace(
+              /cuisine\s+IN\s*\(([^)]+)\)/gi,
+              (match, valuesStr) => {
+                // Extract quoted values from the IN clause
+                const values = valuesStr.match(/'([^']+)'/g);
+                if (!values || values.length === 0) return match;
+
+                const ilikeConditions = values.map((v: string) => {
+                  const cuisineValue = v.replace(/'/g, '');
+                  return `cuisine ILIKE '%${cuisineValue}%'`;
+                });
+
+                console.log(`🍽️ Transforming cuisine IN (...) to (${ilikeConditions.join(' OR ')})`);
+                return `(${ilikeConditions.join(' OR ')})`;
+              }
+            );
+          }
+
+          // Inject isochrone constraint if active (from get_isoline in same request)
+          if (allIsochroneSlugs.length > 0 && sql) {
+            // Compute intersection for multi-party scenarios
+            let isochroneSlugs: string[];
+            if (allIsochroneSlugs.length === 1) {
+              isochroneSlugs = allIsochroneSlugs[0];
+            } else {
+              // Intersection: restaurants reachable from ALL locations
+              isochroneSlugs = allIsochroneSlugs.reduce((acc, slugs) =>
+                acc.filter(slug => slugs.includes(slug))
+              );
+            }
+
+            const slugList = isochroneSlugs.map((s) => `'${s}'`).join(",");
+            const isochroneClause = `slug IN (${slugList})`;
+
+            const whereMatch = sql.match(/\bWHERE\b/i);
+            if (whereMatch) {
+              // Add to existing WHERE with AND
+              sql = sql.replace(/\bWHERE\b/i, `WHERE ${isochroneClause} AND `);
+            } else {
+              // Add WHERE before ORDER BY, GROUP BY, or LIMIT, or at end
+              const insertPoint = sql.match(/\b(ORDER BY|GROUP BY|LIMIT)\b/i);
+              if (insertPoint) {
+                sql = sql.replace(insertPoint[0], `WHERE ${isochroneClause} ${insertPoint[0]}`);
+              } else {
+                sql = `${sql} WHERE ${isochroneClause}`;
+              }
+            }
+
+            console.log(`🔒 execute_sql: Injected isochrone constraint (${isochroneSlugs.length} slugs from ${allIsochroneSlugs.length} isochrone(s))`);
+          }
+
           // Inject filterPool constraint if active
           if (hasFilterPool && sql) {
             // Build the slug list for SQL IN clause
@@ -1020,6 +1120,8 @@ Never mention GEO_REF IDs, table UUIDs, or internal mechanics to users.`;
               `🔒 execute_sql: Injected filterPool constraint (${filterPool.length} slugs)`
             );
           }
+
+          console.log(`📝 execute_sql FINAL: ${sql}`);
 
           // Call the original execute_sql with modified SQL
           return (optimizedTools.execute_sql as any).execute({
@@ -1122,7 +1224,9 @@ Never mention GEO_REF IDs, table UUIDs, or internal mechanics to users.`;
 
           const restaurantSlugs = restaurantsInPolygon.map((r) => r.slug);
 
-         
+          // Store for use by execute_sql/semantic_search (auto-inject isochrone constraint)
+          allIsochroneSlugs.push(restaurantSlugs);
+          console.log(`📍 Stored isochrone ${allIsochroneSlugs.length} with ${restaurantSlugs.length} slugs`);
 
           // 6. Return enhanced result with restaurant data
           return {
@@ -1334,6 +1438,21 @@ Never mention GEO_REF IDs, table UUIDs, or internal mechanics to users.`;
         console.warn("⚠️ Error closing MCP client:", closeError);
       }
     }
+
+    // Check for Gemini rate limit error (429)
+    const errorStr = error instanceof Error ? error.message : String(error);
+    const isRateLimit = errorStr.includes("429") ||
+      errorStr.includes("quota") ||
+      errorStr.includes("RESOURCE_EXHAUSTED") ||
+      errorStr.includes("rate limit");
+
+    if (isRateLimit) {
+      return c.json(
+        { error: "RATE_LIMIT", message: "My buddy, Gemini, is exhausted. He's complaining about hitting API rate limits or something. Give us ~30 seconds to catch our breath and try again!" },
+        429
+      );
+    }
+
     return c.json(
       { error: error instanceof Error ? error.message : String(error) },
       500

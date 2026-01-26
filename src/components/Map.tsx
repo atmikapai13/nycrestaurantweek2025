@@ -195,7 +195,7 @@ export default function Map({
     const minZoom = 10;
     const maxZoom = 16;
     const minScale = isMobileDevice ? 0.45 : 0.5;
-    const maxScale = isMobileDevice ? 1.5 : 1.6;
+    const maxScale = isMobileDevice ? 1.5 : 1.2;
 
     const clampedZoom = Math.max(minZoom, Math.min(maxZoom, zoom));
     const t = (clampedZoom - minZoom) / (maxZoom - minZoom);

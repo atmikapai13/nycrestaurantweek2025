@@ -35,10 +35,27 @@ import {
 } from "../types/ai-message";
 import "./ChatInterface.css";
 
+// Google Analytics gtag declaration
+declare function gtag(command: 'event', eventName: string, eventParams?: Record<string, unknown>): void;
+
+// Classify query type for analytics
+const classifyQuery = (query: string): string => {
+  const q = query.toLowerCase();
+  if (/\b(near|within|walk|walking|transit|subway|min|minute|between|midpoint)\b/.test(q)) return 'location';
+  if (/\b(michelin|award|star|top 100|bib gourmand|nyt)\b/.test(q)) return 'awards';
+  if (/\b(cozy|romantic|date|vibe|trendy|quiet|lively|rooftop|outdoor|ambiance)\b/.test(q)) return 'vibes';
+  if (/\b(vegan|vegetarian|gluten|dietary|kosher|halal)\b/.test(q)) return 'dietary';
+  if (/\b(italian|japanese|korean|chinese|mexican|french|indian|thai|mediterranean|american|sushi|ramen)\b/.test(q)) return 'cuisine';
+  if (/\b(cheap|\$|affordable|splurge|fancy|budget|expensive)\b/.test(q)) return 'price';
+  if (/\b(more|another|other options|else|different)\b/.test(q)) return 'more_results';
+  if (/\b(restaurant week|prix fixe|rw)\b/.test(q)) return 'restaurant_week';
+  return 'general';
+};
+
 // Isochrone layer styling
 const ISOCHRONE_COLORS = {
-  fill: "#b38afe",   // Electric purple
-  stroke: "#5E35B1", // Deeper purple for outline
+  fill: "#B3A0F0",   // Electric purple
+  stroke: "#31004a", // Deeper purple for outline
 };
 
 interface Message {
@@ -387,11 +404,21 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       id: "nyc-restaurant-chat",
       onError: (error) => {
         console.error("Chat error:", error);
-        // Add a friendly error message from Remi to the chat history
+        // Check if it's a rate limit error
+        const errorStr = error?.message || String(error);
+        const isRateLimit = errorStr.includes("429") ||
+          errorStr.includes("RATE_LIMIT") ||
+          errorStr.includes("quota") ||
+          errorStr.includes("rate limit");
+
+        const errorContent = isRateLimit
+          ? "Wheeew, we've been busy! My buddy, Gemini, is exhausted. He's complaining about hitting API rate limits or something. Give us ~30 seconds to catch our breath and try again!"
+          : "Something went wrong while I was whisking through your request. It seems my whiskers got tangled! <br><br> Could you try rephrasing or asking again?";
+
         const errorMessage = {
           id: `error-${Date.now()}`,
           role: "assistant" as const,
-          content: `I'm terribly sorry, but something went wrong while I was whisking through your request. It seems my whiskers got tangled! <br><br> Could you try rephrasing or asking again?`,
+          content: errorContent,
           createdAt: new Date(),
           parts: [],
         };
@@ -406,6 +433,8 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
     const processedToolCallIds = useRef<Set<string>>(new Set());
 
     const [input, setInput] = useState("");
+    const [isListening, setIsListening] = useState(false);
+    const recognitionRef = useRef<SpeechRecognition | null>(null);
 
     // Watch messages for new tool results
     useEffect(() => {
@@ -1150,6 +1179,19 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
         userMessage = test[Math.floor(Math.random() * test.length)];
       }
 
+      // Track query in Google Analytics
+      try {
+        gtag('event', 'chat_query', {
+          'event_category': 'chat',
+          'query_type': classifyQuery(userMessage),
+          'query_text': userMessage.substring(0, 100), // Truncate for GA limits
+          'query_length': userMessage.length
+        });
+      } catch (e) {
+        // Silently fail if gtag not available
+        console.debug('GA tracking skipped:', e);
+      }
+
       // Clear restaurant cards and geocoded pins when starting a new conversation turn
       setCustomMessages([]);
       clearGeocodedMarkers();
@@ -1158,6 +1200,65 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
       // Send message using AI SDK
       sendMessage({ text: userMessage });
+    };
+
+    // Voice input using Web Speech API
+    const toggleListening = () => {
+      // If already listening, stop
+      if (isListening && recognitionRef.current) {
+        recognitionRef.current.stop();
+        return;
+      }
+
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+      if (!SpeechRecognition) {
+        console.warn("Speech recognition not supported in this browser");
+        return;
+      }
+
+      const recognition = new SpeechRecognition();
+      recognitionRef.current = recognition;
+      recognition.lang = 'en-US';
+      recognition.continuous = true;  // Keep listening after pauses
+      recognition.interimResults = true;  // Show partial results
+
+      recognition.onstart = () => {
+        setIsListening(true);
+      };
+
+      recognition.onend = () => {
+        setIsListening(false);
+        recognitionRef.current = null;
+      };
+
+      recognition.onerror = (event) => {
+        console.error("Speech recognition error:", event.error);
+        setIsListening(false);
+        recognitionRef.current = null;
+      };
+
+      recognition.onresult = (event) => {
+        // Combine all results (handles continuous mode)
+        let finalTranscript = '';
+        let interimTranscript = '';
+
+        for (let i = 0; i < event.results.length; i++) {
+          const result = event.results[i];
+          if (result.isFinal) {
+            finalTranscript += result[0].transcript;
+          } else {
+            interimTranscript += result[0].transcript;
+          }
+        }
+
+        // Show final + interim (interim in progress)
+        setInput(finalTranscript + interimTranscript);
+        // Auto-resize textarea after setting input
+        setTimeout(() => autoResizeTextarea(), 0);
+      };
+
+      recognition.start();
     };
 
 
@@ -1698,10 +1799,24 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                 }
               }}
               placeholder="Search for a restaurant..."
-              disabled={isLoading}
+              disabled={isLoading || isListening}
               className="chat-input"
               rows={1}
             />
+            <button
+              onClick={toggleListening}
+              disabled={isLoading}
+              className={`chat-mic-button ${isListening ? 'listening' : ''}`}
+              title={isListening ? "Click to stop" : "Voice input"}
+              aria-label={isListening ? "Click to stop" : "Voice input"}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                <line x1="12" y1="19" x2="12" y2="23" />
+                <line x1="8" y1="23" x2="16" y2="23" />
+              </svg>
+            </button>
             <button
               onClick={() => {
                 handleSend();

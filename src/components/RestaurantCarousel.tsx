@@ -41,6 +41,13 @@ export default function RestaurantCarousel({
     const newIndex = startFromLast ? restaurants.length - 1 : 0;
     setCurrentIndex(newIndex);
     hasUserNavigated.current = false;
+
+    // Auto-zoom to restaurant when there's only one result
+    // (user can't navigate, so we trigger zoom immediately)
+    if (restaurants.length === 1 && restaurants[0] && onRestaurantSelectRef.current) {
+      onRestaurantSelectRef.current(restaurants[0]);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [restaurants.length, startFromLast]);
 
   // Notify parent when current restaurant changes (for map flyTo)
