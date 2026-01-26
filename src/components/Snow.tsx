@@ -14,7 +14,7 @@ export default function Snow() {
     for (let i = 0; i < SNOWFLAKE_COUNT; i++) {
       const snowflake = document.createElement("div");
       snowflake.className = "snowflake";
-      snowflake.innerHTML = "&#10052;"; // Unicode snowflake
+      snowflake.innerHTML = "&#10052;&#xFE0E;"; // Unicode snowflake + text variation selector (prevents emoji on iOS)
 
       // Random properties
       const size = Math.random() * 12 + 10; // 10-22px
