@@ -22,8 +22,7 @@ app.use(
   })
 );
 
-// Handle both /transcribe (local) and / (Vercel file-based routing)
-app.post("/", async (c) => {
+const transcribeHandler = async (c: any) => {
   try {
     const body = await c.req.json();
     const { audio, mimeType } = body;
@@ -63,7 +62,12 @@ app.post("/", async (c) => {
 
     return c.json({ error: "Transcription failed: " + errorStr }, 500);
   }
-});
+};
+
+// Mount routes (same pattern as chat.ts)
+app.post("/transcribe", transcribeHandler);
+app.post("/", transcribeHandler);
+app.post("/*", transcribeHandler);
 
 export const config = {
   runtime: "nodejs",
