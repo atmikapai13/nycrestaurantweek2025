@@ -979,6 +979,11 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       }
     }, []);
 
+    // Auto-resize textarea when input changes (handles voice input and other programmatic changes)
+    useEffect(() => {
+      autoResizeTextarea();
+    }, [input]);
+
     // Scroll when custom messages (restaurant cards) are added
     // On mobile: scroll to show top of card; on desktop: scroll to bottom
     useEffect(() => {
@@ -1285,7 +1290,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                   console.log('🎤 Transcription result:', data);
                   if (data.text) {
                     setInput(prev => prev ? `${prev} ${data.text}` : data.text);
-                    setTimeout(() => autoResizeTextarea(), 0);
                   }
                 } else {
                   const errorText = await response.text();
@@ -1340,7 +1344,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
             }
           }
           setInput(finalTranscript + interimTranscript);
-          setTimeout(() => autoResizeTextarea(), 0);
         };
 
         recognition.start();
