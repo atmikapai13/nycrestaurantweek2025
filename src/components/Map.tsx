@@ -55,6 +55,7 @@ export default function Map({
   const markerElements = useRef<HTMLDivElement[]>([]);
   const chatInterfaceRef = useRef<ChatInterfaceHandle>(null);
   const geocodedPins = useRef<mapboxgl.Marker[]>([]); // Native teardrop pins for geocoded locations
+  const pendingMarkerUpdate = useRef<number | null>(null); // Throttle zoom marker updates
 
   // Use MapContext for state and actions
   const {
@@ -204,40 +205,46 @@ export default function Map({
     return Math.round(baseSize * scale);
   };
 
-  // Function to update all marker sizes
+  // Function to update all marker sizes (batched for performance)
   const updateMarkerSizes = () => {
     if (!map.current) return;
 
     const zoom = map.current.getZoom();
     const mobile = isMobile();
 
+    // Batch all calculations first (reads) - prevents layout thrashing
+    const updates: Array<{
+      el: HTMLDivElement;
+      size: number;
+      isSelected: boolean;
+      wrapper: HTMLElement | null;
+    }> = [];
+
     markerElements.current.forEach((markerEl) => {
       if (markerEl && markerEl.style) {
-        // Get the base size from the marker's data attribute
-        const baseSize = parseInt(
-          markerEl.getAttribute("data-base-size") || "6"
-        );
+        const baseSize = parseInt(markerEl.getAttribute("data-base-size") || "6");
         let newSize = getMarkerSize(baseSize, zoom, mobile);
-
-        // Apply 1.3x multiplier and thicker border for selected markers (scales with zoom)
         const isSelected = markerEl.getAttribute("data-is-selected") === "true";
         if (isSelected) {
           newSize = Math.round(newSize * 1.25);
-          markerEl.style.border = "1.5px solid white";
-        } else {
-          markerEl.style.border = "1px solid white";
         }
+        updates.push({
+          el: markerEl,
+          size: newSize,
+          isSelected,
+          wrapper: markerEl.parentElement,
+        });
+      }
+    });
 
-        // Update the inner marker size (the visual marker)
-        markerEl.style.width = `${newSize}px`;
-        markerEl.style.height = `${newSize}px`;
-
-        // Update the wrapper padding (the click area)
-        const wrapper = markerEl.parentElement;
-        if (wrapper) {
-          const padding = mobile ? "8px" : "6px";
-          wrapper.style.padding = padding;
-        }
+    // Then apply all styles (writes) - no interleaved reads
+    const padding = mobile ? "8px" : "6px";
+    updates.forEach(({ el, size, isSelected, wrapper }) => {
+      el.style.width = `${size}px`;
+      el.style.height = `${size}px`;
+      el.style.border = isSelected ? "1.5px solid white" : "1px solid white";
+      if (wrapper) {
+        wrapper.style.padding = padding;
       }
     });
   };
@@ -273,9 +280,15 @@ export default function Map({
         '© <a href="https://atmikapai.dev/" target="_blank">Atmika Pai</a> © <a href="https://marauders.earth/" target="_blank">Marauders.Earth</a> © <a href="https://www.fultonring.com/" target="_blank">Fulton Ring</a> © <a href="https://urban.tech.cornell.edu/" target="_blank">Cornell Tech</a>',
     });
 
-    // Add zoom event listener to update marker sizes
+    // Add zoom event listener to update marker sizes (throttled with rAF)
     map.current.on("zoom", () => {
-      updateMarkerSizes();
+      if (pendingMarkerUpdate.current) {
+        cancelAnimationFrame(pendingMarkerUpdate.current);
+      }
+      pendingMarkerUpdate.current = requestAnimationFrame(() => {
+        updateMarkerSizes();
+        pendingMarkerUpdate.current = null;
+      });
     });
 
     // Add resize event listener for mobile detection
@@ -309,6 +322,9 @@ export default function Map({
     });
 
     return () => {
+      if (pendingMarkerUpdate.current) {
+        cancelAnimationFrame(pendingMarkerUpdate.current);
+      }
       if (map.current) {
         map.current.remove();
       }
