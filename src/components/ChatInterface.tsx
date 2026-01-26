@@ -434,7 +434,10 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
     const [input, setInput] = useState("");
     const [isListening, setIsListening] = useState(false);
+    const [isTranscribing, setIsTranscribing] = useState(false);
     const recognitionRef = useRef<SpeechRecognition | null>(null);
+    const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+    const audioChunksRef = useRef<Blob[]>([]);
 
     // Watch messages for new tool results
     useEffect(() => {
@@ -1202,63 +1205,119 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       sendMessage({ text: userMessage });
     };
 
-    // Voice input using Web Speech API
-    const toggleListening = () => {
-      // If already listening, stop
-      if (isListening && recognitionRef.current) {
-        recognitionRef.current.stop();
-        return;
-      }
-
+    // Voice input - uses Web Speech API on desktop, MediaRecorder on mobile
+    const toggleListening = async () => {
+      const isMobile = window.innerWidth <= 768 || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const useMediaRecorder = isMobile || !SpeechRecognition;
 
-      if (!SpeechRecognition) {
-        console.warn("Speech recognition not supported in this browser");
+      // If already listening, stop
+      if (isListening) {
+        if (mediaRecorderRef.current) {
+          mediaRecorderRef.current.stop();
+        } else if (recognitionRef.current) {
+          recognitionRef.current.stop();
+        }
         return;
       }
 
-      const recognition = new SpeechRecognition();
-      recognitionRef.current = recognition;
-      recognition.lang = 'en-US';
-      recognition.continuous = true;  // Keep listening after pauses
-      recognition.interimResults = true;  // Show partial results
+      if (useMediaRecorder) {
+        // Mobile: Use MediaRecorder + Gemini transcription
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          const mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+          mediaRecorderRef.current = mediaRecorder;
+          audioChunksRef.current = [];
 
-      recognition.onstart = () => {
-        setIsListening(true);
-      };
+          mediaRecorder.ondataavailable = (event) => {
+            if (event.data.size > 0) {
+              audioChunksRef.current.push(event.data);
+            }
+          };
 
-      recognition.onend = () => {
-        setIsListening(false);
-        recognitionRef.current = null;
-      };
+          mediaRecorder.onstop = async () => {
+            setIsListening(false);
+            setIsTranscribing(true);
 
-      recognition.onerror = (event) => {
-        console.error("Speech recognition error:", event.error);
-        setIsListening(false);
-        recognitionRef.current = null;
-      };
+            // Stop all tracks
+            stream.getTracks().forEach(track => track.stop());
 
-      recognition.onresult = (event) => {
-        // Combine all results (handles continuous mode)
-        let finalTranscript = '';
-        let interimTranscript = '';
+            // Convert to base64 and send to backend
+            const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+            const reader = new FileReader();
+            reader.onloadend = async () => {
+              const base64Audio = (reader.result as string).split(',')[1];
 
-        for (let i = 0; i < event.results.length; i++) {
-          const result = event.results[i];
-          if (result.isFinal) {
-            finalTranscript += result[0].transcript;
-          } else {
-            interimTranscript += result[0].transcript;
-          }
+              try {
+                const response = await fetch(API_CONFIG.TRANSCRIBE_URL, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ audio: base64Audio, mimeType: 'audio/webm' }),
+                });
+
+                if (response.ok) {
+                  const { text } = await response.json();
+                  if (text) {
+                    setInput(prev => prev ? `${prev} ${text}` : text);
+                    setTimeout(() => autoResizeTextarea(), 0);
+                  }
+                } else {
+                  console.error("Transcription failed:", response.status);
+                }
+              } catch (error) {
+                console.error("Transcription error:", error);
+              } finally {
+                setIsTranscribing(false);
+                mediaRecorderRef.current = null;
+              }
+            };
+            reader.readAsDataURL(audioBlob);
+          };
+
+          mediaRecorder.onstart = () => {
+            setIsListening(true);
+          };
+
+          mediaRecorder.start();
+        } catch (error) {
+          console.error("Microphone access denied:", error);
+          setIsListening(false);
         }
+      } else {
+        // Desktop: Use Web Speech API (real-time)
+        const recognition = new SpeechRecognition();
+        recognitionRef.current = recognition;
+        recognition.lang = 'en-US';
+        recognition.continuous = true;
+        recognition.interimResults = true;
 
-        // Show final + interim (interim in progress)
-        setInput(finalTranscript + interimTranscript);
-        // Auto-resize textarea after setting input
-        setTimeout(() => autoResizeTextarea(), 0);
-      };
+        recognition.onstart = () => setIsListening(true);
+        recognition.onend = () => {
+          setIsListening(false);
+          recognitionRef.current = null;
+        };
+        recognition.onerror = (event) => {
+          console.error("Speech recognition error:", event.error);
+          setIsListening(false);
+          recognitionRef.current = null;
+        };
+        recognition.onresult = (event) => {
+          let finalTranscript = '';
+          let interimTranscript = '';
+          for (let i = 0; i < event.results.length; i++) {
+            const result = event.results[i];
+            if (result.isFinal) {
+              finalTranscript += result[0].transcript;
+            } else {
+              interimTranscript += result[0].transcript;
+            }
+          }
+          setInput(finalTranscript + interimTranscript);
+          setTimeout(() => autoResizeTextarea(), 0);
+        };
 
-      recognition.start();
+        recognition.start();
+      }
     };
 
 
@@ -1405,6 +1464,9 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                     return true;
                                   });
 
+                                  // Hide tool statuses when loading completes (same as tips)
+                                  const shouldHideToolStatuses = !isLoading || !isLastMessage;
+
                                   return deduplicatedParts.map((part, pIdx: number) => {
                                   if (isTextPart(part)) {
                                     return (
@@ -1420,6 +1482,11 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                     isToolInvocationPart(part) ||
                                     isDynamicToolPart(part)
                                   ) {
+                                    // Hide tool statuses when loading completes (same trigger as tips)
+                                    if (shouldHideToolStatuses) {
+                                      return null;
+                                    }
+
                                     const isPending =
                                       isToolInvocationPart(part);
                                     let statusText = "";
@@ -1798,24 +1865,30 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                   }
                 }
               }}
-              placeholder="Search for a restaurant..."
-              disabled={isLoading || isListening}
+              placeholder={isListening ? "Listening... tap mic to stop" : isTranscribing ? "Transcribing..." : "Search for a restaurant..."}
+              disabled={isLoading || isListening || isTranscribing}
               className="chat-input"
               rows={1}
             />
             <button
               onClick={toggleListening}
-              disabled={isLoading}
-              className={`chat-mic-button ${isListening ? 'listening' : ''}`}
-              title={isListening ? "Click to stop" : "Voice input"}
-              aria-label={isListening ? "Click to stop" : "Voice input"}
+              disabled={isLoading || isTranscribing}
+              className={`chat-mic-button ${isListening ? 'listening' : ''} ${isTranscribing ? 'transcribing' : ''}`}
+              title={isTranscribing ? "Transcribing..." : isListening ? "Click to stop" : "Voice input"}
+              aria-label={isTranscribing ? "Transcribing..." : isListening ? "Click to stop" : "Voice input"}
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
-                <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-                <line x1="12" y1="19" x2="12" y2="23" />
-                <line x1="8" y1="23" x2="16" y2="23" />
-              </svg>
+              {isTranscribing ? (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="transcribing-spinner">
+                  <circle cx="12" cy="12" r="10" strokeDasharray="31.4" strokeDashoffset="10" />
+                </svg>
+              ) : (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                  <line x1="12" y1="19" x2="12" y2="23" />
+                  <line x1="8" y1="23" x2="16" y2="23" />
+                </svg>
+              )}
             </button>
             <button
               onClick={() => {

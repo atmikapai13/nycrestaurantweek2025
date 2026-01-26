@@ -11,4 +11,9 @@ export const API_CONFIG = {
   CHAT_URL: import.meta.env.DEV
     ? "http://localhost:3001/chat"
     : `${import.meta.env.VITE_API_URL || "/api"}/chat`,
+
+  // Transcribe endpoint URL (for mobile voice input)
+  TRANSCRIBE_URL: import.meta.env.DEV
+    ? "http://localhost:3001/transcribe"
+    : `${import.meta.env.VITE_API_URL || "/api"}/transcribe`,
 };

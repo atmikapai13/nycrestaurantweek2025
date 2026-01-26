@@ -667,6 +667,20 @@
   }
 }
 
+.chat-mic-button.transcribing {
+  color: #B3A0F0;
+  background: rgba(179, 160, 240, 0.15);
+}
+
+.transcribing-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 /* Drag Handle - Mobile Only */
 .drawer-handle {
   display: none;

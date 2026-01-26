@@ -1,5 +1,7 @@
 import { serve } from "@hono/node-server";
+import { Hono } from "hono";
 import chat from "./chat.js";
+import transcribe from "./transcribe.js";
 import { env, getGoogleApiKey } from "./env.js";
 
 const port = env.API2_PORT;
@@ -34,7 +36,16 @@ try {
   process.exit(1);
 }
 
+// Combined server handling both /chat and /transcribe
+const app = new Hono();
+
+// Route requests to appropriate handlers
+app.route("/chat", chat);
+app.route("/transcribe", transcribe);
+
 serve({
-  fetch: chat.fetch,
+  fetch: app.fetch,
   port: Number(port),
 });
+
+console.log(`🚀 Server running on port ${port}`);
