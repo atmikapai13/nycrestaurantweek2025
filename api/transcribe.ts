@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { handle } from "hono/vercel";
 import { cors } from "hono/cors";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { env } from "./env";
+import { env } from "./env.js";
 
 const app = new Hono();
 
@@ -15,21 +15,24 @@ app.use(
       "http://localhost:3000",
       "http://localhost:3001",
       "https://atmikapai.github.io",
+      "https://nyceats.live",
     ],
     allowMethods: ["POST", "OPTIONS"],
     allowHeaders: ["Content-Type"],
   })
 );
 
-const transcribeHandler = async (c: ReturnType<typeof app.get>) => {
+// Handle both /transcribe (local) and / (Vercel file-based routing)
+app.post("/", async (c) => {
   try {
-    // Get audio data from request
     const body = await c.req.json();
     const { audio, mimeType } = body;
 
     if (!audio) {
       return c.json({ error: "No audio data provided" }, 400);
     }
+
+    console.log("🎤 Transcribe request received, mimeType:", mimeType);
 
     // Initialize Gemini
     const genai = new GoogleGenerativeAI(env.GOOGLE_API_KEY);
@@ -40,7 +43,7 @@ const transcribeHandler = async (c: ReturnType<typeof app.get>) => {
       {
         inlineData: {
           mimeType: mimeType || "audio/webm",
-          data: audio, // base64 encoded audio
+          data: audio,
         },
       },
       "Transcribe this audio exactly as spoken. Return ONLY the transcribed text, nothing else. If you cannot understand the audio or it's silent, return an empty string.",
@@ -54,16 +57,13 @@ const transcribeHandler = async (c: ReturnType<typeof app.get>) => {
     console.error("❌ Transcription error:", error);
     const errorStr = error instanceof Error ? error.message : String(error);
 
-    // Check for rate limit
     if (errorStr.includes("429") || errorStr.includes("quota")) {
       return c.json({ error: "Rate limit hit, try again in a moment" }, 429);
     }
 
-    return c.json({ error: "Transcription failed" }, 500);
+    return c.json({ error: "Transcription failed: " + errorStr }, 500);
   }
-};
-
-app.post("/", transcribeHandler);
+});
 
 export const config = {
   runtime: "nodejs",

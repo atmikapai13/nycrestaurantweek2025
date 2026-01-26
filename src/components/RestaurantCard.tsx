@@ -273,7 +273,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
             aria-expanded={isRestaurantWeekOpen}
             aria-label="Toggle Restaurant Week details"
           >
-            <span className="restaurant-week-accordion-title">
+            <span className="review-accordion-title">
               <span className="new-badge">NEW</span>
               2026 Restaurant Week
             </span>
@@ -294,7 +294,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
 
           <div ref={restaurantWeekContentRef} className={`restaurant-week-accordion-content ${isRestaurantWeekOpen ? 'open' : ''}`} onClick={(e) => e.stopPropagation()}>
             <div className="meal-types-row">
-              <div className="card-body-text review-text">
+              <div className="card-body-text">
 
                 For Winter 2026 Restaurant Week, {displayRestaurant.name} is participating{displayRestaurant.participation_weeks2 && (
                   <> from <b>{displayRestaurant.participation_weeks2}</b></>)}, offering the following menus: <b>{displayRestaurant.meal_types.join(', ')}</b>
@@ -358,7 +358,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
                   <img src="/yelp_logo.png" alt="Yelp" className="review-source-icon" />
                   <span className="review-source-label">Yelp:</span>
                 </div>
-                <span className="card-body-text review-text">{processYelpReview(displayRestaurant.yelp_review_highlights)}</span>
+                <span className="card-body-text">{processYelpReview(displayRestaurant.yelp_review_highlights)}</span>
               </div>
             )}
             {displayRestaurant.reddit && displayRestaurant.reddit.trim() !== '' && (
@@ -367,7 +367,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
                   <img src="/reddit.webp" alt="Reddit" className="review-source-icon" />
                   <span className="review-source-label">Reddit:</span>
                 </div>
-                <span className="card-body-text review-text">
+                <span className="card-body-text">
                   {displayRestaurant.reddit.split('. ').reduce((acc: string, sentence: string, index: number, array: string[]) => {
                     const sentenceWithPeriod = index === array.length - 1 && sentence.endsWith('.') ? sentence : sentence + '.';
                     if (index > 0 && index % 2 === 0) {
@@ -403,7 +403,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
             aria-expanded={isAboutOpen}
             aria-label="Toggle about"
           >
-            <span className="about-accordion-title">About</span>
+            <span className="review-accordion-title">About</span>
             <svg
               className={`about-accordion-chevron ${isAboutOpen ? 'open' : ''}`}
               width="14"
@@ -441,7 +441,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
                 </span>
               )}
             </div>
-            <p className="card-body-text review-text">
+            <p className="card-body-text">
               {displayRestaurant.summary2 && displayRestaurant.summary2.split('. ').reduce((acc: string, sentence: string, index: number, array: string[]) => {
                 const sentenceWithPeriod = index === array.length - 1 && sentence.endsWith('.') ? sentence : sentence + '.';
                 if (index > 0 && index % 2 === 0) {
@@ -522,7 +522,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
           aria-expanded={isContactsOpen}
           aria-label="Toggle contact and links"
         >
-          <span className="contact-accordion-title">Socials</span>
+          <span className="review-accordion-title">Socials</span>
           <svg
             className={`contact-accordion-chevron ${isContactsOpen ? 'open' : ''}`}
             width="14"

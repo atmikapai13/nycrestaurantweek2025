@@ -734,7 +734,7 @@ export default function Map({
         zoom: targetZoom,
         pitch: 45,
         bearing: map.current.getBearing(), // Keep current bearing
-        duration: 2000, // Smooth 1.8s animation
+        duration: 2500, // Smooth 1.8s animation
         essential: true, // This animation is essential with respect to prefers-reduced-motion
         padding: isMobileView
           ? { top: 10, bottom: 450, left: 20, right: 20 } // Mobile: pad bottom for drawer
