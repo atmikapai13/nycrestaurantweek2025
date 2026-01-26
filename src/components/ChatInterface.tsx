@@ -1225,7 +1225,22 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
         // Mobile: Use MediaRecorder + Gemini transcription
         try {
           const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-          const mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+
+          // Detect supported mimeType (iOS doesn't support webm)
+          const mimeTypes = ['audio/webm', 'audio/mp4', 'audio/ogg', 'audio/wav'];
+          let selectedMimeType = '';
+          for (const type of mimeTypes) {
+            if (MediaRecorder.isTypeSupported(type)) {
+              selectedMimeType = type;
+              break;
+            }
+          }
+
+          const recorderOptions = selectedMimeType ? { mimeType: selectedMimeType } : undefined;
+          const mediaRecorder = new MediaRecorder(stream, recorderOptions);
+          const actualMimeType = mediaRecorder.mimeType || 'audio/webm';
+          console.log('🎤 Using mimeType:', actualMimeType);
+
           mediaRecorderRef.current = mediaRecorder;
           audioChunksRef.current = [];
 
@@ -1243,26 +1258,38 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
             stream.getTracks().forEach(track => track.stop());
 
             // Convert to base64 and send to backend
-            const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+            const audioBlob = new Blob(audioChunksRef.current, { type: actualMimeType });
+            console.log('🎤 Audio blob size:', audioBlob.size, 'bytes, type:', actualMimeType);
+
+            if (audioBlob.size === 0) {
+              console.error('🎤 No audio recorded');
+              setIsTranscribing(false);
+              mediaRecorderRef.current = null;
+              return;
+            }
+
             const reader = new FileReader();
             reader.onloadend = async () => {
               const base64Audio = (reader.result as string).split(',')[1];
+              console.log('🎤 Sending to transcribe, base64 length:', base64Audio?.length);
 
               try {
                 const response = await fetch(API_CONFIG.TRANSCRIBE_URL, {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ audio: base64Audio, mimeType: 'audio/webm' }),
+                  body: JSON.stringify({ audio: base64Audio, mimeType: actualMimeType }),
                 });
 
                 if (response.ok) {
-                  const { text } = await response.json();
-                  if (text) {
-                    setInput(prev => prev ? `${prev} ${text}` : text);
+                  const data = await response.json();
+                  console.log('🎤 Transcription result:', data);
+                  if (data.text) {
+                    setInput(prev => prev ? `${prev} ${data.text}` : data.text);
                     setTimeout(() => autoResizeTextarea(), 0);
                   }
                 } else {
-                  console.error("Transcription failed:", response.status);
+                  const errorText = await response.text();
+                  console.error("Transcription failed:", response.status, errorText);
                 }
               } catch (error) {
                 console.error("Transcription error:", error);
