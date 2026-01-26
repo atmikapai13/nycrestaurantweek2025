@@ -3,6 +3,7 @@ import "./App.css";
 import FloatingHeader from "./components/FloatingHeader";
 import FilterBar from "./components/FilterBar";
 import Map from "./components/Map";
+import Snow from "./components/Snow";
 import type { Restaurant } from "./types/restaurant";
 import { MapProvider, useMap } from "./contexts/MapContext";
 
@@ -122,6 +123,7 @@ function AppContent() {
 
   return (
     <div className="app">
+      <Snow />
       <FloatingHeader />
 
       {/* Filter Bar */}

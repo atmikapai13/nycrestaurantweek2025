@@ -1,0 +1,83 @@
+.snow-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 100; /* Below UI elements (chat: 900-1000, filter: 850) but above map */
+  overflow: hidden;
+}
+
+.snowflake {
+  position: absolute;
+  top: -20px;
+  color: white;
+  text-shadow:
+    0 0 5px rgba(255, 255, 255, 1),
+    0 0 10px rgba(255, 255, 255, 0.8),
+    0 0 15px rgba(200, 220, 255, 0.5);
+  animation: fall linear infinite;
+  will-change: transform;
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(-10vh) rotate(0deg);
+  }
+  100% {
+    transform: translateY(110vh) rotate(360deg);
+  }
+}
+
+/* Add gentle horizontal sway */
+.snowflake:nth-child(odd) {
+  animation: fall-sway-left linear infinite;
+}
+
+.snowflake:nth-child(even) {
+  animation: fall-sway-right linear infinite;
+}
+
+@keyframes fall-sway-left {
+  0% {
+    transform: translateY(-10vh) translateX(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(25vh) translateX(-15px) rotate(90deg);
+  }
+  50% {
+    transform: translateY(55vh) translateX(5px) rotate(180deg);
+  }
+  75% {
+    transform: translateY(80vh) translateX(-10px) rotate(270deg);
+  }
+  100% {
+    transform: translateY(110vh) translateX(0) rotate(360deg);
+  }
+}
+
+@keyframes fall-sway-right {
+  0% {
+    transform: translateY(-10vh) translateX(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(25vh) translateX(15px) rotate(-90deg);
+  }
+  50% {
+    transform: translateY(55vh) translateX(-5px) rotate(-180deg);
+  }
+  75% {
+    transform: translateY(80vh) translateX(10px) rotate(-270deg);
+  }
+  100% {
+    transform: translateY(110vh) translateX(0) rotate(-360deg);
+  }
+}
+
+/* Reduce snow on mobile for performance */
+@media (max-width: 768px) {
+  .snowflake:nth-child(n+50) {
+    display: none;
+  }
+}
