@@ -103,32 +103,27 @@ Frontend filter bar selections are passed as `filterPool` in request context:
 - `execute_sql` injects `WHERE slug IN (...)` clause
 - `semantic_search_restaurants` accepts `scopeToSlugs` param from prior isochrone
 
-## File Structure
+## Key Files
 
-```
-api/
-├── chat.ts                      # Main streaming endpoint (Hono + AI SDK)
-├── env.ts                       # T3 Env configuration
-├── server.ts                    # Local dev server
-├── schemas/chat.ts              # Zod request validation
-├── lib/ragSearchLogic.ts        # Pinecone semantic search
-└── utils/
-    ├── geometryOptimizer.ts     # Polygon simplification + caching
-    └── toolWrapper.ts           # MCP tool middleware
+**Backend (api/):**
+- `chat.ts` — Main streaming endpoint (Hono + AI SDK), system prompt, tool definitions
+- `transcribe.ts` — Audio transcription endpoint for voice input
+- `env.ts` — T3 Env type-safe environment configuration
+- `lib/ragSearchLogic.ts` — Pinecone semantic search implementation
+- `utils/geometryOptimizer.ts` — Polygon simplification + GEO_REF caching
+- `utils/toolWrapper.ts` — MCP tool middleware
 
-src/
-├── App.tsx                      # Main app, global state
-├── components/
-│   ├── ChatInterface.tsx        # Chat UI with AI SDK useChat hook
-│   ├── Map.tsx                  # Mapbox GL map
-│   ├── FilterBar.tsx            # Filter UI
-│   └── RestaurantCard.tsx       # Restaurant detail cards
-├── contexts/MapContext.tsx      # Isochrone layer management
-├── services/chatService.ts      # API client (legacy, now uses useChat)
-└── data/FinalData.json          # Restaurant dataset
+**Frontend (src/):**
+- `components/ChatInterface.tsx` — Main chat UI with AI SDK `useChat` hook
+- `components/Map.tsx` — Mapbox GL map with markers, isochrones, point-in-polygon
+- `components/RestaurantCarousel.tsx` — Horizontal scrollable restaurant cards in chat
+- `contexts/MapContext.tsx` — Isochrone layer state management
+- `data/FinalData.json` — Static restaurant dataset (628 restaurants)
 
-DEPRECATED_LANGRAPH (api)/       # Old LangGraph implementation (archived)
-```
+**Scripts (scripts/):**
+- `generate-embeddings.js` — Generate vector embeddings from FinalData.json
+- `upload-to-pinecone.js` — Upload embeddings to Pinecone index
+- `validate-restaurant-data.js` — Validate data integrity
 
 ## Environment Variables
 
@@ -196,6 +191,19 @@ Priority system (higher overrides lower):
 ## Known Limitations
 
 - **Manhattan only**: No Brooklyn, Queens, Bronx, Staten Island
-- **Static data**: FinalData.json is manually curated
+- **Static data**: FinalData.json is manually curated (628 restaurants)
 - **GEO_REF expiration**: IDs expire per request; follow-up queries need fresh isochrones
 - **Rate limits**: Gemini has RPM limits; monitor console for 429 errors
+
+## Data Scripts
+
+```bash
+# Validate restaurant data integrity
+node scripts/validate-restaurant-data.js
+
+# Regenerate embeddings after FinalData.json changes
+npm run embeddings:setup
+```
+
+## Expansions
+

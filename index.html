@@ -43,21 +43,36 @@
     
 
     
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ST8H9F11PP"></script>
+    <!-- Google tag (gtag.js) - only loads in production -->
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-ST8H9F11PP', {
-        page_title: 'NYC Eats',
-        page_location: window.location.href,
-        custom_map: {
-          'custom_parameter_1': 'restaurant_week',
-          'custom_parameter_2': 'nyc_eats'
+      (function() {
+        var host = window.location.hostname;
+        if (host === 'localhost' || host === '127.0.0.1') {
+          console.log('📊 Google Analytics disabled on localhost');
+          window.gtag = function() {}; // No-op stub for any gtag calls
+          return;
         }
-      });
+
+        // Load GA script
+        var script = document.createElement('script');
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-ST8H9F11PP';
+        script.async = true;
+        document.head.appendChild(script);
+
+        // Initialize GA
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        window.gtag = gtag;
+        gtag('js', new Date());
+        gtag('config', 'G-ST8H9F11PP', {
+          page_title: 'NYC Eats',
+          page_location: window.location.href,
+          custom_map: {
+            'custom_parameter_1': 'restaurant_week',
+            'custom_parameter_2': 'nyc_eats'
+          }
+        });
+      })();
     </script>
   </head>
   <body>
