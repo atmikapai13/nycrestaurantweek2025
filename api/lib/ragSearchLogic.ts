@@ -18,7 +18,7 @@ const __dirname = path.dirname(__filename);
 
 // Constants
 const INDEX_NAME = "nyc-eats";
-const EMBEDDING_MODEL = "text-embedding-004";
+const EMBEDDING_MODEL = "gemini-embedding-001";
 const MIN_SIMILARITY_THRESHOLD = 0.2;
 const HIGH_QUALITY_THRESHOLD = 0.30; // If 5th result is above this, return 10 results; otherwise 5
 const STOP_WORDS = new Set([
@@ -59,7 +59,7 @@ function loadRestaurants(): Restaurant[] {
 }
 
 /**
- * Generate embedding for search query using Google's text-embedding-004
+ * Generate embedding for search query using Google's gemini-embedding-001
  */
 async function generateQueryEmbedding(query: string): Promise<number[]> {
   const apiKey = process.env.GOOGLE_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY;
@@ -70,7 +70,10 @@ async function generateQueryEmbedding(query: string): Promise<number[]> {
   const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({ model: EMBEDDING_MODEL });
 
-  const result = await model.embedContent(query);
+  const result = await model.embedContent({
+    content: { role: "user", parts: [{ text: query }] },
+    outputDimensionality: 768,
+  });
   return result.embedding.values;
 }
 

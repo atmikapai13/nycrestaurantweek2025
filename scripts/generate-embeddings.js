@@ -36,7 +36,7 @@ if (!API_KEY) {
 
 // Initialize Gemini
 const genAI = new GoogleGenerativeAI(API_KEY)
-const embeddingModel = genAI.getGenerativeModel({ model: 'text-embedding-004' })
+const embeddingModel = genAI.getGenerativeModel({ model: 'gemini-embedding-001' })
 
 /**
  * Create embedding text from restaurant data
@@ -78,7 +78,10 @@ async function generateEmbedding(restaurant) {
   const text = createEmbeddingText(restaurant)
 
   try {
-    const result = await embeddingModel.embedContent(text)
+    const result = await embeddingModel.embedContent({
+      content: { role: "user", parts: [{ text }] },
+      outputDimensionality: 768,
+    })
     return {
       slug: restaurant.slug,
       embedding: result.embedding.values,
@@ -152,7 +155,7 @@ async function main() {
 
   const output = {
     generated_at: new Date().toISOString(),
-    model: 'text-embedding-004',
+    model: 'gemini-embedding-001',
     dimension: 768,
     total_restaurants: restaurants.length,
     total_embeddings: embeddings.length,
