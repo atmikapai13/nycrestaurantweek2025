@@ -35,7 +35,7 @@ const transcribeHandler = async (c: any) => {
 
     // Initialize Gemini
     const genai = new GoogleGenerativeAI(env.GOOGLE_API_KEY);
-    const model = genai.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const model = genai.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     // Send audio to Gemini for transcription
     const result = await model.generateContent([
@@ -45,7 +45,7 @@ const transcribeHandler = async (c: any) => {
           data: audio,
         },
       },
-      "Transcribe this audio exactly as spoken. Return ONLY the transcribed text, nothing else. If you cannot understand the audio or it's silent, return an empty string.",
+      "You are a speech-to-text transcriber. Output ONLY the verbatim words spoken in this audio — no commentary, no punctuation corrections, no formatting. If the audio is silent or unintelligible, return an empty string.",
     ]);
 
     const transcription = result.response.text()?.trim() || "";
