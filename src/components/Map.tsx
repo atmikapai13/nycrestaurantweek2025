@@ -277,7 +277,7 @@ export default function Map({
       bearing: isMobile ? mobileBearing : desktopBearing,
       minZoom: 10, // Prevent zooming out to the whole world
       customAttribution:
-        '© <a href="https://atmikapai.dev/" target="_blank">Atmika Pai</a> © <a href="https://marauders.earth/" target="_blank">Marauders.Earth</a> © <a href="https://www.fultonring.com/" target="_blank">Fulton Ring</a> © <a href="https://urban.tech.cornell.edu/" target="_blank">Cornell Tech</a>',
+        '© <a href="https://atmikapai.dev/" target="_blank">Atmika</a> © <a href="https://marauders.earth/" target="_blank">Marauders</a> © <a href="https://urban.tech.cornell.edu/" target="_blank">Cornell Tech</a>',
     });
 
     // Add zoom event listener to update marker sizes (throttled with rAF)
