@@ -277,7 +277,7 @@ export default function Map({
       bearing: isMobile ? mobileBearing : desktopBearing,
       minZoom: 10, // Prevent zooming out to the whole world
       customAttribution:
-        '© <a href="https://atmikapai.dev/" target="_blank">Atmika</a> © <a href="https://marauders.earth/" target="_blank">Marauders</a> © <a href="https://urban.tech.cornell.edu/" target="_blank">Cornell Tech</a>',
+        '© <a href="https://atmikapai.dev/" target="_blank">Atmika</a> © <a href="https://marauders.earth/" target="_blank">Marauders</a>',
     });
 
     // Add zoom event listener to update marker sizes (throttled with rAF)
@@ -305,9 +305,18 @@ export default function Map({
             setUserLocation({ latitude, longitude });
             console.log(`📍 User location detected: ${latitude}, ${longitude}`);
 
-            // Add user location marker (blue pulsing dot)
+            // Add user location marker (Alfredo with blue pulse)
             const userLocationEl = document.createElement("div");
             userLocationEl.className = "user-location-marker";
+
+            const pulseRing = document.createElement("div");
+            pulseRing.className = "pulse-ring";
+            userLocationEl.appendChild(pulseRing);
+
+            const alfredoImg = document.createElement("img");
+            alfredoImg.src = "/characters/alfredo.png";
+            alfredoImg.alt = "Your location";
+            userLocationEl.appendChild(alfredoImg);
 
             new mapboxgl.Marker({ element: userLocationEl })
               .setLngLat([longitude, latitude])
@@ -332,31 +341,7 @@ export default function Map({
     };
   }, []);
 
-  // Collapse drawer to 8vh when USER interacts with map (zoom/pan) on mobile
-  // Only triggers for user-initiated interactions (has originalEvent), not programmatic ones (flyTo, fitBounds)
-  useEffect(() => {
-    if (!map.current) return;
 
-    const handleMapInteraction = (e: mapboxgl.MapMouseEvent | mapboxgl.MapTouchEvent) => {
-      // Only collapse for user-initiated interactions (has originalEvent)
-      // Programmatic changes (flyTo, fitBounds) don't have originalEvent
-      if (!e.originalEvent) return;
-
-      const isMobile = window.innerWidth <= 768;
-      if (isMobile && drawerHeight !== 8) {
-        setDrawerHeight(8);
-      }
-    };
-
-    const mapInstance = map.current;
-    mapInstance.on("dragstart", handleMapInteraction);
-    mapInstance.on("zoomstart", handleMapInteraction);
-
-    return () => {
-      mapInstance.off("dragstart", handleMapInteraction);
-      mapInstance.off("zoomstart", handleMapInteraction);
-    };
-  }, [drawerHeight, setDrawerHeight]);
 
   // Handle multi-layer isochrone visualization (from MapContext)
   useEffect(() => {
@@ -644,7 +629,7 @@ export default function Map({
 
         if (isSelected) {
           // Selected restaurant: use native Mapbox teardrop marker with its original color
-          marker = new mapboxgl.Marker({ color: markerColor, scale: 0.8 })
+          marker = new mapboxgl.Marker({ color: markerColor, scale: 0.75 })
             .setLngLat([restaurant.longitude, restaurant.latitude])
             .addTo(map.current!);
 
@@ -773,7 +758,15 @@ export default function Map({
     );
 
     visibleMarkers.forEach((marker) => {
-      const pin = new mapboxgl.Marker({ color: "#625f60", scale: 0.8 })
+      const el = document.createElement("div");
+      el.className = "isochrone-character-marker";
+
+      const img = document.createElement("img");
+      img.src = marker.characterImage;
+      img.alt = marker.label;
+      el.appendChild(img);
+
+      const pin = new mapboxgl.Marker({ element: el })
         .setLngLat([marker.longitude, marker.latitude])
         .addTo(map.current!);
 

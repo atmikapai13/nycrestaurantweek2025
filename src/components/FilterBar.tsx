@@ -617,6 +617,7 @@ export default function FilterBar() {
           ref={filterBarRef}
           className={`filter-row ${isExpanded ? "" : "hidden"}`}
         >
+          {/* Restaurant Week filter - commented out until next Restaurant Week
           <button
             className={`filter-pill-base restaurant-week-button ${
               restaurantWeekActive ? "active" : ""
@@ -626,6 +627,7 @@ export default function FilterBar() {
             <span className="new-badge">NEW</span>
             Restaurant Week
           </button>
+          */}
 
           <FilterDropdown
             label={
@@ -751,6 +753,7 @@ export default function FilterBar() {
             onChange={(values) => handleFilterChange("Cuisine", values)}
           />
 
+          {/* Prix Fixe filters - commented out until next Restaurant Week
           {restaurantWeekActive && (
             <>
               <button
@@ -771,6 +774,7 @@ export default function FilterBar() {
               />
             </>
           )}
+          */}
 
           {(Object.keys(activeFilters).length > 0 ||
             restaurantWeekActive ||

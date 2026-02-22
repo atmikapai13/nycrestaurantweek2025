@@ -44,6 +44,7 @@ export interface GeocodedMarker {
   longitude: number;
   label: string; // The query or formatted address
   color: string; // Marker color to match isochrone
+  characterImage: string; // Character image path (e.g. "/characters/collette.png")
   messageId?: string; // Track which message created this marker (for visibility toggling)
 }
 

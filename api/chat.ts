@@ -17,6 +17,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import type { Restaurant } from "../src/types/restaurant.js";
+import { expandNYCSlang } from "../src/utils/nycSlang.js";
 import { GeometryCache } from "./utils/geometryOptimizer.js";
 import { point, booleanPointInPolygon } from "@turf/turf";
 import type { Feature, Polygon, MultiPolygon } from "geojson";
@@ -937,6 +938,9 @@ ${spatialReference}
 
 Available Tools for analysis "${analysisId}":${toolInstructions}
 
+### GEOCODING
+Append ", Manhattan, New York" to all geocode queries for accuracy.
+
 ### ISOCHRONE
 Default 15min if time not given; ask user for mode of transit always if not specified.
 Modes: walk→"walking" | subway/transit/bus →"transit" | bike→"cycling" | car/uber→"driving"
@@ -1258,6 +1262,16 @@ Never mention GEO_REF IDs, table UUIDs, or internal mechanics to users.`;
     ? {
         ...optimizedTools.geocode,
         execute: async (args: Record<string, unknown>) => {
+          // Expand NYC slang/abbreviations in the query before geocoding
+          const queryKey = 'address' in args ? 'address' : 'query' in args ? 'query' : 'location' in args ? 'location' : null;
+          if (queryKey && typeof args[queryKey] === 'string') {
+            const original = args[queryKey] as string;
+            args = { ...args, [queryKey]: expandNYCSlang(original) };
+            if (args[queryKey] !== original) {
+              console.log(`📍 geocode: expanded "${original}" → "${args[queryKey]}"`);
+            }
+          }
+
           // Call original geocode
           const result = await (optimizedTools.geocode as any).execute(args);
 

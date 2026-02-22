@@ -658,17 +658,20 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                 if (geocodeResult.results && geocodeResult.results.length > 0) {
                   const firstResult = geocodeResult.results[0];
                   if (firstResult.latitude && firstResult.longitude) {
-                    // Count existing geocoded markers to determine color
+                    // Count existing geocoded markers to determine color and character
                     // This works because markers are cleared on new queries
                     const isochoneColors = ["#FF69B4", "#4169E1"]; // Pink for person 1, Blue for person 2
+                    const characterImages = ["/characters/collette.png", "/characters/anton.png", "/characters/skinner.png"];
                     const currentCount = geocodedMarkers.length;
                     const color = isochoneColors[currentCount % isochoneColors.length];
+                    const characterImage = characterImages[currentCount % characterImages.length];
 
                     addGeocodedMarker({
                       latitude: firstResult.latitude,
                       longitude: firstResult.longitude,
                       label: geocodeResult.query || firstResult.formatted_address || "Location",
                       color,
+                      characterImage,
                       messageId: msg.id, // Link to message for visibility toggling
                     });
                   }
@@ -794,7 +797,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
                 console.log("🗺️ Using MapContext to add layers");
                 addLayers(layers, messageId);
-                clearGeocodedMarkers(); // Remove center markers once isochrones are rendered
+                // clearGeocodedMarkers(); // Keep center markers visible after isochrones render
 
                 console.log(
                   `📌 Added ${layers.length} layers for message ${messageId}`
@@ -806,7 +809,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                   "🗺️ Using MapContext to add layers (no intersection)"
                 );
                 addLayers(layers, messageId);
-                clearGeocodedMarkers(); // Remove center markers once isochrones are rendered
+                // clearGeocodedMarkers(); // Keep center markers visible after isochrones render
 
                 console.log(
                   `📌 Added ${layers.length} layers for message ${messageId}`
@@ -856,7 +859,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
               console.log("🗺️ Using MapContext to add single layer");
               addLayers([singleLayer], messageId);
-              clearGeocodedMarkers(); // Remove center markers once isochrone is rendered
+              // clearGeocodedMarkers(); // Keep center markers visible after isochrone renders
 
               console.log(
                 `📌 Added single isochrone layer ${layerId} for message ${messageId}`

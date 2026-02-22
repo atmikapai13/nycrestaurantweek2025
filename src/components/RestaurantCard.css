@@ -113,6 +113,11 @@
   color: #000000;
 }
 
+.tag-resweek {
+  background-color: rgba(180, 130, 240, 0.35);
+  color: #000000;
+}
+
 .tag-icon {
   width: 14px;
   height: 14px;

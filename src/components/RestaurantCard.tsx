@@ -264,7 +264,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
       {/* Accordions wrapper - always visible when not collapsible, or when expanded */}
       {(!collapsible || isAccordionSectionOpen) && (
         <>
-      {/* Restaurant Week Winter 2026 Accordion */}
+      {/* Restaurant Week Winter 2026 Accordion - commented out until next Restaurant Week
       {displayRestaurant.meal_types && displayRestaurant.meal_types.length > 0 && (
         <div className="restaurant-week-accordion">
           <button
@@ -325,6 +325,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
           </div>
         </div>
       )}
+      */}
 
       {/* Review Highlights Accordion */}
       {(displayRestaurant.yelp_review_highlights || displayRestaurant.reddit) && (
@@ -438,6 +439,11 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
                 <span className="tag tag-nyt-rank">
                   <img src="/nytimes.png" alt="" className="tag-icon" />
                   NYT Rank {displayRestaurant.nyttop100_rank}
+                </span>
+              )}
+              {displayRestaurant.participation_weeks2 && (
+                <span className="tag tag-resweek">
+                  Winter'25 NYC Res Week
                 </span>
               )}
             </div>
