@@ -51,6 +51,11 @@ function AppContent() {
     }
   }, [allRestaurants, setFavorites]);
 
+  // Warm up the serverless backend on page load to avoid cold-start delay
+  useEffect(() => {
+    fetch("/api/chat").catch(() => {});
+  }, []);
+
   // iOS Safari URL bar collapse trick - scroll by 1px on load to trigger collapse
   useEffect(() => {
     const isMobile = window.innerWidth <= 768;

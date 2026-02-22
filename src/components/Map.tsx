@@ -488,7 +488,7 @@ export default function Map({
           },
           paint: {
             "line-color": layer.strokeColor,
-            "line-width": 2,
+            "line-width": 1,
             "line-opacity": 0.4,
           },
         });

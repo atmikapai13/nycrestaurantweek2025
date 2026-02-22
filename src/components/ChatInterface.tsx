@@ -219,19 +219,21 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       {
         label: "By Area",
         type: "guided" as const,
-        remiResponse: "<strong>Where are you?</strong> Tell me how far you're willing to travel, and I can recommend restaurants within your vicinity. \n\n*e.g. I'm by Roosevelt Island Tramway manhattan side. I'd like to find happy hour spots within 10 min walk from me.*",
+        remiResponse: "<strong>Where are you?</strong> Tell me how far you're willing to travel, and I can recommend restaurants within your vicinity. \n\n*e.g. I'm by Soho. I'd like to find happy hour spots within 10 min walk from me.*",
+        example: "I'm by Soho. I'd like to find happy hour spots within 10 min walk from me.",
       },
       {
         label: "By Midpoint",
         type: "guided" as const,
         remiResponse:
           "<strong>Meeting up with a friend?</strong> Tell me where you both are, and I'll find restaurants in between! \n\n*e.g. I'm by AMC Times Square, and my friend is at One Manhattan West. We can travel 15 minutes by subway. Find spots between us, Remi.*",
-        
+        example: "I'm by AMC Times Square, and my friend is at One Manhattan West. We can travel 15 minutes by subway. Find spots between us, Remi.",
       },
       {
         label: "By Vibes",
         type: "guided" as const,
-        remiResponse: "<strong>Going for a vibe?</strong> I can find:\n\n• Happy hour spots\n• Cozy date night places\n• Vegan-friendly Restaurant Week deals",
+        remiResponse: "<strong>Going for a vibe?</strong> I can find:\n\n• Happy hour spots\n• Cozy date night places\n• Vegan-friendly Restaurant Week deals\n\n*e.g. Find me cozy date night spots, Remi.*",
+        example: "Find me cozy date night spots, Remi.",
       },
     ];
 
@@ -430,6 +432,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
     // Track processed tool calls to avoid duplicates
     const processedToolCallIds = useRef<Set<string>>(new Set());
+    const guidedExamplesRef = useRef<Map<string, string>>(new Map());
 
     const [input, setInput] = useState("");
     const [isListening, setIsListening] = useState(false);
@@ -1143,7 +1146,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
     };
 
     // Handle guided suggestions where Remi asks a question
-    const handleGuidedSuggestion = (remiResponse: string) => {
+    const handleGuidedSuggestion = (remiResponse: string, example?: string) => {
       // Clear restaurant cards when starting a new guided conversation
       setCustomMessages([]);
 
@@ -1153,8 +1156,12 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
         setDrawerHeight(55);
       }
 
+      const msgId = `guided-${Date.now()}`;
+      if (example) {
+        guidedExamplesRef.current.set(msgId, example);
+      }
       const guidedMessage = {
-        id: `guided-${Date.now()}`,
+        id: msgId,
         role: "assistant" as const,
         content: remiResponse,
         createdAt: new Date(),
@@ -1500,14 +1507,26 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
                                   return deduplicatedParts.map((part, pIdx: number) => {
                                   if (isTextPart(part)) {
+                                    const tryItExample = guidedExamplesRef.current.get(msg.id);
                                     return (
-                                      <div
-                                        key={pIdx}
-                                        className="message-content"
-                                        dangerouslySetInnerHTML={{
-                                          __html: linkifyText(part.text),
-                                        }}
-                                      />
+                                      <div key={pIdx}>
+                                        <div
+                                          className="message-content"
+                                          dangerouslySetInnerHTML={{
+                                            __html: linkifyText(part.text),
+                                          }}
+                                        />
+                                        {tryItExample && (
+                                          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                            <button
+                                              className="try-it-button"
+                                              onClick={() => handleSend(tryItExample)}
+                                            >
+                                              Test it!
+                                            </button>
+                                          </div>
+                                        )}
+                                      </div>
                                     );
                                   } else if (
                                     isToolInvocationPart(part) ||
@@ -1766,7 +1785,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                         key={suggestionIdx}
                                         className="suggestion-pill"
                                         onClick={() => {
-                                          handleGuidedSuggestion(suggestion.remiResponse);
+                                          handleGuidedSuggestion(suggestion.remiResponse, suggestion.example);
                                         }}
                                       >
                                         {suggestion.label}

@@ -174,6 +174,10 @@ const google = createGoogleGenerativeAI({
   apiKey: getGoogleApiKey(),
 });
 
+// Warm-up: GET request to /api/chat warms the serverless function
+app.get("/", (c) => c.text("ok"));
+app.get("/*", (c) => c.text("ok"));
+
 /**
  * POST /chat
  *
