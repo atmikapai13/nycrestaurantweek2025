@@ -90,9 +90,10 @@ const NYC_SLANG_MAP: Record<string, string> = {
   'staten island': 'Staten Island',
 
   // General NYC references
-  'nyc': 'New York City',
-  'new york': 'New York City',
-  'manhattan': 'Manhattan',
+  // NOTE: Do NOT add 'new york', 'manhattan', 'nyc' here — they corrupt
+  // geocode queries that end with ", Manhattan, New York" by cascading
+  // into already-expanded terms (e.g. "nyu" → "New York University" →
+  // "New York City University").
   'downtown': 'Downtown Manhattan',
   'uptown': 'Uptown Manhattan',
   'midtown west': 'Midtown West',

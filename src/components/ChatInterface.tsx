@@ -319,7 +319,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       "Isochrones support walking, biking, transit, or driving—just tell me your preferred mode.",
       "Use the '500+ Reviews' in filter bar to find crowd-tested favorites.",
       "Ask me to find restaurants between two places—just give two addresses and travel times!",
-      "Some restaurants have published their prix fixe menus for Restaurant Week—use 'Has Prix Fixe Menu' in filter bar to find them!",
       "Enjoying NYC Eats? Buy my creator a <a href=\"https://buymeacoffee.com/atmikapai\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #FF69B4; text-decoration: underline;\">coffee</a>. Cheers!",
     ];
 

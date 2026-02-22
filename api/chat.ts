@@ -1257,6 +1257,73 @@ Never mention GEO_REF IDs, table UUIDs, or internal mechanics to users.`;
       }
     : undefined;
 
+  // Manhattan neighborhood coordinates for local geocoding fallback.
+  // The MCP geocoder often returns Manhattan's centroid (Central Park) for
+  // neighborhood queries, so we resolve these locally.
+  const MANHATTAN_NEIGHBORHOODS: Record<string, { lat: number; lng: number; name: string }> = {
+    'east village': { lat: 40.7265, lng: -73.9815, name: 'East Village' },
+    'west village': { lat: 40.7336, lng: -73.9999, name: 'West Village' },
+    'greenwich village': { lat: 40.7336, lng: -73.9975, name: 'Greenwich Village' },
+    'lower east side': { lat: 40.7150, lng: -73.9843, name: 'Lower East Side' },
+    'upper west side': { lat: 40.7870, lng: -73.9754, name: 'Upper West Side' },
+    'upper east side': { lat: 40.7736, lng: -73.9566, name: 'Upper East Side' },
+    'chelsea': { lat: 40.7465, lng: -74.0014, name: 'Chelsea' },
+    'soho': { lat: 40.7233, lng: -73.9985, name: 'SoHo' },
+    'noho': { lat: 40.7258, lng: -73.9927, name: 'NoHo' },
+    'nolita': { lat: 40.7230, lng: -73.9950, name: 'NoLita' },
+    'tribeca': { lat: 40.7163, lng: -74.0086, name: 'TriBeCa' },
+    'chinatown': { lat: 40.7158, lng: -73.9970, name: 'Chinatown' },
+    'little italy': { lat: 40.7191, lng: -73.9973, name: 'Little Italy' },
+    'financial district': { lat: 40.7075, lng: -74.0089, name: 'Financial District' },
+    'fidi': { lat: 40.7075, lng: -74.0089, name: 'Financial District' },
+    'midtown': { lat: 40.7549, lng: -73.9840, name: 'Midtown Manhattan' },
+    'midtown east': { lat: 40.7549, lng: -73.9712, name: 'Midtown East' },
+    'midtown west': { lat: 40.7590, lng: -73.9937, name: 'Midtown West' },
+    "hell's kitchen": { lat: 40.7638, lng: -73.9918, name: "Hell's Kitchen" },
+    'hells kitchen': { lat: 40.7638, lng: -73.9918, name: "Hell's Kitchen" },
+    'murray hill': { lat: 40.7479, lng: -73.9757, name: 'Murray Hill' },
+    'gramercy': { lat: 40.7382, lng: -73.9860, name: 'Gramercy' },
+    'gramercy park': { lat: 40.7382, lng: -73.9860, name: 'Gramercy Park' },
+    'flatiron': { lat: 40.7411, lng: -73.9897, name: 'Flatiron District' },
+    'flatiron district': { lat: 40.7411, lng: -73.9897, name: 'Flatiron District' },
+    'union square': { lat: 40.7359, lng: -73.9911, name: 'Union Square' },
+    'times square': { lat: 40.7580, lng: -73.9855, name: 'Times Square' },
+    'harlem': { lat: 40.8116, lng: -73.9465, name: 'Harlem' },
+    'east harlem': { lat: 40.7957, lng: -73.9425, name: 'East Harlem' },
+    'washington heights': { lat: 40.8417, lng: -73.9394, name: 'Washington Heights' },
+    'inwood': { lat: 40.8677, lng: -73.9212, name: 'Inwood' },
+    'morningside heights': { lat: 40.8100, lng: -73.9626, name: 'Morningside Heights' },
+    'hudson yards': { lat: 40.7542, lng: -74.0023, name: 'Hudson Yards' },
+    'battery park city': { lat: 40.7115, lng: -74.0154, name: 'Battery Park City' },
+    'battery park': { lat: 40.7033, lng: -74.0170, name: 'Battery Park' },
+    'stuyvesant town': { lat: 40.7318, lng: -73.9779, name: 'Stuyvesant Town' },
+    "kip's bay": { lat: 40.7425, lng: -73.9801, name: "Kip's Bay" },
+    'koreatown': { lat: 40.7479, lng: -73.9870, name: 'Koreatown' },
+    'two bridges': { lat: 40.7108, lng: -73.9942, name: 'Two Bridges' },
+    'meatpacking': { lat: 40.7408, lng: -74.0078, name: 'Meatpacking District' },
+    'meatpacking district': { lat: 40.7408, lng: -74.0078, name: 'Meatpacking District' },
+    'nyu': { lat: 40.7295, lng: -73.9965, name: 'NYU' },
+    'columbia': { lat: 40.8075, lng: -73.9626, name: 'Columbia University' },
+    'downtown': { lat: 40.7128, lng: -74.0060, name: 'Downtown Manhattan' },
+    'uptown': { lat: 40.8100, lng: -73.9553, name: 'Uptown Manhattan' },
+    'columbus circle': { lat: 40.7681, lng: -73.9819, name: 'Columbus Circle' },
+    'lincoln center': { lat: 40.7725, lng: -73.9835, name: 'Lincoln Center' },
+    'world trade center': { lat: 40.7127, lng: -74.0134, name: 'World Trade Center' },
+    'wtc': { lat: 40.7127, lng: -74.0134, name: 'World Trade Center' },
+    'penn station': { lat: 40.7506, lng: -73.9935, name: 'Penn Station' },
+    'grand central': { lat: 40.7527, lng: -73.9772, name: 'Grand Central Terminal' },
+  };
+
+  // Try to resolve a geocode query from the local neighborhood lookup.
+  // Strips common suffixes like ", Manhattan, New York" before matching.
+  function resolveNeighborhoodLocally(query: string): { lat: number; lng: number; name: string } | null {
+    const cleaned = query
+      .replace(/,?\s*(manhattan|new york|ny|nyc|new york city|united states|usa|us)\b/gi, '')
+      .trim()
+      .toLowerCase();
+    return MANHATTAN_NEIGHBORHOODS[cleaned] ?? null;
+  }
+
   // Wrap geocode to validate coordinates are within Manhattan
   const wrappedGeocode = optimizedTools.geocode
     ? {
@@ -1272,7 +1339,34 @@ Never mention GEO_REF IDs, table UUIDs, or internal mechanics to users.`;
             }
           }
 
-          // Call original geocode
+          // Check local neighborhood lookup first — the MCP geocoder often
+          // returns Manhattan's centroid for neighborhood-level queries.
+          const rawQuery = (queryKey ? args[queryKey] : null) as string | null;
+          if (rawQuery) {
+            const local = resolveNeighborhoodLocally(rawQuery);
+            if (local) {
+              console.log(`📍 geocode: resolved locally "${rawQuery}" → ${local.name} (${local.lat}, ${local.lng})`);
+              return {
+                structuredContent: {
+                  query: rawQuery,
+                  results: [{
+                    formattedAddress: `${local.name}, Manhattan, New York, NY`,
+                    latitude: local.lat,
+                    longitude: local.lng,
+                    confidence: 1.0,
+                    country: "United States",
+                    state: "New York",
+                    city: "New York",
+                    postcode: null,
+                  }],
+                  resultCount: 1,
+                },
+                isError: false,
+              };
+            }
+          }
+
+          // Call original geocode for specific addresses / landmarks
           const result = await (optimizedTools.geocode as any).execute(args);
 
           // Log the full result to understand its structure
