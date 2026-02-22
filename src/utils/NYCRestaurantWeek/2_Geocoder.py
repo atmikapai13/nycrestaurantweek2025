@@ -1,4 +1,5 @@
 import json
+import os
 import requests
 import time
 import threading
@@ -143,7 +144,7 @@ class RestaurantCoordinateExtractor:
         """Geocode address using Mapbox Geocoding API"""
         import urllib.parse
 
-        MAPBOX_TOKEN = 'pk.eyJ1IjoiYXRtaWthcGFpMTMiLCJhIjoiY21idHR4eTJpMDdhMjJsb20zNmZheTZ6ayJ9.d_bQSBzesyiCUMA-YHRoIA'
+        MAPBOX_TOKEN = os.environ.get('MAPBOX_TOKEN', '')
         MANHATTAN_BBOX = '-74.02,40.68,-73.91,40.88'  # [minLon,minLat,maxLon,maxLat]
         NYC_CENTER = '-73.9712,40.7831'  # [lon,lat]
 

@@ -8,8 +8,7 @@ import { MapLegend } from "./MapLegend";
 import { useMap, hasAnyAward, type IsochroneLayer, type GeocodedMarker } from "../contexts/MapContext";
 
 // Set your Mapbox access token
-mapboxgl.accessToken =
-  "pk.eyJ1IjoiYXRtaWthcGFpMTMiLCJhIjoiY21idHR4eTJpMDdhMjJsb20zNmZheTZ6ayJ9.d_bQSBzesyiCUMA-YHRoIA";
+mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
 // Compare two GeoJSON polygons for equality
 const arePolygonsEqual = (
