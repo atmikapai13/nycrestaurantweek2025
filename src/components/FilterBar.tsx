@@ -630,6 +630,39 @@ export default function FilterBar() {
           */}
 
           <FilterDropdown
+            label="$$$"
+            icon=""
+            options={priceOptions}
+            selectedValues={activeFilters["Price"] || []}
+            onChange={(values) => handleFilterChange("Price", values)}
+          />
+
+          <FilterDropdown
+            label="★★★"
+            icon=""
+            options={ratingOptions}
+            selectedValues={activeFilters["Yelp Rating"] || []}
+            onChange={(values) => handleFilterChange("Yelp Rating", values)}
+          />
+
+          <button
+            className={`filter-pill-base high-review-count-button ${
+              highReviewCountActive ? "active" : ""
+            }`}
+            onClick={onHighReviewCountToggle}
+          >
+            500+ Reviews
+          </button>
+
+          <FilterDropdown
+            label="Cuisine"
+            icon=""
+            options={cuisineOptions}
+            selectedValues={activeFilters["Cuisine"] || []}
+            onChange={(values) => handleFilterChange("Cuisine", values)}
+          />
+
+          <FilterDropdown
             label={
               <span
                 style={{ display: "flex", alignItems: "center", gap: "4px" }}
@@ -719,39 +752,6 @@ export default function FilterBar() {
               </div>
             )}
           </div>
-
-          <FilterDropdown
-            label="$$$"
-            icon=""
-            options={priceOptions}
-            selectedValues={activeFilters["Price"] || []}
-            onChange={(values) => handleFilterChange("Price", values)}
-          />
-
-          <FilterDropdown
-            label="★★★"
-            icon=""
-            options={ratingOptions}
-            selectedValues={activeFilters["Yelp Rating"] || []}
-            onChange={(values) => handleFilterChange("Yelp Rating", values)}
-          />
-
-          <button
-            className={`filter-pill-base high-review-count-button ${
-              highReviewCountActive ? "active" : ""
-            }`}
-            onClick={onHighReviewCountToggle}
-          >
-            500+ Reviews
-          </button>
-
-          <FilterDropdown
-            label="Cuisine"
-            icon=""
-            options={cuisineOptions}
-            selectedValues={activeFilters["Cuisine"] || []}
-            onChange={(values) => handleFilterChange("Cuisine", values)}
-          />
 
           {/* Prix Fixe filters - commented out until next Restaurant Week
           {restaurantWeekActive && (
