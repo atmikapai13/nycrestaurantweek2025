@@ -567,6 +567,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       }
 
       // 1. Handle SQL results and other non-isoline tools
+      let geocodeCountThisRender = 0;
       aiMessages.forEach((msg) => {
         if (!msg.parts) return;
 
@@ -657,19 +658,17 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                 if (geocodeResult.results && geocodeResult.results.length > 0) {
                   const firstResult = geocodeResult.results[0];
                   if (firstResult.latitude && firstResult.longitude) {
-                    // Count existing geocoded markers to determine color and character
-                    // This works because markers are cleared on new queries
-                    const isochoneColors = ["#FF69B4", "#4169E1"]; // Pink for person 1, Blue for person 2
+                    // Cycle characters using existing markers + ones added this render pass
                     const characterImages = ["/characters/collette.png", "/characters/anton.png", "/characters/skinner.png"];
-                    const currentCount = geocodedMarkers.length;
-                    const color = isochoneColors[currentCount % isochoneColors.length];
+                    const currentCount = geocodedMarkers.length + geocodeCountThisRender;
+                    geocodeCountThisRender++;
                     const characterImage = characterImages[currentCount % characterImages.length];
 
                     addGeocodedMarker({
                       latitude: firstResult.latitude,
                       longitude: firstResult.longitude,
                       label: geocodeResult.query || firstResult.formatted_address || "Location",
-                      color,
+                      color: ISOCHRONE_COLORS.fill,
                       characterImage,
                       messageId: msg.id, // Link to message for visibility toggling
                     });
