@@ -10,6 +10,60 @@ import { useMap, hasAnyAward, type IsochroneLayer, type GeocodedMarker } from ".
 // Set your Mapbox access token
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
+// Cuisine → emoji mapping (Cooking Mama style)
+const CUISINE_EMOJI: Record<string, string> = {
+  'Italian': '🍝',
+  'Japanese / Sushi': '🍣',
+  'French': '🥐',
+  'Mexican': '🌮',
+  'Steakhouse': '🥩',
+  'Chinese': '🥡',
+  'Korean': '🍱',
+  'Indian': '🍛',
+  'Thai': '🥘',
+  'Seafood': '🦐',
+  'Mediterranean': '🫒',
+  'Greek': '🥙',
+  'American (New)': '🍔',
+  'American (Traditional)': '🍔',
+  'Pizza': '🍕',
+  'Vietnamese': '🍜',
+  'Asian Fusion': '🥢',
+  'Gastropub': '🍺',
+  'Soul Food / Southern': '🍗',
+  'Spanish': '🥘',
+  'Middle Eastern': '🧆',
+  'Caribbean': '🥥',
+  'Brazilian': '🥩',
+  'Turkish': '🧆',
+  'Belgian': '🧇',
+  'Eastern European': '🥟',
+  'Ukrainian': '🥟',
+  'Irish': '☘️',
+  'British': '🫖',
+  'Austrian': '🥨',
+  'African': '🍲',
+  'Cajun/Creole': '🦞',
+  'Cuban': '🫔',
+  'Pan-Asian': '🥢',
+  'Latin American': '🫔',
+  'Peruvian': '🐟',
+  'Argentinian': '🥩',
+  'Colombian': '🫔',
+  'Puerto Rican': '🍛',
+  'Barbecue': '🍖',
+  'Continental': '🍷',
+  'Eclectic': '🍴',
+};
+const FALLBACK_EMOJI = '🍽️';
+
+// Emoji teardrop background color (Cooking Mama beige cream)
+const EMOJI_BG_COLOR = '#FFFAEA';
+
+// Zoom threshold for emoji mode (mobile shows earlier)
+const EMOJI_ZOOM_THRESHOLD_DESKTOP = 15;
+const EMOJI_ZOOM_THRESHOLD_MOBILE = 14.5;
+
 // Compare two GeoJSON polygons for equality
 const arePolygonsEqual = (
   poly1:
@@ -55,6 +109,9 @@ export default function Map({
   const chatInterfaceRef = useRef<ChatInterfaceHandle>(null);
   const geocodedPins = useRef<mapboxgl.Marker[]>([]); // Native teardrop pins for geocoded locations
   const pendingMarkerUpdate = useRef<number | null>(null); // Throttle zoom marker updates
+  const currentMarkerMode = useRef<'dot' | 'emoji'>('dot'); // Track marker display mode
+  const markerElBySlug = useRef<globalThis.Map<string, HTMLDivElement>>(new globalThis.Map()); // slug → marker element
+  const recommendedSlugs = useRef<Set<string>>(new Set()); // Remi-suggested restaurants
 
   // Use MapContext for state and actions
   const {
@@ -78,15 +135,20 @@ export default function Map({
 
   // Refs for tracking previous isochrone states to prevent unnecessary re-renders
   const previousLayers = useRef<IsochroneLayer[]>([]);
+  const selectedRestaurantRef = useRef(selectedRestaurant); // Avoid stale closures in click handlers
 
-  // Track selected restaurant for purple marker indicator
-  // Now managed by MapContext.selectedRestaurant
+  // Keep selectedRestaurantRef in sync (avoids stale closures in click handlers)
+  useEffect(() => {
+    selectedRestaurantRef.current = selectedRestaurant;
+  }, [selectedRestaurant]);
 
   // Function to reset map state (isochrones and view)
   const resetMapView = () => {
     // Layer clearing is now handled by MapContext.clearAllLayers()
     // Clear selected restaurant
     setSelectedRestaurant(null);
+    // Clear recommended slugs
+    recommendedSlugs.current.clear();
     // Clear geocoded location pins
     clearGeocodedMarkers();
 
@@ -138,6 +200,25 @@ export default function Map({
 
   // Implement onMapFocus handler for semantic search results
   const handleMapFocus = (restaurantSlugs: string[]) => {
+    // Directly flip recommended markers to emoji teardrops
+    restaurantSlugs.forEach((slug) => {
+      const el = markerElBySlug.current.get(slug);
+      if (el) {
+        el.classList.add("emoji-mode");
+        el.style.width = "36px";
+        el.style.height = "42px";
+        el.style.borderRadius = "";
+        el.style.backgroundColor = EMOJI_BG_COLOR;
+        const dotColor = el.getAttribute("data-dot-color") || "#928f8e";
+        el.style.border = dotColor === "#928f8e" ? "" : `2.5px solid ${dotColor}`;
+        const emojiSpan = el.querySelector(".marker-emoji") as HTMLElement | null;
+        if (emojiSpan) emojiSpan.style.display = "";
+        // Bring to front
+        const mapboxContainer = el.closest('.mapboxgl-marker') as HTMLElement | null;
+        if (mapboxContainer) mapboxContainer.style.zIndex = "5";
+      }
+    });
+
     // Filter allRestaurants to only include the semantic search results
     const focusedRestaurants = allRestaurants.filter((r) =>
       restaurantSlugs.includes(r.slug)
@@ -210,6 +291,11 @@ export default function Map({
 
     const zoom = map.current.getZoom();
     const mobile = isMobile();
+    const emojiThreshold = mobile ? EMOJI_ZOOM_THRESHOLD_MOBILE : EMOJI_ZOOM_THRESHOLD_DESKTOP;
+    const shouldBeEmoji = zoom >= emojiThreshold;
+
+    // Update mode ref
+    currentMarkerMode.current = shouldBeEmoji ? 'emoji' : 'dot';
 
     // Batch all calculations first (reads) - prevents layout thrashing
     const updates: Array<{
@@ -239,11 +325,38 @@ export default function Map({
     // Then apply all styles (writes) - no interleaved reads
     const padding = mobile ? "8px" : "6px";
     updates.forEach(({ el, size, isSelected, wrapper }) => {
-      el.style.width = `${size}px`;
-      el.style.height = `${size}px`;
-      el.style.border = isSelected ? "1.5px solid white" : "1px solid white";
-      if (wrapper) {
-        wrapper.style.padding = padding;
+      if (shouldBeEmoji || isSelected) {
+        // Emoji teardrop mode — or selected at any zoom
+        el.classList.add("emoji-mode");
+        el.classList.remove("emoji-selected");
+        el.style.width = "36px";
+        el.style.height = "42px";
+        el.style.borderRadius = "";  // Let CSS handle it
+        el.style.backgroundColor = EMOJI_BG_COLOR;
+        const dotColor = el.getAttribute("data-dot-color") || "#928f8e";
+        el.style.border = dotColor === "#928f8e" ? "" : `2.5px solid ${dotColor}`;
+        // Show emoji
+        const emojiSpan = el.querySelector(".marker-emoji") as HTMLElement | null;
+        if (emojiSpan) emojiSpan.style.display = "";
+        if (wrapper) {
+          wrapper.style.padding = "4px";
+        }
+      } else {
+        // Dot mode (non-selected, zoom < 15)
+        const dotColor = el.getAttribute("data-dot-color") || "#928f8e";
+        el.classList.remove("emoji-mode");
+        el.classList.remove("emoji-selected");
+        el.style.width = `${size}px`;
+        el.style.height = `${size}px`;
+        el.style.borderRadius = "50%";
+        el.style.backgroundColor = dotColor;
+        el.style.border = "1px solid white";
+        // Hide emoji
+        const emojiSpan = el.querySelector(".marker-emoji") as HTMLElement | null;
+        if (emojiSpan) emojiSpan.style.display = "none";
+        if (wrapper) {
+          wrapper.style.padding = padding;
+        }
       }
     });
   };
@@ -563,7 +676,7 @@ export default function Map({
     }
   }, [isochroneLayers, layerVisibilityMap]);
 
-  // Update markers when restaurants change
+  // Update markers when restaurants change (NOT on selection change)
   useEffect(() => {
     if (!map.current) return;
 
@@ -571,6 +684,7 @@ export default function Map({
     markers.current.forEach((marker) => marker.remove());
     markers.current = [];
     markerElements.current = [];
+    markerElBySlug.current.clear();
 
     // Check if any filter modes are active
     const hasActiveFilters = favoritesActive || awardsActive;
@@ -587,10 +701,9 @@ export default function Map({
     }
 
     // Sort restaurants so higher priority markers render last (on top)
-    // Order: default (0) → awards (1) → favorites (2) → selected (3)
+    // Order: default (0) → awards (1) → favorites (2)
     const sortedRestaurants = [...restaurantsToRender].sort((a, b) => {
       const getPriority = (r: Restaurant) => {
-        if (selectedRestaurant?.slug === r.slug) return 3;
         if (favorites.includes(r.name)) return 2;
         if (hasAnyAward(r)) return 1;
         return 0;
@@ -601,7 +714,6 @@ export default function Map({
     // Render restaurants with coordinates
     sortedRestaurants.forEach((restaurant) => {
       if (restaurant.latitude && restaurant.longitude) {
-        const isSelected = selectedRestaurant?.slug === restaurant.slug;
         const isFavorite = favorites.includes(restaurant.name);
         const isAwardWinner = hasAnyAward(restaurant);
 
@@ -610,85 +722,106 @@ export default function Map({
         let zIndex = 0
 
         // COLOR PRIORITY: Pink (favorites) > Red (awards) > Grey (default)
-        // Selected markers keep their original color and become teardrops
         if (isFavorite) {
           markerColor = "#ff67b2"; // Pink
-          baseMarkerSize = 12;     // Larger size for favorites
-          zIndex = isSelected ? 4 : 3;
+          baseMarkerSize = 12;
+          zIndex = 3;
         } else if (isAwardWinner) {
           markerColor = "#c81224"; // Red
-          baseMarkerSize = 12;     // Same size as favorites
-          zIndex = isSelected ? 4 : 2;
-        } else if (isSelected) {
-          zIndex = 4; // Grey teardrop when selected
+          baseMarkerSize = 12;
+          zIndex = 2;
         }
 
         let marker: mapboxgl.Marker;
         let markerEl: HTMLDivElement | null = null;
 
-        if (isSelected) {
-          // Selected restaurant: use native Mapbox teardrop marker with its original color
-          marker = new mapboxgl.Marker({ color: markerColor, scale: 0.75 })
-            .setLngLat([restaurant.longitude, restaurant.latitude])
-            .addTo(map.current!);
+        // All restaurants use custom DOM markers (emoji-capable)
+        const markerWrapper = document.createElement("div");
+        markerWrapper.style.padding = isMobile() ? "10px" : "8px";
+        markerWrapper.style.display = "flex";
+        markerWrapper.style.alignItems = "center";
+        markerWrapper.style.justifyContent = "center";
+        markerWrapper.style.cursor = "pointer";
 
-          // Set high z-index for selected marker
-          marker.getElement().style.zIndex = "5";
-          marker.getElement().style.cursor = "pointer";
+        // Determine cuisine emoji
+        const cuisineEmoji = CUISINE_EMOJI[restaurant.cuisine] || FALLBACK_EMOJI;
 
-          // Add click handler to deselect
-          marker.getElement().addEventListener("click", () => {
+        // Create the actual marker element
+        markerEl = document.createElement("div");
+        markerEl.className = "restaurant-marker";
+        markerEl.style.width = `${baseMarkerSize}px`;
+        markerEl.style.height = `${baseMarkerSize}px`;
+        markerEl.style.borderRadius = "50%";
+        markerEl.style.backgroundColor = markerColor;
+        markerEl.style.border = "1px solid white";
+        markerEl.style.boxShadow = "0 2px 4px rgba(0,0,0,0.2)";
+        markerEl.style.zIndex = zIndex.toString();
+
+        // Store data attributes for emoji mode
+        markerEl.setAttribute("data-cuisine-emoji", cuisineEmoji);
+        markerEl.setAttribute("data-dot-color", markerColor);
+        markerEl.setAttribute("data-slug", restaurant.slug);
+
+        // Add emoji span (hidden by default, shown at zoom ≥ 15)
+        const emojiSpan = document.createElement("span");
+        emojiSpan.className = "marker-emoji";
+        emojiSpan.textContent = cuisineEmoji;
+        emojiSpan.style.display = "none";
+        markerEl.appendChild(emojiSpan);
+
+        // Add star rating badge arcing above marker (hidden, shown on selection)
+        if (restaurant.yelp_rating) {
+          const starCount = Math.round(restaurant.yelp_rating);
+          const starBadge = document.createElement("div");
+          starBadge.className = "marker-star-badge";
+          // Position each star along an arc
+          const arcRadius = 30;
+          const totalArc = Math.min(starCount * 30, 140); // degrees of arc
+          const startAngle = 90 + totalArc / 2; // start from left side
+          for (let i = 0; i < starCount; i++) {
+            const star = document.createElement("span");
+            star.className = "marker-star";
+            star.textContent = '⭐';
+            const angle = startAngle - (starCount > 1 ? i * (totalArc / (starCount - 1)) : 0);
+            const rad = (angle * Math.PI) / 180;
+            const x = arcRadius * Math.cos(rad);
+            const y = -arcRadius * Math.sin(rad);
+            star.style.transform = `translate(${x}px, ${y}px)`;
+            starBadge.appendChild(star);
+          }
+          markerWrapper.appendChild(starBadge);
+        }
+
+        // Add the marker to the wrapper
+        markerWrapper.appendChild(markerEl);
+
+        // Store base size for dynamic resizing
+        markerEl.setAttribute("data-base-size", baseMarkerSize.toString());
+
+        // Create marker using the wrapper
+        marker = new mapboxgl.Marker(markerWrapper)
+          .setLngLat([restaurant.longitude, restaurant.latitude])
+          .addTo(map.current!);
+
+        // Add click handler (uses ref to avoid stale closure)
+        markerWrapper.addEventListener("click", () => {
+          if (selectedRestaurantRef.current?.slug === restaurant.slug) {
+            // Deselect
             setSelectedRestaurant(null);
-          });
-        } else {
-          // Non-selected: use circular marker with click area wrapper
-          const markerWrapper = document.createElement("div");
-          markerWrapper.style.padding = isMobile() ? "10px" : "8px";
-          markerWrapper.style.display = "flex";
-          markerWrapper.style.alignItems = "center";
-          markerWrapper.style.justifyContent = "center";
-          markerWrapper.style.cursor = "pointer";
-
-          // Create the actual marker element
-          markerEl = document.createElement("div");
-          markerEl.className = "restaurant-marker";
-          markerEl.style.width = `${baseMarkerSize}px`;
-          markerEl.style.height = `${baseMarkerSize}px`;
-          markerEl.style.borderRadius = "50%";
-          markerEl.style.backgroundColor = markerColor;
-          markerEl.style.border = "1px solid white";
-          markerEl.style.boxShadow = "0 2px 4px rgba(0,0,0,0.2)";
-          markerEl.style.zIndex = zIndex.toString();
-
-          // Add the marker to the wrapper
-          markerWrapper.appendChild(markerEl);
-
-          // Store base size for dynamic resizing
-          markerEl.setAttribute("data-base-size", baseMarkerSize.toString());
-
-          // Create marker using the wrapper
-          marker = new mapboxgl.Marker(markerWrapper)
-            .setLngLat([restaurant.longitude, restaurant.latitude])
-            .addTo(map.current!);
-
-          // Add click handler to the wrapper - show restaurant card in chat
-          markerWrapper.addEventListener("click", () => {
-            // Update selection state (triggers marker re-render)
+          } else {
+            // Select
             setSelectedRestaurant(restaurant);
-
-            // Call onRestaurantSelect to trigger zoom/focus effect
             onRestaurantSelect(restaurant);
-
-            // Add restaurant card to chat
             if (chatInterfaceRef.current) {
               chatInterfaceRef.current.addRestaurantCard(restaurant);
             }
-          });
-        }
+          }
+        });
 
         markers.current.push(marker);
         if (markerEl) {
           markerElements.current.push(markerEl);
+          markerElBySlug.current.set(restaurant.slug, markerEl);
         }
       }
     });
@@ -698,13 +831,45 @@ export default function Map({
   }, [
     filteredRestaurants,
     onRestaurantSelect,
-    selectedRestaurant,
     favoritesActive,
     awardsActive,
     favorites,
     setSelectedRestaurant,
     restaurantWeekActive,
   ]);
+
+  // Handle selection styling without recreating markers
+  useEffect(() => {
+    // Clear previous selection and reset z-index
+    markerElBySlug.current.forEach((el) => {
+      el.removeAttribute("data-is-selected");
+      const mapboxContainer = el.closest('.mapboxgl-marker') as HTMLElement | null;
+      if (mapboxContainer) {
+        mapboxContainer.style.zIndex = "";
+        // Hide star badge
+        const starBadge = mapboxContainer.querySelector('.marker-star-badge') as HTMLElement | null;
+        if (starBadge) starBadge.style.display = "none";
+      }
+    });
+
+    // Apply selection to new marker
+    if (selectedRestaurant) {
+      const el = markerElBySlug.current.get(selectedRestaurant.slug);
+      if (el) {
+        el.setAttribute("data-is-selected", "true");
+        const mapboxContainer = el.closest('.mapboxgl-marker') as HTMLElement | null;
+        if (mapboxContainer) {
+          mapboxContainer.style.zIndex = "10";
+          // Show star badge
+          const starBadge = mapboxContainer.querySelector('.marker-star-badge') as HTMLElement | null;
+          if (starBadge) starBadge.style.display = "block";
+        }
+      }
+    }
+
+    // Re-run marker sizing to apply/remove emoji-selected styling
+    updateMarkerSizes();
+  }, [selectedRestaurant]);
 
   // Zoom to selected restaurant when it changes
   useEffect(() => {
