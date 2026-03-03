@@ -1522,7 +1522,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                               className="try-it-button"
                                               onClick={() => handleSend(tryItExample)}
                                             >
-                                              Test it!
+                                              Test it↩
                                             </button>
                                           </div>
                                         )}
