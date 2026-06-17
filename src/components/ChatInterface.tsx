@@ -192,6 +192,13 @@ interface ChatInterfaceProps {
   onToggleFavorite?: (restaurantName: string) => void;
 }
 
+// Temporary kill-switch: the backend AI is offline, so Remi acknowledges that
+// he's out of the kitchen instead of sending requests to the API.
+// Set to false to bring the chatbot back online.
+const CHATBOT_DOWN = true;
+const CHATBOT_DOWN_MESSAGE =
+  "Oof — my kitchen is temporarily closed! 🍳 My sous-chef (the AI behind the scenes) has stepped out, so I can't whisk up recommendations right now. We're working to get NYC Eats back up and running soon.<br><br>In the meantime, you can still explore the map, browse restaurant markers, and favorite your spots. Merci for your patience — please check back shortly!";
+
 const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
   ({ onRestaurantSelect, onMapFocus, onToggleFavorite }, ref) => {
     // Use MapContext for data and state management
@@ -1189,6 +1196,21 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
         typeof textOverride === "string" ? textOverride : input.trim();
 
       if (!userMessage || isLoading) return;
+
+      // Chatbot is temporarily offline (backend AI unavailable). Instead of
+      // hitting the API, Remi acknowledges that he's out of the kitchen.
+      if (CHATBOT_DOWN) {
+        setInput("");
+        const downMessage = {
+          id: `down-${Date.now()}`,
+          role: "assistant" as const,
+          content: CHATBOT_DOWN_MESSAGE,
+          createdAt: new Date(),
+          parts: [{ type: "text" as const, text: CHATBOT_DOWN_MESSAGE }],
+        };
+        setMessages([...aiMessages, downMessage]);
+        return;
+      }
 
       // Dev shortcut: "/test" sends a random test prompt
       if (userMessage === "/test") {
