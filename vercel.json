@@ -1,0 +1,11 @@
+{
+  "redirects": [
+    { "source": "/", "destination": "/spring2026/", "permanent": false },
+    { "source": "/summer2025", "destination": "/summer2025/", "permanent": false },
+    { "source": "/spring2026", "destination": "/spring2026/", "permanent": false }
+  ],
+  "rewrites": [
+    { "source": "/summer2025/:path*", "destination": "https://nyceats-summer2025.vercel.app/:path*" },
+    { "source": "/spring2026/:path*", "destination": "https://nyceats-spring2026.vercel.app/:path*" }
+  ]
+}
