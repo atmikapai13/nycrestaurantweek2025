@@ -193,10 +193,9 @@ interface ChatInterfaceProps {
   onToggleFavorite?: (restaurantName: string) => void;
 }
 
-// Temporary kill-switch: the backend AI is offline, so Remi acknowledges that
-// he's out of the kitchen instead of sending requests to the API.
-// Set to false to bring the chatbot back online.
-const CHATBOT_DOWN = true;
+// Kill-switch for the backend AI. When true, Remi shows CHATBOT_DOWN_MESSAGE
+// instead of hitting the API. Set to true to take the chatbot offline again.
+const CHATBOT_DOWN = false;
 const CHATBOT_DOWN_MESSAGE =
   "Oof — my kitchen is temporarily closed! 🍳 My sous-chef (the AI behind the scenes) has stepped out, so I can't whisk up recommendations right now. We're working to get NYC Eats back up and running soon.<br><br>In the meantime, you can still explore the map, browse restaurant markers, and favorite your spots. Merci for your patience — please check back shortly!";
 
