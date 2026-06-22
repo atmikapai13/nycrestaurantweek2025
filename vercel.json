@@ -5,7 +5,7 @@
     { "source": "/spring2026", "destination": "/spring2026/", "permanent": false }
   ],
   "rewrites": [
-    { "source": "/summer2025/:path*", "destination": "https://nyceats-summer2025.vercel.app/:path*" },
-    { "source": "/spring2026/:path*", "destination": "https://nyceats-spring2026.vercel.app/:path*" }
+    { "source": "/summer2025/:path*", "destination": "https://nyceats-summer2025.vercel.app/summer2025/:path*" },
+    { "source": "/spring2026/:path*", "destination": "https://nyceats-spring2026.vercel.app/spring2026/:path*" }
   ]
 }
