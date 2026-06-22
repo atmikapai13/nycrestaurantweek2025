@@ -1,5 +1,8 @@
 import type { Restaurant } from '../types/restaurant'
 import './RestaurantCard.css'
+import michelinIcon from '../assets/MichelinStar.svg.png'
+import bibIcon from '../assets/bibgourmand.png'
+import nytIcon from '../assets/nytimes.png'
 
 interface RestaurantCardProps {
   restaurant: Restaurant | null
@@ -52,13 +55,13 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
       <h2 className="restaurant-name">
         {displayRestaurant.name}
         {displayRestaurant.michelin_award && ['ONE_STAR', 'TWO_STARS', 'THREE_STARS'].includes(displayRestaurant.michelin_award) && (
-          <img src={`${import.meta.env.BASE_URL}MichelinStar.svg.png`} alt="Michelin Star" className="michelin-star-inline" />
+          <img src={michelinIcon} alt="Michelin Star" className="michelin-star-inline" />
         )}
         {displayRestaurant.michelin_award === 'BIB_GOURMAND' && (
-          <img src={`${import.meta.env.BASE_URL}bibgourmand.png`} alt="Bib Gourmand" className="bib-gourmand-inline" />
+          <img src={bibIcon} alt="Bib Gourmand" className="bib-gourmand-inline" />
         )}
         {displayRestaurant.nyttop100_rank && (
-          <img src={`${import.meta.env.BASE_URL}nytimes.png`} alt="NYT Top 100" className="nyt-top100-inline" />
+          <img src={nytIcon} alt="NYT Top 100" className="nyt-top100-inline" />
         )}
       </h2>
       {/* Restaurant Tags */}
