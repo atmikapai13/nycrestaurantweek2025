@@ -2,6 +2,7 @@ import { useMemo, useState, useEffect, useRef, useCallback } from "react";
 import FilterDropdown from "./FilterDropdown";
 import type { Restaurant } from "../types/restaurant";
 import { useMap } from "../contexts/MapContext";
+import { asset } from "../utils/asset";
 import "./FilterBar.css";
 
 /**
@@ -563,7 +564,7 @@ export default function FilterBar() {
         label: michelinCount > 0 ? (
           <>Michelin <span style={{ color: '#888' }}>· {michelinCount}</span></>
         ) : "Michelin",
-        icon: "/MichelinStar.svg.png",
+        icon: asset("/MichelinStar.svg.png"),
         disabled: hasActiveFilters && michelinCount === 0,
       },
       {
@@ -571,7 +572,7 @@ export default function FilterBar() {
         label: bibCount > 0 ? (
           <>Bib Gourmand <span style={{ color: '#888' }}>· {bibCount}</span></>
         ) : "Bib Gourmand",
-        icon: "/bibgourmand.png",
+        icon: asset("/bibgourmand.png"),
         disabled: hasActiveFilters && bibCount === 0,
       },
       {
@@ -579,7 +580,7 @@ export default function FilterBar() {
         label: nytCount > 0 ? (
           <>NYT Top 100 <span style={{ color: '#888' }}>· {nytCount}</span></>
         ) : "NYT Top 100",
-        icon: "/nytimes.png",
+        icon: asset("/nytimes.png"),
         disabled: hasActiveFilters && nytCount === 0,
       },
     ];

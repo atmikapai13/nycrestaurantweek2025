@@ -6,6 +6,7 @@ import {
   forwardRef,
   useMemo,
 } from "react";
+import { asset } from "../utils/asset";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { intersectPolygons } from "../utils/geospatial";
@@ -669,7 +670,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                   const firstResult = geocodeResult.results[0];
                   if (firstResult.latitude && firstResult.longitude) {
                     // Cycle characters using existing markers + ones added this render pass
-                    const characterImages = ["/characters/collette.png", "/characters/anton.png", "/characters/skinner.png"];
+                    const characterImages = [asset("/characters/collette.png"), asset("/characters/anton.png"), asset("/characters/skinner.png")];
                     const currentCount = geocodedMarkers.length + geocodeCountThisRender;
                     geocodeCountThisRender++;
                     const characterImage = characterImages[currentCount % characterImages.length];
@@ -1449,7 +1450,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
             onClick={() => setDrawerHeight(55)}
           >
             <img
-              src="/remi_transparent.png"
+              src={asset("/remi_transparent.png")}
               alt="Remi"
               className="drawer-collapsed-logo"
             />
@@ -1483,10 +1484,10 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                       >
                         <div className="message-bubble">
                           <div className="message-avatar-inside desktop-only">
-                            <img src="/remi.png" alt="remi" />
+                            <img src={asset("/remi.png")} alt="remi" />
                           </div>
                           <div className="message-avatar-mobile mobile-only">
-                            <img src="/remi.png" alt="remi" />
+                            <img src={asset("/remi.png")} alt="remi" />
                           </div>
                           <div
                             style={{
@@ -1846,7 +1847,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                 <div className="chat-message assistant" ref={lastMessageRef}>
                   <div className="restaurant-card-message">
                     <div className="message-avatar-outside desktop-only">
-                      <img src="/remi.png" alt="remi" />
+                      <img src={asset("/remi.png")} alt="remi" />
                     </div>
                     <div className="restaurant-card-content">
                       <RestaurantCarousel
@@ -1880,10 +1881,10 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
               <div className="chat-message assistant">
                 <div className="message-bubble">
                   <div className="message-avatar-inside desktop-only">
-                    <img src="/remi.png" alt="remi" />
+                    <img src={asset("/remi.png")} alt="remi" />
                   </div>
                   <div className="message-avatar-mobile mobile-only">
-                    <img src="/remi.png" alt="remi" />
+                    <img src={asset("/remi.png")} alt="remi" />
                   </div>
                   <div
                     style={{

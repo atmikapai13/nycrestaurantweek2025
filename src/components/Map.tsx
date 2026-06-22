@@ -6,6 +6,7 @@ import type { Restaurant } from "../types/restaurant";
 import ChatInterface, { type ChatInterfaceHandle } from "./ChatInterface";
 import { MapLegend } from "./MapLegend";
 import { useMap, hasAnyAward, type IsochroneLayer, type GeocodedMarker } from "../contexts/MapContext";
+import { asset } from "../utils/asset";
 
 // Set your Mapbox access token
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
@@ -426,7 +427,7 @@ export default function Map({
             userLocationEl.appendChild(pulseRing);
 
             const alfredoImg = document.createElement("img");
-            alfredoImg.src = "/characters/alfredo.png";
+            alfredoImg.src = asset("/characters/alfredo.png");
             alfredoImg.alt = "Your location";
             userLocationEl.appendChild(alfredoImg);
 

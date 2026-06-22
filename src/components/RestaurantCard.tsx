@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react'
 import type { Restaurant } from '../types/restaurant'
+import { asset } from "../utils/asset";
 import './RestaurantCard.css'
 
 interface RestaurantCardProps {
@@ -153,13 +154,13 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
       <h2 className="restaurant-name">
         {displayRestaurant.name}
         {displayRestaurant.michelin_award && ['ONE_STAR', 'TWO_STARS', 'THREE_STARS'].includes(displayRestaurant.michelin_award) && (
-          <img src="/MichelinStar.svg.png" alt="Michelin Star" className="michelin-star-inline" />
+          <img src={asset("/MichelinStar.svg.png")} alt="Michelin Star" className="michelin-star-inline" />
         )}
         {displayRestaurant.michelin_award === 'BIB_GOURMAND' && (
-          <img src="/bibgourmand.png" alt="Bib Gourmand" className="bib-gourmand-inline" />
+          <img src={asset("/bibgourmand.png")} alt="Bib Gourmand" className="bib-gourmand-inline" />
         )}
         {displayRestaurant.nyttop100_rank && (
-          <img src="/nytimes.png" alt="NYT Top 100" className="nyt-top100-inline" />
+          <img src={asset("/nytimes.png")} alt="NYT Top 100" className="nyt-top100-inline" />
         )}
       </h2>
       {/* Restaurant Tags */}
@@ -356,7 +357,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
             {displayRestaurant.yelp_review_highlights && (
               <div className="review-item">
                 <div className="review-header">
-                  <img src="/yelp_logo.png" alt="Yelp" className="review-source-icon" />
+                  <img src={asset("/yelp_logo.png")} alt="Yelp" className="review-source-icon" />
                   <span className="review-source-label">Yelp:</span>
                 </div>
                 <span className="card-body-text">{processYelpReview(displayRestaurant.yelp_review_highlights)}</span>
@@ -365,7 +366,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
             {displayRestaurant.reddit && displayRestaurant.reddit.trim() !== '' && (
               <div className="review-item">
                 <div className="review-header">
-                  <img src="/reddit.webp" alt="Reddit" className="review-source-icon" />
+                  <img src={asset("/reddit.webp")} alt="Reddit" className="review-source-icon" />
                   <span className="review-source-label">Reddit:</span>
                 </div>
                 <span className="card-body-text">
@@ -387,7 +388,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
                 className="see-menu-btn"
                 style={{ marginTop: '8px', marginLeft: 'auto' }}
               >
-                <img src="/yelp_logo.png" alt="Yelp" />
+                <img src={asset("/yelp_logo.png")} alt="Yelp" />
                 <span className="arrow">↗</span>
               </a>
             )}
@@ -425,19 +426,19 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
             <div className="about-award-tags" style={{ display: 'flex', gap: '6px', marginBottom: '4px', flexWrap: 'wrap' }}>
               {displayRestaurant.michelin_award && ['ONE_STAR', 'TWO_STARS', 'THREE_STARS'].includes(displayRestaurant.michelin_award) && (
                 <span className="tag tag-michelin">
-                  <img src="/MichelinStar.svg.png" alt="" className="tag-icon" />
+                  <img src={asset("/MichelinStar.svg.png")} alt="" className="tag-icon" />
                   Michelin
                 </span>
               )}
               {displayRestaurant.michelin_award === 'BIB_GOURMAND' && (
                 <span className="tag tag-bib">
-                  <img src="/bibgourmand.png" alt="" className="tag-icon" />
+                  <img src={asset("/bibgourmand.png")} alt="" className="tag-icon" />
                   Bib Gourmand
                 </span>
               )}
               {displayRestaurant.nyttop100_rank && (
                 <span className="tag tag-nyt-rank">
-                  <img src="/nytimes.png" alt="" className="tag-icon" />
+                  <img src={asset("/nytimes.png")} alt="" className="tag-icon" />
                   NYT Rank {displayRestaurant.nyttop100_rank}
                 </span>
               )}
@@ -480,7 +481,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
                     rel="noopener noreferrer"
                     className="see-menu-btn"
                   >
-                    <img src={displayRestaurant.michelin_award === 'BIB_GOURMAND' ? '/bibgourmand.png' : '/MichelinStar.svg.png'} alt="Michelin" />
+                    <img src={asset(displayRestaurant.michelin_award === 'BIB_GOURMAND' ? '/bibgourmand.png' : '/MichelinStar.svg.png')} alt="Michelin" />
                     <span className="arrow">↗</span>
                   </a>
                 )}
@@ -491,7 +492,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
                     rel="noopener noreferrer"
                     className="see-menu-btn"
                   >
-                    <img src="/nytimes.png" alt="NYT" />
+                    <img src={asset("/nytimes.png")} alt="NYT" />
                     <span className="arrow">↗</span>
                   </a>
                 )}
@@ -580,7 +581,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
         )}
         {displayRestaurant.yelp_url && (
           <a href={displayRestaurant.yelp_url} target="_blank" rel="noopener noreferrer" className="icon-link icon-yelp" title="Yelp">
-            <img src="/yelp.png" alt="Yelp" style={{ width: '14px', height: '14px', objectFit: 'contain' }} />
+            <img src={asset("/yelp.png")} alt="Yelp" style={{ width: '14px', height: '14px', objectFit: 'contain' }} />
           </a>
         )}
         {displayRestaurant.latitude && displayRestaurant.longitude && (

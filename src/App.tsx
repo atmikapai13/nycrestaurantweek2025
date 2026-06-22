@@ -5,6 +5,7 @@ import FilterBar from "./components/FilterBar";
 import Map from "./components/Map";
 import type { Restaurant } from "./types/restaurant";
 import { MapProvider, useMap } from "./contexts/MapContext";
+import { API_CONFIG } from "./config/features";
 
 function AppContent() {
   const {
@@ -53,7 +54,7 @@ function AppContent() {
 
   // Warm up the serverless backend on page load to avoid cold-start delay
   useEffect(() => {
-    fetch("/api/chat").catch(() => {});
+    fetch(API_CONFIG.CHAT_URL).catch(() => {});
   }, []);
 
   // iOS Safari URL bar collapse trick - scroll by 1px on load to trigger collapse
