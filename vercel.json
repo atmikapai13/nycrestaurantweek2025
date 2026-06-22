@@ -1,11 +1,13 @@
 {
   "redirects": [
-    { "source": "/", "destination": "/spring2026/", "permanent": false },
-    { "source": "/summer2025", "destination": "/summer2025/", "permanent": false },
-    { "source": "/spring2026", "destination": "/spring2026/", "permanent": false }
+    { "source": "/", "destination": "/spring2026/", "permanent": false }
   ],
   "rewrites": [
+    { "source": "/summer2025", "destination": "https://nyceats-summer2025.vercel.app/summer2025/index.html" },
+    { "source": "/summer2025/", "destination": "https://nyceats-summer2025.vercel.app/summer2025/index.html" },
     { "source": "/summer2025/:path*", "destination": "https://nyceats-summer2025.vercel.app/summer2025/:path*" },
+    { "source": "/spring2026", "destination": "https://nyceats-spring2026.vercel.app/spring2026/index.html" },
+    { "source": "/spring2026/", "destination": "https://nyceats-spring2026.vercel.app/spring2026/index.html" },
     { "source": "/spring2026/:path*", "destination": "https://nyceats-spring2026.vercel.app/spring2026/:path*" }
   ]
 }
