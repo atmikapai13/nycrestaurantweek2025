@@ -9,6 +9,10 @@
     { "source": "/spring2026/api/:path*", "destination": "https://nyceats-spring2026.vercel.app/api/:path*" },
     { "source": "/spring2026", "destination": "https://nyceats-spring2026.vercel.app/spring2026/index.html" },
     { "source": "/spring2026/", "destination": "https://nyceats-spring2026.vercel.app/spring2026/index.html" },
-    { "source": "/spring2026/:path*", "destination": "https://nyceats-spring2026.vercel.app/spring2026/:path*" }
+    { "source": "/spring2026/:path*", "destination": "https://nyceats-spring2026.vercel.app/spring2026/:path*" },
+    { "source": "/worldcup2026/api/:path*", "destination": "https://nyceats-worldcup2026.vercel.app/api/:path*" },
+    { "source": "/worldcup2026", "destination": "https://nyceats-worldcup2026.vercel.app/worldcup2026/index.html" },
+    { "source": "/worldcup2026/", "destination": "https://nyceats-worldcup2026.vercel.app/worldcup2026/index.html" },
+    { "source": "/worldcup2026/:path*", "destination": "https://nyceats-worldcup2026.vercel.app/worldcup2026/:path*" }
   ]
 }
