@@ -1,5 +1,5 @@
 .header {
-  background-image: url('/header.png');
+  /* background-image set inline in Header.tsx via a module import so the base path resolves under /summer2025/ */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

@@ -1,9 +1,10 @@
 import nycLogo from '/nyc.png'
+import headerBg from '/header.png'
 import './Header.css'
 
 export default function Header() {
   return (
-    <header className="header">
+    <header className="header" style={{ backgroundImage: `url(${headerBg})` }}>
       <div className="header-content">
         <div className="header-left">
           <h1>NYC Eats</h1>
