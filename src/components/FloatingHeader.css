@@ -32,7 +32,7 @@
 }
 
 .floating-header-title .live {
-  color: rgba(242, 61, 151, 0.875);
+  color: #ec4899;
 }
 
 /* Soccer ball that bounces across the title once on page load */
@@ -74,7 +74,7 @@
   }
 
   .floating-header-title {
-    font-size: 20px;
+    font-size: 24px;
   }
 
   .floating-header-subtitle {

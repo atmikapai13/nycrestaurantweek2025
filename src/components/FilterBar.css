@@ -69,8 +69,8 @@
 .filter-hamburger-button {
   height: 25px;
   border-radius: 12px;
-  background: #ffffff;
-  border: 1px solid #e3e3e3;
+  background: rgb(242, 61, 151);
+  border: 1px solid rgb(242, 61, 151);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
   display: flex;
   flex-direction: row;
@@ -85,18 +85,18 @@
 }
 
 .filter-hamburger-button:hover {
-  background: #f4f4f4;
+  background: rgb(216, 41, 130);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .filter-hamburger-button svg {
-  color: #333;
+  color: #ffffff;
 }
 
 .filter-button-label {
   font-size: 12px;
   font-weight: 500;
-  color: #333;
+  color: #ffffff;
   white-space: nowrap;
 }
 
@@ -495,7 +495,7 @@
 @media (max-width: 768px) {
   .filter-bar-container {
     position: fixed;
-    top: 35px;
+    top: 40px;
     left: 10px;
     right: 10px;
     bottom: auto;

@@ -31,10 +31,6 @@ const getDealEmoji = (restaurant: Restaurant): string => {
 // Emoji teardrop background color (Cooking Mama beige cream)
 const EMOJI_BG_COLOR = '#FFFAEA';
 
-// Zoom threshold for emoji mode (mobile shows earlier)
-const EMOJI_ZOOM_THRESHOLD_DESKTOP = 15;
-const EMOJI_ZOOM_THRESHOLD_MOBILE = 14.5;
-
 // Compare two GeoJSON polygons for equality
 const arePolygonsEqual = (
   poly1:
@@ -79,7 +75,6 @@ export default function Map({
   const markerElements = useRef<HTMLDivElement[]>([]);
   const geocodedPins = useRef<mapboxgl.Marker[]>([]); // Native teardrop pins for geocoded locations
   const pendingMarkerUpdate = useRef<number | null>(null); // Throttle zoom marker updates
-  const currentMarkerMode = useRef<'dot' | 'emoji'>('dot'); // Track marker display mode
   const markerElBySlug = useRef<globalThis.Map<string, HTMLDivElement>>(new globalThis.Map()); // slug → marker element
   const recommendedSlugs = useRef<Set<string>>(new Set()); // Remi-suggested restaurants
 
@@ -267,11 +262,6 @@ export default function Map({
 
     const zoom = map.current.getZoom();
     const mobile = isMobile();
-    const emojiThreshold = mobile ? EMOJI_ZOOM_THRESHOLD_MOBILE : EMOJI_ZOOM_THRESHOLD_DESKTOP;
-    const shouldBeEmoji = zoom >= emojiThreshold;
-
-    // Update mode ref
-    currentMarkerMode.current = shouldBeEmoji ? 'emoji' : 'dot';
 
     // Batch all calculations first (reads) - prevents layout thrashing
     const updates: Array<{
@@ -298,38 +288,19 @@ export default function Map({
     // Then apply all styles (writes) - no interleaved reads
     const padding = mobile ? "8px" : "6px";
     updates.forEach(({ el, size, isSelected, wrapper }) => {
-      if (shouldBeEmoji) {
-        // Emoji teardrop mode at zoom threshold. Selected grows ~1.4x.
-        el.classList.add("emoji-mode");
-        el.classList.toggle("emoji-selected", isSelected);
-        el.style.width = isSelected ? "50px" : "36px";
-        el.style.height = isSelected ? "58px" : "42px";
-        el.style.borderRadius = "";  // Let CSS handle it
-        el.style.backgroundColor = EMOJI_BG_COLOR;
-        const dotColor = el.getAttribute("data-dot-color") || "#928f8e";
-        el.style.border = dotColor === "#928f8e" ? "" : `2.5px solid ${dotColor}`;
-        // Show emoji
-        const emojiSpan = el.querySelector(".marker-emoji") as HTMLElement | null;
-        if (emojiSpan) emojiSpan.style.display = "";
-        if (wrapper) {
-          wrapper.style.padding = "4px";
-        }
-      } else {
-        // Dot mode (zoom < threshold) — same on desktop and mobile.
-        // Selected grows ~1.5x with a thicker ring so it stands out (no shape change).
-        const dotColor = el.getAttribute("data-dot-color") || "#928f8e";
-        el.classList.remove("emoji-selected");
-        el.classList.remove("emoji-mode");
-        const dotSize = isSelected ? Math.round(size * 1.5) : size;
-        el.style.width = `${dotSize}px`;
-        el.style.height = `${dotSize}px`;
-        el.style.borderRadius = "50%";
-        el.style.backgroundColor = dotColor;
-        el.style.border = isSelected ? "1.5px solid white" : "1px solid white";
-        const emojiSpan = el.querySelector(".marker-emoji") as HTMLElement | null;
-        if (emojiSpan) emojiSpan.style.display = "none";
-        if (wrapper) wrapper.style.padding = padding;
-      }
+      // Dot mode always — selected grows ~1.5x with a thicker ring so it stands out (no shape change).
+      const dotColor = el.getAttribute("data-dot-color") || "#928f8e";
+      el.classList.remove("emoji-selected");
+      el.classList.remove("emoji-mode");
+      const dotSize = isSelected ? Math.round(size * 1.5) : size;
+      el.style.width = `${dotSize}px`;
+      el.style.height = `${dotSize}px`;
+      el.style.borderRadius = "50%";
+      el.style.backgroundColor = dotColor;
+      el.style.border = isSelected ? "1.5px solid white" : "1px solid white";
+      const emojiSpan = el.querySelector(".marker-emoji") as HTMLElement | null;
+      if (emojiSpan) emojiSpan.style.display = "none";
+      if (wrapper) wrapper.style.padding = padding;
     });
   };
 

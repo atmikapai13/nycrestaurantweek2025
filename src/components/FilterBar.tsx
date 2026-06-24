@@ -36,10 +36,10 @@ export default function FilterBar() {
     return true; // Default to expanded for SSR
   });
 
-  // Collapse filter bar when drawer expands to 55vh or 80vh
+  // Collapse filter bar when drawer expands to 30vh or 55vh
   useEffect(() => {
     const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
-    if (isMobile && drawerHeight >= 55 && isExpanded) {
+    if (isMobile && drawerHeight >= 30 && isExpanded) {
       setIsExpanded(false);
     }
   }, [drawerHeight, isExpanded]);
