@@ -78,7 +78,7 @@ export default function DealsPanel({
         <p className="font-semibold sm:hidden">Welcome to NYC Eats — World Cup Edition!</p>
         <p>
           800+ restaurants offer <em className="italic text-pink-500">affordable $26 deals </em>and limited
-          edition collectibles in celebration of the World Cup. <br></br>(All hail Mamdani.)
+          edition collectibles in celebration of the World Cup. <br></br>(All hail Mamdani)
         </p>
         <p>
           <span className="sm:hidden">And I, Remy, help</span>
