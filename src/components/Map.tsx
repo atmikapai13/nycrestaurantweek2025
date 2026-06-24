@@ -286,9 +286,6 @@ export default function Map({
         const baseSize = parseInt(markerEl.getAttribute("data-base-size") || "6");
         let newSize = getMarkerSize(baseSize, zoom, mobile);
         const isSelected = markerEl.getAttribute("data-is-selected") === "true";
-        if (isSelected) {
-          newSize = Math.round(newSize * 1.25);
-        }
         updates.push({
           el: markerEl,
           size: newSize,
@@ -300,14 +297,13 @@ export default function Map({
 
     // Then apply all styles (writes) - no interleaved reads
     const padding = mobile ? "8px" : "6px";
-    updates.forEach(({ el, size, wrapper }) => {
+    updates.forEach(({ el, size, isSelected, wrapper }) => {
       if (shouldBeEmoji) {
-        // Emoji teardrop mode (zoomed in past threshold). Selection no longer
-        // forces this — the card pops up above the marker instead.
+        // Emoji teardrop mode at zoom threshold. Selected grows ~1.4x.
         el.classList.add("emoji-mode");
-        el.classList.remove("emoji-selected");
-        el.style.width = "36px";
-        el.style.height = "42px";
+        el.classList.toggle("emoji-selected", isSelected);
+        el.style.width = isSelected ? "50px" : "36px";
+        el.style.height = isSelected ? "58px" : "42px";
         el.style.borderRadius = "";  // Let CSS handle it
         el.style.backgroundColor = EMOJI_BG_COLOR;
         const dotColor = el.getAttribute("data-dot-color") || "#928f8e";
@@ -319,21 +315,20 @@ export default function Map({
           wrapper.style.padding = "4px";
         }
       } else {
-        // Dot mode (non-selected, zoom < 15)
+        // Dot mode (zoom < threshold) — same on desktop and mobile.
+        // Selected grows ~1.5x with a thicker ring so it stands out (no shape change).
         const dotColor = el.getAttribute("data-dot-color") || "#928f8e";
-        el.classList.remove("emoji-mode");
         el.classList.remove("emoji-selected");
-        el.style.width = `${size}px`;
-        el.style.height = `${size}px`;
+        el.classList.remove("emoji-mode");
+        const dotSize = isSelected ? Math.round(size * 1.5) : size;
+        el.style.width = `${dotSize}px`;
+        el.style.height = `${dotSize}px`;
         el.style.borderRadius = "50%";
         el.style.backgroundColor = dotColor;
-        el.style.border = "1px solid white";
-        // Hide emoji
+        el.style.border = isSelected ? "1.5px solid white" : "1px solid white";
         const emojiSpan = el.querySelector(".marker-emoji") as HTMLElement | null;
         if (emojiSpan) emojiSpan.style.display = "none";
-        if (wrapper) {
-          wrapper.style.padding = padding;
-        }
+        if (wrapper) wrapper.style.padding = padding;
       }
     });
   };
@@ -689,7 +684,7 @@ export default function Map({
     sortedRestaurants.forEach((restaurant) => {
       if (restaurant.latitude && restaurant.longitude) {
         // Favorited restaurants get a pink marker so they stand out; others black.
-        const markerColor = favorites.includes(restaurant.name) ? "#FF69B4" : "#000000";
+        const markerColor = favorites.includes(restaurant.name) ? "#FF69B4" : "#7d7676";
         const baseMarkerSize = 10;
         const zIndex = 0;
 

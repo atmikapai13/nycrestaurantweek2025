@@ -39,7 +39,7 @@ export default function FilterBar() {
   // Collapse filter bar when drawer expands to 55vh or 80vh
   useEffect(() => {
     const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
-    if (isMobile && (drawerHeight === 55 || drawerHeight === 80) && isExpanded) {
+    if (isMobile && drawerHeight >= 55 && isExpanded) {
       setIsExpanded(false);
     }
   }, [drawerHeight, isExpanded]);
@@ -108,9 +108,9 @@ export default function FilterBar() {
     const newExpanded = !isExpanded;
     setIsExpanded(newExpanded);
 
-    // On mobile: expanding filter bar → move drawer to 8vh
+    // On mobile: expanding filter bar → snap drawer to the peek snap point
     if (isMobile && newExpanded) {
-      setDrawerHeight(8);
+      setDrawerHeight(35);
     }
   };
 
@@ -197,11 +197,11 @@ export default function FilterBar() {
             }`}
             onClick={() => toggleFilterKey("Limited Edition Cup")}
           >
-            🏆  World "Cup" Collectible
+            🏆  Collectible Cup
           </button>
 
           <FilterDropdown
-            label="$26 Offer"
+            label="$26 Deal"
             icon=""
             options={offer26Options}
             selectedValues={activeFilters["$26 Offer"] || []}

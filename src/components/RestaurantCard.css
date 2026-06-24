@@ -703,9 +703,9 @@
     margin-bottom: 0;
   }
 
-  /* Image keeps its original top position on mobile */
+  /* Nudge image down so it clears the favorite/close buttons on mobile too */
   .restaurant-card-image {
-    margin-top: 0;
+    margin-top: 8px;
   }
 
   .restaurant-name {
