@@ -1135,12 +1135,12 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       const newHeight = dragStartHeight + deltaPercent;
       const clampedHeight = Math.max(8, Math.min(100, newHeight));
 
-      if (clampedHeight < 25) {
+      if (clampedHeight < 20) {
         setDrawerHeight(8);
-      } else if (clampedHeight < 65) {
-        setDrawerHeight(55);
+      } else if (clampedHeight < 42) {
+        setDrawerHeight(30);
       } else {
-        setDrawerHeight(80);
+        setDrawerHeight(55);
       }
     };
 
@@ -1705,7 +1705,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                               onRequestReviewHighlights={handleRestaurantSuggestionClick}
                                               onExpandDrawer={() => {
                                                 if (window.innerWidth <= 768) {
-                                                  setDrawerHeight(80);
+                                                  setDrawerHeight(55);
                                                 }
                                               }}
                                             />
@@ -1866,7 +1866,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                         onRequestReviewHighlights={handleRestaurantSuggestionClick}
                         onExpandDrawer={() => {
                           if (window.innerWidth <= 768) {
-                            setDrawerHeight(80);
+                            setDrawerHeight(55);
                           }
                         }}
                       />

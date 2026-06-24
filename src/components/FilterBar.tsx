@@ -108,9 +108,9 @@ export default function FilterBar() {
     const newExpanded = !isExpanded;
     setIsExpanded(newExpanded);
 
-    // On mobile: expanding filter bar → snap drawer to the peek snap point
+    // On mobile: expanding filter bar → collapse drawer to peek so map is visible
     if (isMobile && newExpanded) {
-      setDrawerHeight(35);
+      setDrawerHeight(8);
     }
   };
 
