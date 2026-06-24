@@ -31,17 +31,35 @@
   height: 100%;
 }
 
+/* Desktop layout: map area beside the shadcn sidebar */
+.app-desktop-main {
+  position: relative;
+  flex: 1;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* On desktop the filter bar lives inside the map area, so anchor it to the
+   map's left edge (just past the sidebar) instead of the old chat-panel offset. */
+.app-desktop-main .filter-bar-container {
+  left: 16px;
+}
+
 /* Restaurant Card Overlay */
 .restaurant-card-overlay {
   position: absolute;
-  bottom: 1rem;
-  left: calc(5% + 1rem);
+  bottom: 2.5rem;
+  right: 1rem;
   z-index: 1000;
-  max-width: calc(90% - 2rem);
-  width: 100%;
+  width: 340px;
+  max-width: calc(100vw - 2rem);
   height: auto;
-  max-height: calc(100vh - 400px);
+  max-height: calc(100vh - 200px);
   overflow-y: auto;
+}
+
+.restaurant-card-overlay .restaurant-card {
+  margin-bottom: 0;
 }
 
 
@@ -107,8 +125,10 @@
 
   .restaurant-card-overlay {
     left: 10px;
+    right: 10px;
     bottom: 10px;
-    max-width: calc(100vw - 20px);
+    width: auto;
+    max-width: none;
   }
 
 }

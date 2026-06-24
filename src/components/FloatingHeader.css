@@ -1,25 +1,65 @@
 .floating-header {
   position: fixed;
   top: 2%;
-  right: 1%;
+  left: 1%;
   z-index: 1000;
   align-items: center;
   gap: 10px;
-  display: none;
+  display: flex;
 }
+
+
 
 .floating-header-title {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 20px;
+  font-size: 45px;
   font-weight: 400;
   color: #404040;
   letter-spacing: 0.5px;
   margin: 0;
   text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8);
+  margin-top: -10px;
+}
+.floating-header-subtitle {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 30px;
+  font-weight: 400;
+  color: #404040;
+  letter-spacing: 0.5px;
+  margin: 0;
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8);
+  margin-top: -10px;
 }
 
 .floating-header-title .live {
   color: rgba(242, 61, 151, 0.875);
+}
+
+/* Soccer ball that bounces across the title once on page load */
+.header-football {
+  position: absolute;
+  top: -2px;
+  left: 0;
+  font-size: 24px;
+  line-height: 1;
+  pointer-events: none;
+  z-index: 1;
+  animation: header-football-roll 1.9s cubic-bezier(0.3, 0.7, 0.4, 1) 0.35s 1 both;
+}
+
+@keyframes header-football-roll {
+  0%   { left: 0;    transform: translateY(-36px) rotate(0deg);   opacity: 0; }
+  8%   { left: 4%;   transform: translateY(0)     rotate(80deg);  opacity: 1; }
+  26%  { left: 26%;  transform: translateY(-30px) rotate(220deg); opacity: 1; }
+  44%  { left: 46%;  transform: translateY(0)     rotate(340deg); opacity: 1; }
+  62%  { left: 66%;  transform: translateY(-22px) rotate(470deg); opacity: 1; }
+  80%  { left: 84%;  transform: translateY(0)     rotate(600deg); opacity: 1; }
+  90%  { left: 93%;  transform: translateY(-12px) rotate(690deg); opacity: 1; }
+  100% { left: 100%; transform: translateY(0)     rotate(780deg); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header-football { display: none; }
 }
 
 /* Mobile responsive */
@@ -35,6 +75,18 @@
 
   .floating-header-title {
     font-size: 20px;
+  }
+
+  .floating-header-subtitle {
+    font-size: 20px;
+  }
+
+  .floating-header-remi {
+    height: 34px;
+  }
+
+  .header-football {
+    display: none; /* desktop-only animation */
   }
 
   .floating-header-chatbot {

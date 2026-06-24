@@ -8,13 +8,47 @@ import React, {
 } from "react";
 import type { Feature, Polygon, MultiPolygon } from "geojson";
 import type { Restaurant } from "../types/restaurant";
-import restaurantData from "../data/FinalData.json";
+import restaurantData from "../data/WorldCup2026/worldcup2026.json";
 import { point, booleanPointInPolygon } from "@turf/turf";
 
 export type GeoJSONGeometry =
   | Feature<Polygon | MultiPolygon>
   | Polygon
   | MultiPolygon;
+
+// Deal-category toggle PILLS surfaced in the FilterBar. `key` matches the values
+// written into `deal_tags` by src/utils/WorldCup2026/5_TagDeals.py; `label` is
+// the pill text. These are cross-cutting attributes (each ANDs when active).
+// Order here is the display order.
+export const DEAL_TAG_FILTERS: { key: string; label: string }[] = [
+  { key: "bars", label: "Bars" },
+  { key: "specialty_cocktails", label: "Specialty Cocktails" },
+  { key: "burger_beer", label: "Beer & Burger" },
+  { key: "tacos", label: "Tacos" },
+  { key: "grab_n_go", label: "Grab-n-Go" },
+];
+
+const DEAL_TAG_KEYS = new Set(DEAL_TAG_FILTERS.map((f) => f.key));
+
+// "$26 Offer" dropdown options — the deal TYPE ("what does my $26 buy?").
+// food_only / meal_drink_combo / drink_only are mutually exclusive; together with
+// desserts they cover ~95% of $26 offers. Selecting more than one ORs them (see
+// filter logic). The attribute pills (Bars, Specialty Cocktails, …) cross-cut
+// these, so e.g. "Drinks only" × "Specialty Cocktails" = the Venn intersection.
+// Emoji prefixes double as a map legend — they match the marker emojis set by
+// getDealEmoji() in Map.tsx (Meal 🍱 / Meal + Drink 🤑 / Drinks 🍻 / Dessert 🍰).
+export const OFFER_26_OPTIONS: { value: string; label: string }[] = [
+  { value: "food_only", label: "🍱  Meal" },
+  { value: "meal_drink_combo", label: "🤑  Meal + Drink" },
+  { value: "drink_only", label: "🍻  Drink" },
+  { value: "desserts", label: "🍰  Dessert" },
+];
+
+// "Awards" dropdown — recognition badges (a handful of venues each). OR together.
+export const AWARDS_OPTIONS: { value: string; label: string }[] = [
+  { value: "michelin", label: "Michelin" },
+  { value: "nyt", label: "NYT Top 100" },
+];
 
 export const hasAnyAward = (restaurant: Restaurant): boolean => {
   const hasMichelin =
@@ -118,7 +152,7 @@ const MapContext = createContext<MapContextType | undefined>(undefined);
 export function MapProvider({ children }: { children: React.ReactNode }) {
   // Data state
   const [allRestaurants] = useState<Restaurant[]>(
-    restaurantData as Restaurant[]
+    restaurantData as unknown as Restaurant[]
   );
 
   // Filter state
@@ -207,7 +241,27 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
     Object.entries(activeFilters).forEach(([filterType, values]) => {
       if (values.length > 0) {
         filtered = filtered.filter((restaurant) => {
+          // Deal-category toggle pills (Bars, Watch the Game, etc.) — each ANDs.
+          if (DEAL_TAG_KEYS.has(filterType)) {
+            return restaurant.deal_tags?.includes(filterType) ?? false;
+          }
           switch (filterType) {
+            // $26 Offer dropdown: selected sub-types OR together
+            case "$26 Offer":
+              return values.some((tag) => restaurant.deal_tags?.includes(tag));
+            // Awards dropdown: selected badges OR together
+            case "Awards":
+              return values.some((a) => {
+                if (a === "michelin")
+                  return Boolean(
+                    restaurant.michelin_award && restaurant.michelin_award !== ""
+                  );
+                if (a === "nyt")
+                  return Boolean(
+                    restaurant.nyttop100_rank && restaurant.nyttop100_rank !== ""
+                  );
+                return false;
+              });
             case "Cuisine":
               if (!restaurant.cuisine) return false;
               return values.some(
@@ -215,6 +269,11 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
                   restaurant.cuisine === value ||
                   restaurant.cuisine.toLowerCase().includes(value.toLowerCase())
               );
+            // World Cup promo toggles (filter active when values non-empty)
+            case "Limited Edition Cup":
+              return restaurant.limited_edition_cup === true;
+            case "$26 Offers":
+              return restaurant.has_26_offer === true;
             case "Meal Types":
               return (
                 restaurant.meal_types &&
@@ -338,8 +397,17 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
               return restaurant.michelin_award === "BIB_GOURMAND";
             case "nyt":
               return restaurant.nyttop100_rank;
+            case "offer26":
+              return restaurant.has_26_offer === true;
+            case "cup":
+              return restaurant.limited_edition_cup === true;
             case "regular":
-              return !restaurant.michelin_award && !restaurant.nyttop100_rank;
+              return (
+                !restaurant.michelin_award &&
+                !restaurant.nyttop100_rank &&
+                !restaurant.has_26_offer &&
+                !restaurant.limited_edition_cup
+              );
             default:
               return false;
           }

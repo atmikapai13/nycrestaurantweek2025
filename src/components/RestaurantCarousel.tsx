@@ -199,7 +199,7 @@ export default function RestaurantCarousel({
       </div>
 
       {/* Dot Indicators (hide for large lists) */}
-      {showNavigation && restaurants.length <= 5 && (
+      {showNavigation && restaurants.length <= 20 && (
         <div className="carousel-dots">
           {restaurants.map((_, index) => (
             <button

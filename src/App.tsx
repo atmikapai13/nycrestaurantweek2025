@@ -1,11 +1,15 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type CSSProperties } from "react";
 import "./App.css";
 import FloatingHeader from "./components/FloatingHeader";
 import FilterBar from "./components/FilterBar";
 import Map from "./components/Map";
+import MobileCardDrawer from "./components/MobileCardDrawer";
 import type { Restaurant } from "./types/restaurant";
 import { MapProvider, useMap } from "./contexts/MapContext";
 import { API_CONFIG } from "./config/features";
+import { AppSidebar } from "./components/AppSidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 function AppContent() {
   const {
@@ -15,11 +19,13 @@ function AppContent() {
     setSearchTerm,
     favorites,
     setFavorites,
+    selectedRestaurant,
     setSelectedRestaurant,
   } = useMap();
 
   // Callback ref for map reset function (will be set by Map component)
   const mapResetRef = useRef<(() => void) | null>(null);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     // Check for favorites in URL hash first, then localStorage
@@ -126,26 +132,48 @@ function AppContent() {
     }
   };
 
-  return (
-    <div className="app">
-      <FloatingHeader />
+  const mapArea = (
+    <div className="map-section">
+      <Map
+        onRestaurantSelect={handleRestaurantSelect}
+        onToggleFavorite={toggleFavorite}
+        onFilterChange={handleFilterChange}
+        onResetAll={handleResetAll}
+        mapResetRef={mapResetRef}
+      />
 
-      {/* Filter Bar */}
-      <FilterBar />
-
-      {/* Full Screen Map */}
-      <div className="map-section">
-        <Map
-          onRestaurantSelect={handleRestaurantSelect}
-          onToggleFavorite={toggleFavorite}
-          onFilterChange={handleFilterChange}
-          onResetAll={handleResetAll}
-          mapResetRef={mapResetRef}
-        />
-
-        {/* Restaurant Card now appears in chat when clicking markers */}
-      </div>
+      {/* Desktop: the restaurant card renders as a Mapbox popup anchored above the
+          marker (handled inside <Map>). Mobile uses the bottom-sheet drawer below. */}
     </div>
+  );
+
+  // Mobile: keep the original full-screen layout (floating header + map).
+  if (isMobile) {
+    return (
+      <div className="app">
+        <FloatingHeader />
+        <FilterBar />
+        {mapArea}
+        <MobileCardDrawer
+          selectedRestaurant={selectedRestaurant}
+          onSelect={handleRestaurantSelect}
+          onCloseCard={() => setSelectedRestaurant(null)}
+          isFavorited={selectedRestaurant ? favorites.includes(selectedRestaurant.name) : false}
+          onToggleFavorite={() => selectedRestaurant && toggleFavorite(selectedRestaurant.name)}
+        />
+      </div>
+    );
+  }
+
+  // Desktop: shadcn sidebar on the left, map fills the rest.
+  return (
+    <SidebarProvider style={{ "--sidebar-width": "26rem", height: "100vh" } as CSSProperties}>
+      <AppSidebar onSelect={handleRestaurantSelect} />
+      <main className="app-desktop-main">
+        <FilterBar />
+        {mapArea}
+      </main>
+    </SidebarProvider>
   );
 }
 

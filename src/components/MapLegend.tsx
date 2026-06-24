@@ -1,74 +1,71 @@
 import React, { useMemo } from 'react'
-import { useMap, hasAnyAward } from '../contexts/MapContext'
+import { useMap } from '../contexts/MapContext'
+import type { Restaurant } from '../types/restaurant'
+import { asset } from '../utils/asset'
+import './MapLegend.css'
+
+const isMichelin = (r: Restaurant) =>
+  Boolean(r.michelin_award && ['ONE_STAR', 'TWO_STARS', 'THREE_STARS', 'BIB_GOURMAND'].includes(r.michelin_award))
+const isNYT = (r: Restaurant) => Boolean(r.nyttop100_rank && r.nyttop100_rank !== '')
+
+interface LegendRow {
+  key: string
+  label: string
+  color: string
+  icon?: string
+  match: (r: Restaurant) => boolean
+}
+
+// Same precedence/colors as the map markers.
+const ROWS: LegendRow[] = [
+  { key: 'michelin', label: 'Michelin', color: '#c81224', icon: '/MichelinStar.svg.png', match: isMichelin },
+  { key: 'nyt', label: 'NYT Top 100', color: '#ff67b2', icon: '/nytimes.png', match: isNYT },
+  { key: 'offer26', label: '$26 Offer', color: '#16a34a', match: (r) => r.has_26_offer === true },
+  { key: 'cup', label: 'Limited Edition Cup', color: '#2563eb', match: (r) => r.limited_edition_cup === true },
+]
 
 export const MapLegend: React.FC = () => {
-  const {
-    allRestaurants,
-    filteredRestaurants,
-    isochroneRegionSlugs,
-    awardsActive,
-    setAwardsActive,
-    favorites,
-    favoritesActive,
-    setFavoritesActive
-  } = useMap()
+  const { allRestaurants, filteredRestaurants, isochroneRegionSlugs, legendFilters, setLegendFilters } = useMap()
 
-  const awardWinnersCount = useMemo(() => {
-    return filteredRestaurants.filter((r) => hasAnyAward(r)).length
+  const counts = useMemo(() => {
+    const c: Record<string, number> = {}
+    for (const row of ROWS) c[row.key] = filteredRestaurants.filter(row.match).length
+    c.regular = filteredRestaurants.filter(
+      (r) => !isMichelin(r) && !isNYT(r) && !r.has_26_offer && !r.limited_edition_cup
+    ).length
+    return c
   }, [filteredRestaurants])
 
-  const favoritesCount = useMemo(() => {
-    return filteredRestaurants.filter((r) => favorites.includes(r.name)).length
-  }, [filteredRestaurants, favorites])
+  const total = isochroneRegionSlugs ? isochroneRegionSlugs.length : allRestaurants.length
 
-  const hasVisibleIsochrones = isochroneRegionSlugs !== null
+  const toggle = (key: string) =>
+    setLegendFilters((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]))
 
   return (
     <div className="map-legend">
-      <div className="legend-content">
-        <h4 style={{ color: '#000000', margin: '0 0 -4px 0' }}>
-          Remi's pickings
-        </h4>
-
-        {/* Legend items */}
-        <div className="legend-items">
-          <div className="legend-item">
-            <div className="legend-marker" style={{ backgroundColor: '#7c7c7c', width: '8px', height: '8px' }}></div>
-            <span>
-              {isochroneRegionSlugs && hasVisibleIsochrones
-                ? `${isochroneRegionSlugs.length} in isochrone`
-                : `${allRestaurants.length} restaurants`}
-            </span>
-          </div>
-
-          {/* Award winners - clickable */}
-          {awardWinnersCount > 0 && (
-            <div
-              className="legend-item"
-              onClick={() => setAwardsActive(!awardsActive)}
-              style={{
-                cursor: 'pointer',
-                fontWeight: awardsActive ? 600 : 400
-              }}
-            >
-              <div className="legend-marker" style={{ backgroundColor: '#FF9100', width: '8px', height: '8px' }}></div>
-              <span>{awardWinnersCount} award-winners</span>
-            </div>
-          )}
-
-          {/* Favorites - ALWAYS visible, clickable */}
-          <div
-            className="legend-item"
-            onClick={() => setFavoritesActive(!favoritesActive)}
-            style={{
-              cursor: 'pointer',
-              fontWeight: favoritesActive ? 600 : 400
-            }}
+      <h4 className="map-legend-title">{total} Restaurants</h4>
+      <div className="map-legend-subtitle">Click on list below:</div>
+      <div className="map-legend-rows">
+        {ROWS.filter((row) => counts[row.key] > 0).map((row) => (
+          <button
+            key={row.key}
+            className={`map-legend-row ${legendFilters.includes(row.key) ? 'active' : ''}`}
+            onClick={() => toggle(row.key)}
           >
-            <div className="legend-marker" style={{ backgroundColor: '#c81224', width: '8px', height: '8px' }}></div>
-            <span>{favoritesCount === 0 ? '0 favorited as of yet' : `${favoritesCount} favorited`}</span>
-          </div>
-        </div>
+            <span className="map-legend-dot" style={{ backgroundColor: row.color }} />
+            {row.icon && <img src={asset(row.icon)} alt="" className="map-legend-icon" />}
+            <span className="map-legend-label">{row.label}</span>
+          </button>
+        ))}
+        {counts.regular > 0 && (
+          <button
+            className={`map-legend-row ${legendFilters.includes('regular') ? 'active' : ''}`}
+            onClick={() => toggle('regular')}
+          >
+            <span className="map-legend-dot" style={{ backgroundColor: '#928f8e' }} />
+            <span className="map-legend-label">The Rest</span>
+          </button>
+        )}
       </div>
     </div>
   )

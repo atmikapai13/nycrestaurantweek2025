@@ -1,62 +1,32 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
+import { createPortal } from "react-dom";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "./Map.css";
 import type { Restaurant } from "../types/restaurant";
-import ChatInterface, { type ChatInterfaceHandle } from "./ChatInterface";
-import { MapLegend } from "./MapLegend";
 import { useMap, hasAnyAward, type IsochroneLayer, type GeocodedMarker } from "../contexts/MapContext";
 import { asset } from "../utils/asset";
+import RestaurantCard from "./RestaurantCard";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // Set your Mapbox access token
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
-// Cuisine → emoji mapping (Cooking Mama style)
-const CUISINE_EMOJI: Record<string, string> = {
-  'Italian': '🍝',
-  'Japanese / Sushi': '🍣',
-  'French': '🥐',
-  'Mexican': '🌮',
-  'Steakhouse': '🥩',
-  'Chinese': '🥡',
-  'Korean': '🍱',
-  'Indian': '🍛',
-  'Thai': '🥘',
-  'Seafood': '🦐',
-  'Mediterranean': '🫒',
-  'Greek': '🥙',
-  'American (New)': '🍔',
-  'American (Traditional)': '🍔',
-  'Pizza': '🍕',
-  'Vietnamese': '🍜',
-  'Asian Fusion': '🥢',
-  'Gastropub': '🍺',
-  'Soul Food / Southern': '🍗',
-  'Spanish': '🥘',
-  'Middle Eastern': '🧆',
-  'Caribbean': '🥥',
-  'Brazilian': '🥩',
-  'Turkish': '🧆',
-  'Belgian': '🧇',
-  'Eastern European': '🥟',
-  'Ukrainian': '🥟',
-  'Irish': '☘️',
-  'British': '🫖',
-  'Austrian': '🥨',
-  'African': '🍲',
-  'Cajun/Creole': '🦞',
-  'Cuban': '🫔',
-  'Pan-Asian': '🥢',
-  'Latin American': '🫔',
-  'Peruvian': '🐟',
-  'Argentinian': '🥩',
-  'Colombian': '🫔',
-  'Puerto Rican': '🍛',
-  'Barbecue': '🍖',
-  'Continental': '🍷',
-  'Eclectic': '🍴',
+// Marker emoji maps to the $26 Offer breakdown (what your $26 buys). Venues with
+// only the collectible (no $26 deal) show the World Cup trophy. Priority handles
+// the lone overlap — a dessert shop that also has a meal deal reads as dessert.
+const getDealEmoji = (restaurant: Restaurant): string => {
+  const tags = restaurant.deal_tags ?? [];
+  if (restaurant.has_26_offer) {
+    if (tags.includes("desserts")) return "🍰";
+    if (tags.includes("meal_drink_combo")) return "🤑"; // Meal + Drink
+    if (tags.includes("food_only")) return "🍱"; // Meal
+    if (tags.includes("drink_only")) return "🍻"; // Drinks only
+    return "🍽️"; // $26 offer with no specific type
+  }
+  if (tags.includes("desserts")) return "🍰"; // dessert shop, collectible only
+  return "🏆"; // collectible cup only — no $26 deal
 };
-const FALLBACK_EMOJI = '🍽️';
 
 // Emoji teardrop background color (Cooking Mama beige cream)
 const EMOJI_BG_COLOR = '#FFFAEA';
@@ -107,7 +77,6 @@ export default function Map({
   const map = useRef<mapboxgl.Map | null>(null);
   const markers = useRef<mapboxgl.Marker[]>([]);
   const markerElements = useRef<HTMLDivElement[]>([]);
-  const chatInterfaceRef = useRef<ChatInterfaceHandle>(null);
   const geocodedPins = useRef<mapboxgl.Marker[]>([]); // Native teardrop pins for geocoded locations
   const pendingMarkerUpdate = useRef<number | null>(null); // Throttle zoom marker updates
   const currentMarkerMode = useRef<'dot' | 'emoji'>('dot'); // Track marker display mode
@@ -137,6 +106,11 @@ export default function Map({
   // Refs for tracking previous isochrone states to prevent unnecessary re-renders
   const previousLayers = useRef<IsochroneLayer[]>([]);
   const selectedRestaurantRef = useRef(selectedRestaurant); // Avoid stale closures in click handlers
+
+  // Desktop: restaurant card renders as a Mapbox popup anchored above the marker.
+  const isMobileViewport = useIsMobile();
+  const cardPopup = useRef<mapboxgl.Popup | null>(null);
+  const popupContainer = useMemo(() => document.createElement("div"), []);
 
   // Keep selectedRestaurantRef in sync (avoids stale closures in click handlers)
   useEffect(() => {
@@ -276,8 +250,9 @@ export default function Map({
     // Smaller when zoomed out to reduce clustering
     const minZoom = 10;
     const maxZoom = 16;
-    const minScale = isMobileDevice ? 0.45 : 0.5;
-    const maxScale = isMobileDevice ? 1.5 : 1.2;
+    // Tuned so dots read at the zoomed-out default (~10.5) without blobbing together
+    const minScale = isMobileDevice ? 0.7 : 0.75;
+    const maxScale = isMobileDevice ? 1.6 : 1.3;
 
     const clampedZoom = Math.max(minZoom, Math.min(maxZoom, zoom));
     const t = (clampedZoom - minZoom) / (maxZoom - minZoom);
@@ -325,9 +300,10 @@ export default function Map({
 
     // Then apply all styles (writes) - no interleaved reads
     const padding = mobile ? "8px" : "6px";
-    updates.forEach(({ el, size, isSelected, wrapper }) => {
-      if (shouldBeEmoji || isSelected) {
-        // Emoji teardrop mode — or selected at any zoom
+    updates.forEach(({ el, size, wrapper }) => {
+      if (shouldBeEmoji) {
+        // Emoji teardrop mode (zoomed in past threshold). Selection no longer
+        // forces this — the card pops up above the marker instead.
         el.classList.add("emoji-mode");
         el.classList.remove("emoji-selected");
         el.style.width = "36px";
@@ -368,22 +344,26 @@ export default function Map({
     // Detect mobile viewport
     const isMobile = window.innerWidth <= 768;
 
-    // Mobile-specific viewport: shifted south to account for 40% drawer at bottom
-    const mobileCenter: [number, number] = [-73.988, 40.727]; // Shifted south to show lower Manhattan
-    const mobileZoom = 11.8;
+    // Fallback center when geolocation is unavailable/denied or the user is
+    // outside NYC: Manhattan Midtown (~Bryant Park).
+    const MIDTOWN: [number, number] = [-73.984, 40.754];
+
+    // Mobile-specific viewport: shifted south so Midtown sits above the 40% drawer
+    const mobileCenter: [number, number] = [MIDTOWN[0], MIDTOWN[1] - 0.027];
+    const mobileZoom = 10.0;
     const mobilePitch = 45;
     const mobileBearing = 0;
 
     // Desktop viewport
-    const desktopCenter: [number, number] = [-74.030, 40.757];
-    const desktopZoom = 11.8;
-    const desktopPitch = 45;
+    const desktopCenter: [number, number] = MIDTOWN;
+    const desktopZoom = 10.50;
+    const desktopPitch = 30;
     const desktopBearing = 0;
 
     // Initialize map
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
-      style: "mapbox://styles/atmikapai13/cmhdmnool00ai01qw6qz79zqu", // Custom style
+      style: "mapbox://styles/atmikapai13/cmlbhu73z001e01rz83jfgvaa", // Custom style
       center: isMobile ? mobileCenter : desktopCenter,
       zoom: isMobile ? mobileZoom : desktopZoom,
       pitch: isMobile ? mobilePitch : desktopPitch,
@@ -414,7 +394,9 @@ export default function Map({
           (position) => {
             const { latitude, longitude } = position.coords;
 
-            // Store user location in context for chat queries
+            // Store user location for the sidebar's "closest to you" list and
+            // chat queries. The map itself stays on the Midtown fallback — we
+            // don't recenter, to avoid a jarring jump once geolocation resolves.
             setUserLocation({ latitude, longitude });
             console.log(`📍 User location detected: ${latitude}, ${longitude}`);
 
@@ -426,10 +408,9 @@ export default function Map({
             pulseRing.className = "pulse-ring";
             userLocationEl.appendChild(pulseRing);
 
-            const alfredoImg = document.createElement("img");
-            alfredoImg.src = asset("/characters/alfredo.png");
-            alfredoImg.alt = "Your location";
-            userLocationEl.appendChild(alfredoImg);
+            const dot = document.createElement("div");
+            dot.className = "user-location-dot";
+            userLocationEl.appendChild(dot);
 
             new mapboxgl.Marker({ element: userLocationEl })
               .setLngLat([longitude, latitude])
@@ -701,37 +682,16 @@ export default function Map({
       });
     }
 
-    // Sort restaurants so higher priority markers render last (on top)
-    // Order: default (0) → awards (1) → favorites (2)
-    const sortedRestaurants = [...restaurantsToRender].sort((a, b) => {
-      const getPriority = (r: Restaurant) => {
-        if (favorites.includes(r.name)) return 2;
-        if (hasAnyAward(r)) return 1;
-        return 0;
-      };
-      return getPriority(a) - getPriority(b);
-    });
+    // All markers look identical (plain black), so no priority sorting needed.
+    const sortedRestaurants = restaurantsToRender;
 
     // Render restaurants with coordinates
     sortedRestaurants.forEach((restaurant) => {
       if (restaurant.latitude && restaurant.longitude) {
-        const isFavorite = favorites.includes(restaurant.name);
-        const isAwardWinner = hasAnyAward(restaurant);
-
-        let markerColor = '#928f8e'  // Default grey
-        let baseMarkerSize = 10;     // Base size for grey markers
-        let zIndex = 0
-
-        // COLOR PRIORITY: Pink (favorites) > Red (awards) > Grey (default)
-        if (isFavorite) {
-          markerColor = "#ff67b2"; // Pink
-          baseMarkerSize = 12;
-          zIndex = 3;
-        } else if (isAwardWinner) {
-          markerColor = "#c81224"; // Red
-          baseMarkerSize = 12;
-          zIndex = 2;
-        }
+        // Favorited restaurants get a pink marker so they stand out; others black.
+        const markerColor = favorites.includes(restaurant.name) ? "#FF69B4" : "#000000";
+        const baseMarkerSize = 10;
+        const zIndex = 0;
 
         let marker: mapboxgl.Marker;
         let markerEl: HTMLDivElement | null = null;
@@ -744,8 +704,8 @@ export default function Map({
         markerWrapper.style.justifyContent = "center";
         markerWrapper.style.cursor = "pointer";
 
-        // Determine cuisine emoji
-        const cuisineEmoji = CUISINE_EMOJI[restaurant.cuisine] || FALLBACK_EMOJI;
+        // Determine deal emoji ($26 Offer breakdown, or trophy for collectible-only)
+        const dealEmoji = getDealEmoji(restaurant);
 
         // Create the actual marker element
         markerEl = document.createElement("div");
@@ -759,14 +719,14 @@ export default function Map({
         markerEl.style.zIndex = zIndex.toString();
 
         // Store data attributes for emoji mode
-        markerEl.setAttribute("data-cuisine-emoji", cuisineEmoji);
+        markerEl.setAttribute("data-deal-emoji", dealEmoji);
         markerEl.setAttribute("data-dot-color", markerColor);
         markerEl.setAttribute("data-slug", restaurant.slug);
 
         // Add emoji span (hidden by default, shown at zoom ≥ 15)
         const emojiSpan = document.createElement("span");
         emojiSpan.className = "marker-emoji";
-        emojiSpan.textContent = cuisineEmoji;
+        emojiSpan.textContent = dealEmoji;
         emojiSpan.style.display = "none";
         markerEl.appendChild(emojiSpan);
 
@@ -810,12 +770,10 @@ export default function Map({
             // Deselect
             setSelectedRestaurant(null);
           } else {
-            // Select
+            // Select — the card now renders as a floating overlay on the map
+            // (driven by selectedRestaurant in App), not in the chat panel.
             setSelectedRestaurant(restaurant);
             onRestaurantSelect(restaurant);
-            if (chatInterfaceRef.current) {
-              chatInterfaceRef.current.addRestaurantCard(restaurant);
-            }
           }
         });
 
@@ -872,43 +830,6 @@ export default function Map({
     updateMarkerSizes();
   }, [selectedRestaurant]);
 
-  // Zoom to selected restaurant when it changes
-  useEffect(() => {
-    if (!map.current || !selectedRestaurant) return;
-
-    const { latitude, longitude } = selectedRestaurant;
-
-    if (latitude && longitude) {
-      const currentZoom = map.current.getZoom();
-      const isMobileView = window.innerWidth <= 768;
-
-      // Check if restaurant is visible in current viewport
-      const bounds = map.current.getBounds();
-      const isInViewport = bounds.contains([longitude, latitude]);
-
-      // Skip flyTo only if zoomed in past threshold AND restaurant is already visible
-      const skipZoomThreshold = isMobileView ? 13.5 : 15;
-      if (currentZoom > skipZoomThreshold && isInViewport) return;
-
-      // Keep current zoom if already zoomed in, otherwise zoom to target (13 for mobile, 14.1 for desktop)
-      const minZoom = isMobileView ? 13.8 : 14.1;
-      const targetZoom = currentZoom > minZoom ? currentZoom : minZoom;
-
-      // Smooth fly to the restaurant location
-      map.current.flyTo({
-        center: [longitude, latitude],
-        zoom: targetZoom,
-        pitch: 45,
-        bearing: map.current.getBearing(), // Keep current bearing
-        duration: 2500, // Smooth 1.8s animation
-        essential: true, // This animation is essential with respect to prefers-reduced-motion
-        padding: isMobileView
-          ? { top: 10, bottom: 450, left: 20, right: 20 } // Mobile: pad bottom for drawer
-          : { top: 100, bottom: 100, left: 480, right: 100 }, // Desktop: pad left for chat panel
-      });
-    }
-  }, [selectedRestaurant]);
-
   // Render geocoded location pins (native Mapbox teardrop markers showing isochrone centers)
   useEffect(() => {
     if (!map.current) return;
@@ -940,20 +861,46 @@ export default function Map({
     });
   }, [geocodedMarkers, markerVisibilityMap]);
 
+  // Anchor the desktop card popup above the selected marker (tracks pan/zoom,
+  // auto-flips near edges). Mobile uses the bottom-sheet drawer instead.
+  useEffect(() => {
+    if (!map.current || isMobileViewport || !selectedRestaurant) return;
+    const lng = Number(selectedRestaurant.longitude);
+    const lat = Number(selectedRestaurant.latitude);
+    if (Number.isNaN(lng) || Number.isNaN(lat)) return;
+
+    const popup = new mapboxgl.Popup({
+      closeButton: false,
+      closeOnClick: false,
+      maxWidth: "340px",
+      offset: 16,
+      className: "restaurant-popup",
+    })
+      .setLngLat([lng, lat])
+      .setDOMContent(popupContainer)
+      .addTo(map.current);
+    cardPopup.current = popup;
+
+    return () => {
+      popup.remove();
+      if (cardPopup.current === popup) cardPopup.current = null;
+    };
+  }, [selectedRestaurant, isMobileViewport, popupContainer]);
+
   return (
     <div className="map-wrapper">
       <div ref={mapContainer} className="map-container" />
-      {/* Chat Interface (overlays map region) */}
-      <ChatInterface
-        ref={chatInterfaceRef}
-        onRestaurantSelect={onRestaurantSelect}
-        onMapFocus={handleMapFocus}
-        onResetAll={onResetAll}
-        onToggleFavorite={onToggleFavorite}
-      />
-
-      {/* Map Legend */}
-      <MapLegend />
+      {!isMobileViewport &&
+        selectedRestaurant &&
+        createPortal(
+          <RestaurantCard
+            restaurant={selectedRestaurant}
+            onClose={() => setSelectedRestaurant(null)}
+            isFavorited={favorites.includes(selectedRestaurant.name)}
+            onToggleFavorite={() => onToggleFavorite?.(selectedRestaurant.name)}
+          />,
+          popupContainer
+        )}
     </div>
   );
 }

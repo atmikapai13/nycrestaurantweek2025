@@ -1,9 +1,15 @@
+import path from "path";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
   // Self-contained subpath build: assets reference /worldcup2026/... and files
   // physically live under dist/worldcup2026/, so the app works on its own
   // .vercel.app domain and behind the router at nyceats.live/worldcup2026/.

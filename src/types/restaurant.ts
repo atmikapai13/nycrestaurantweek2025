@@ -11,7 +11,15 @@ export interface Restaurant {
   meal_types?: string[];
   participation_weeks?: string[];
   participation_weeks2?: string;
-  collections: string[];
+  collections?: string[];
+  // World Cup 2026 (Five Borough Winners Special) fields
+  promotions?: string[];
+  limited_edition_cup?: boolean;
+  has_26_offer?: boolean;
+  // Deal categories (from 5_TagDeals.py) — drive the deal filter toggles
+  deal_tags?: string[];
+  offer_url?: string;
+  image_credit?: string;
   opentable_id?: string;
   table_res?: string;
   menu_url?: string;

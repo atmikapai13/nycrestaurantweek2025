@@ -34,7 +34,7 @@
         "slug": "sushi"
       }
     ],
-    "objectID": "126026",
+    "objectID": "1197301",
     "_snippetResult": {
       "main_desc": {
         "value": "Chef counters are a treat, but a seat in front",
@@ -72,10 +72,10 @@
         "slug": "contemporary"
       }
     ],
-    "objectID": "126264",
+    "objectID": "366502",
     "_snippetResult": {
       "main_desc": {
-        "value": "Counter dining can sometimes be a cramped affair, but fortunately",
+        "value": "\n\nAtera offers one of the city’s more polished",
         "matchLevel": "none"
       }
     }
@@ -110,10 +110,10 @@
         "slug": "contemporary"
       }
     ],
-    "objectID": "126383",
+    "objectID": "1218089",
     "_snippetResult": {
       "main_desc": {
-        "value": "Those who recall Chef Buddha Lo’s cozy back room",
+        "value": "Huso is the refined downtown evolution of Chef Buddha Lo",
         "matchLevel": "none"
       }
     }
@@ -153,7 +153,7 @@
         "slug": "contemporary"
       }
     ],
-    "objectID": "126089",
+    "objectID": "360775",
     "_snippetResult": {
       "main_desc": {
         "value": "Cool and polished, this dining room bears that perfectly downtown",
@@ -196,7 +196,7 @@
         "slug": "american"
       }
     ],
-    "objectID": "126215",
+    "objectID": "1164955",
     "_snippetResult": {
       "main_desc": {
         "value": "Crown Shy occupies a stunning setting in the landmark Art",
@@ -234,7 +234,7 @@
         "slug": "contemporary"
       }
     ],
-    "objectID": "126236",
+    "objectID": "1184201",
     "_snippetResult": {
       "main_desc": {
         "value": "Set in a landmark skyscraper that towers over the city",
@@ -272,7 +272,7 @@
         "slug": "contemporary"
       }
     ],
-    "objectID": "126380",
+    "objectID": "1216261",
     "_snippetResult": {
       "main_desc": {
         "value": "The talented Sam Lawrence is sure to impress diners at",
@@ -315,7 +315,7 @@
         "slug": "dim-sum"
       }
     ],
-    "objectID": "126196",
+    "objectID": "67524",
     "_snippetResult": {
       "main_desc": {
         "value": "This wildly popular Chinatown spot is still packed to the",
@@ -353,7 +353,7 @@
         "slug": "japanese"
       }
     ],
-    "objectID": "126379",
+    "objectID": "1241104",
     "_snippetResult": {
       "main_desc": {
         "value": "Chef Isao Yamada's life's work has been kaiseki",
@@ -391,7 +391,7 @@
         "slug": "french"
       }
     ],
-    "objectID": "126284",
+    "objectID": "510102",
     "_snippetResult": {
       "main_desc": {
         "value": "Le Coucou remains a white-hot scene that’s equal",
@@ -429,10 +429,10 @@
         "slug": "japanese"
       }
     ],
-    "objectID": "126385",
+    "objectID": "1243511",
     "_snippetResult": {
       "main_desc": {
-        "value": "It's intimate, with counter seats for around ten, but",
+        "value": "This intimate counter is a tight squeeze, but that’s",
         "matchLevel": "none"
       }
     }
@@ -472,7 +472,7 @@
         "slug": "contemporary"
       }
     ],
-    "objectID": "126024",
+    "objectID": "1199872",
     "_snippetResult": {
       "main_desc": {
         "value": "L’Abeille reflects the luxurious charms of TriBeCa from its",
@@ -510,7 +510,7 @@
         "slug": "malaysian"
       }
     ],
-    "objectID": "126047",
+    "objectID": "70016",
     "_snippetResult": {
       "main_desc": {
         "value": "Nyonya flaunts a comfy setting composed of brick walls and",
@@ -553,7 +553,7 @@
         "slug": "contemporary"
       }
     ],
-    "objectID": "126356",
+    "objectID": "1212608",
     "_snippetResult": {
       "main_desc": {
         "value": "On the edge of Chinatown, Chef Fidel Caballero is not",
@@ -596,7 +596,7 @@
         "slug": "fusion-1161"
       }
     ],
-    "objectID": "126299",
+    "objectID": "1186313",
     "_snippetResult": {
       "main_desc": {
         "value": "Brought to Mott Street, this charming spot from Chefs Ann",
@@ -639,10 +639,10 @@
         "slug": "seafood-1096"
       }
     ],
-    "objectID": "126138",
+    "objectID": "554166",
     "_snippetResult": {
       "main_desc": {
-        "value": "The cooking has never been better at this high-energy",
+        "value": "Hazy, cramped and packed front to back, this high-energy",
         "matchLevel": "none"
       }
     }
@@ -682,7 +682,7 @@
         "slug": "cantonese"
       }
     ],
-    "objectID": "126040",
+    "objectID": "1210087",
     "_snippetResult": {
       "main_desc": {
         "value": "Chrystie Street wins big with this high-energy Chinese restaurant",
@@ -720,7 +720,7 @@
         "slug": "chinese"
       }
     ],
-    "objectID": "126214",
+    "objectID": "1212260",
     "_snippetResult": {
       "main_desc": {
         "value": "Chef Ron Yan is making a splash with one of",
@@ -751,11 +751,22 @@
     "michelin_award": "ONE_STAR",
     "name": "Dirt Candy",
     "slug": "dirt-candy",
-    "cuisines": [],
-    "objectID": "126092",
+    "cuisines": [
+      {
+        "code": "TYC_1126",
+        "label": "Vegetarian",
+        "slug": "vegetarian"
+      },
+      {
+        "code": "TYC_90",
+        "label": "Vegan",
+        "slug": "vegan-90"
+      }
+    ],
+    "objectID": "472167",
     "_snippetResult": {
       "main_desc": {
-        "value": "Chef Amanda Cohen was an advocate of vegetable- and plant",
+        "value": "\n\nChef Amanda Cohen was an early advocate of vegetable",
         "matchLevel": "none"
       }
     }
@@ -795,7 +806,7 @@
         "slug": "regional-cuisine"
       }
     ],
-    "objectID": "126259",
+    "objectID": "554172",
     "_snippetResult": {
       "main_desc": {
         "value": "Go ahead and pinch yourself: you're not dreaming. Pinch",
@@ -838,10 +849,10 @@
         "slug": "seafood-1096"
       }
     ],
-    "objectID": "126152",
+    "objectID": "1215182",
     "_snippetResult": {
       "main_desc": {
-        "value": "César Ramirez is one of the few chefs who, night",
+        "value": "César Ramirez is one of a select few top-level",
         "matchLevel": "none"
       }
     }
@@ -881,7 +892,7 @@
         "slug": "italian-american"
       }
     ],
-    "objectID": "126070",
+    "objectID": "1197832",
     "_snippetResult": {
       "main_desc": {
         "value": "There is perfection in the details at Torrisi, where waiters",
@@ -919,7 +930,7 @@
         "slug": "american"
       }
     ],
-    "objectID": "126200",
+    "objectID": "468088",
     "_snippetResult": {
       "main_desc": {
         "value": "From white-jacketed servers to that pristine counter, this updated",
@@ -962,10 +973,10 @@
         "slug": "american"
       }
     ],
-    "objectID": "126282",
+    "objectID": "405986",
     "_snippetResult": {
       "main_desc": {
-        "value": "This boisterous SoHo alcove is an ideal place to convene",
+        "value": "A modern New York classic, Estela continues to set the",
         "matchLevel": "none"
       }
     }
@@ -1000,7 +1011,7 @@
         "slug": "indian"
       }
     ],
-    "objectID": "126244",
+    "objectID": "1186126",
     "_snippetResult": {
       "main_desc": {
         "value": "This rousing Indian restaurant in Essex Market is refreshingly unapologetic",
@@ -1043,7 +1054,7 @@
         "slug": "yakitori"
       }
     ],
-    "objectID": "126295",
+    "objectID": "1184914",
     "_snippetResult": {
       "main_desc": {
         "value": "Blacked-out windows mark the entrance to this NoHo sibling",
@@ -1086,7 +1097,7 @@
         "slug": "fusion-1161"
       }
     ],
-    "objectID": "126174",
+    "objectID": "1198127",
     "_snippetResult": {
       "main_desc": {
         "value": "Are there any rules about showering a scoop of honey",
@@ -1124,7 +1135,7 @@
         "slug": "central-asian-120"
       }
     ],
-    "objectID": "126331",
+    "objectID": "1241105",
     "_snippetResult": {
       "main_desc": {
         "value": "On a prime corner in the West Village, this welcoming",
@@ -1162,7 +1173,7 @@
         "slug": "fusion-1161"
       }
     ],
-    "objectID": "126035",
+    "objectID": "1204004",
     "_snippetResult": {
       "main_desc": {
         "value": "Chef Eric JaeHo Choi's spot flies a bit under",
@@ -1200,7 +1211,7 @@
         "slug": "pizza"
       }
     ],
-    "objectID": "126199",
+    "objectID": "562800",
     "_snippetResult": {
       "main_desc": {
         "value": "After rallying crowds on both coasts of the country, pizza",
@@ -1238,53 +1249,10 @@
         "slug": "mediterranean-cuisine"
       }
     ],
-    "objectID": "126161",
+    "objectID": "1191948",
     "_snippetResult": {
       "main_desc": {
         "value": "As further proof that big things often come in small",
-        "matchLevel": "none"
-      }
-    }
-  },
-  {
-    "_geoloc": {
-      "lat": 40.727269,
-      "lng": -73.993827
-    },
-    "area_name": "Manhattan",
-    "chef": null,
-    "city": {
-      "name": "New York",
-      "slug": "new-york",
-      "exonyms": [
-        "Nueva York",
-        "New York"
-      ]
-    },
-    "distinction": {
-      "label": "Bib Gourmand: good quality, good value cooking",
-      "slug": "bib-gourmand",
-      "icon": "="
-    },
-    "michelin_award": "BIB_GOURMAND",
-    "name": "Atla",
-    "slug": "atla",
-    "cuisines": [
-      {
-        "code": "TYC_1084",
-        "label": "Mexican",
-        "slug": "mexican"
-      },
-      {
-        "code": "TYC_6",
-        "label": "Contemporary",
-        "slug": "contemporary"
-      }
-    ],
-    "objectID": "126181",
-    "_snippetResult": {
-      "main_desc": {
-        "value": "Flatiron favorite Cosme may be doted on by diners, but",
         "matchLevel": "none"
       }
     }
@@ -1324,7 +1292,7 @@
         "slug": "creative"
       }
     ],
-    "objectID": "126243",
+    "objectID": "1186787",
     "_snippetResult": {
       "main_desc": {
         "value": "This modern, minimalist spot emanates with an impressive level of",
@@ -1367,10 +1335,10 @@
         "slug": "sushi"
       }
     ],
-    "objectID": "126230",
+    "objectID": "1185037",
     "_snippetResult": {
       "main_desc": {
-        "value": "Revered chef Tadashi “Edowan” Yoshida has taken NYC by storm",
+        "value": "Revered chef Tadashi “Edowan” Yoshida commands this seriously impressive counter",
         "matchLevel": "none"
       }
     }
@@ -1405,7 +1373,7 @@
         "slug": "deli"
       }
     ],
-    "objectID": "126286",
+    "objectID": "122748",
     "_snippetResult": {
       "main_desc": {
         "value": "One of the last-standing, old-time Eastern European spots",
@@ -1443,7 +1411,7 @@
         "slug": "indian"
       }
     ],
-    "objectID": "126165",
+    "objectID": "1214014",
     "_snippetResult": {
       "main_desc": {
         "value": "Chef Vikas Khanna has struck out on his own at",
@@ -1481,7 +1449,7 @@
         "slug": "contemporary"
       }
     ],
-    "objectID": "126048",
+    "objectID": "1198091",
     "_snippetResult": {
       "main_desc": {
         "value": "This understated Lower East Side dining room may appear modest",
@@ -1524,7 +1492,7 @@
         "slug": "sushi"
       }
     ],
-    "objectID": "126281",
+    "objectID": "435810",
     "_snippetResult": {
       "main_desc": {
         "value": "For a truly memorable sushi adventure, head to this sleek",
@@ -1562,7 +1530,7 @@
         "slug": "burmese"
       }
     ],
-    "objectID": "126210",
+    "objectID": "1205666",
     "_snippetResult": {
       "main_desc": {
         "value": "Husband and wife Thidar Kyaw and Tin Ko Naing along",
@@ -1600,7 +1568,7 @@
         "slug": "american"
       }
     ],
-    "objectID": "126118",
+    "objectID": "69616",
     "_snippetResult": {
       "main_desc": {
         "value": "Knowing when to leave something alone, whether you’re a",
@@ -1638,7 +1606,7 @@
         "slug": "korean"
       }
     ],
-    "objectID": "126276",
+    "objectID": "554164",
     "_snippetResult": {
       "main_desc": {
         "value": "Settle in to your perch at one of the tables",
@@ -1676,10 +1644,10 @@
         "slug": "contemporary"
       }
     ],
-    "objectID": "126314",
+    "objectID": "1184254",
     "_snippetResult": {
       "main_desc": {
-        "value": "Frevo is that rare restaurant that flies just under the",
+        "value": "This chic Greenwich Village hideout is full of surprises. A",
         "matchLevel": "none"
       }
     }
@@ -1719,10 +1687,10 @@
         "slug": "middle-eastern"
       }
     ],
-    "objectID": "126189",
+    "objectID": "1202987",
     "_snippetResult": {
       "main_desc": {
-        "value": "This small, sleek space punches way above its weight with",
+        "value": "This small space in Greenwich Village fills up right as",
         "matchLevel": "none"
       }
     }
@@ -1762,7 +1730,7 @@
         "slug": "shanghainese"
       }
     ],
-    "objectID": "126337",
+    "objectID": "1194745",
     "_snippetResult": {
       "main_desc": {
         "value": "With a line that’s almost always stretching out the",
@@ -1795,15 +1763,20 @@
     "slug": "soda-club",
     "cuisines": [
       {
+        "code": "TYC_90",
+        "label": "Vegan",
+        "slug": "vegan-90"
+      },
+      {
         "code": "TYC_1179",
         "label": "Italian-American",
         "slug": "italian-american"
       }
     ],
-    "objectID": "126028",
+    "objectID": "1197480",
     "_snippetResult": {
       "main_desc": {
-        "value": "This fresh concept's name is derived from Italy's",
+        "value": "Named after Italy's tradition of hand-crafted sodas, this",
         "matchLevel": "none"
       }
     }
@@ -1843,7 +1816,7 @@
         "slug": "asian-contemporary"
       }
     ],
-    "objectID": "126085",
+    "objectID": "468067",
     "_snippetResult": {
       "main_desc": {
         "value": "Classically trained Chef Thomas Chen is the one to thank",
@@ -1886,7 +1859,7 @@
         "slug": "sichuan"
       }
     ],
-    "objectID": "126081",
+    "objectID": "504290",
     "_snippetResult": {
       "main_desc": {
         "value": "This beloved Sichuan haunt now counts multiple locations across the",
@@ -1929,10 +1902,10 @@
         "slug": "creative"
       }
     ],
-    "objectID": "126387",
+    "objectID": "1160166",
     "_snippetResult": {
       "main_desc": {
-        "value": "Spread over two spaces, including a small chef's counter",
+        "value": "Open since 2016, Ruffian continues to be a sleeper favorite",
         "matchLevel": "none"
       }
     }
@@ -1967,7 +1940,7 @@
         "slug": "fusion"
       }
     ],
-    "objectID": "126046",
+    "objectID": "472165",
     "_snippetResult": {
       "main_desc": {
         "value": "Ten years and counting, this easy-going hangout in the",
@@ -2010,7 +1983,7 @@
         "slug": "soba"
       }
     ],
-    "objectID": "126063",
+    "objectID": "67279",
     "_snippetResult": {
       "main_desc": {
         "value": "There are countless Japanese restaurants that line this stretch of",
@@ -2043,12 +2016,17 @@
     "slug": "superiority-burger",
     "cuisines": [
       {
+        "code": "TYC_1126",
+        "label": "Vegetarian",
+        "slug": "vegetarian"
+      },
+      {
         "code": "TYC_6",
         "label": "Contemporary",
         "slug": "contemporary"
       }
     ],
-    "objectID": "126037",
+    "objectID": "1205665",
     "_snippetResult": {
       "main_desc": {
         "value": "What began with a handful of seats and vegetarian burgers",
@@ -2091,10 +2069,10 @@
         "slug": "sushi"
       }
     ],
-    "objectID": "126076",
+    "objectID": "1210902",
     "_snippetResult": {
       "main_desc": {
-        "value": "From the team behind Rosella, this diminutive spot with a",
+        "value": "This diminutive counter with just a handful of seats favors",
         "matchLevel": "none"
       }
     }
@@ -2134,10 +2112,10 @@
         "slug": "seasonal-cuisine"
       }
     ],
-    "objectID": "126364",
+    "objectID": "1185033",
     "_snippetResult": {
       "main_desc": {
-        "value": "\"Simplicity is the peak of elegance\" seems a fitting",
+        "value": "At this elegant East Village counter, Tsukimi offers a modern",
         "matchLevel": "none"
       }
     }
@@ -2172,7 +2150,7 @@
         "slug": "thai"
       }
     ],
-    "objectID": "126191",
+    "objectID": "1206544",
     "_snippetResult": {
       "main_desc": {
         "value": "The name may reference Bangkok's original name, Phra Nakhon",
@@ -2215,7 +2193,7 @@
         "slug": "regional-cuisine"
       }
     ],
-    "objectID": "126249",
+    "objectID": "1198567",
     "_snippetResult": {
       "main_desc": {
         "value": "Chef Vijay Kumar runs the show at Semma, where regional",
@@ -2253,7 +2231,7 @@
         "slug": "asian"
       }
     ],
-    "objectID": "126115",
+    "objectID": "69116",
     "_snippetResult": {
       "main_desc": {
         "value": "This elder member of David Chang’s culinary empire is",
@@ -2291,7 +2269,7 @@
         "slug": "vietnamese"
       }
     ],
-    "objectID": "126384",
+    "objectID": "1243452",
     "_snippetResult": {
       "main_desc": {
         "value": "Long before doors open, a queue quickly forms along Third",
@@ -2329,7 +2307,7 @@
         "slug": "tex-mex"
       }
     ],
-    "objectID": "126373",
+    "objectID": "1194743",
     "_snippetResult": {
       "main_desc": {
         "value": "Sorry Texas, this \"yellow rose\" belongs to the bustling East",
@@ -2367,7 +2345,7 @@
         "slug": "korean"
       }
     ],
-    "objectID": "126167",
+    "objectID": "1214599",
     "_snippetResult": {
       "main_desc": {
         "value": "What more could you want out of this little charmer",
@@ -2410,7 +2388,7 @@
         "slug": "sushi"
       }
     ],
-    "objectID": "126062",
+    "objectID": "510090",
     "_snippetResult": {
       "main_desc": {
         "value": "Kosaka offers a stellar omakase in an elegant setting. The",
@@ -2448,7 +2426,7 @@
         "slug": "indian"
       }
     ],
-    "objectID": "126376",
+    "objectID": "1216260",
     "_snippetResult": {
       "main_desc": {
         "value": "Promises of “modern Indian” often bring more flash than flavor",
@@ -2491,7 +2469,7 @@
         "slug": "contemporary"
       }
     ],
-    "objectID": "126069",
+    "objectID": "68328",
     "_snippetResult": {
       "main_desc": {
         "value": "There’s something reassuring about a kitchen that gets in",
@@ -2529,7 +2507,7 @@
         "slug": "vietnamese"
       }
     ],
-    "objectID": "126399",
+    "objectID": "1217292",
     "_snippetResult": {
       "main_desc": {
         "value": "From the team behind Pranakhon comes this handsome new restaurant",
@@ -2564,53 +2542,10 @@
         "slug": "chinese-contemporary"
       }
     ],
-    "objectID": "126405",
+    "objectID": "1217772",
     "_snippetResult": {
       "main_desc": {
         "value": "It's classic Cantonese American with a modern twist at",
-        "matchLevel": "none"
-      }
-    }
-  },
-  {
-    "_geoloc": {
-      "lat": 40.7396366,
-      "lng": -73.9924121
-    },
-    "area_name": "Manhattan",
-    "chef": null,
-    "city": {
-      "name": "New York",
-      "slug": "new-york",
-      "exonyms": [
-        "Nueva York",
-        "New York"
-      ]
-    },
-    "distinction": {
-      "label": "One Star: High quality cooking",
-      "slug": "1-star-michelin",
-      "icon": "m"
-    },
-    "michelin_award": "ONE_STAR",
-    "name": "Oiji Mi",
-    "slug": "oiji-mi",
-    "cuisines": [
-      {
-        "code": "TYC_1034",
-        "label": "Korean",
-        "slug": "korean"
-      },
-      {
-        "code": "TYC_6",
-        "label": "Contemporary",
-        "slug": "contemporary"
-      }
-    ],
-    "objectID": "126176",
-    "_snippetResult": {
-      "main_desc": {
-        "value": "Chef Brian Kim and his team serve up very impressive",
         "matchLevel": "none"
       }
     }
@@ -2650,7 +2585,7 @@
         "slug": "contemporary"
       }
     ],
-    "objectID": "126073",
+    "objectID": "1206453",
     "_snippetResult": {
       "main_desc": {
         "value": "This modern counter tucked behind sister restaurant Oiji Mi showcases",
@@ -2660,8 +2595,51 @@
   },
   {
     "_geoloc": {
-      "lat": 40.7387578,
-      "lng": -73.988991
+      "lat": 40.7396366,
+      "lng": -73.9924121
+    },
+    "area_name": "Manhattan",
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "distinction": {
+      "label": "One Star: High quality cooking",
+      "slug": "1-star-michelin",
+      "icon": "m"
+    },
+    "michelin_award": "ONE_STAR",
+    "name": "Oiji Mi",
+    "slug": "oiji-mi",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "objectID": "1202653",
+    "_snippetResult": {
+      "main_desc": {
+        "value": "Chef Brian Kim and his team serve up very impressive",
+        "matchLevel": "none"
+      }
+    }
+  },
+  {
+    "_geoloc": {
+      "lat": 40.7384828,
+      "lng": -73.9884343
     },
     "area_name": "Manhattan",
     "chef": null,
@@ -2693,7 +2671,7 @@
         "slug": "american"
       }
     ],
-    "objectID": "126183",
+    "objectID": "69890",
     "_snippetResult": {
       "main_desc": {
         "value": "This fabled NY icon is high on most people's",
@@ -2703,8 +2681,8 @@
   },
   {
     "_geoloc": {
-      "lat": 40.7390046,
-      "lng": -73.9890088
+      "lat": 40.7390317,
+      "lng": -73.9891824
     },
     "area_name": "Manhattan",
     "chef": null,
@@ -2736,10 +2714,10 @@
         "slug": "regional-cuisine"
       }
     ],
-    "objectID": "126127",
+    "objectID": "1183937",
     "_snippetResult": {
       "main_desc": {
-        "value": "If you’ve been lucky enough to sample the ethereal",
+        "value": "Rezdôra presents itself as a focused exploration of the cuisine",
         "matchLevel": "none"
       }
     }
@@ -2779,10 +2757,10 @@
         "slug": "sushi"
       }
     ],
-    "objectID": "126279",
+    "objectID": "562510",
     "_snippetResult": {
       "main_desc": {
-        "value": "Chef Shigeyuki Tsunoda's iconic eight-seat half-moon shaped",
+        "value": "Noda features an eight-seat, half-moon-shaped counter set",
         "matchLevel": "none"
       }
     }
@@ -2808,7 +2786,7 @@
       "icon": "n"
     },
     "michelin_award": "TWO_STARS",
-    "name": "odo",
+    "name": "Odo",
     "slug": "odo",
     "cuisines": [
       {
@@ -2822,7 +2800,7 @@
         "slug": "contemporary"
       }
     ],
-    "objectID": "126117",
+    "objectID": "1164895",
     "_snippetResult": {
       "main_desc": {
         "value": "A serene atmosphere awaits in-the-know diners at this",
@@ -2857,7 +2835,7 @@
         "slug": "thai"
       }
     ],
-    "objectID": "126275",
+    "objectID": "1211670",
     "_snippetResult": {
       "main_desc": {
         "value": "This cozy, Thai newcomer in Cobble Hill lists a “What",
@@ -2900,10 +2878,10 @@
         "slug": "sushi"
       }
     ],
-    "objectID": "126072",
+    "objectID": "1198444",
     "_snippetResult": {
       "main_desc": {
-        "value": "This downtown sibling of the impressive Upper East original is",
+        "value": "Noz 17 is an elegant and inviting downtown sibling of",
         "matchLevel": "none"
       }
     }
@@ -2938,7 +2916,7 @@
         "slug": "korean"
       }
     ],
-    "objectID": "126042",
+    "objectID": "1210446",
     "_snippetResult": {
       "main_desc": {
         "value": "It can be difficult to snag a table at this",
@@ -2978,10 +2956,10 @@
         "slug": "contemporary"
       }
     ],
-    "objectID": "126292",
+    "objectID": "510111",
     "_snippetResult": {
       "main_desc": {
-        "value": "Aska is an ideal ambassador for its edgy-cool South",
+        "value": "Aska remains one of New York’s most distinctive dining",
         "matchLevel": "none"
       }
     }
@@ -3021,7 +2999,7 @@
         "slug": "steakhouse"
       }
     ],
-    "objectID": "126219",
+    "objectID": "536865",
     "_snippetResult": {
       "main_desc": {
         "value": "Korean-born Simon Kim opened Cote as a joyful celebration",
@@ -3064,7 +3042,7 @@
         "slug": "korean-contemporary"
       }
     ],
-    "objectID": "126350",
+    "objectID": "1186485",
     "_snippetResult": {
       "main_desc": {
         "value": "Chef Hoyoung Kim and his team continue to deliver their",
@@ -3104,7 +3082,7 @@
         "slug": "sushi"
       }
     ],
-    "objectID": "126077",
+    "objectID": "1211211",
     "_snippetResult": {
       "main_desc": {
         "value": "Far from the subway stop on a quiet street in",
@@ -3140,9 +3118,14 @@
         "code": "TYC_6",
         "label": "Contemporary",
         "slug": "contemporary"
+      },
+      {
+        "code": "TYC_90",
+        "label": "Vegan",
+        "slug": "vegan-90"
       }
     ],
-    "objectID": "126045",
+    "objectID": "68335",
     "_snippetResult": {
       "main_desc": {
         "value": "Chef Daniel Humm presides over this temple of modern elegance",
@@ -3182,10 +3165,10 @@
         "slug": "italian"
       }
     ],
-    "objectID": "126240",
+    "objectID": "1191604",
     "_snippetResult": {
       "main_desc": {
-        "value": "Francie is headed by John Winterman and native New Yorker",
+        "value": "Set within a striking, limestone-clad building in South Williamsburg",
         "matchLevel": "none"
       }
     }
@@ -3222,7 +3205,7 @@
         "slug": "middle-eastern"
       }
     ],
-    "objectID": "126307",
+    "objectID": "537832",
     "_snippetResult": {
       "main_desc": {
         "value": "Many stylish Middle Eastern restaurants have opened in recent years",
@@ -3232,8 +3215,8 @@
   },
   {
     "_geoloc": {
-      "lat": 40.7443058,
-      "lng": -73.9826751
+      "lat": 40.7442922,
+      "lng": -73.9828071
     },
     "area_name": "Manhattan",
     "chef": null,
@@ -3265,7 +3248,7 @@
         "slug": "contemporary"
       }
     ],
-    "objectID": "126068",
+    "objectID": "563200",
     "_snippetResult": {
       "main_desc": {
         "value": "Chef Junghyun Park and his wife Ellia are global ambassadors",
@@ -3308,7 +3291,7 @@
         "slug": "sicilian"
       }
     ],
-    "objectID": "126090",
+    "objectID": "526435",
     "_snippetResult": {
       "main_desc": {
         "value": "To think of these arancini as mere “rice balls” is",
@@ -3344,9 +3327,14 @@
         "code": "TYC_1034",
         "label": "Korean",
         "slug": "korean"
+      },
+      {
+        "code": "TYC_1126",
+        "label": "Vegetarian",
+        "slug": "vegetarian"
       }
     ],
-    "objectID": "126224",
+    "objectID": "67424",
     "_snippetResult": {
       "main_desc": {
         "value": "Beyond an ordinary façade lies this serene, shoes-off retreat",
@@ -3386,7 +3374,7 @@
         "slug": "californian"
       }
     ],
-    "objectID": "126146",
+    "objectID": "1160151",
     "_snippetResult": {
       "main_desc": {
         "value": "Reservations are required or be ready to queue at this",
@@ -3429,7 +3417,7 @@
         "slug": "contemporary"
       }
     ],
-    "objectID": "126168",
+    "objectID": "1214822",
     "_snippetResult": {
       "main_desc": {
         "value": "In the beating heart of Koreatown, take a freight elevator",
@@ -3472,7 +3460,7 @@
         "slug": "korean"
       }
     ],
-    "objectID": "126041",
+    "objectID": "1210165",
     "_snippetResult": {
       "main_desc": {
         "value": "Eating underground in the subway system may not sound appealing",
@@ -3507,7 +3495,7 @@
         "slug": "barbecue-1143"
       }
     ],
-    "objectID": "126346",
+    "objectID": "468338",
     "_snippetResult": {
       "main_desc": {
         "value": "You'll know you're close to Hometown Bar-B",
@@ -3547,7 +3535,7 @@
         "slug": "italian"
       }
     ],
-    "objectID": "126255",
+    "objectID": "1207896",
     "_snippetResult": {
       "main_desc": {
         "value": "This trendy Brooklyn spot from Chef Paul D’Avino is",
@@ -3587,7 +3575,7 @@
         "slug": "asian"
       }
     ],
-    "objectID": "126228",
+    "objectID": "441670",
     "_snippetResult": {
       "main_desc": {
         "value": "This inspired little South Williamsburg spot finds its culinary niche",
@@ -3625,7 +3613,7 @@
         "slug": "korean"
       }
     ],
-    "objectID": "126334",
+    "objectID": "69743",
     "_snippetResult": {
       "main_desc": {
         "value": "For a change of pace in bustling Koreatown, Cho Dang",
@@ -3668,7 +3656,7 @@
         "slug": "ramen"
       }
     ],
-    "objectID": "126204",
+    "objectID": "564703",
     "_snippetResult": {
       "main_desc": {
         "value": "Leave it to this Tokyo-based ramen chain to offer",
@@ -3711,7 +3699,7 @@
         "slug": "shanghainese"
       }
     ],
-    "objectID": "126263",
+    "objectID": "557608",
     "_snippetResult": {
       "main_desc": {
         "value": "Chef Yuchun Cheung brightens Murray Hill with authentic regional dishes",
@@ -3751,7 +3739,7 @@
         "slug": "korean-contemporary"
       }
     ],
-    "objectID": "126160",
+    "objectID": "1179763",
     "_snippetResult": {
       "main_desc": {
         "value": "This is the kind of spot that serves food so",
@@ -3791,7 +3779,7 @@
         "slug": "contemporary"
       }
     ],
-    "objectID": "126229",
+    "objectID": "563205",
     "_snippetResult": {
       "main_desc": {
         "value": "Don’t let the casual ambience fool you: Oxomoco is",
@@ -3834,7 +3822,7 @@
         "slug": "tempura"
       }
     ],
-    "objectID": "126285",
+    "objectID": "476476",
     "_snippetResult": {
       "main_desc": {
         "value": "Tempura Matsui skillfully demonstrates why tempura is a celebrated Japanese",
@@ -3874,7 +3862,7 @@
         "slug": "japanese"
       }
     ],
-    "objectID": "126060",
+    "objectID": "1209310",
     "_snippetResult": {
       "main_desc": {
         "value": "At the start of service, the lights dim and servers",
@@ -3917,7 +3905,7 @@
         "slug": "sichuan"
       }
     ],
-    "objectID": "126107",
+    "objectID": "1207747",
     "_snippetResult": {
       "main_desc": {
         "value": "This particular stretch that runs along the southern edge of",
@@ -3955,7 +3943,7 @@
         "slug": "contemporary"
       }
     ],
-    "objectID": "126091",
+    "objectID": "283703",
     "_snippetResult": {
       "main_desc": {
         "value": "This famed address hidden in the back corner of a",
@@ -3990,7 +3978,7 @@
         "slug": "pizza"
       }
     ],
-    "objectID": "126289",
+    "objectID": "368536",
     "_snippetResult": {
       "main_desc": {
         "value": "Named for a racehorse and just as focused and quick",
@@ -4025,7 +4013,7 @@
         "slug": "mexican"
       }
     ],
-    "objectID": "126166",
+    "objectID": "1214600",
     "_snippetResult": {
       "main_desc": {
         "value": "It’s a simple space with just a handful of",
@@ -4065,7 +4053,7 @@
         "slug": "contemporary"
       }
     ],
-    "objectID": "126100",
+    "objectID": "537833",
     "_snippetResult": {
       "main_desc": {
         "value": "This stylish Mexican restaurant is bright and modern, with light",
@@ -4105,7 +4093,7 @@
         "slug": "dumplings"
       }
     ],
-    "objectID": "126321",
+    "objectID": "1193515",
     "_snippetResult": {
       "main_desc": {
         "value": "Alexandra Siwiec and Radek Kucharski are behind this casual spot",
@@ -4148,7 +4136,7 @@
         "slug": "sushi"
       }
     ],
-    "objectID": "126398",
+    "objectID": "1213976",
     "_snippetResult": {
       "main_desc": {
         "value": "In the shadow of the New York Public Library, Chef",
@@ -4191,7 +4179,7 @@
         "slug": "contemporary"
       }
     ],
-    "objectID": "126261",
+    "objectID": "474823",
     "_snippetResult": {
       "main_desc": {
         "value": "At the base of the Grace building on the edge",
@@ -4234,7 +4222,7 @@
         "slug": "contemporary"
       }
     ],
-    "objectID": "126395",
+    "objectID": "1192744",
     "_snippetResult": {
       "main_desc": {
         "value": "It may have a classic-sounding name, but Le Pavillon",
@@ -4277,7 +4265,7 @@
         "slug": "sushi"
       }
     ],
-    "objectID": "126208",
+    "objectID": "1204329",
     "_snippetResult": {
       "main_desc": {
         "value": "Hidden away in a corner of Grand Central, at the",
@@ -4317,7 +4305,7 @@
         "slug": "american"
       }
     ],
-    "objectID": "126173",
+    "objectID": "1197831",
     "_snippetResult": {
       "main_desc": {
         "value": "Located within earshot of the BQE’s rumble in east",
@@ -4357,7 +4345,7 @@
         "slug": "taiwanese"
       }
     ],
-    "objectID": "126129",
+    "objectID": "1164836",
     "_snippetResult": {
       "main_desc": {
         "value": "The exterior pays homage to New York's beloved bodegas",
@@ -4397,7 +4385,7 @@
         "slug": "regional-cuisine"
       }
     ],
-    "objectID": "126272",
+    "objectID": "1207503",
     "_snippetResult": {
       "main_desc": {
         "value": "Hiding behind a banchan shop in Long Island City, this",
@@ -4440,10 +4428,10 @@
         "slug": "contemporary"
       }
     ],
-    "objectID": "126318",
+    "objectID": "1189390",
     "_snippetResult": {
       "main_desc": {
-        "value": "The idea that tasting menus are hours-long and showy",
+        "value": "Kochi challenges the idea that tasting menus must be lengthy",
         "matchLevel": "none"
       }
     }
@@ -4478,7 +4466,7 @@
         "slug": "korean"
       }
     ],
-    "objectID": "126023",
+    "objectID": "1199669",
     "_snippetResult": {
       "main_desc": {
         "value": "Mari, which means “roll” in Korean, is Hell’s Kitchen",
@@ -4518,7 +4506,7 @@
         "slug": "sichuan"
       }
     ],
-    "objectID": "126351",
+    "objectID": "1190122",
     "_snippetResult": {
       "main_desc": {
         "value": "Sometimes you can hear the sound of sizzling woks drifting",
@@ -4558,7 +4546,7 @@
         "slug": "contemporary"
       }
     ],
-    "objectID": "126029",
+    "objectID": "1198324",
     "_snippetResult": {
       "main_desc": {
         "value": "Next-door sibling Winner may earn the trophy for its",
@@ -4601,7 +4589,7 @@
         "slug": "dumplings"
       }
     ],
-    "objectID": "126205",
+    "objectID": "472172",
     "_snippetResult": {
       "main_desc": {
         "value": "Watch out Hell's Kitchen; watch out Flushing—with its",
@@ -4611,8 +4599,8 @@
   },
   {
     "_geoloc": {
-      "lat": 40.76177,
-      "lng": -73.98223
+      "lat": 40.7614315,
+      "lng": -73.9816835
     },
     "area_name": "Manhattan",
     "chef": null,
@@ -4639,7 +4627,7 @@
         "slug": "seafood"
       }
     ],
-    "objectID": "126206",
+    "objectID": "69438",
     "_snippetResult": {
       "main_desc": {
         "value": "Well-heeled patrons continue to hold court in this iconic",
@@ -4682,7 +4670,7 @@
         "slug": "southern-thai"
       }
     ],
-    "objectID": "126134",
+    "objectID": "1214821",
     "_snippetResult": {
       "main_desc": {
         "value": "From its Hell's Kitchen location to its shared plates",
@@ -4722,7 +4710,7 @@
         "slug": "south-east-asian"
       }
     ],
-    "objectID": "126187",
+    "objectID": "1201071",
     "_snippetResult": {
       "main_desc": {
         "value": "Welcoming with just the right amount of buzz, Lore embodies",
@@ -4760,10 +4748,10 @@
         "slug": "contemporary"
       }
     ],
-    "objectID": "126086",
+    "objectID": "113266",
     "_snippetResult": {
       "main_desc": {
-        "value": "The Modern is designed to capture the iconic feel of",
+        "value": "The Modern is designed to reflect the iconic setting of",
         "matchLevel": "none"
       }
     }
@@ -4803,10 +4791,10 @@
         "slug": "chinese"
       }
     ],
-    "objectID": "126195",
+    "objectID": "1208771",
     "_snippetResult": {
       "main_desc": {
-        "value": "Owner Bolun Yao's beloved grandmother serves as both the",
+        "value": "This stylish Hell's Kitchen hideaway is an unassumingly ambitious",
         "matchLevel": "none"
       }
     }
@@ -4846,10 +4834,10 @@
         "slug": "contemporary"
       }
     ],
-    "objectID": "126287",
+    "objectID": "68584",
     "_snippetResult": {
       "main_desc": {
-        "value": "No detail goes unnoticed at this contemporary Swedish beauty, sporting",
+        "value": "Aquavit remains one of the city’s most polished expressions",
         "matchLevel": "none"
       }
     }
@@ -4881,7 +4869,7 @@
         "slug": "mexican"
       }
     ],
-    "objectID": "126291",
+    "objectID": "360798",
     "_snippetResult": {
       "main_desc": {
         "value": "Ordering guacamole may be a reflex for many, but at",
@@ -4916,7 +4904,7 @@
         "slug": "pizza"
       }
     ],
-    "objectID": "126097",
+    "objectID": "258398",
     "_snippetResult": {
       "main_desc": {
         "value": "Entering through this (now) iconic red door is like a",
@@ -4956,7 +4944,7 @@
         "slug": "hungarian"
       }
     ],
-    "objectID": "126190",
+    "objectID": "1204458",
     "_snippetResult": {
       "main_desc": {
         "value": "You have room for one more dish, right? It’s",
@@ -4991,7 +4979,7 @@
         "slug": "mexican"
       }
     ],
-    "objectID": "126031",
+    "objectID": "1198835",
     "_snippetResult": {
       "main_desc": {
         "value": "Heirloom corn is revered at this Bushwick restaurant, where chef",
@@ -5034,10 +5022,10 @@
         "slug": "french"
       }
     ],
-    "objectID": "126087",
+    "objectID": "69452",
     "_snippetResult": {
       "main_desc": {
-        "value": "An experience at Thomas Keller’s Per Se is one",
+        "value": "An experience at Thomas Keller’s Per Se is an",
         "matchLevel": "none"
       }
     }
@@ -5077,7 +5065,7 @@
         "slug": "sushi"
       }
     ],
-    "objectID": "126221",
+    "objectID": "69756",
     "_snippetResult": {
       "main_desc": {
         "value": "There is nothing like an omakase in the care of",
@@ -5120,7 +5108,7 @@
         "slug": "french-contemporary"
       }
     ],
-    "objectID": "126267",
+    "objectID": "70381",
     "_snippetResult": {
       "main_desc": {
         "value": "Chef Jean-Georges Vongerichten’s culinary empire stretches far and",
@@ -5158,10 +5146,10 @@
         "slug": "french"
       }
     ],
-    "objectID": "126260",
+    "objectID": "68304",
     "_snippetResult": {
       "main_desc": {
-        "value": "A new and improved Café Boulud from Daniel Boulud has",
+        "value": "Café Boulud occupies a prime corner on the Upper East",
         "matchLevel": "none"
       }
     }
@@ -5201,7 +5189,7 @@
         "slug": "indian"
       }
     ],
-    "objectID": "126136",
+    "objectID": "1216085",
     "_snippetResult": {
       "main_desc": {
         "value": "Chef/co-owner Albin Vincent, who grew up in Kanyakumari",
@@ -5239,7 +5227,7 @@
         "slug": "cambodian"
       }
     ],
-    "objectID": "126339",
+    "objectID": "1212830",
     "_snippetResult": {
       "main_desc": {
         "value": "Husband-and-wife owners Minh and Mandy Truong offer an",
@@ -5277,7 +5265,7 @@
         "slug": "french"
       }
     ],
-    "objectID": "126139",
+    "objectID": "68178",
     "_snippetResult": {
       "main_desc": {
         "value": "Chef Daniel Boulud's eponymous restaurant is a classic New",
@@ -5315,7 +5303,7 @@
         "slug": "czech"
       }
     ],
-    "objectID": "126389",
+    "objectID": "1181418",
     "_snippetResult": {
       "main_desc": {
         "value": "It's old-world Bohemia, not hippie-chic, at this",
@@ -5350,7 +5338,7 @@
         "slug": "mexican"
       }
     ],
-    "objectID": "126368",
+    "objectID": "1191610",
     "_snippetResult": {
       "main_desc": {
         "value": "There are some places that truly reflect the heart and",
@@ -5393,7 +5381,7 @@
         "slug": "sushi"
       }
     ],
-    "objectID": "126096",
+    "objectID": "562513",
     "_snippetResult": {
       "main_desc": {
         "value": "There is a certain energy that courses through this sacred",
@@ -5436,7 +5424,7 @@
         "slug": "contemporary"
       }
     ],
-    "objectID": "126033",
+    "objectID": "1203903",
     "_snippetResult": {
       "main_desc": {
         "value": "Push past the heavy iron doors to this modern restaurant",
@@ -5479,7 +5467,7 @@
         "slug": "regional-cuisine"
       }
     ],
-    "objectID": "126170",
+    "objectID": "1195804",
     "_snippetResult": {
       "main_desc": {
         "value": "New Yorkers have restaurateur Cristina Castañeda to thank for this",
@@ -5514,10 +5502,10 @@
         "slug": "indian"
       }
     ],
-    "objectID": "126392",
+    "objectID": "1190348",
     "_snippetResult": {
       "main_desc": {
-        "value": "This charming Indian restaurant gem, set on a quiet Sunnyside",
+        "value": "This unassuming Indian restaurant on a quiet Sunnyside street remains",
         "matchLevel": "none"
       }
     }
@@ -5552,7 +5540,7 @@
         "slug": "thai-contemporary"
       }
     ],
-    "objectID": "126246",
+    "objectID": "1213974",
     "_snippetResult": {
       "main_desc": {
         "value": "Is this the Upper East Side or the streets of",
@@ -5592,7 +5580,7 @@
         "slug": "sichuan"
       }
     ],
-    "objectID": "126079",
+    "objectID": "1164868",
     "_snippetResult": {
       "main_desc": {
         "value": "You’ll almost always find a line stretching out the",
@@ -5627,7 +5615,7 @@
         "slug": "mexican"
       }
     ],
-    "objectID": "126172",
+    "objectID": "1244242",
     "_snippetResult": {
       "main_desc": {
         "value": "Olmo has a true neighborhood feel, where communal tables encourage",
@@ -5662,7 +5650,7 @@
         "slug": "american"
       }
     ],
-    "objectID": "126349",
+    "objectID": "1192500",
     "_snippetResult": {
       "main_desc": {
         "value": "Ridgewood has a real gem on its hands in this",
@@ -5697,7 +5685,7 @@
         "slug": "middle-eastern"
       }
     ],
-    "objectID": "126095",
+    "objectID": "270956",
     "_snippetResult": {
       "main_desc": {
         "value": "This warm Middle Eastern restaurant is tucked into an unassuming",
@@ -5732,45 +5720,10 @@
         "slug": "middle-eastern"
       }
     ],
-    "objectID": "126155",
+    "objectID": "1241410",
     "_snippetResult": {
       "main_desc": {
         "value": "Located in Bay Ridge, a neighborhood known for its vibrant",
-        "matchLevel": "none"
-      }
-    }
-  },
-  {
-    "_geoloc": {
-      "lat": 40.6378423,
-      "lng": -74.0797638
-    },
-    "area_name": "Staten Island",
-    "chef": null,
-    "city": {
-      "name": "Staten Island",
-      "slug": "staten-island",
-      "exonyms": []
-    },
-    "distinction": {
-      "label": "Bib Gourmand: good quality, good value cooking",
-      "slug": "bib-gourmand",
-      "icon": "="
-    },
-    "michelin_award": "BIB_GOURMAND",
-    "name": "Sagara",
-    "slug": "sagara",
-    "cuisines": [
-      {
-        "code": "TYC_88",
-        "label": "Sri Lankan",
-        "slug": "sri-lankan"
-      }
-    ],
-    "objectID": "126232",
-    "_snippetResult": {
-      "main_desc": {
-        "value": "Visit Sri Lanka by way of Sagara, where the island",
         "matchLevel": "none"
       }
     }
@@ -5802,10 +5755,10 @@
         "slug": "tibetan"
       }
     ],
-    "objectID": "126394",
+    "objectID": "1186321",
     "_snippetResult": {
       "main_desc": {
-        "value": "Momos are a point of pride for this Tibetan mainstay",
+        "value": "Momos are a point of pride at this Tibetan mainstay",
         "matchLevel": "none"
       }
     }
@@ -5842,7 +5795,7 @@
         "slug": "isan"
       }
     ],
-    "objectID": "126050",
+    "objectID": "1202309",
     "_snippetResult": {
       "main_desc": {
         "value": "In an explosively colorful dining room that looks more like",
@@ -5877,53 +5830,10 @@
         "slug": "thai"
       }
     ],
-    "objectID": "126371",
+    "objectID": "1193455",
     "_snippetResult": {
       "main_desc": {
         "value": "Longtime fans of the previous tenant (Paet Rio) will be",
-        "matchLevel": "none"
-      }
-    }
-  },
-  {
-    "_geoloc": {
-      "lat": 40.8219,
-      "lng": -73.95009
-    },
-    "area_name": "Manhattan",
-    "chef": null,
-    "city": {
-      "name": "New York",
-      "slug": "new-york",
-      "exonyms": [
-        "Nueva York",
-        "New York"
-      ]
-    },
-    "distinction": {
-      "label": "Bib Gourmand: good quality, good value cooking",
-      "slug": "bib-gourmand",
-      "icon": "="
-    },
-    "michelin_award": "BIB_GOURMAND",
-    "name": "Oso",
-    "slug": "oso",
-    "cuisines": [
-      {
-        "code": "TYC_1084",
-        "label": "Mexican",
-        "slug": "mexican"
-      },
-      {
-        "code": "TYC_1101",
-        "label": "Regional Cuisine",
-        "slug": "regional-cuisine"
-      }
-    ],
-    "objectID": "126305",
-    "_snippetResult": {
-      "main_desc": {
-        "value": "Housed within a brick storefront across from the City College",
         "matchLevel": "none"
       }
     }
@@ -5955,7 +5865,7 @@
         "slug": "peruvian"
       }
     ],
-    "objectID": "126319",
+    "objectID": "1191103",
     "_snippetResult": {
       "main_desc": {
         "value": "Everyone knows the old adage about being on the right",
@@ -5995,7 +5905,7 @@
         "slug": "regional-cuisine"
       }
     ],
-    "objectID": "126188",
+    "objectID": "1201601",
     "_snippetResult": {
       "main_desc": {
         "value": "One Fulton Square is fast becoming the address for the",
@@ -6035,7 +5945,7 @@
         "slug": "sichuan"
       }
     ],
-    "objectID": "126094",
+    "objectID": "554179",
     "_snippetResult": {
       "main_desc": {
         "value": "True to its name, this Sichuan stalwart does not sit",
@@ -6075,7 +5985,7 @@
         "slug": "barbecue-1143"
       }
     ],
-    "objectID": "126312",
+    "objectID": "435421",
     "_snippetResult": {
       "main_desc": {
         "value": "This Korean barbecue spot in Murray Hill is always packed",
@@ -6115,7 +6025,7 @@
         "slug": "sichuan"
       }
     ],
-    "objectID": "126308",
+    "objectID": "554183",
     "_snippetResult": {
       "main_desc": {
         "value": "Deep into Queens past Flushing is this little gem that",

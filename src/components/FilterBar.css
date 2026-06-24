@@ -69,10 +69,9 @@
 .filter-hamburger-button {
   height: 25px;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(3px) saturate(100%);
-  -webkit-backdrop-filter: blur(3px) saturate(100%);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: #ffffff;
+  border: 1px solid #e3e3e3;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -86,8 +85,8 @@
 }
 
 .filter-hamburger-button:hover {
-  background: rgba(255, 255, 255, 0.7);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: #f4f4f4;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .filter-hamburger-button svg {
@@ -198,19 +197,16 @@
 
 /* Unified base class for all filter pills (dropdowns and toggle buttons) */
 .filter-pill-base {
-  /* Glassmorphism matching ChatInterface.css and RestaurantCard.css */
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(3px) saturate(100%);
-  -webkit-backdrop-filter: blur(3px) saturate(100%);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: none;
+  background: #ffffff;
+  border: 1px solid #e3e3e3;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
   padding: 4px 10px;
   border-radius: 16px;
 
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 11px;
   font-weight: 500;
-  color: #333;
+  color: #111111;
 
   cursor: pointer;
   transition: all 0.2s ease;
@@ -226,17 +222,17 @@
 
 /* Unified hover state for all filter pills */
 .filter-pill-base:hover {
-  background: rgba(255, 255, 255, 0.85);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: #f4f4f4;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* Unified active state for all filter pills */
 .filter-pill-base.active {
-  background: rgba(255, 105, 180, 0.2);
-  border: 1px solid rgba(255, 105, 180, 0.5);
-  color: #333;
-  font-weight: 500;
-  box-shadow: 0 4px 12px rgba(255, 105, 180, 0.2);
+  background: #111111;
+  border: 1px solid #111111;
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
 /* Filter Pill Elements */
@@ -250,8 +246,8 @@
 }
 
 .filter-pill-badge {
-  background: rgba(255, 255, 255, 0.9);
-  color: #333;
+  background: #111111;
+  color: #ffffff;
   border-radius: 6px;
   padding: 1px 4px;
   font-size: 9px;
@@ -261,8 +257,8 @@
 }
 
 .filter-pill-button.active .filter-pill-badge {
-  background: rgba(255, 255, 255, 1);
-  color: #333;
+  background: #ffffff;
+  color: #111111;
 }
 
 .filter-pill-arrow {
@@ -270,19 +266,50 @@
   margin-left: 1px;
 }
 
+/* Desktop: larger, more legible filter pills (mobile keeps its own sizes below) */
+@media (min-width: 769px) {
+  .filter-pill-base {
+    font-size: 13px;
+    padding: 6px 13px;
+    border-radius: 16px;
+  }
+  .filter-pill-button {
+    gap: 5px;
+  }
+  .filter-pill-icon {
+    font-size: 14px;
+  }
+  .filter-pill-arrow {
+    font-size: 10px;
+  }
+  .filter-pill-badge {
+    font-size: 10px;
+  }
+  .filter-hamburger-button {
+    height: 31px;
+    border-radius: 16px;
+  }
+  .filter-button-label {
+    font-size: 13px;
+  }
+  .filter-reset-button {
+    font-size: 13px;
+    padding: 6px 13px;
+  }
+}
+
 /* Dropdown Menu */
 .filter-dropdown-menu {
   position: absolute;
   top: calc(100% + 4px);
-  min-width: 140px;
-  max-width: 250px;
+  min-width: 210px;
+  max-width: 320px;
   max-height: 250px;
   overflow-y: auto;
 
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px) saturate(180%);
-  -webkit-backdrop-filter: blur(10px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: #ffffff;
+  border: 1px solid #e3e3e3;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   border-radius: 8px;
 
   padding: 4px;
@@ -416,9 +443,9 @@
 
 .filter-option-label {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 11px;
-  font-weight: 400;
-  color: #333;
+  font-size: 13px;
+  font-weight: 500;
+  color: #111111;
   user-select: none;
 }
 
@@ -591,10 +618,9 @@
   position: absolute;
   top: calc(100% + 4px);
   min-width: 180px;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px) saturate(180%);
-  -webkit-backdrop-filter: blur(10px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: #ffffff;
+  border: 1px solid #e3e3e3;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   border-radius: 8px;
   padding: 4px;
   z-index: 2000;
@@ -670,10 +696,9 @@
 
 /* Reset Button */
 .filter-reset-button {
-  background: rgba(178, 178, 178, 0.7);
-  backdrop-filter: blur(3px) saturate(100%);
-  -webkit-backdrop-filter: blur(3px) saturate(100%);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: #ffffff;
+  border: 1px solid #e3e3e3;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
   border-radius: 8px;
   padding: 4px 10px;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;

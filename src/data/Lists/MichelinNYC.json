@@ -462,7 +462,18 @@
     "name": "Dirt Candy",
     "slug": "dirt-candy",
     "michelin_award": "ONE_STAR",
-    "cuisines": [],
+    "cuisines": [
+      {
+        "code": "TYC_1126",
+        "label": "Vegetarian",
+        "slug": "vegetarian"
+      },
+      {
+        "code": "TYC_90",
+        "label": "Vegan",
+        "slug": "vegan-90"
+      }
+    ],
     "chef": "Amanda Cohen",
     "city": {
       "name": "New York",
@@ -782,34 +793,6 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/sami-susu"
   },
   {
-    "name": "Atla",
-    "slug": "atla",
-    "michelin_award": "BIB_GOURMAND",
-    "cuisines": [
-      {
-        "code": "TYC_1084",
-        "label": "Mexican",
-        "slug": "mexican"
-      },
-      {
-        "code": "TYC_6",
-        "label": "Contemporary",
-        "slug": "contemporary"
-      }
-    ],
-    "chef": null,
-    "city": {
-      "name": "New York",
-      "slug": "new-york",
-      "exonyms": [
-        "Nueva York",
-        "New York"
-      ]
-    },
-    "area_name": "Manhattan",
-    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/atla"
-  },
-  {
     "name": "Nami Nori",
     "slug": "nami-nori",
     "michelin_award": "BIB_GOURMAND",
@@ -1116,6 +1099,11 @@
     "michelin_award": "BIB_GOURMAND",
     "cuisines": [
       {
+        "code": "TYC_90",
+        "label": "Vegan",
+        "slug": "vegan-90"
+      },
+      {
         "code": "TYC_1179",
         "label": "Italian-American",
         "slug": "italian-american"
@@ -1273,6 +1261,11 @@
     "slug": "superiority-burger",
     "michelin_award": "BIB_GOURMAND",
     "cuisines": [
+      {
+        "code": "TYC_1126",
+        "label": "Vegetarian",
+        "slug": "vegetarian"
+      },
       {
         "code": "TYC_6",
         "label": "Contemporary",
@@ -1613,34 +1606,6 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/sal-tang-s"
   },
   {
-    "name": "Oiji Mi",
-    "slug": "oiji-mi",
-    "michelin_award": "ONE_STAR",
-    "cuisines": [
-      {
-        "code": "TYC_1034",
-        "label": "Korean",
-        "slug": "korean"
-      },
-      {
-        "code": "TYC_6",
-        "label": "Contemporary",
-        "slug": "contemporary"
-      }
-    ],
-    "chef": null,
-    "city": {
-      "name": "New York",
-      "slug": "new-york",
-      "exonyms": [
-        "Nueva York",
-        "New York"
-      ]
-    },
-    "area_name": "Manhattan",
-    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/oiji-mi"
-  },
-  {
     "name": "bōm",
     "slug": "bom",
     "michelin_award": "ONE_STAR",
@@ -1667,6 +1632,34 @@
     },
     "area_name": "Manhattan",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/bom"
+  },
+  {
+    "name": "Oiji Mi",
+    "slug": "oiji-mi",
+    "michelin_award": "ONE_STAR",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/oiji-mi"
   },
   {
     "name": "Gramercy Tavern",
@@ -1753,7 +1746,7 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/noda"
   },
   {
-    "name": "odo",
+    "name": "Odo",
     "slug": "odo",
     "michelin_award": "TWO_STARS",
     "cuisines": [
@@ -1966,6 +1959,11 @@
         "code": "TYC_6",
         "label": "Contemporary",
         "slug": "contemporary"
+      },
+      {
+        "code": "TYC_90",
+        "label": "Vegan",
+        "slug": "vegan-90"
       }
     ],
     "chef": null,
@@ -2095,6 +2093,11 @@
         "code": "TYC_1034",
         "label": "Korean",
         "slug": "korean"
+      },
+      {
+        "code": "TYC_1126",
+        "label": "Vegetarian",
+        "slug": "vegetarian"
       }
     ],
     "chef": null,
@@ -3596,26 +3599,6 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/yemenat"
   },
   {
-    "name": "Sagara",
-    "slug": "sagara",
-    "michelin_award": "BIB_GOURMAND",
-    "cuisines": [
-      {
-        "code": "TYC_88",
-        "label": "Sri Lankan",
-        "slug": "sri-lankan"
-      }
-    ],
-    "chef": null,
-    "city": {
-      "name": "Staten Island",
-      "slug": "staten-island",
-      "exonyms": []
-    },
-    "area_name": "Staten Island",
-    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/sagara"
-  },
-  {
     "name": "Phayul",
     "slug": "phayul",
     "michelin_award": "BIB_GOURMAND",
@@ -3679,34 +3662,6 @@
     },
     "area_name": "Queens",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/saranrom-thai"
-  },
-  {
-    "name": "Oso",
-    "slug": "oso",
-    "michelin_award": "BIB_GOURMAND",
-    "cuisines": [
-      {
-        "code": "TYC_1084",
-        "label": "Mexican",
-        "slug": "mexican"
-      },
-      {
-        "code": "TYC_1101",
-        "label": "Regional Cuisine",
-        "slug": "regional-cuisine"
-      }
-    ],
-    "chef": null,
-    "city": {
-      "name": "New York",
-      "slug": "new-york",
-      "exonyms": [
-        "Nueva York",
-        "New York"
-      ]
-    },
-    "area_name": "Manhattan",
-    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/oso"
   },
   {
     "name": "Caleta 111 Cevicheria",
