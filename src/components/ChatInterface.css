@@ -200,8 +200,10 @@
 }
 
 @media (max-width: 768px) {
+  /* Match body text on mobile — the big bold greeting crowds the sidebar */
   .welcome-greeting {
-    font-size: 16px;
+    font-size: 13px;
+    font-weight: 400;
   }
 }
 

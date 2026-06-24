@@ -8,9 +8,6 @@ export default function FloatingHeader() {
       <h1 className="floating-header-title">
         NYC <span className="live">EATS</span>
       </h1>
-      <h2 className="floating-header-subtitle">
-        | World Cup Edition
-      </h2>
     </div>
   )
 }

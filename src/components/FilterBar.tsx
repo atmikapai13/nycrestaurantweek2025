@@ -114,6 +114,20 @@ export default function FilterBar() {
     }
   };
 
+  const offer26Options = useMemo(() =>
+    OFFER_26_OPTIONS.map(({ value, label }) => {
+      const count = allRestaurants.filter(
+        (r) => r.deal_tags?.includes(value)
+      ).length;
+      return {
+        value,
+        label: count > 0 ? (
+          <>{label} <span style={{ color: "#888" }}>· {count}</span></>
+        ) : label,
+      };
+    })
+  , [allRestaurants]);
+
   const cuisineOptions = useMemo(() => {
     // Collect all distinct non-empty cuisines from the dataset
     const allCuisines = new Set<string>();
@@ -189,7 +203,7 @@ export default function FilterBar() {
           <FilterDropdown
             label="$26 Offer"
             icon=""
-            options={OFFER_26_OPTIONS}
+            options={offer26Options}
             selectedValues={activeFilters["$26 Offer"] || []}
             onChange={(values) => handleFilterChange("$26 Offer", values)}
           />

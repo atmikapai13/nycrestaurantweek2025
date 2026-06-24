@@ -47,8 +47,8 @@ function AppContent() {
       if (savedFavorites) {
         setFavorites(JSON.parse(savedFavorites));
       } else {
-        // Default to Fish Cheeks as favorite for new users
-        const defaultFavorites = ["Fish Cheeks"];
+        // Default to Francie as favorite for new users (demonstrates the feature)
+        const defaultFavorites = ["Francie"];
         setFavorites(defaultFavorites);
         localStorage.setItem(
           "restaurantFavorites",

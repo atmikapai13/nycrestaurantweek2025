@@ -7,8 +7,8 @@ import type { Restaurant } from '../types/restaurant'
 import './MobileCardDrawer.css'
 
 // Persistent bottom sheet. Snap heights (vh): peek / half / full.
-const SNAP_POINTS = [16, 55, 90]
-const DEFAULT_OPEN = 55
+const SNAP_POINTS = [35, 55]
+const DEFAULT_OPEN = 35
 
 interface Props {
   selectedRestaurant: Restaurant | null

@@ -869,11 +869,44 @@ export default function Map({
     const lat = Number(selectedRestaurant.latitude);
     if (Number.isNaN(lng) || Number.isNaN(lat)) return;
 
+    // The filter bar floats over the top of the map; Mapbox's auto-anchor only
+    // considers the map container, so a high marker would render the card upward
+    // and collide with the filters. If anchoring above would intrude into the
+    // filter bar, anchor below the marker instead (render downward).
+    const offset = 16;
+    const margin = 12;
+    const point = map.current.project([lng, lat]);
+    const mapRect = mapContainer.current?.getBoundingClientRect();
+    const mapTop = mapRect?.top ?? 0;
+    const mapBottom = mapRect?.bottom ?? window.innerHeight;
+    const markerViewportY = mapTop + point.y;
+    const filterBar = document.querySelector(".filter-bar-container");
+    const filterBottom = filterBar?.getBoundingClientRect().bottom ?? 90;
+    const estimatedPopupHeight = popupContainer.offsetHeight || 400;
+    const wouldOverlapFilters =
+      markerViewportY - offset - estimatedPopupHeight < filterBottom;
+    const anchor = wouldOverlapFilters ? "top" : "bottom";
+
+    // Cap the card to the space available in the chosen direction so a tall card
+    // is never clipped off-screen — it scrolls internally instead. (Anchor "top"
+    // renders the card below the marker; "bottom" renders it above.)
+    const availableHeight =
+      anchor === "top"
+        ? mapBottom - markerViewportY - offset - margin
+        : markerViewportY - offset - filterBottom - margin;
+    const card = popupContainer.querySelector<HTMLElement>(".restaurant-card");
+    if (card) {
+      card.style.maxHeight = `${Math.max(220, Math.floor(availableHeight))}px`;
+      card.style.overflowY = "auto";
+      card.style.overscrollBehavior = "contain";
+    }
+
     const popup = new mapboxgl.Popup({
       closeButton: false,
       closeOnClick: false,
       maxWidth: "340px",
-      offset: 16,
+      offset,
+      anchor,
       className: "restaurant-popup",
     })
       .setLngLat([lng, lat])

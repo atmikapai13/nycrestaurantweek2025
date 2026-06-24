@@ -38,7 +38,13 @@ export default function DealsPanel({
   onSelect: (r: Restaurant) => void
   introOnly?: boolean
 }) {
-  const { filteredRestaurants, userLocation, setUserLocation, searchTerm, setSearchTerm } = useMap()
+  const { allRestaurants, filteredRestaurants, userLocation, setUserLocation, searchTerm, setSearchTerm } = useMap()
+
+  // Open a specific restaurant's card on the map by slug (used by the inline deal links).
+  const openBySlug = (slug: string) => {
+    const match = allRestaurants.find((r) => r.slug === slug)
+    if (match) onSelect(match)
+  }
 
   // Ask for the visitor's location once (non-blocking) so we can rank by distance.
   useEffect(() => {
@@ -68,16 +74,34 @@ export default function DealsPanel({
 
   return (
     <div className="flex flex-col gap-7">
-      <p className="sm:mt-4 sm:py-3 text-xl leading-snug font-bold">
-        Even during times of austerity, our beloved Mamdani delivers:{' '}
-        <span className="font-bold">
-          800+ restaurants offer <em className="italic underline">affordable</em> $26 deals and limited
-          edition collectibles in celebration of the World Cup!
-        </span>
-        <br></br>
-        <br></br>Remy, your friendly neighbourhood super(rat)man, helps you find the best deals: enjoy
-        half-dozen oysters and a glass of wine or a full 3-course meal for just 26 bucks.
-      </p>
+      <div className="flex flex-col gap-3 sm:mt-4 sm:py-3 text-lg leading-snug font-semibold">
+        
+        <p>
+          800+ restaurants offer <em className="italic text-pink-500">affordable $26 deals </em>and limited
+          edition collectibles in celebration of the World Cup. <br></br>(All hail Mamdani.)
+        </p>
+        <p>
+          And Remy helps you find the best experiences from oysters and martini at{' '}
+          <button
+            type="button"
+            onClick={() => openBySlug('fbws-francie')}
+            className="cursor-pointer appearance-none border-none bg-transparent p-0 text-inherit"
+            style={{ font: 'inherit' }}
+          >
+          Francie, a Michelin 1-star,
+          </button>{' '}
+          to full meals at {' '}
+          <button
+            type="button"
+            onClick={() => openBySlug('fbws-grotta-azzurra')}
+            className="cursor-pointer appearance-none border-none bg-transparent p-0 text-inherit"
+            style={{ font: 'inherit' }}
+          >
+            Grotta Azzurra,
+          </button>{' '}
+          all for 26 bucks.
+        </p>
+      </div>
 
       {!introOnly && (
         <>
@@ -95,7 +119,7 @@ export default function DealsPanel({
 
       <div>
         <div className="px-0 text-xl font-semibold uppercase tracking-widest text-pink-500">
-          {byDistance ? "What's near you?" : 'Top 5 picks'}
+          {byDistance ? "NEAR YOU" : 'Top 5 picks'}
         </div>
         <ul className="mt-1 flex list-none flex-col gap-0.5 p-0">
           {top5.map((r, i) => (
@@ -129,7 +153,7 @@ export default function DealsPanel({
       </div>
 
       <div className="px-0 text-xl font-semibold uppercase tracking-widest text-pink-500">
-        Want more?
+        And more...
       </div>
       <p className="-mt-4 py-0 text-lg leading-snug font-bold">
         As a restaurateur, you can participate by{' '}
@@ -138,6 +162,7 @@ export default function DealsPanel({
           target="_blank"
           rel="noopener noreferrer"
           className="text-pink-500"
+          style={{ textDecoration: "none" }}
         >
           registering
         </a>{' '}
@@ -145,23 +170,25 @@ export default function DealsPanel({
       </p>
 
       <p className="-mt-4 py-3 text-lg leading-snug font-bold">
-        Explore other{' '}
+        Mamdani's also got {' '}
         <a
           href="https://www.nyctourism.com/worldcup26/world-cup-offers-and-events/"
           target="_blank"
           rel="noopener noreferrer"
           className="text-pink-500"
+          style={{ textDecoration: "none" }}
         >
-          NYC World Cup events
+         World Cup events
         </a>{' '}
-        or get the{' '}
+        or {' '}
         <a
           href="https://www.nyctourism.com/worldcup26/the-nyc-neighborhood-passport-world-cup-program/"
           target="_blank"
           rel="noopener noreferrer"
           className="text-pink-500"
+          style={{ textDecoration: "none" }}
         >
-          Mamdani's Neighborhood Passport
+        Neighborhood Passport program
         </a>
         .
       </p>
