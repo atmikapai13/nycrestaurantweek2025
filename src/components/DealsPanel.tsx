@@ -81,7 +81,7 @@ export default function DealsPanel({
           edition collectibles in celebration of the World Cup. <br></br>(All hail Mamdani.)
         </p>
         <p>
-          And Remy helps you find the best experiences from oysters and martini at{' '}
+          And I, Remy, help you find the best experiences from oysters and martini at{' '}
           <button
             type="button"
             onClick={() => openBySlug('fbws-francie')}
@@ -99,7 +99,7 @@ export default function DealsPanel({
           >
             Grotta Azzurra,
           </button>{' '}
-          all for 26 bucks.
+          all for 26 bucks. Click on a map marker to learn more. 
         </p>
       </div>
 
