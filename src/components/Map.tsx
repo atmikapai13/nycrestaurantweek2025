@@ -349,7 +349,7 @@ export default function Map({
     const MIDTOWN: [number, number] = [-73.984, 40.754];
 
     // Mobile-specific viewport: shifted south so Midtown sits above the 40% drawer
-    const mobileCenter: [number, number] = [MIDTOWN[0], MIDTOWN[1] - 0.027];
+    const mobileCenter: [number, number] = [MIDTOWN[0], MIDTOWN[1] - 0.127];
     const mobileZoom = 10.0;
     const mobilePitch = 45;
     const mobileBearing = 0;

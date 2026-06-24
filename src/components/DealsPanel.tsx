@@ -74,8 +74,8 @@ export default function DealsPanel({
 
   return (
     <div className="flex flex-col gap-7">
-      <div className="flex flex-col gap-3 sm:mt-4 sm:py-3 text-lg leading-snug font-semibold">
-        
+      <div className="flex flex-col gap-3 sm:mt-4 sm:py-3 text-base sm:text-lg leading-snug font-normal sm:font-semibold">
+        <p className="font-semibold sm:hidden">Welcome to NYC Eats — World Cup Edition!</p>
         <p>
           800+ restaurants offer <em className="italic text-pink-500">affordable $26 deals </em>and limited
           edition collectibles in celebration of the World Cup. <br></br>(All hail Mamdani.)
