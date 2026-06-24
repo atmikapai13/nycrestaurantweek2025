@@ -24,6 +24,13 @@ function offerLabel(r: Restaurant): string {
   return '$26 Offer'
 }
 
+// The NYC Tourism CDN (Frontify) serves full-resolution originals (~280KB+).
+// Request a card-sized WebP instead (~90KB) so the hero image loads fast.
+function optimizedImageUrl(url: string, width = 640): string {
+  if (!url.includes('media.ffycdn.net')) return url
+  return `${url}${url.includes('?') ? '&' : '?'}width=${width}&format=webp`
+}
+
 // Format a blob of text into paragraph breaks every couple of sentences.
 function formatBody(text: string): string {
   return text.split('. ').reduce((acc: string, sentence: string, index: number, array: string[]) => {
@@ -105,9 +112,10 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
       {/* Hero image */}
       {displayRestaurant.image_url && (
         <img
-          src={displayRestaurant.image_url}
+          src={optimizedImageUrl(displayRestaurant.image_url)}
           alt={displayRestaurant.name}
-          loading="lazy"
+          loading={collapsible ? 'lazy' : 'eager'}
+          decoding="async"
           className="restaurant-card-image"
           style={{ width: '100%', height: '160px', objectFit: 'cover', borderRadius: '10px', marginBottom: '10px', display: 'block' }}
         />
