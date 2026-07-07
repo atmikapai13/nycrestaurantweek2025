@@ -136,9 +136,19 @@ interface MapContextType {
   filterBarExpanded: boolean;
   setFilterBarExpanded: React.Dispatch<React.SetStateAction<boolean>>;
 
-  // True while the last mobile onboarding card (which points at Refine) is showing
+  // True while the onboarding card (which points at Refine) is showing
   onboardingRefineHint: boolean;
   setOnboardingRefineHint: React.Dispatch<React.SetStateAction<boolean>>;
+
+  // True during the first (non-final) onboarding cards — blocks map taps so the
+  // user has to advance through the cards or hit Skip instead of tapping around
+  onboardingMapBlocked: boolean;
+  setOnboardingMapBlocked: React.Dispatch<React.SetStateAction<boolean>>;
+
+  // One-shot signal: set true to ask the onboarding to fully dismiss itself
+  // (e.g. tapping Refine/Search on the card that points at them)
+  onboardingDismissRequested: boolean;
+  setOnboardingDismissRequested: React.Dispatch<React.SetStateAction<boolean>>;
 
   // Mobile search toggle expanded state (for coordinating UI elements)
   searchExpanded: boolean;
@@ -196,8 +206,14 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
     typeof window !== "undefined" ? window.innerWidth > 768 : true
   );
 
-  // True while the last mobile onboarding card (which points at Refine) is showing
+  // True while the onboarding card (which points at Refine) is showing
   const [onboardingRefineHint, setOnboardingRefineHint] = useState(false);
+
+  // True during the first (non-final) onboarding cards
+  const [onboardingMapBlocked, setOnboardingMapBlocked] = useState(false);
+
+  // One-shot signal to fully dismiss onboarding from outside the component
+  const [onboardingDismissRequested, setOnboardingDismissRequested] = useState(false);
 
   // Mobile search toggle expanded state
   const [searchExpanded, setSearchExpanded] = useState(false);
@@ -622,6 +638,10 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
         setFilterBarExpanded,
         onboardingRefineHint,
         setOnboardingRefineHint,
+        onboardingMapBlocked,
+        setOnboardingMapBlocked,
+        onboardingDismissRequested,
+        setOnboardingDismissRequested,
         searchExpanded,
         setSearchExpanded,
         attributionExpanded,

@@ -189,17 +189,18 @@
   background: rgba(242, 61, 151, 0.1);
 }
 
-/* Onboarding spotlight — blurs/dims the map while the last card points at Refine.
-   Sits above the map but below the Refine button/hint/header/onboarding card, so
-   only the map underneath is affected. Pointer events pass through to the map. */
+/* Onboarding spotlight — blurs/dims the map during the first (non-final) cards
+   and blocks taps on it, forcing the user through the cards or Skip instead of
+   tapping around. Sits below the Refine/Search buttons, hint arrow, header, and
+   onboarding card (all higher z-index), so those stay clickable as normal. */
 .onboarding-spotlight-overlay {
   position: fixed;
   inset: 0;
   z-index: 500;
-  background: rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  pointer-events: none;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(4px) saturate(180%);
+  -webkit-backdrop-filter: blur(4px) saturate(180%);
+  pointer-events: auto;
 }
 
 /* Onboarding "point here" hint — bounces in from the right of the Refine button.

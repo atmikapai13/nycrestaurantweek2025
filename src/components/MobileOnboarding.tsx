@@ -36,14 +36,18 @@ const CARDS: Card[] = [
   {
     pointsAtRefine: true,
     body: [
-      {
-        text: 'Click on Refine above to find the best deals. ',
-      },
+      { text: 'Click on ',},
+       { text: ' refine ', className: 'mobile-onboarding-highlight' },
+      
+       { text: 'above to find the best deals. ' },
+
       { break: true },
       { break: true },
-      {
-        text: 'Or search for a restaurant.',
-      },
+      {text: 'Or ',},
+      { text: ' search ', className: 'mobile-onboarding-highlight' },
+      
+       { text: 'for a restaurant. ' },
+      
     ],
   },
   {
@@ -77,7 +81,14 @@ function renderBody(body: Segment[]): ReactNode[] {
 // the user takes any real action (selects a restaurant, filters, or searches)
 // so it never blocks the app — only Skip/finishing the last card close it otherwise.
 export default function MobileOnboarding() {
-  const { selectedRestaurant, activeFilters, searchTerm, setOnboardingRefineHint, attributionExpanded } = useMap()
+  const {
+    selectedRestaurant,
+    activeFilters,
+    searchTerm,
+    setOnboardingRefineHint,
+    setOnboardingMapBlocked,
+    attributionExpanded,
+  } = useMap()
   const [index, setIndex] = useState(0)
   const [dismissed, setDismissed] = useState(false)
 
@@ -89,6 +100,14 @@ export default function MobileOnboarding() {
     setOnboardingRefineHint(!!card.pointsAtRefine && !dismissed)
     return () => setOnboardingRefineHint(false)
   }, [card, dismissed, setOnboardingRefineHint])
+
+  // Block map taps during the first (non-final) cards — the user has to
+  // advance through the cards or hit Skip instead of tapping around the map.
+  // The last card invites clicking a restaurant marker, so it's left open.
+  useEffect(() => {
+    setOnboardingMapBlocked(!isLast && !dismissed)
+    return () => setOnboardingMapBlocked(false)
+  }, [isLast, dismissed, setOnboardingMapBlocked])
 
   useEffect(() => {
     if (selectedRestaurant || Object.keys(activeFilters).length > 0 || searchTerm.trim() !== '') {

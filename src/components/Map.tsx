@@ -290,7 +290,6 @@ export default function Map({
     updates.forEach(({ el, size, isSelected, wrapper }) => {
       // Dot mode always — selected grows ~1.5x with a thicker ring so it stands out (no shape change).
       const dotColor = el.getAttribute("data-dot-color") || "#928f8e";
-      el.classList.remove("emoji-selected");
       el.classList.remove("emoji-mode");
       const dotSize = isSelected ? Math.round(size * 1.5) : size;
       el.style.width = `${dotSize}px`;
@@ -823,7 +822,7 @@ export default function Map({
       }
     }
 
-    // Re-run marker sizing to apply/remove emoji-selected styling
+    // Re-run marker sizing to apply/remove selected-marker styling
     updateMarkerSizes();
   }, [selectedRestaurant]);
 
@@ -901,6 +900,8 @@ export default function Map({
       center: [lng, lat],
       offset: [0, dockY - mapCenterScreenY],
       duration: 800,
+      curve: 1, // minimal zoom swoop — this is a short local pan, not a big jump
+      easing: (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2), // ease-in-out cubic
     });
 
     const popup = new mapboxgl.Popup({

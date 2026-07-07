@@ -29,6 +29,7 @@ export default function FilterBar() {
     favoritesActive,
     setFavoritesActive,
     onboardingRefineHint,
+    onboardingMapBlocked,
     searchTerm,
     setSearchTerm,
     searchExpanded,
@@ -99,13 +100,19 @@ export default function FilterBar() {
   const toggleExpanded = () => {
     const next = !isExpanded;
     setIsExpanded(next);
-    if (next) setSearchExpanded(false);
+    if (next) {
+      setSearchExpanded(false);
+      setSelectedRestaurant(null);
+    }
   };
 
   const toggleSearchExpanded = () => {
     const next = !searchExpanded;
     setSearchExpanded(next);
-    if (next) setIsExpanded(false);
+    if (next) {
+      setIsExpanded(false);
+      setSelectedRestaurant(null);
+    }
   };
 
   // Top 5 name matches for the search typeahead: matches at the start of the
@@ -189,7 +196,7 @@ export default function FilterBar() {
 
   return (
     <>
-      {onboardingRefineHint && <div className="onboarding-spotlight-overlay" aria-hidden="true" />}
+      {onboardingMapBlocked && <div className="onboarding-spotlight-overlay" aria-hidden="true" />}
       <div className="filter-bar-container">
         <div className={`filter-bar-wrapper ${isExpanded ? "expanded" : "collapsed"}`}>
         <div className="filter-hamburger-wrapper">

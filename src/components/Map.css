@@ -64,11 +64,6 @@
   }
 }
 
-.restaurant-marker.emoji-selected {
-  border: 2.5px solid #E85D4A !important;
-  box-shadow: 0 2px 8px rgba(232, 93, 74, 0.4);
-}
-
 /* Star rating badge (shown above marker on selection) */
 .marker-star-badge {
   display: none;
