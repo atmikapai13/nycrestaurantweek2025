@@ -86,7 +86,6 @@ export default function MobileOnboarding() {
     activeFilters,
     searchTerm,
     setOnboardingRefineHint,
-    setOnboardingMapBlocked,
     onboardingDismissRequested,
     setOnboardingDismissRequested,
     attributionExpanded,
@@ -102,14 +101,6 @@ export default function MobileOnboarding() {
     setOnboardingRefineHint(!!card.pointsAtRefine && !dismissed)
     return () => setOnboardingRefineHint(false)
   }, [card, dismissed, setOnboardingRefineHint])
-
-  // Block map taps during the first (non-final) cards — the user has to
-  // advance through the cards or hit Skip instead of tapping around the map.
-  // The last card invites clicking a restaurant marker, so it's left open.
-  useEffect(() => {
-    setOnboardingMapBlocked(!isLast && !dismissed)
-    return () => setOnboardingMapBlocked(false)
-  }, [isLast, dismissed, setOnboardingMapBlocked])
 
   useEffect(() => {
     if (selectedRestaurant || Object.keys(activeFilters).length > 0 || searchTerm.trim() !== '') {
@@ -136,7 +127,13 @@ export default function MobileOnboarding() {
   }
 
   return (
-    <div className="mobile-onboarding">
+    <>
+      {/* Blocks the map during the first (non-final) cards — tapping empty map
+          area advances to the next card instead of reaching the marker/map. */}
+      {!isLast && (
+        <div className="mobile-onboarding-spotlight" onClick={handleTap} aria-hidden="true" />
+      )}
+      <div className="mobile-onboarding">
       <div className="mobile-onboarding-inner">
         <button type="button" className="mobile-onboarding-skip" onClick={() => setDismissed(true)}>
           Skip
@@ -157,6 +154,7 @@ export default function MobileOnboarding() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   )
 }

@@ -140,11 +140,6 @@ interface MapContextType {
   onboardingRefineHint: boolean;
   setOnboardingRefineHint: React.Dispatch<React.SetStateAction<boolean>>;
 
-  // True during the first (non-final) onboarding cards — blocks map taps so the
-  // user has to advance through the cards or hit Skip instead of tapping around
-  onboardingMapBlocked: boolean;
-  setOnboardingMapBlocked: React.Dispatch<React.SetStateAction<boolean>>;
-
   // One-shot signal: set true to ask the onboarding to fully dismiss itself
   // (e.g. tapping Refine/Search on the card that points at them)
   onboardingDismissRequested: boolean;
@@ -208,9 +203,6 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
 
   // True while the onboarding card (which points at Refine) is showing
   const [onboardingRefineHint, setOnboardingRefineHint] = useState(false);
-
-  // True during the first (non-final) onboarding cards
-  const [onboardingMapBlocked, setOnboardingMapBlocked] = useState(false);
 
   // One-shot signal to fully dismiss onboarding from outside the component
   const [onboardingDismissRequested, setOnboardingDismissRequested] = useState(false);
@@ -638,8 +630,6 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
         setFilterBarExpanded,
         onboardingRefineHint,
         setOnboardingRefineHint,
-        onboardingMapBlocked,
-        setOnboardingMapBlocked,
         onboardingDismissRequested,
         setOnboardingDismissRequested,
         searchExpanded,

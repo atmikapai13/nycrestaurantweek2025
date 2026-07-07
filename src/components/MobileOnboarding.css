@@ -77,3 +77,19 @@
   color: #ff69b4;
   font-weight: 600;
 }
+
+/* Spotlight — blurs/dims the map during the first (non-final) cards and
+   blocks/redirects taps on it: tapping empty map area advances to the next
+   card instead of doing nothing. Sits below the Refine/Search buttons, hint
+   arrow, header, and onboarding card/Skip (all higher z-index), so those keep
+   their own click behavior as normal. */
+.mobile-onboarding-spotlight {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(4px) saturate(180%);
+  -webkit-backdrop-filter: blur(4px) saturate(180%);
+  pointer-events: auto;
+  cursor: pointer;
+}

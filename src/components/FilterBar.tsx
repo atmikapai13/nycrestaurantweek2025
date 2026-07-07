@@ -29,7 +29,6 @@ export default function FilterBar() {
     favoritesActive,
     setFavoritesActive,
     onboardingRefineHint,
-    onboardingMapBlocked,
     setOnboardingDismissRequested,
     searchTerm,
     setSearchTerm,
@@ -201,7 +200,6 @@ export default function FilterBar() {
 
   return (
     <>
-      {onboardingMapBlocked && <div className="onboarding-spotlight-overlay" aria-hidden="true" />}
       <div className="filter-bar-container">
         <div className={`filter-bar-wrapper ${isExpanded ? "expanded" : "collapsed"}`}>
         <div className="filter-hamburger-wrapper">
