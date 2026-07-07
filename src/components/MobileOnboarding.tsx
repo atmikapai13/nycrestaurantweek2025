@@ -87,6 +87,8 @@ export default function MobileOnboarding() {
     searchTerm,
     setOnboardingRefineHint,
     setOnboardingMapBlocked,
+    onboardingDismissRequested,
+    setOnboardingDismissRequested,
     attributionExpanded,
   } = useMap()
   const [index, setIndex] = useState(0)
@@ -114,6 +116,14 @@ export default function MobileOnboarding() {
       setDismissed(true)
     }
   }, [selectedRestaurant, activeFilters, searchTerm])
+
+  // Tapping Refine/Search on the card that points at them ends the tour early.
+  useEffect(() => {
+    if (onboardingDismissRequested) {
+      setDismissed(true)
+      setOnboardingDismissRequested(false)
+    }
+  }, [onboardingDismissRequested, setOnboardingDismissRequested])
 
   if (dismissed || attributionExpanded) return null
 

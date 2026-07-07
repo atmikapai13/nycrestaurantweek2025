@@ -30,6 +30,7 @@ export default function FilterBar() {
     setFavoritesActive,
     onboardingRefineHint,
     onboardingMapBlocked,
+    setOnboardingDismissRequested,
     searchTerm,
     setSearchTerm,
     searchExpanded,
@@ -103,6 +104,8 @@ export default function FilterBar() {
     if (next) {
       setSearchExpanded(false);
       setSelectedRestaurant(null);
+      // On the onboarding card that points at Refine, using it ends the tour.
+      if (onboardingRefineHint) setOnboardingDismissRequested(true);
     }
   };
 
@@ -112,6 +115,8 @@ export default function FilterBar() {
     if (next) {
       setIsExpanded(false);
       setSelectedRestaurant(null);
+      // On the onboarding card that points at Search, using it ends the tour.
+      if (onboardingRefineHint) setOnboardingDismissRequested(true);
     }
   };
 
