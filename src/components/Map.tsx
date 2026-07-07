@@ -885,20 +885,22 @@ export default function Map({
     // filter bar; clamp so we never push the marker so low it loses all map
     // context beneath it (or collides with the bottom of the screen).
     const idealDockY = filterBottom + margin + estimatedPopupHeight + offset;
-    const dockY = Math.min(idealDockY, mapTop + mapHeight * 0.8);
+    const dockY = Math.min(idealDockY, mapTop + mapHeight *0.7);
     const availableHeight = dockY - offset - filterBottom - margin;
 
     const card = popupContainer.querySelector<HTMLElement>(".restaurant-card");
     if (card) {
-      card.style.maxHeight = `${Math.max(220, Math.floor(availableHeight))}px`;
+      const isMobile = window.innerWidth <= 768;
+      const minHeight = isMobile ? 400 : 220;
+      card.style.maxHeight = `${Math.max(minHeight, Math.floor(availableHeight))}px`;
       card.style.overflowY = "auto";
       card.style.overscrollBehavior = "contain";
     }
 
-    map.current.easeTo({
+    map.current.flyTo({
       center: [lng, lat],
       offset: [0, dockY - mapCenterScreenY],
-      duration: 400,
+      duration: 800,
     });
 
     const popup = new mapboxgl.Popup({
