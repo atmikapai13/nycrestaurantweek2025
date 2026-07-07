@@ -7,7 +7,6 @@ import type { Restaurant } from "../types/restaurant";
 import { useMap, hasAnyAward, type IsochroneLayer, type GeocodedMarker } from "../contexts/MapContext";
 import { asset } from "../utils/asset";
 import RestaurantCard from "./RestaurantCard";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 // Set your Mapbox access token
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
@@ -103,9 +102,7 @@ export default function Map({
   const previousLayers = useRef<IsochroneLayer[]>([]);
   const selectedRestaurantRef = useRef(selectedRestaurant); // Avoid stale closures in click handlers
 
-  // Desktop: restaurant card renders as a Mapbox popup anchored above the marker.
-  // Mobile: a fixed-bottom card instead (see MobileRestaurantCard).
-  const isMobileViewport = useIsMobile();
+  // Restaurant card renders as a Mapbox popup anchored above the selected marker.
   const cardPopup = useRef<mapboxgl.Popup | null>(null);
   const popupContainer = useMemo(() => document.createElement("div"), []);
 
@@ -338,9 +335,16 @@ export default function Map({
       pitch: isMobile ? mobilePitch : desktopPitch,
       bearing: isMobile ? mobileBearing : desktopBearing,
       minZoom: 10, // Prevent zooming out to the whole world
-      customAttribution:
-        '© <a href="https://atmikapai.dev/" target="_blank">Atmika</a> © <a href="https://marauders.earth/" target="_blank">Marauders</a>',
+      attributionControl: false,
     });
+
+    map.current.addControl(
+      new mapboxgl.AttributionControl({
+        customAttribution:
+          '© <a href="https://atmikapai.dev/" target="_blank">Atmika</a> © <a href="https://marauders.earth/" target="_blank">Marauders</a>',
+      }),
+      "bottom-left"
+    );
 
     // Mobile: Mapbox has no JS event for attribution open/close, so watch the
     // class it toggles on itself (mapboxgl-compact-show) and mirror that into
@@ -854,39 +858,36 @@ export default function Map({
     });
   }, [geocodedMarkers, markerVisibilityMap]);
 
-  // Anchor the desktop card popup above the selected marker (tracks pan/zoom,
-  // auto-flips near edges). Mobile uses a fixed-bottom card instead.
+  // Pan so the selected marker docks at a fixed screen position — horizontally
+  // centered, with guaranteed clearance above for the popup (clear of the
+  // floating filter bar) — then anchor the popup above it with a fixed anchor.
+  // Panning to a predictable spot means the popup never has to dynamically
+  // flip corners to dodge the filter bar or the left/right edges.
   useEffect(() => {
-    if (!map.current || isMobileViewport || !selectedRestaurant) return;
+    if (!map.current || !selectedRestaurant) return;
     const lng = Number(selectedRestaurant.longitude);
     const lat = Number(selectedRestaurant.latitude);
     if (Number.isNaN(lng) || Number.isNaN(lat)) return;
 
-    // The filter bar floats over the top of the map; Mapbox's auto-anchor only
-    // considers the map container, so a high marker would render the card upward
-    // and collide with the filters. If anchoring above would intrude into the
-    // filter bar, anchor below the marker instead (render downward).
-    const offset = 16;
+    const offset = 16; // gap between marker and popup
     const margin = 12;
-    const point = map.current.project([lng, lat]);
+    const maxWidth = Math.min(340, window.innerWidth - margin * 2);
+    const estimatedPopupHeight = popupContainer.offsetHeight || 400;
+
     const mapRect = mapContainer.current?.getBoundingClientRect();
     const mapTop = mapRect?.top ?? 0;
-    const mapBottom = mapRect?.bottom ?? window.innerHeight;
-    const markerViewportY = mapTop + point.y;
+    const mapHeight = mapRect?.height ?? window.innerHeight;
+    const mapCenterScreenY = mapTop + mapHeight / 2;
     const filterBar = document.querySelector(".filter-bar-container");
     const filterBottom = filterBar?.getBoundingClientRect().bottom ?? 90;
-    const estimatedPopupHeight = popupContainer.offsetHeight || 400;
-    const wouldOverlapFilters =
-      markerViewportY - offset - estimatedPopupHeight < filterBottom;
-    const anchor = wouldOverlapFilters ? "top" : "bottom";
 
-    // Cap the card to the space available in the chosen direction so a tall card
-    // is never clipped off-screen — it scrolls internally instead. (Anchor "top"
-    // renders the card below the marker; "bottom" renders it above.)
-    const availableHeight =
-      anchor === "top"
-        ? mapBottom - markerViewportY - offset - margin
-        : markerViewportY - offset - filterBottom - margin;
+    // Ideal docking Y leaves exactly enough room above for the popup below the
+    // filter bar; clamp so we never push the marker so low it loses all map
+    // context beneath it (or collides with the bottom of the screen).
+    const idealDockY = filterBottom + margin + estimatedPopupHeight + offset;
+    const dockY = Math.min(idealDockY, mapTop + mapHeight * 0.8);
+    const availableHeight = dockY - offset - filterBottom - margin;
+
     const card = popupContainer.querySelector<HTMLElement>(".restaurant-card");
     if (card) {
       card.style.maxHeight = `${Math.max(220, Math.floor(availableHeight))}px`;
@@ -894,12 +895,18 @@ export default function Map({
       card.style.overscrollBehavior = "contain";
     }
 
+    map.current.easeTo({
+      center: [lng, lat],
+      offset: [0, dockY - mapCenterScreenY],
+      duration: 400,
+    });
+
     const popup = new mapboxgl.Popup({
       closeButton: false,
       closeOnClick: false,
-      maxWidth: "340px",
+      maxWidth: `${maxWidth}px`,
       offset,
-      anchor,
+      anchor: "bottom",
       className: "restaurant-popup",
     })
       .setLngLat([lng, lat])
@@ -911,13 +918,12 @@ export default function Map({
       popup.remove();
       if (cardPopup.current === popup) cardPopup.current = null;
     };
-  }, [selectedRestaurant, isMobileViewport, popupContainer]);
+  }, [selectedRestaurant, popupContainer]);
 
   return (
     <div className="map-wrapper">
       <div ref={mapContainer} className="map-container" />
-      {!isMobileViewport &&
-        selectedRestaurant &&
+      {selectedRestaurant &&
         createPortal(
           <RestaurantCard
             restaurant={selectedRestaurant}

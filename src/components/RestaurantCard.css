@@ -772,6 +772,17 @@
     /* Inherits from .card-body-text */
   }
 
+  /* Unified body text class for all content text */
+.card-body-text {
+  font-size: 13px;
+  line-height: 1.4;
+  color: #4B5563;
+  text-align: left;
+  white-space: pre-line;
+  margin-bottom: 5px;
+}
+
+
   .restaurant-week-footnote {
     font-size: 10px;
   }

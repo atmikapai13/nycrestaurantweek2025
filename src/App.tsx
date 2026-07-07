@@ -4,7 +4,6 @@ import FloatingHeader from "./components/FloatingHeader";
 import FilterBar from "./components/FilterBar";
 import Map from "./components/Map";
 import MobileOnboarding from "./components/MobileOnboarding";
-import MobileRestaurantCard from "./components/MobileRestaurantCard";
 import type { Restaurant } from "./types/restaurant";
 import { MapProvider, useMap } from "./contexts/MapContext";
 import { API_CONFIG } from "./config/features";
@@ -142,8 +141,8 @@ function AppContent() {
         mapResetRef={mapResetRef}
       />
 
-      {/* Desktop: the restaurant card renders as a Mapbox popup anchored above the
-          marker (handled inside <Map>). Mobile uses the fixed-bottom card below. */}
+      {/* The restaurant card renders as a Mapbox popup anchored above the
+          selected marker (handled inside <Map>), on both mobile and desktop. */}
     </div>
   );
 
@@ -154,7 +153,6 @@ function AppContent() {
         <FloatingHeader />
         <FilterBar />
         {mapArea}
-        <MobileRestaurantCard onToggleFavorite={toggleFavorite} />
         <MobileOnboarding />
       </div>
     );
