@@ -147,7 +147,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
       </div>
       {/* Restaurant Description (summary always shows here) */}
       {summary && (
-        <p className="card-body-text review-text">{formatBody(summary)}</p>
+        <p className="card-body-text">{formatBody(summary)}</p>
       )}
 
       {/* +more toggle for collapsible cards */}

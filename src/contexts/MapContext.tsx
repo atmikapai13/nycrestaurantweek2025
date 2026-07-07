@@ -38,10 +38,10 @@ const DEAL_TAG_KEYS = new Set(DEAL_TAG_FILTERS.map((f) => f.key));
 // Emoji prefixes double as a map legend — they match the marker emojis set by
 // getDealEmoji() in Map.tsx (Meal 🍱 / Meal + Drink 🤑 / Drinks 🍻 / Dessert 🍰).
 export const OFFER_26_OPTIONS: { value: string; label: string }[] = [
-  { value: "food_only", label: "Meal" },
-  { value: "meal_drink_combo", label: "Meal + Drink" },
-  { value: "drink_only", label: "Drink" },
-  { value: "desserts", label: "Dessert" },
+  { value: "food_only", label: "🍱 Meal" },
+  { value: "meal_drink_combo", label: "🤑 Meal + Drink" },
+  { value: "drink_only", label: "🍻 Drink" },
+  { value: "desserts", label: "🍫 Dessert" },
 ];
 
 // "Awards" dropdown — recognition badges (a handful of venues each). OR together.
@@ -144,6 +144,10 @@ interface MapContextType {
   searchExpanded: boolean;
   setSearchExpanded: React.Dispatch<React.SetStateAction<boolean>>;
 
+  // True while the Mapbox attribution "(i)" popup is expanded (mobile)
+  attributionExpanded: boolean;
+  setAttributionExpanded: React.Dispatch<React.SetStateAction<boolean>>;
+
   // Geocoded location markers (teardrop pins)
   geocodedMarkers: GeocodedMarker[];
   markerVisibilityMap: Map<string, boolean>;
@@ -197,6 +201,9 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
 
   // Mobile search toggle expanded state
   const [searchExpanded, setSearchExpanded] = useState(false);
+
+  // True while the Mapbox attribution "(i)" popup is expanded (mobile)
+  const [attributionExpanded, setAttributionExpanded] = useState(false);
 
   // Geocoded location markers
   const [geocodedMarkers, setGeocodedMarkers] = useState<GeocodedMarker[]>([]);
@@ -617,6 +624,8 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
         setOnboardingRefineHint,
         searchExpanded,
         setSearchExpanded,
+        attributionExpanded,
+        setAttributionExpanded,
         geocodedMarkers,
         markerVisibilityMap,
         addGeocodedMarker,

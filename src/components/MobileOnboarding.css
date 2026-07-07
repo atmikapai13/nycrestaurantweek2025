@@ -6,7 +6,8 @@
   bottom: 0;
   z-index: 1500;
   display: flex;
-  padding: 0 16px calc(16px + env(safe-area-inset-bottom));
+  /* Extra 40px clears the collapsed Mapbox attribution "(i)" icon at bottom-right */
+  padding: 0 16px calc(40px + 16px + env(safe-area-inset-bottom));
   pointer-events: none;
 }
 
@@ -75,20 +76,4 @@
 .mobile-onboarding-highlight {
   color: #ff69b4;
   font-weight: 600;
-}
-
-.mobile-onboarding-cursor {
-  display: inline-block;
-  width: 0.5em;
-  height: 1em;
-  margin-left: 2px;
-  background: #1f2937;
-  vertical-align: text-bottom;
-  animation: mobile-onboarding-blink 0.6s steps(1) infinite;
-}
-
-@keyframes mobile-onboarding-blink {
-  50% {
-    opacity: 0;
-  }
 }

@@ -7,11 +7,19 @@ interface Props {
 }
 
 // Fixed-bottom card for the selected restaurant on mobile. Hidden whenever the
-// filter bar or search is expanded so it never fights with them for space.
+// filter bar or search is expanded, or the Mapbox attribution popup is open,
+// so it never fights with them for space.
 export default function MobileRestaurantCard({ onToggleFavorite }: Props) {
-  const { selectedRestaurant, setSelectedRestaurant, favorites, filterBarExpanded, searchExpanded } = useMap()
+  const {
+    selectedRestaurant,
+    setSelectedRestaurant,
+    favorites,
+    filterBarExpanded,
+    searchExpanded,
+    attributionExpanded,
+  } = useMap()
 
-  if (!selectedRestaurant || filterBarExpanded || searchExpanded) return null
+  if (!selectedRestaurant || filterBarExpanded || searchExpanded || attributionExpanded) return null
 
   return (
     <div className="mobile-restaurant-card">

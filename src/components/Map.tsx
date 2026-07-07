@@ -92,6 +92,7 @@ export default function Map({
     restaurantWeekActive,
     setFilterBarExpanded,
     setSearchExpanded,
+    setAttributionExpanded,
     geocodedMarkers,
     markerVisibilityMap,
     clearGeocodedMarkers,
@@ -341,6 +342,22 @@ export default function Map({
         '© <a href="https://atmikapai.dev/" target="_blank">Atmika</a> © <a href="https://marauders.earth/" target="_blank">Marauders</a>',
     });
 
+    // Mobile: Mapbox has no JS event for attribution open/close, so watch the
+    // class it toggles on itself (mapboxgl-compact-show) and mirror that into
+    // shared state — the onboarding/restaurant cards hide while it's expanded
+    // so they never get covered by it, and reappear once it's closed.
+    let attributionObserver: MutationObserver | undefined;
+    if (isMobile) {
+      const attribEl = mapContainer.current.querySelector(".mapboxgl-ctrl-attrib");
+      if (attribEl) {
+        const updateExpanded = () =>
+          setAttributionExpanded(attribEl.classList.contains("mapboxgl-compact-show"));
+        updateExpanded();
+        attributionObserver = new MutationObserver(updateExpanded);
+        attributionObserver.observe(attribEl, { attributes: true, attributeFilter: ["class"] });
+      }
+    }
+
     // Add zoom event listener to update marker sizes (throttled with rAF)
     map.current.on("zoom", () => {
       if (pendingMarkerUpdate.current) {
@@ -396,6 +413,7 @@ export default function Map({
       if (pendingMarkerUpdate.current) {
         cancelAnimationFrame(pendingMarkerUpdate.current);
       }
+      attributionObserver?.disconnect();
       if (map.current) {
         map.current.remove();
       }

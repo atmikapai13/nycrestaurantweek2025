@@ -118,6 +118,7 @@
   position: absolute;
   top: 33px;
   left: 0;
+  width: 100%;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -129,6 +130,8 @@
   position: relative;
   display: flex;
   align-items: center;
+  flex: 1;
+  min-width: 0;
 }
 
 .filter-search-icon {
@@ -148,7 +151,42 @@
   font-size: 12px;
   font-family: inherit;
   outline: none;
-  width: 160px;
+  width: 95%;
+}
+
+/* Top-5 name-match typeahead, shown below the search input while typing */
+.filter-search-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 95%;
+  margin-top: 4px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  list-style: none;
+  padding: 4px;
+  overflow: hidden;
+}
+
+.filter-search-suggestion {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  padding: 7px 8px;
+  font-size: 12px;
+  font-family: inherit;
+  text-align: left;
+  color: #1f2937;
+  cursor: pointer;
+}
+
+.filter-search-suggestion:hover,
+.filter-search-suggestion:active {
+  background: rgba(242, 61, 151, 0.1);
 }
 
 /* Onboarding spotlight — blurs/dims the map while the last card points at Refine.

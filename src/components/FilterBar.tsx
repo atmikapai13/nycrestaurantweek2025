@@ -1,7 +1,8 @@
 import { useMemo, useState, useEffect, useRef } from "react";
 import { Search } from "lucide-react";
 import FilterDropdown from "./FilterDropdown";
-import { useMap, DEAL_TAG_FILTERS, OFFER_26_OPTIONS, AWARDS_OPTIONS } from "../contexts/MapContext";
+import { useMap, hasAnyAward, DEAL_TAG_FILTERS, OFFER_26_OPTIONS, AWARDS_OPTIONS } from "../contexts/MapContext";
+import { useIsMobile } from "@/hooks/use-mobile";
 import "./FilterBar.css";
 
 /**
@@ -32,8 +33,10 @@ export default function FilterBar() {
     setSearchTerm,
     searchExpanded,
     setSearchExpanded,
+    setSelectedRestaurant,
   } = useMap();
 
+  const isMobile = useIsMobile();
   const filterBarRef = useRef<HTMLDivElement>(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(false);
@@ -103,6 +106,31 @@ export default function FilterBar() {
     const next = !searchExpanded;
     setSearchExpanded(next);
     if (next) setIsExpanded(false);
+  };
+
+  // Top 5 name matches for the search typeahead: matches at the start of the
+  // name rank above matches elsewhere, then award winners rank above the rest.
+  const searchSuggestions = useMemo(() => {
+    const query = searchTerm.trim().toLowerCase();
+    if (!query) return [];
+    return allRestaurants
+      .filter((r) => r.name.toLowerCase().includes(query))
+      .sort((a, b) => {
+        const aStarts = a.name.toLowerCase().startsWith(query);
+        const bStarts = b.name.toLowerCase().startsWith(query);
+        if (aStarts !== bStarts) return aStarts ? -1 : 1;
+        const aAward = hasAnyAward(a);
+        const bAward = hasAnyAward(b);
+        if (aAward !== bAward) return aAward ? -1 : 1;
+        return a.name.localeCompare(b.name);
+      })
+      .slice(0, 5);
+  }, [searchTerm, allRestaurants]);
+
+  const handleSelectSuggestion = (restaurant: (typeof searchSuggestions)[number]) => {
+    setSelectedRestaurant(restaurant);
+    setSearchTerm("");
+    setSearchExpanded(false);
   };
 
   const offer26Options = useMemo(() =>
@@ -194,8 +222,8 @@ export default function FilterBar() {
               strokeLinecap="round"
               strokeLinejoin="round"
             >
-              <path d="M42 28C24 28 24 10 6 8" />
-              <path d="M13 2L4 8L12 16" />
+              <path d="M42 17H6" />
+              <path d="M14 9L6 17L14 25" />
             </svg>
           )}
         </div>
@@ -269,31 +297,49 @@ export default function FilterBar() {
 
       </div>
 
-        <div className="filter-search-wrapper">
-          <div className="filter-hamburger-wrapper">
-            <button
-              className="filter-hamburger-button"
-              onClick={toggleSearchExpanded}
-              aria-label="Toggle search"
-            >
-              <Search size={16} color="#ffffff" strokeWidth={2} />
-            </button>
-          </div>
-
-          {searchExpanded && (
-            <div className="filter-search-input-wrap">
-              <Search size={14} className="filter-search-icon" aria-hidden="true" />
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search restaurants…"
-                className="filter-search-input"
-                autoFocus
-              />
+        {isMobile && (
+          <div className="filter-search-wrapper">
+            <div className="filter-hamburger-wrapper">
+              <button
+                className="filter-hamburger-button"
+                onClick={toggleSearchExpanded}
+                aria-label="Toggle search"
+              >
+                <Search size={16} color="#ffffff" strokeWidth={2} />
+              </button>
             </div>
-          )}
-        </div>
+
+            {searchExpanded && (
+              <div className="filter-search-input-wrap">
+                <Search size={14} className="filter-search-icon" aria-hidden="true" />
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Search restaurants…"
+                  className="filter-search-input"
+                  autoFocus
+                />
+
+                {searchSuggestions.length > 0 && (
+                  <ul className="filter-search-suggestions">
+                    {searchSuggestions.map((r) => (
+                      <li key={r.slug}>
+                        <button
+                          type="button"
+                          className="filter-search-suggestion"
+                          onClick={() => handleSelectSuggestion(r)}
+                        >
+                          {r.name}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )}
+          </div>
+        )}
     </div>
     </>
   );
