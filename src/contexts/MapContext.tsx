@@ -38,10 +38,10 @@ const DEAL_TAG_KEYS = new Set(DEAL_TAG_FILTERS.map((f) => f.key));
 // Emoji prefixes double as a map legend — they match the marker emojis set by
 // getDealEmoji() in Map.tsx (Meal 🍱 / Meal + Drink 🤑 / Drinks 🍻 / Dessert 🍰).
 export const OFFER_26_OPTIONS: { value: string; label: string }[] = [
-  { value: "food_only", label: "🍱  Meal" },
-  { value: "meal_drink_combo", label: "🤑  Meal + Drink" },
-  { value: "drink_only", label: "🍻  Drink" },
-  { value: "desserts", label: "🍰  Dessert" },
+  { value: "food_only", label: "Meal" },
+  { value: "meal_drink_combo", label: "Meal + Drink" },
+  { value: "drink_only", label: "Drink" },
+  { value: "desserts", label: "Dessert" },
 ];
 
 // "Awards" dropdown — recognition badges (a handful of venues each). OR together.
@@ -132,9 +132,17 @@ interface MapContextType {
   // Filter pool slugs (for passing to chat API)
   filterPoolSlugs: string[];
 
-  // Drawer height state (for coordinating UI elements)
-  drawerHeight: number;
-  setDrawerHeight: React.Dispatch<React.SetStateAction<number>>;
+  // Mobile filter bar expanded state (for coordinating UI elements)
+  filterBarExpanded: boolean;
+  setFilterBarExpanded: React.Dispatch<React.SetStateAction<boolean>>;
+
+  // True while the last mobile onboarding card (which points at Refine) is showing
+  onboardingRefineHint: boolean;
+  setOnboardingRefineHint: React.Dispatch<React.SetStateAction<boolean>>;
+
+  // Mobile search toggle expanded state (for coordinating UI elements)
+  searchExpanded: boolean;
+  setSearchExpanded: React.Dispatch<React.SetStateAction<boolean>>;
 
   // Geocoded location markers (teardrop pins)
   geocodedMarkers: GeocodedMarker[];
@@ -179,8 +187,16 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
     string[] | null
   >(null);
 
-  // Drawer height state (for coordinating UI elements)
-  const [drawerHeight, setDrawerHeight] = useState(30);
+  // Mobile filter bar expanded state (starts expanded on desktop, collapsed on mobile)
+  const [filterBarExpanded, setFilterBarExpanded] = useState(() =>
+    typeof window !== "undefined" ? window.innerWidth > 768 : true
+  );
+
+  // True while the last mobile onboarding card (which points at Refine) is showing
+  const [onboardingRefineHint, setOnboardingRefineHint] = useState(false);
+
+  // Mobile search toggle expanded state
+  const [searchExpanded, setSearchExpanded] = useState(false);
 
   // Geocoded location markers
   const [geocodedMarkers, setGeocodedMarkers] = useState<GeocodedMarker[]>([]);
@@ -595,8 +611,12 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
         isochroneRegionSlugs,
         setIsochroneRegionSlugs,
         filterPoolSlugs,
-        drawerHeight,
-        setDrawerHeight,
+        filterBarExpanded,
+        setFilterBarExpanded,
+        onboardingRefineHint,
+        setOnboardingRefineHint,
+        searchExpanded,
+        setSearchExpanded,
         geocodedMarkers,
         markerVisibilityMap,
         addGeocodedMarker,

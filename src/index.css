@@ -81,11 +81,6 @@
   }
 }
 
-/* CSS Variables */
-:root {
-  --drawer-height: 40vh; /* Default drawer height for mobile */
-}
-
 /* Reset and base styles */
 * {
   margin: 0;

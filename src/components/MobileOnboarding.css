@@ -1,0 +1,94 @@
+/* Mobile-only first-run tutorial, styled like a restaurant card. */
+.mobile-onboarding {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1500;
+  display: flex;
+  padding: 0 16px calc(16px + env(safe-area-inset-bottom));
+  pointer-events: none;
+}
+
+.mobile-onboarding-inner {
+  position: relative;
+  width: 100%;
+}
+
+.mobile-onboarding-skip {
+  position: absolute;
+  top: -30px;
+  right: 4px;
+  pointer-events: auto;
+  background: #ffffff;
+  border: 1px solid rgba(242, 61, 150, 0.4);
+  border-radius: 999px;
+  padding: 4px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4b5563;
+  cursor: pointer;
+}
+
+.mobile-onboarding-card {
+  position: relative;
+  pointer-events: auto;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  border: 2px solid rgba(242, 61, 150, 0.4);
+  border-radius: 16px;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+  padding: 14px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.mobile-onboarding-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  object-fit: cover;
+}
+
+.mobile-onboarding-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: #1f2937;
+}
+
+.mobile-onboarding-text strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.mobile-onboarding-text p {
+  margin: 0;
+}
+
+.mobile-onboarding-highlight {
+  color: #ff69b4;
+  font-weight: 600;
+}
+
+.mobile-onboarding-cursor {
+  display: inline-block;
+  width: 0.5em;
+  height: 1em;
+  margin-left: 2px;
+  background: #1f2937;
+  vertical-align: text-bottom;
+  animation: mobile-onboarding-blink 0.6s steps(1) infinite;
+}
+
+@keyframes mobile-onboarding-blink {
+  50% {
+    opacity: 0;
+  }
+}

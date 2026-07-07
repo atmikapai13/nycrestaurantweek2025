@@ -6,6 +6,7 @@
   align-items: center;
   gap: 10px;
   display: flex;
+  pointer-events: none; /* purely decorative — never intercept taps meant for controls beneath it */
 }
 
 

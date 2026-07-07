@@ -1,4 +1,5 @@
 import { useMemo, useState, useEffect, useRef } from "react";
+import { Search } from "lucide-react";
 import FilterDropdown from "./FilterDropdown";
 import { useMap, DEAL_TAG_FILTERS, OFFER_26_OPTIONS, AWARDS_OPTIONS } from "../contexts/MapContext";
 import "./FilterBar.css";
@@ -22,27 +23,16 @@ export default function FilterBar() {
     allRestaurants,
     activeFilters,
     setActiveFilters,
-    drawerHeight,
-    setDrawerHeight,
+    filterBarExpanded: isExpanded,
+    setFilterBarExpanded: setIsExpanded,
     favoritesActive,
     setFavoritesActive,
+    onboardingRefineHint,
+    searchTerm,
+    setSearchTerm,
+    searchExpanded,
+    setSearchExpanded,
   } = useMap();
-
-  // Start expanded on desktop, collapsed on mobile
-  const [isExpanded, setIsExpanded] = useState(() => {
-    if (typeof window !== "undefined") {
-      return window.innerWidth > 768;
-    }
-    return true; // Default to expanded for SSR
-  });
-
-  // Collapse filter bar when drawer expands to 30vh or 55vh
-  useEffect(() => {
-    const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
-    if (isMobile && drawerHeight >= 30 && isExpanded) {
-      setIsExpanded(false);
-    }
-  }, [drawerHeight, isExpanded]);
 
   const filterBarRef = useRef<HTMLDivElement>(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
@@ -104,14 +94,15 @@ export default function FilterBar() {
   };
 
   const toggleExpanded = () => {
-    const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
-    const newExpanded = !isExpanded;
-    setIsExpanded(newExpanded);
+    const next = !isExpanded;
+    setIsExpanded(next);
+    if (next) setSearchExpanded(false);
+  };
 
-    // On mobile: expanding filter bar → collapse drawer to peek so map is visible
-    if (isMobile && newExpanded) {
-      setDrawerHeight(8);
-    }
+  const toggleSearchExpanded = () => {
+    const next = !searchExpanded;
+    setSearchExpanded(next);
+    if (next) setIsExpanded(false);
   };
 
   const offer26Options = useMemo(() =>
@@ -169,23 +160,45 @@ export default function FilterBar() {
   void showRightArrow;
 
   return (
-    <div className="filter-bar-container">
-      <div className={`filter-bar-wrapper ${isExpanded ? "expanded" : "collapsed"}`}>
-        <button
-          className="filter-hamburger-button"
-          onClick={toggleExpanded}
-          aria-label="Toggle filters"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <line x1="4" y1="6" x2="20" y2="6"/>
-            <line x1="4" y1="12" x2="20" y2="12"/>
-            <line x1="4" y1="18" x2="20" y2="18"/>
-            <circle cx="8" cy="6" r="2" fill="currentColor"/>
-            <circle cx="16" cy="12" r="2" fill="currentColor"/>
-            <circle cx="10" cy="18" r="2" fill="currentColor"/>
-          </svg>
-          {!isExpanded && <span className="filter-button-label">Refine</span>}
-        </button>
+    <>
+      {onboardingRefineHint && <div className="onboarding-spotlight-overlay" aria-hidden="true" />}
+      <div className="filter-bar-container">
+        <div className={`filter-bar-wrapper ${isExpanded ? "expanded" : "collapsed"}`}>
+        <div className="filter-hamburger-wrapper">
+          <button
+            className="filter-hamburger-button"
+            onClick={toggleExpanded}
+            aria-label="Toggle filters"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="4" y1="6" x2="20" y2="6"/>
+              <line x1="4" y1="12" x2="20" y2="12"/>
+              <line x1="4" y1="18" x2="20" y2="18"/>
+              <circle cx="8" cy="6" r="2" fill="currentColor"/>
+              <circle cx="16" cy="12" r="2" fill="currentColor"/>
+              <circle cx="10" cy="18" r="2" fill="currentColor"/>
+            </svg>
+            {!isExpanded && <span className="filter-button-label">Refine</span>}
+          </button>
+
+          {onboardingRefineHint && !isExpanded && (
+            <svg
+              className="filter-refine-hint"
+              aria-hidden="true"
+              width="46"
+              height="34"
+              viewBox="0 0 46 34"
+              fill="none"
+              stroke="#F23D97"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M42 28C24 28 24 10 6 8" />
+              <path d="M13 2L4 8L12 16" />
+            </svg>
+          )}
+        </div>
 
         <div
           ref={filterBarRef}
@@ -255,6 +268,33 @@ export default function FilterBar() {
         </div>
 
       </div>
+
+        <div className="filter-search-wrapper">
+          <div className="filter-hamburger-wrapper">
+            <button
+              className="filter-hamburger-button"
+              onClick={toggleSearchExpanded}
+              aria-label="Toggle search"
+            >
+              <Search size={16} color="#ffffff" strokeWidth={2} />
+            </button>
+          </div>
+
+          {searchExpanded && (
+            <div className="filter-search-input-wrap">
+              <Search size={14} className="filter-search-icon" aria-hidden="true" />
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search restaurants…"
+                className="filter-search-input"
+                autoFocus
+              />
+            </div>
+          )}
+        </div>
     </div>
+    </>
   );
 }

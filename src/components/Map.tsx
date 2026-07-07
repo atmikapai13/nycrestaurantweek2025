@@ -90,8 +90,8 @@ export default function Map({
     selectedRestaurant,
     setSelectedRestaurant,
     restaurantWeekActive,
-    drawerHeight,
-    setDrawerHeight,
+    setFilterBarExpanded,
+    setSearchExpanded,
     geocodedMarkers,
     markerVisibilityMap,
     clearGeocodedMarkers,
@@ -103,6 +103,7 @@ export default function Map({
   const selectedRestaurantRef = useRef(selectedRestaurant); // Avoid stale closures in click handlers
 
   // Desktop: restaurant card renders as a Mapbox popup anchored above the marker.
+  // Mobile: a fixed-bottom card instead (see MobileRestaurantCard).
   const isMobileViewport = useIsMobile();
   const cardPopup = useRef<mapboxgl.Popup | null>(null);
   const popupContainer = useMemo(() => document.createElement("div"), []);
@@ -127,7 +128,7 @@ export default function Map({
 
     // Use EXACT same values as initial map setup (lines 212-221)
     const center = isMobile ? [-73.992, 40.727] : [-74.014, 40.737];
-    const zoom = isMobile ? 12.2 : 12.58; 
+    const zoom = isMobile ? 12.5 : 12.58; 
     const pitch = 45;
     const bearing = 0;
 
@@ -167,6 +168,7 @@ export default function Map({
       mapResetRef.current = resetMapView;
     }
   }, [mapResetRef]);
+
 
   // Implement onMapFocus handler for semantic search results
   const handleMapFocus = (restaurantSlugs: string[]) => {
@@ -315,8 +317,8 @@ export default function Map({
     const MIDTOWN: [number, number] = [-73.984, 40.754];
 
     // Mobile-specific viewport: shifted south so Midtown sits above the 40% drawer
-    const mobileCenter: [number, number] = [MIDTOWN[0], MIDTOWN[1] - 0.127];
-    const mobileZoom = 10.0;
+    const mobileCenter: [number, number] = [MIDTOWN[0], MIDTOWN[1] - 0.03];
+    const mobileZoom = 10.8;
     const mobilePitch = 45;
     const mobileBearing = 0;
 
@@ -736,10 +738,15 @@ export default function Map({
             // Deselect
             setSelectedRestaurant(null);
           } else {
-            // Select — the card now renders as a floating overlay on the map
-            // (driven by selectedRestaurant in App), not in the chat panel.
+            // Select — the card renders as a floating overlay on the map (desktop)
+            // or a fixed-bottom card (mobile). On mobile, collapse an open filter
+            // bar or search box so the card isn't hidden behind them.
             setSelectedRestaurant(restaurant);
             onRestaurantSelect(restaurant);
+            if (window.innerWidth <= 768) {
+              setFilterBarExpanded(false);
+              setSearchExpanded(false);
+            }
           }
         });
 
@@ -760,6 +767,8 @@ export default function Map({
     awardsActive,
     favorites,
     setSelectedRestaurant,
+    setFilterBarExpanded,
+    setSearchExpanded,
     restaurantWeekActive,
   ]);
 
@@ -828,7 +837,7 @@ export default function Map({
   }, [geocodedMarkers, markerVisibilityMap]);
 
   // Anchor the desktop card popup above the selected marker (tracks pan/zoom,
-  // auto-flips near edges). Mobile uses the bottom-sheet drawer instead.
+  // auto-flips near edges). Mobile uses a fixed-bottom card instead.
   useEffect(() => {
     if (!map.current || isMobileViewport || !selectedRestaurant) return;
     const lng = Number(selectedRestaurant.longitude);

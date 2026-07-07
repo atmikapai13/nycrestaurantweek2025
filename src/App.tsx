@@ -3,7 +3,8 @@ import "./App.css";
 import FloatingHeader from "./components/FloatingHeader";
 import FilterBar from "./components/FilterBar";
 import Map from "./components/Map";
-import MobileCardDrawer from "./components/MobileCardDrawer";
+import MobileOnboarding from "./components/MobileOnboarding";
+import MobileRestaurantCard from "./components/MobileRestaurantCard";
 import type { Restaurant } from "./types/restaurant";
 import { MapProvider, useMap } from "./contexts/MapContext";
 import { API_CONFIG } from "./config/features";
@@ -19,7 +20,6 @@ function AppContent() {
     setSearchTerm,
     favorites,
     setFavorites,
-    selectedRestaurant,
     setSelectedRestaurant,
   } = useMap();
 
@@ -143,7 +143,7 @@ function AppContent() {
       />
 
       {/* Desktop: the restaurant card renders as a Mapbox popup anchored above the
-          marker (handled inside <Map>). Mobile uses the bottom-sheet drawer below. */}
+          marker (handled inside <Map>). Mobile uses the fixed-bottom card below. */}
     </div>
   );
 
@@ -154,13 +154,8 @@ function AppContent() {
         <FloatingHeader />
         <FilterBar />
         {mapArea}
-        <MobileCardDrawer
-          selectedRestaurant={selectedRestaurant}
-          onSelect={handleRestaurantSelect}
-          onCloseCard={() => setSelectedRestaurant(null)}
-          isFavorited={selectedRestaurant ? favorites.includes(selectedRestaurant.name) : false}
-          onToggleFavorite={() => selectedRestaurant && toggleFavorite(selectedRestaurant.name)}
-        />
+        <MobileRestaurantCard onToggleFavorite={toggleFavorite} />
+        <MobileOnboarding />
       </div>
     );
   }

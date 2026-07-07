@@ -29,14 +29,10 @@ function dealLabel(r: Restaurant): string {
   return 'World "Cup" Collectible'
 }
 
-// Shared deals content — used by the desktop sidebar AND the mobile bottom sheet.
-// `introOnly` (mobile) shows just the intro message, hiding search / Top 5 / links.
 export default function DealsPanel({
   onSelect,
-  introOnly = false,
 }: {
   onSelect: (r: Restaurant) => void
-  introOnly?: boolean
 }) {
   const { allRestaurants, filteredRestaurants, userLocation, setUserLocation, searchTerm, setSearchTerm } = useMap()
 
@@ -105,8 +101,6 @@ export default function DealsPanel({
         </p>
       </div>
 
-      {!introOnly && (
-        <>
       <div className="relative">
         <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
         <Input
@@ -155,7 +149,7 @@ export default function DealsPanel({
       </div>
 
       <div className="px-0 text-xl font-semibold uppercase tracking-widest text-pink-500">
-        And more...
+        And more:
       </div>
       <p className="-mt-4 py-0 text-lg leading-snug font-bold">
         As a restaurateur, you can participate by{' '}
@@ -194,8 +188,6 @@ export default function DealsPanel({
         </a>
         .
       </p>
-        </>
-      )}
     </div>
   )
 }
