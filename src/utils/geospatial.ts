@@ -75,6 +75,50 @@ export function findRestaurantsWithinRadius(
 }
 
 /**
+ * Order restaurants as a greedy nearest-neighbor walk starting from an anchor
+ * point: each next stop is the closest not-yet-visited restaurant to the
+ * *previous* stop (not back to the anchor), so the path moves outward in a
+ * continuous line instead of the zigzag you get sorting everything by
+ * straight-line distance from a single fixed center. Visited slugs are
+ * removed from the remaining pool each step so the walk can never double
+ * back and re-pick a restaurant it already placed.
+ */
+export function findRestaurantsByGreedyWalk(
+  anchor: Restaurant,
+  restaurants: Restaurant[]
+): Restaurant[] {
+  const remaining = new Map(restaurants.map(r => [r.slug, r]))
+  remaining.delete(anchor.slug)
+
+  const ordered: Restaurant[] = [anchor]
+  let current = anchor
+
+  while (remaining.size > 0) {
+    if (current.longitude == null || current.latitude == null) break
+    const currentPoint = turf.point([current.longitude, current.latitude])
+
+    let nearestSlug: string | null = null
+    let nearestDistance = Infinity
+    for (const [slug, r] of remaining) {
+      if (r.longitude == null || r.latitude == null) continue
+      const distance = turf.distance(currentPoint, turf.point([r.longitude, r.latitude]))
+      if (distance < nearestDistance) {
+        nearestDistance = distance
+        nearestSlug = slug
+      }
+    }
+
+    if (nearestSlug == null) break // no remaining restaurants have valid coordinates
+    const next = remaining.get(nearestSlug)!
+    ordered.push(next)
+    remaining.delete(nearestSlug)
+    current = next
+  }
+
+  return ordered
+}
+
+/**
  * Find restaurants along a route (within a corridor buffer)
  */
 export function findRestaurantsAlongRoute(
