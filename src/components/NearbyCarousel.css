@@ -27,14 +27,11 @@
   /* Match .restaurant-card's own radius so the clip follows the card's
      rounded shape instead of cutting its shadow/blur off in a hard rectangle. */
   border-radius: 16px;
-  opacity: 0.55;
-  transition: opacity 0.2s ease;
 }
 
 /* Only the centered card scrolls internally — swiping through the row must
    never drag a peeking neighbor's content along with it. */
 .nearby-carousel-slot--center {
-  opacity: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
@@ -48,6 +45,6 @@
 /* Soft bottom fade instead of a hard clip when a card's content is taller
    than the 35vh cap, so it reads as "scroll for more" rather than cut off. */
 .nearby-carousel-slot--overflowing {
-  mask-image: linear-gradient(to bottom, black calc(100% - 28px), transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 28px), transparent 100%);
+  mask-image: linear-gradient(to bottom, black calc(100% - 10px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 10px), transparent 100%);
 }

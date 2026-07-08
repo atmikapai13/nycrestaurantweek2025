@@ -184,15 +184,14 @@ export default function MobileOnboarding() {
 
   return (
     <>
-      {/* Blocks the map during the first (non-final) cards — tapping empty map
-          area advances to the next card instead of reaching the marker/map. */}
-      {!isLast && (
-        <div
-          className={`mobile-onboarding-spotlight${card.pointsAtRefine ? ' mobile-onboarding-spotlight--dim' : ''}`}
-          onClick={handleTap}
-          aria-hidden="true"
-        />
-      )}
+      {/* Blocks the map on every card — tapping empty map area advances to the
+          next card (or ends the tour on the last one) instead of reaching the
+          marker/map underneath. */}
+      <div
+        className={`mobile-onboarding-spotlight${card.pointsAtRefine ? ' mobile-onboarding-spotlight--dim' : ''}`}
+        onClick={handleTap}
+        aria-hidden="true"
+      />
       <div className="mobile-onboarding">
       <div className="mobile-onboarding-inner">
         <button type="button" className="mobile-onboarding-skip" onClick={() => setDismissed(true)}>
