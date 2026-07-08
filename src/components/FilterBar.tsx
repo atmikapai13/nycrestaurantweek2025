@@ -158,6 +158,31 @@ export default function FilterBar() {
     })
   , [allRestaurants]);
 
+  const awardsOptions = useMemo(() =>
+    AWARDS_OPTIONS.map(({ value, label }) => {
+      const count = allRestaurants.filter((r) => {
+        if (value === "michelin") {
+          return (
+            r.michelin_award &&
+            ["ONE_STAR", "TWO_STARS", "THREE_STARS", "BIB_GOURMAND"].includes(
+              r.michelin_award
+            )
+          );
+        }
+        if (value === "nyt") {
+          return Boolean(r.nyttop100_rank && r.nyttop100_rank !== "");
+        }
+        return false;
+      }).length;
+      return {
+        value,
+        label: count > 0 ? (
+          <>{label} <span style={{ color: "#888" }}>· {count}</span></>
+        ) : label,
+      };
+    })
+  , [allRestaurants]);
+
   const cuisineOptions = useMemo(() => {
     // Collect all distinct non-empty cuisines from the dataset
     const allCuisines = new Set<string>();
@@ -282,7 +307,7 @@ export default function FilterBar() {
           <FilterDropdown
             label="Awards"
             icon=""
-            options={AWARDS_OPTIONS}
+            options={awardsOptions}
             selectedValues={activeFilters["Awards"] || []}
             onChange={(values) => handleFilterChange("Awards", values)}
           />

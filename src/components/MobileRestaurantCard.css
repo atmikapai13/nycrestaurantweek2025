@@ -1,13 +1,13 @@
-/* Fixed-bottom selected-restaurant card on mobile. */
+/* Fixed-bottom selected-restaurant card on mobile. Vertical scrolling and its
+   35vh height cap live on the centered slot inside NearbyCarousel (see
+   .nearby-carousel-slot--center) so only the active card scrolls — this
+   wrapper is just a plain fixed-position layout container. */
 .mobile-restaurant-card {
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
   z-index: 1500;
-  max-height: 40vh;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
   /* Extra 40px clears the collapsed Mapbox attribution "(i)" icon at bottom-left */
   padding: 0 16px calc(40px + 10px + env(safe-area-inset-bottom));
 }

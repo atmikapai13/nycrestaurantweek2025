@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import type { Restaurant } from '../types/restaurant'
 import RestaurantCard from './RestaurantCard'
 import { findRestaurantsByGreedyWalk } from '../utils/geospatial'
@@ -18,6 +18,67 @@ interface Props {
 // swiping through hundreds of restaurants stays cheap (native scroll handles
 // the physics; we only ever mount ~5 cards at a time).
 const RENDER_WINDOW = 2
+
+// One slot in the row. Owns its own overflow detection (via ResizeObserver,
+// since content height can change post-mount — hero image loading, an
+// accordion section expanding) so the bottom fade only shows up when the
+// card's content is actually taller than the slot's capped height, in
+// either direction as content grows or shrinks past that line.
+function CarouselSlot({
+  isCenter,
+  hasContent,
+  onClick,
+  children,
+}: {
+  isCenter: boolean
+  hasContent: boolean
+  onClick?: () => void
+  children: ReactNode
+}) {
+  // Measured against an *inner*, uncapped wrapper rather than comparing
+  // scrollHeight/clientHeight on the already-capped slot itself — that
+  // comparison only updates when the capped box's own rendered size changes,
+  // which can miss content growth that happens mid-transition (e.g. an
+  // accordion's `max-height` animation). The inner wrapper's natural height
+  // always reflects true content size, so we just compare it directly
+  // against the real 35vh pixel value.
+  const contentRef = useRef<HTMLDivElement>(null)
+  const [overflowing, setOverflowing] = useState(false)
+
+  useEffect(() => {
+    const el = contentRef.current
+    if (!el || !hasContent) {
+      setOverflowing(false)
+      return
+    }
+    const check = () => {
+      const capPx = window.innerHeight * 0.35
+      setOverflowing(el.scrollHeight > capPx)
+    }
+    check()
+    const observer = new ResizeObserver(check)
+    observer.observe(el)
+    window.addEventListener('resize', check)
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('resize', check)
+    }
+  }, [hasContent])
+
+  const className = [
+    'nearby-carousel-slot',
+    isCenter && 'nearby-carousel-slot--center',
+    overflowing && 'nearby-carousel-slot--overflowing',
+  ]
+    .filter(Boolean)
+    .join(' ')
+
+  return (
+    <div className={className} onClick={onClick}>
+      <div ref={contentRef}>{children}</div>
+    </div>
+  )
+}
 
 // Swipeable "nearby places" carousel — centers on the selected restaurant and
 // orders the rest of the current pool by distance from it, so swiping left/
@@ -91,9 +152,10 @@ export default function NearbyCarousel({ anchor, pool, favorites, onToggleFavori
         const withinWindow = Math.abs(i - centerIndex) <= RENDER_WINDOW
         const isCenter = i === centerIndex
         return (
-          <div
-            className="nearby-carousel-slot"
+          <CarouselSlot
             key={restaurant.slug}
+            isCenter={isCenter}
+            hasContent={withinWindow}
             onClick={!isCenter ? () => scrollToIndex(i) : undefined}
           >
             {withinWindow && (
@@ -104,7 +166,7 @@ export default function NearbyCarousel({ anchor, pool, favorites, onToggleFavori
                 onClose={isCenter ? onClose : undefined}
               />
             )}
-          </div>
+          </CarouselSlot>
         )
       })}
     </div>

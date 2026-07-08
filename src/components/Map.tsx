@@ -331,7 +331,7 @@ export default function Map({
     // Initialize map
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
-      style: "mapbox://styles/atmikapai13/cmlbhu73z001e01rz83jfgvaa", // Custom style
+      style: "mapbox://styles/atmikapai13/cmrc1ukt9002d01rx579ve3b0", // Custom style
       center: isMobile ? mobileCenter : desktopCenter,
       zoom: isMobile ? mobileZoom : desktopZoom,
       pitch: isMobile ? mobilePitch : desktopPitch,
