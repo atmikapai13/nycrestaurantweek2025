@@ -342,10 +342,11 @@ export default function Map({
 
     map.current.addControl(
       new mapboxgl.AttributionControl({
+        compact: true,
         customAttribution:
           '© <a href="https://atmikapai.dev/" target="_blank">Atmika</a> © <a href="https://marauders.earth/" target="_blank">Marauders</a>',
       }),
-      "bottom-left"
+      isMobile ? "bottom-left" : "bottom-right"
     );
 
     // Mobile: Mapbox has no JS event for attribution open/close, so watch the
