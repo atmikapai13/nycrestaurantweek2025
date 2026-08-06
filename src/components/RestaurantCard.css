@@ -50,6 +50,27 @@
   margin-top: 10px;
 }
 
+/* Photo gallery - horizontal scroll strip of restaurant images */
+.restaurant-card-gallery {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.restaurant-card-gallery-image {
+  flex: 0 0 auto;
+  width: 85%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 10px;
+  scroll-snap-align: start;
+  margin: 0;
+}
+
 .restaurant-card {
   position: relative;
   border-radius: 16px;
@@ -167,6 +188,16 @@
   text-align: left;
   white-space: pre-line;
 }
+
+.restaurant-week-dates {
+  margin-top: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 5px;
+}
+
+
 
 /* Restaurant Description */
 .restaurant-description {
@@ -495,9 +526,6 @@
   padding-top: 6px;
 }
 
-.meal-types-text {
-  /* Inherits from .card-body-text */
-}
 
 .restaurant-week-buttons {
   display: flex;
@@ -508,13 +536,13 @@
 }
 
 .see-menu-btn {
-  background-color: rgba(34, 34, 34, 0.15);
-  color: #343333;
-  font-size: 12px;
+  background-color: rgba(200, 200, 200, 0.863);
+  color: #000000;
+  font-size: 14px;
   font-weight: 500;
   padding: 0px 8px;
   border: none;
-  border-radius: 20px;
+  border-radius: 5px;
   cursor: pointer;
   transition: all 0.2s ease;
   letter-spacing: 0.3px;
@@ -527,9 +555,14 @@
 }
 
 .see-menu-btn:hover {
-  background-color: rgba(0, 0, 0, 0.25);
+  background-color: rgba(216, 41, 131, 0.30);
   color: #000000;
   transform: scale(1.0);
+}
+
+.reserve-btn {
+  background-color: #000000;
+  color: #ffffff;
 }
 
 .see-menu-btn img {
@@ -768,9 +801,6 @@
     padding-bottom: 12px;
   }
 
-  .meal-types-text {
-    /* Inherits from .card-body-text */
-  }
 
   /* Unified body text class for all content text */
 .card-body-text {

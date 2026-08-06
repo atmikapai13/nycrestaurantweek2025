@@ -1,9 +1,17 @@
 import { useMemo, useState, useEffect, useRef } from "react";
 import { Search } from "lucide-react";
 import FilterDropdown from "./FilterDropdown";
-import { useMap, hasAnyAward, DEAL_TAG_FILTERS, OFFER_26_OPTIONS, AWARDS_OPTIONS } from "../contexts/MapContext";
+import { useMap, hasAnyAward, applyRestaurantFilters, AWARDS_OPTIONS, MEAL_TYPE_OPTIONS, parseMealType } from "../contexts/MapContext";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { asset } from "../utils/asset";
 import "./FilterBar.css";
+
+// Icon shown on each Awards toggle button.
+const AWARD_ICONS: Record<string, string> = {
+  michelin: asset("/MichelinStar.svg.png"),
+  bib: asset("/bibgourmand.png"),
+  nyt: asset("/nytimes.png"),
+};
 
 /**
  * FILTER BAR STANDARD PATTERN:
@@ -22,12 +30,22 @@ import "./FilterBar.css";
 export default function FilterBar() {
   const {
     allRestaurants,
+    isochroneRegionSlugs,
     activeFilters,
     setActiveFilters,
     filterBarExpanded: isExpanded,
     setFilterBarExpanded: setIsExpanded,
+    favorites,
     favoritesActive,
     setFavoritesActive,
+    restaurantWeekActive,
+    hasMenuActive,
+    setHasMenuActive,
+    awardsActive,
+    highReviewCountActive,
+    dateNightActive,
+    setDateNightActive,
+    legendFilters,
     onboardingRefineHint,
     setOnboardingDismissRequested,
     searchTerm,
@@ -55,22 +73,6 @@ export default function FilterBar() {
     });
   };
 
-  // Toggle a promo filter key on/off ("on" when active, removed when off)
-  const toggleFilterKey = (filterType: string) => {
-    setActiveFilters((prevFilters) => {
-      const newFilters = { ...prevFilters };
-      if ((newFilters[filterType]?.length ?? 0) > 0) {
-        delete newFilters[filterType];
-      } else {
-        newFilters[filterType] = ["on"];
-      }
-      return newFilters;
-    });
-  };
-
-  const limitedEditionCupActive =
-    (activeFilters["Limited Edition Cup"]?.length ?? 0) > 0;
-
   // Check scroll position to show/hide arrows
   const checkScrollPosition = () => {
     if (filterBarRef.current) {
@@ -95,6 +97,8 @@ export default function FilterBar() {
   const handleResetFilters = () => {
     setActiveFilters({});
     setFavoritesActive(false);
+    setHasMenuActive(false);
+    setDateNightActive(false);
   };
 
   const toggleExpanded = () => {
@@ -144,47 +148,56 @@ export default function FilterBar() {
     setSearchExpanded(false);
   };
 
-  const offer26Options = useMemo(() =>
-    OFFER_26_OPTIONS.map(({ value, label }) => {
-      const count = allRestaurants.filter(
-        (r) => r.deal_tags?.includes(value)
-      ).length;
-      return {
-        value,
-        label: count > 0 ? (
-          <>{label} <span style={{ color: "#888" }}>· {count}</span></>
-        ) : label,
-      };
-    })
-  , [allRestaurants]);
+  // Prix fixe price tiers, derived from the price prefix on meal_types
+  // (e.g. "$60 Dinner") — price_range itself is almost always just "$".
+  const priceOptions = useMemo(() => {
+    const priceCounts = new Map<string, number>();
+    allRestaurants.forEach((r) => {
+      (r.meal_types || []).forEach((meal) => {
+        const match = meal.match(/^\$\d+/);
+        if (match) {
+          const price = match[0];
+          priceCounts.set(price, (priceCounts.get(price) || 0) + 1);
+        }
+      });
+    });
 
-  const awardsOptions = useMemo(() =>
-    AWARDS_OPTIONS.map(({ value, label }) => {
-      const count = allRestaurants.filter((r) => {
-        if (value === "michelin") {
-          return (
-            r.michelin_award &&
-            ["ONE_STAR", "TWO_STARS", "THREE_STARS", "BIB_GOURMAND"].includes(
-              r.michelin_award
-            )
-          );
-        }
-        if (value === "nyt") {
-          return Boolean(r.nyttop100_rank && r.nyttop100_rank !== "");
-        }
-        return false;
-      }).length;
-      return {
-        value,
-        label: count > 0 ? (
-          <>{label} <span style={{ color: "#888" }}>· {count}</span></>
-        ) : label,
-      };
-    })
-  , [allRestaurants]);
+    const allPrices = ["$30", "$45", "$60"];
+    return allPrices
+      .filter((price) => priceCounts.has(price))
+      .map((price) => {
+        const count = priceCounts.get(price) || 0;
+        return {
+          value: price,
+          label: (
+            <>
+              {price} <span style={{ color: "#888" }}>· {count}</span>
+            </>
+          ),
+        };
+      });
+  }, [allRestaurants]);
+
+  // Toggle a single Awards value in/out of the "Awards" filter array.
+  const toggleAward = (value: string) => {
+    setActiveFilters((prevFilters) => {
+      const current = prevFilters["Awards"] || [];
+      const next = current.includes(value)
+        ? current.filter((v) => v !== value)
+        : [...current, value];
+      const newFilters = { ...prevFilters };
+      if (next.length === 0) {
+        delete newFilters["Awards"];
+      } else {
+        newFilters["Awards"] = next;
+      }
+      return newFilters;
+    });
+  };
 
   const cuisineOptions = useMemo(() => {
-    // Collect all distinct non-empty cuisines from the dataset
+    // Collect all distinct non-empty cuisines from the full dataset (so the
+    // option list itself never shrinks — only counts and disabled state do)
     const allCuisines = new Set<string>();
     allRestaurants.forEach((r) => {
       if (r.cuisine) allCuisines.add(r.cuisine);
@@ -194,13 +207,46 @@ export default function FilterBar() {
       return [{ value: "", label: "No cuisines available", disabled: true }];
     }
 
-    // Count cuisines (for display)
+    // Pool of restaurants matching every OTHER active filter (isochrone,
+    // search, Price, Meal Type, Awards, Menu, Date Night, Favorites, …) but
+    // NOT Cuisine itself — so counts reflect what's actually reachable given
+    // the rest of the current selection, and options with a 0 count there
+    // get disabled rather than silently returning nothing when clicked.
+    const scoped = isochroneRegionSlugs
+      ? allRestaurants.filter((r) => isochroneRegionSlugs.includes(r.slug))
+      : allRestaurants;
+    const searched = searchTerm.trim()
+      ? scoped.filter((r) => r.name?.toLowerCase().includes(searchTerm.toLowerCase()))
+      : scoped;
+    const excludingCuisine = applyRestaurantFilters(searched, activeFilters, {
+      favorites,
+      favoritesActive,
+      restaurantWeekActive,
+      hasMenuActive,
+      awardsActive,
+      highReviewCountActive,
+      dateNightActive,
+      legendFilters,
+    }, "Cuisine");
+
     const cuisineCounts = new Map<string, number>();
-    allRestaurants.forEach((r) => {
+    excludingCuisine.forEach((r) => {
       if (r.cuisine) {
         cuisineCounts.set(r.cuisine, (cuisineCounts.get(r.cuisine) || 0) + 1);
       }
     });
+
+    const otherFiltersActive =
+      isochroneRegionSlugs !== null ||
+      searchTerm.trim() !== "" ||
+      favoritesActive ||
+      restaurantWeekActive ||
+      hasMenuActive ||
+      awardsActive ||
+      highReviewCountActive ||
+      dateNightActive ||
+      legendFilters.length > 0 ||
+      Object.keys(activeFilters).some((k) => k !== "Cuisine" && activeFilters[k]?.length > 0);
 
     return Array.from(allCuisines)
       .sort((a, b) => a.localeCompare(b))
@@ -216,8 +262,57 @@ export default function FilterBar() {
             ) : (
               cuisine
             ),
+          disabled: otherFiltersActive && count === 0,
         };
       });
+  }, [
+    allRestaurants,
+    isochroneRegionSlugs,
+    searchTerm,
+    activeFilters,
+    favorites,
+    favoritesActive,
+    restaurantWeekActive,
+    hasMenuActive,
+    awardsActive,
+    highReviewCountActive,
+    dateNightActive,
+    legendFilters,
+  ]);
+
+  // Meal Type is the price-independent half of meal_types (e.g. "$60 Dinner"
+  // → "Dinner"). Counts restaurants offering that type at ANY price.
+  const mealTypeOptions = useMemo(() => {
+    const typeCounts = new Map<string, number>();
+    allRestaurants.forEach((r) => {
+      const typesSeen = new Set<string>();
+      (r.meal_types || []).forEach((mealType) => {
+        const parsed = parseMealType(mealType);
+        if (parsed) typesSeen.add(parsed.type);
+      });
+      typesSeen.forEach((type) => {
+        typeCounts.set(type, (typeCounts.get(type) || 0) + 1);
+      });
+    });
+
+    // Display-only label overrides — the underlying values stay as parsed
+    // from the data ("Sunday Lunch/Brunch", "Sunday Dinner") for matching.
+    const displayLabel: Record<string, string> = {
+      "Sunday Lunch/Brunch": "Brunch (Sunday's)",
+      "Sunday Dinner": "Dinner (Sunday's)",
+    };
+
+    return MEAL_TYPE_OPTIONS.filter((type) => typeCounts.has(type)).map((type) => {
+      const count = typeCounts.get(type) || 0;
+      return {
+        value: type,
+        label: (
+          <>
+            {displayLabel[type] ?? type} <span style={{ color: "#888" }}>· {count}</span>
+          </>
+        ),
+      };
+    });
   }, [allRestaurants]);
 
   void showLeftArrow;
@@ -267,21 +362,12 @@ export default function FilterBar() {
           ref={filterBarRef}
           className={`filter-row ${isExpanded ? "" : "hidden"}`}
         >
-          <button
-            className={`filter-pill-base ${
-              limitedEditionCupActive ? "active" : ""
-            }`}
-            onClick={() => toggleFilterKey("Limited Edition Cup")}
-          >
-            🏆  Collectible Cup
-          </button>
-
           <FilterDropdown
-            label="$26 Deal"
+            label="Price"
             icon=""
-            options={offer26Options}
-            selectedValues={activeFilters["$26 Offer"] || []}
-            onChange={(values) => handleFilterChange("$26 Offer", values)}
+            options={priceOptions}
+            selectedValues={activeFilters["Price"] || []}
+            onChange={(values) => handleFilterChange("Price", values)}
           />
 
           <FilterDropdown
@@ -292,25 +378,42 @@ export default function FilterBar() {
             onChange={(values) => handleFilterChange("Cuisine", values)}
           />
 
-          {DEAL_TAG_FILTERS.map(({ key, label }) => (
+          {AWARDS_OPTIONS.map(({ value, label }) => (
             <button
-              key={key}
+              key={value}
               className={`filter-pill-base ${
-                (activeFilters[key]?.length ?? 0) > 0 ? "active" : ""
+                (activeFilters["Awards"] || []).includes(value) ? "active" : ""
               }`}
-              onClick={() => toggleFilterKey(key)}
+              onClick={() => toggleAward(value)}
             >
+              {AWARD_ICONS[value] && (
+                <img src={AWARD_ICONS[value]} alt="" className="filter-pill-icon-img" />
+              )}
               {label}
             </button>
           ))}
 
+          <button
+            className={`filter-pill-base ${dateNightActive ? "active" : ""}`}
+            onClick={() => setDateNightActive((v) => !v)}
+          >
+            For Date Night
+          </button>
+
           <FilterDropdown
-            label="Awards"
+            label="Prix Fixe Course"
             icon=""
-            options={awardsOptions}
-            selectedValues={activeFilters["Awards"] || []}
-            onChange={(values) => handleFilterChange("Awards", values)}
+            options={mealTypeOptions}
+            selectedValues={activeFilters["Meal Type"] || []}
+            onChange={(values) => handleFilterChange("Meal Type", values)}
           />
+
+          <button
+            className={`filter-pill-base ${hasMenuActive ? "active" : ""}`}
+            onClick={() => setHasMenuActive((v) => !v)}
+          >
+            Menu
+          </button>
 
           <button
             className={`filter-pill-base ${favoritesActive ? "active" : ""}`}
@@ -319,7 +422,7 @@ export default function FilterBar() {
             ♥ Favorites
           </button>
 
-          {(Object.keys(activeFilters).length > 0 || favoritesActive) && (
+          {(Object.keys(activeFilters).length > 0 || favoritesActive || hasMenuActive || dateNightActive) && (
             <button
               className="filter-reset-button"
               onClick={handleResetFilters}

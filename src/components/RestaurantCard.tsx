@@ -14,16 +14,6 @@ interface RestaurantCardProps {
   collapsible?: boolean // For displayRestaurants cards - hide accordions behind +/- toggle
 }
 
-// Specific $26 deal label for the offer tag (matches the $26 Offer dropdown options).
-function offerLabel(r: Restaurant): string {
-  const tags = r.deal_tags ?? []
-  if (tags.includes('desserts')) return '$26 Dessert'
-  if (tags.includes('meal_drink_combo')) return '$26 Meal + Drink'
-  if (tags.includes('food_only')) return '$26 Meal'
-  if (tags.includes('drink_only')) return '$26 Drink'
-  return '$26 Offer'
-}
-
 // The NYC Tourism CDN (Frontify) serves full-resolution originals (~280KB+).
 // Request a card-sized WebP instead (~90KB) so the hero image loads fast.
 function optimizedImageUrl(url: string, width = 640): string {
@@ -59,6 +49,12 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
   const summary = (displayRestaurant.summary || '').trim()
   const summary2 = (displayRestaurant.summary2 || '').trim()
   const showAbout = summary2 !== '' && summary2 !== summary
+
+  // NYC Tourism falls back to a generic stock photo (alt="Default Image") when a
+  // restaurant hasn't uploaded real photos — filter it out rather than show it.
+  const galleryImages = (displayRestaurant.gallery_images || []).filter(
+    (img) => img.alt?.trim().toLowerCase() !== 'default image'
+  )
 
   // Handle About accordion toggle - expand drawer on mobile
   const handleAboutToggle = (e: React.MouseEvent) => {
@@ -109,8 +105,22 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
           </button>
         )}
       </div>
-      {/* Hero image */}
-      {displayRestaurant.image_url && (
+      {/* Hero image / photo gallery */}
+      {galleryImages.length > 0 ? (
+        <div className="restaurant-card-gallery">
+          {galleryImages.map((img, i) => (
+            <img
+              key={img.url}
+              src={img.url}
+              alt={img.alt || displayRestaurant.name}
+              loading={collapsible || i > 0 ? 'lazy' : 'eager'}
+              decoding="async"
+              className="restaurant-card-image restaurant-card-gallery-image"
+              style={galleryImages.length === 1 ? { width: '100%' } : undefined}
+            />
+          ))}
+        </div>
+      ) : displayRestaurant.image_url && (
         <img
           src={optimizedImageUrl(displayRestaurant.image_url)}
           alt={displayRestaurant.name}
@@ -133,21 +143,49 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
           <img src={asset("/nytimes.png")} alt="NYT Top 100" className="nyt-top100-inline" />
         )}
       </h2>
-      {/* Cuisine + World Cup promotion badges (single wrapping row) */}
+      {/* Cuisine */}
       <div className="restaurant-tags">
         {displayRestaurant.cuisine && (
           <span className="tag tag-cuisine">{displayRestaurant.cuisine}</span>
-        )}
-        {displayRestaurant.limited_edition_cup && (
-          <span className="tag tag-resweek">Collectible</span>
-        )}
-        {displayRestaurant.has_26_offer && (
-          <span className="tag tag-nyt-rank">{offerLabel(displayRestaurant)}</span>
         )}
       </div>
       {/* Restaurant Description (summary always shows here) */}
       {summary && (
         <p className="card-body-text">{formatBody(summary)}</p>
+      )}
+
+      {/* Restaurant Week dates + meal offerings (always visible) */}
+      {displayRestaurant.meal_types && displayRestaurant.meal_types.length > 0 && (
+        <div className="card-body-text restaurant-week-dates">
+          {displayRestaurant.participation_weeks2 && (
+            <p><b>Dates:</b> {displayRestaurant.participation_weeks2}</p>
+          )}
+          {/* <p><b>Offering:</b> {displayRestaurant.meal_types.join(', ')}</p> */}
+          <div className="restaurant-week-buttons">
+            {displayRestaurant.menu_url && displayRestaurant.menu_url.trim() !== '' && (
+              <a
+                href={displayRestaurant.menu_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="see-menu-btn"
+                onClick={(e) => e.stopPropagation()}
+              >
+                Menu
+              </a>
+            )}
+            {displayRestaurant.opentable_id && displayRestaurant.opentable_id.trim() !== '' && (
+              <a
+                href={`https://www.opentable.com/restaurant/profile/${displayRestaurant.opentable_id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="see-menu-btn reserve-btn"
+                onClick={(e) => e.stopPropagation()}
+              >
+                Reserve
+              </a>
+            )}
+          </div>
+        </div>
       )}
 
       {/* +more toggle for collapsible cards */}
@@ -177,7 +215,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
                 aria-expanded={isAboutOpen}
                 aria-label="Toggle about"
               >
-                <span className="review-accordion-title">World Cup Offer</span>
+                <span className="review-accordion-title">About</span>
                 <svg
                   className={`about-accordion-chevron ${isAboutOpen ? 'open' : ''}`}
                   width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
@@ -265,6 +303,15 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
                       <circle cx="12" cy="10" r="3"/>
+                    </svg>
+                  </a>
+                )}
+                {displayRestaurant.nytourism_url && displayRestaurant.nytourism_url.trim() !== '' && (
+                  <a href={displayRestaurant.nytourism_url} target="_blank" rel="noopener noreferrer" className="icon-link" title="Learn More on NYC Tourism">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                      <polyline points="15 3 21 3 21 9"/>
+                      <line x1="10" y1="14" x2="21" y2="3"/>
                     </svg>
                   </a>
                 )}

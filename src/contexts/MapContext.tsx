@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import type { Feature, Polygon, MultiPolygon } from "geojson";
 import type { Restaurant } from "../types/restaurant";
-import restaurantData from "../data/WorldCup2026/worldcup2026.json";
+import restaurantData from "../data/NYCRestaurantWeek/nycrestaurantweek2026.json";
 import { point, booleanPointInPolygon } from "@turf/turf";
 
 export type GeoJSONGeometry =
@@ -16,38 +16,54 @@ export type GeoJSONGeometry =
   | Polygon
   | MultiPolygon;
 
-// Deal-category toggle PILLS surfaced in the FilterBar. `key` matches the values
-// written into `deal_tags` by src/utils/WorldCup2026/5_TagDeals.py; `label` is
-// the pill text. These are cross-cutting attributes (each ANDs when active).
-// Order here is the display order.
-export const DEAL_TAG_FILTERS: { key: string; label: string }[] = [
-  { key: "bars", label: "Bars" },
-  { key: "specialty_cocktails", label: "Specialty Cocktails" },
-  { key: "burger_beer", label: "Beer & Burger" },
-  { key: "tacos", label: "Tacos" },
-  { key: "grab_n_go", label: "Grab-n-Go" },
-];
-
-const DEAL_TAG_KEYS = new Set(DEAL_TAG_FILTERS.map((f) => f.key));
-
-// "$26 Offer" dropdown options — the deal TYPE ("what does my $26 buy?").
-// food_only / meal_drink_combo / drink_only are mutually exclusive; together with
-// desserts they cover ~95% of $26 offers. Selecting more than one ORs them (see
-// filter logic). The attribute pills (Bars, Specialty Cocktails, …) cross-cut
-// these, so e.g. "Drinks only" × "Specialty Cocktails" = the Venn intersection.
-// Emoji prefixes double as a map legend — they match the marker emojis set by
-// getDealEmoji() in Map.tsx (Meal 🍱 / Meal + Drink 🤑 / Drinks 🍻 / Dessert 🍰).
-export const OFFER_26_OPTIONS: { value: string; label: string }[] = [
-  { value: "food_only", label: "🍱 Meal" },
-  { value: "meal_drink_combo", label: "🤑 Meal + Drink" },
-  { value: "drink_only", label: "🍻 Drink" },
-  { value: "desserts", label: "🍫 Dessert" },
-];
-
-// "Awards" dropdown — recognition badges (a handful of venues each). OR together.
+// "Awards" filter buttons — recognition badges. OR together.
 export const AWARDS_OPTIONS: { value: string; label: string }[] = [
-  { value: "michelin", label: "Michelin" },
+  { value: "michelin", label: "Michelin-starred" },
+  { value: "bib", label: "Bib Gourmand" },
   { value: "nyt", label: "NYT Top 100" },
+  { value: "james_beard", label: "James Beard Awardee" },
+];
+
+// James Beard recognition isn't a structured field in the data — detect it
+// from a "James Beard" mention in the restaurant's own description text.
+export function hasJamesBeardMention(restaurant: Restaurant): boolean {
+  const text = `${restaurant.summary || ""} ${restaurant.summary2 || ""}`;
+  return /\bjames beard\b/i.test(text);
+}
+
+// "Date Night" vibe filter: catches restaurants described as warm, intimate,
+// romantic, or inviting — the highest-signal ambiance words from the filter
+// candidate analysis. Text-matched against summary/summary2 (no structured
+// vibes field exists yet).
+export function matchesDateNightVibe(restaurant: Restaurant): boolean {
+  const text = `${restaurant.summary || ""} ${restaurant.summary2 || ""}`;
+  return /\b(warm|intimate|romantic|inviting)\b/i.test(text);
+}
+
+// meal_types entries look like "$60 Dinner" or "$30 Sunday Lunch/Brunch" (a
+// price prefix + a meal-type suffix). Splitting them lets the Price and Meal
+// Type filters be selected independently while still matching only the
+// specific combinations a restaurant actually offers (see filteredRestaurants).
+export interface ParsedMealType {
+  price: string; // e.g. "$30"
+  type: string; // e.g. "Lunch", "Dinner", "Sunday Lunch/Brunch", "Sunday Dinner"
+}
+
+export function parseMealType(mealType: string): ParsedMealType | null {
+  // A handful of entries retain a stray " Price" suffix from an earlier
+  // cleaning step (e.g. "$30 Lunch Price") — strip it before parsing.
+  const cleaned = mealType.replace(/\s+Price$/i, "").trim();
+  const match = cleaned.match(/^(\$\d+)\s+(.+)$/);
+  if (!match) return null;
+  return { price: match[1], type: match[2] };
+}
+
+// The distinct meal-type categories (price-independent) present in the data.
+export const MEAL_TYPE_OPTIONS = [
+  "Lunch",
+  "Dinner",
+  "Sunday Lunch/Brunch",
+  "Sunday Dinner",
 ];
 
 export const hasAnyAward = (restaurant: Restaurant): boolean => {
@@ -61,6 +77,223 @@ export const hasAnyAward = (restaurant: Restaurant): boolean => {
   );
   return hasMichelin || hasNYT;
 };
+
+export interface ToggleFilterState {
+  favorites: string[];
+  favoritesActive: boolean;
+  restaurantWeekActive: boolean;
+  hasMenuActive: boolean;
+  awardsActive: boolean;
+  highReviewCountActive: boolean;
+  dateNightActive: boolean;
+  legendFilters: string[];
+}
+
+// Applies the ribbon (dropdown) filters + toggle pills + legend filters to a
+// restaurant pool. Pulled out of the filteredRestaurants useMemo so it can
+// also be called with `excludeFilterKey` set to compute "what would still
+// match if this one filter weren't applied" — used to dynamically disable
+// dropdown options that would zero out the result set (see FilterBar.tsx).
+export function applyRestaurantFilters(
+  restaurants: Restaurant[],
+  activeFilters: Record<string, string[]>,
+  toggles: ToggleFilterState,
+  excludeFilterKey?: string
+): Restaurant[] {
+  let filtered = restaurants;
+
+  // Price ($30/$45/$60) and Meal Type (Lunch/Dinner/…) both filter on the
+  // same meal_types array. When both are active, require a single meal_types
+  // entry that matches BOTH the selected price AND the selected type (e.g.
+  // Price=$60 + Meal Type=Dinner only matches restaurants offering "$60
+  // Dinner" — not just any $60 offering plus any unrelated dinner offering).
+  const priceValues = excludeFilterKey === "Price" ? [] : activeFilters["Price"] || [];
+  const mealTypeValues =
+    excludeFilterKey === "Meal Type" ? [] : activeFilters["Meal Type"] || [];
+  if (priceValues.length > 0 || mealTypeValues.length > 0) {
+    filtered = filtered.filter((restaurant) => {
+      const mealTypes = restaurant.meal_types;
+      if (!mealTypes || !Array.isArray(mealTypes)) return false;
+      return mealTypes.some((mt) => {
+        const parsed = parseMealType(mt);
+        if (!parsed) return false;
+        const priceOk = priceValues.length === 0 || priceValues.includes(parsed.price);
+        const typeOk = mealTypeValues.length === 0 || mealTypeValues.includes(parsed.type);
+        return priceOk && typeOk;
+      });
+    });
+  }
+
+  // Apply remaining ribbon filters (dropdowns)
+  Object.entries(activeFilters).forEach(([filterType, values]) => {
+    if (filterType === "Price" || filterType === "Meal Type") return;
+    if (filterType === excludeFilterKey) return;
+    if (values.length > 0) {
+      filtered = filtered.filter((restaurant) => {
+        switch (filterType) {
+          // Awards dropdown: selected badges OR together
+          case "Awards":
+            return values.some((a) => {
+              if (a === "michelin")
+                return Boolean(
+                  restaurant.michelin_award &&
+                    ["ONE_STAR", "TWO_STARS", "THREE_STARS"].includes(
+                      restaurant.michelin_award
+                    )
+                );
+              if (a === "bib")
+                return restaurant.michelin_award === "BIB_GOURMAND";
+              if (a === "nyt")
+                return Boolean(
+                  restaurant.nyttop100_rank && restaurant.nyttop100_rank !== ""
+                );
+              if (a === "james_beard")
+                return hasJamesBeardMention(restaurant);
+              return false;
+            });
+          case "Cuisine":
+            if (!restaurant.cuisine) return false;
+            return values.some(
+              (value) =>
+                restaurant.cuisine === value ||
+                restaurant.cuisine.toLowerCase().includes(value.toLowerCase())
+            );
+          case "Participation Weeks":
+            return (
+              restaurant.participation_weeks &&
+              Array.isArray(restaurant.participation_weeks) &&
+              values.some((week) =>
+                restaurant.participation_weeks?.includes(week)
+              )
+            );
+          case "Yelp Rating": {
+            const rating = (restaurant as any).yelp_rating as
+              | number
+              | undefined;
+            if (typeof rating !== "number") return false;
+            const thresholds = values
+              .map((v) => parseFloat(v))
+              .filter((n) => !Number.isNaN(n));
+            if (thresholds.length === 0) return true;
+            const minThreshold = Math.min(...thresholds);
+            return rating >= minThreshold;
+          }
+          case "Collections":
+          case "Vibes":
+            return (
+              restaurant.collections &&
+              values.some((collection) =>
+                restaurant.collections.includes(collection)
+              )
+            );
+          case "Badges":
+            return values.some((badge) => {
+              switch (badge) {
+                case "michelin":
+                  return (
+                    restaurant.michelin_award &&
+                    ["ONE_STAR", "TWO_STARS", "THREE_STARS"].includes(
+                      restaurant.michelin_award
+                    )
+                  );
+                case "bib":
+                case "bib_gourmand":
+                  return restaurant.michelin_award === "BIB_GOURMAND";
+                case "nyt":
+                case "nyt_top_100":
+                  return Boolean(restaurant.nyttop100_rank);
+                default:
+                  return false;
+              }
+            });
+          case "Semantic Features": {
+            const highlights =
+              restaurant.yelp_review_highlights?.toLowerCase() || "";
+            if (!highlights) return false;
+            return values.some(
+              (keyword) =>
+                keyword && highlights.includes(keyword.toLowerCase())
+            );
+          }
+          case "Semantic Search Results":
+            return values.some((slug) => restaurant.slug === slug);
+          default:
+            return true;
+        }
+      });
+    }
+  });
+
+  // Apply toggle filters (pills)
+  if (toggles.restaurantWeekActive) {
+    filtered = filtered.filter(
+      (r) =>
+        r.meal_types && Array.isArray(r.meal_types) && r.meal_types.length > 0
+    );
+  }
+  if (toggles.favoritesActive) {
+    filtered = filtered.filter((r) => toggles.favorites.includes(r.name));
+  }
+  if (toggles.hasMenuActive) {
+    filtered = filtered.filter((r) => r.menu_url && r.menu_url.trim() !== "");
+  }
+  if (toggles.awardsActive) {
+    filtered = filtered.filter((r) => {
+      const hasMichelin =
+        r.michelin_award &&
+        ["ONE_STAR", "TWO_STARS", "THREE_STARS", "BIB_GOURMAND"].includes(
+          r.michelin_award
+        );
+      const hasNYT = Boolean(r.nyttop100_rank && r.nyttop100_rank !== "");
+      return hasMichelin || hasNYT;
+    });
+  }
+  if (toggles.highReviewCountActive) {
+    filtered = filtered.filter((r) => {
+      const reviewCount = (r as any).yelp_review_count as number | undefined;
+      return typeof reviewCount === "number" && reviewCount >= 500;
+    });
+  }
+  if (toggles.dateNightActive) {
+    filtered = filtered.filter(matchesDateNightVibe);
+  }
+
+  // Apply legend filters
+  if (toggles.legendFilters.length > 0) {
+    filtered = filtered.filter((restaurant) => {
+      return toggles.legendFilters.some((filterType) => {
+        switch (filterType) {
+          case "michelin":
+            return (
+              restaurant.michelin_award &&
+              ["ONE_STAR", "TWO_STARS", "THREE_STARS"].includes(
+                restaurant.michelin_award
+              )
+            );
+          case "bib":
+            return restaurant.michelin_award === "BIB_GOURMAND";
+          case "nyt":
+            return restaurant.nyttop100_rank;
+          case "offer26":
+            return restaurant.has_26_offer === true;
+          case "cup":
+            return restaurant.limited_edition_cup === true;
+          case "regular":
+            return (
+              !restaurant.michelin_award &&
+              !restaurant.nyttop100_rank &&
+              !restaurant.has_26_offer &&
+              !restaurant.limited_edition_cup
+            );
+          default:
+            return false;
+        }
+      });
+    });
+  }
+
+  return filtered;
+}
 
 export interface IsochroneLayer {
   id: string;
@@ -97,6 +330,7 @@ interface MapContextType {
   hasMenuActive: boolean;
   awardsActive: boolean;
   highReviewCountActive: boolean;
+  dateNightActive: boolean;
 
   // Filter actions
   setActiveFilters: React.Dispatch<
@@ -110,6 +344,7 @@ interface MapContextType {
   setHasMenuActive: React.Dispatch<React.SetStateAction<boolean>>;
   setAwardsActive: React.Dispatch<React.SetStateAction<boolean>>;
   setHighReviewCountActive: React.Dispatch<React.SetStateAction<boolean>>;
+  setDateNightActive: React.Dispatch<React.SetStateAction<boolean>>;
 
   // Layer state
   isochroneLayers: IsochroneLayer[];
@@ -184,6 +419,7 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
   const [hasMenuActive, setHasMenuActive] = useState(false);
   const [awardsActive, setAwardsActive] = useState(false);
   const [highReviewCountActive, setHighReviewCountActive] = useState(false);
+  const [dateNightActive, setDateNightActive] = useState(false);
 
   // Layer state
   const [isochroneLayers, setIsochroneLayers] = useState<IsochroneLayer[]>([]);
@@ -255,198 +491,29 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
   // 2. Apply filters to restaurants
   const filteredRestaurants = useMemo(() => {
     // Start with either all restaurants or just those in the isochrone region
-    let filtered = isochroneRegionSlugs
+    let base = isochroneRegionSlugs
       ? allRestaurants.filter((r) => isochroneRegionSlugs.includes(r.slug))
       : allRestaurants;
 
     // Apply search filter
     if (searchTerm.trim()) {
-      filtered = filtered.filter(
+      base = base.filter(
         (restaurant) =>
           restaurant.name &&
           restaurant.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
-    // Apply ribbon filters (dropdowns)
-    Object.entries(activeFilters).forEach(([filterType, values]) => {
-      if (values.length > 0) {
-        filtered = filtered.filter((restaurant) => {
-          // Deal-category toggle pills (Bars, Watch the Game, etc.) — each ANDs.
-          if (DEAL_TAG_KEYS.has(filterType)) {
-            return restaurant.deal_tags?.includes(filterType) ?? false;
-          }
-          switch (filterType) {
-            // $26 Offer dropdown: selected sub-types OR together
-            case "$26 Offer":
-              return values.some((tag) => restaurant.deal_tags?.includes(tag));
-            // Awards dropdown: selected badges OR together
-            case "Awards":
-              return values.some((a) => {
-                if (a === "michelin")
-                  return Boolean(
-                    restaurant.michelin_award && restaurant.michelin_award !== ""
-                  );
-                if (a === "nyt")
-                  return Boolean(
-                    restaurant.nyttop100_rank && restaurant.nyttop100_rank !== ""
-                  );
-                return false;
-              });
-            case "Cuisine":
-              if (!restaurant.cuisine) return false;
-              return values.some(
-                (value) =>
-                  restaurant.cuisine === value ||
-                  restaurant.cuisine.toLowerCase().includes(value.toLowerCase())
-              );
-            // World Cup promo toggles (filter active when values non-empty)
-            case "Limited Edition Cup":
-              return restaurant.limited_edition_cup === true;
-            case "$26 Offers":
-              return restaurant.has_26_offer === true;
-            case "Meal Types":
-              return (
-                restaurant.meal_types &&
-                Array.isArray(restaurant.meal_types) &&
-                values.some((meal) => restaurant.meal_types?.includes(meal))
-              );
-            case "Price":
-              return values.includes(
-                (restaurant as any).price ?? restaurant.price_range
-              );
-            case "Participation Weeks":
-              return (
-                restaurant.participation_weeks &&
-                Array.isArray(restaurant.participation_weeks) &&
-                values.some((week) =>
-                  restaurant.participation_weeks?.includes(week)
-                )
-              );
-            case "Yelp Rating": {
-              const rating = (restaurant as any).yelp_rating as
-                | number
-                | undefined;
-              if (typeof rating !== "number") return false;
-              const thresholds = values
-                .map((v) => parseFloat(v))
-                .filter((n) => !Number.isNaN(n));
-              if (thresholds.length === 0) return true;
-              const minThreshold = Math.min(...thresholds);
-              return rating >= minThreshold;
-            }
-            case "Collections":
-            case "Vibes":
-              return (
-                restaurant.collections &&
-                values.some((collection) =>
-                  restaurant.collections.includes(collection)
-                )
-              );
-            case "Badges":
-              return values.some((badge) => {
-                switch (badge) {
-                  case "michelin":
-                    return (
-                      restaurant.michelin_award &&
-                      ["ONE_STAR", "TWO_STARS", "THREE_STARS"].includes(
-                        restaurant.michelin_award
-                      )
-                    );
-                  case "bib":
-                  case "bib_gourmand":
-                    return restaurant.michelin_award === "BIB_GOURMAND";
-                  case "nyt":
-                  case "nyt_top_100":
-                    return Boolean(restaurant.nyttop100_rank);
-                  default:
-                    return false;
-                }
-              });
-            case "Semantic Features": {
-              const highlights =
-                restaurant.yelp_review_highlights?.toLowerCase() || "";
-              if (!highlights) return false;
-              return values.some(
-                (keyword) =>
-                  keyword && highlights.includes(keyword.toLowerCase())
-              );
-            }
-            case "Semantic Search Results":
-              return values.some((slug) => restaurant.slug === slug);
-            default:
-              return true;
-          }
-        });
-      }
+    return applyRestaurantFilters(base, activeFilters, {
+      favorites,
+      favoritesActive,
+      restaurantWeekActive,
+      hasMenuActive,
+      awardsActive,
+      highReviewCountActive,
+      dateNightActive,
+      legendFilters,
     });
-
-    // Apply toggle filters (pills)
-    if (restaurantWeekActive) {
-      filtered = filtered.filter(
-        (r) =>
-          r.meal_types && Array.isArray(r.meal_types) && r.meal_types.length > 0
-      );
-    }
-    if (favoritesActive) {
-      filtered = filtered.filter((r) => favorites.includes(r.name));
-    }
-    if (hasMenuActive) {
-      filtered = filtered.filter((r) => r.menu_url && r.menu_url.trim() !== "");
-    }
-    if (awardsActive) {
-      filtered = filtered.filter((r) => {
-        const hasMichelin =
-          r.michelin_award &&
-          ["ONE_STAR", "TWO_STARS", "THREE_STARS", "BIB_GOURMAND"].includes(
-            r.michelin_award
-          );
-        const hasNYT = Boolean(r.nyttop100_rank && r.nyttop100_rank !== "");
-        return hasMichelin || hasNYT;
-      });
-    }
-    if (highReviewCountActive) {
-      filtered = filtered.filter((r) => {
-        const reviewCount = (r as any).yelp_review_count as number | undefined;
-        return typeof reviewCount === "number" && reviewCount >= 500;
-      });
-    }
-
-    // Apply legend filters
-    if (legendFilters.length > 0) {
-      filtered = filtered.filter((restaurant) => {
-        return legendFilters.some((filterType) => {
-          switch (filterType) {
-            case "michelin":
-              return (
-                restaurant.michelin_award &&
-                ["ONE_STAR", "TWO_STARS", "THREE_STARS"].includes(
-                  restaurant.michelin_award
-                )
-              );
-            case "bib":
-              return restaurant.michelin_award === "BIB_GOURMAND";
-            case "nyt":
-              return restaurant.nyttop100_rank;
-            case "offer26":
-              return restaurant.has_26_offer === true;
-            case "cup":
-              return restaurant.limited_edition_cup === true;
-            case "regular":
-              return (
-                !restaurant.michelin_award &&
-                !restaurant.nyttop100_rank &&
-                !restaurant.has_26_offer &&
-                !restaurant.limited_edition_cup
-              );
-            default:
-              return false;
-          }
-        });
-      });
-    }
-
-    return filtered;
   }, [
     allRestaurants,
     isochroneRegionSlugs,
@@ -457,6 +524,7 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
     hasMenuActive,
     awardsActive,
     highReviewCountActive,
+    dateNightActive,
     legendFilters,
     favorites,
   ]);
@@ -615,6 +683,8 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
         setAwardsActive,
         highReviewCountActive,
         setHighReviewCountActive,
+        dateNightActive,
+        setDateNightActive,
         isochroneLayers,
         layerVisibilityMap,
         addLayers,

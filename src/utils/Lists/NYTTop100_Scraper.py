@@ -1,8 +1,12 @@
 import requests
 from bs4 import BeautifulSoup
 import json
+import os
 import re
 import time
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(SCRIPT_DIR, "..", "..", "data", "Lists")
 
 def generate_nyt_slug(name):
     """Generate URL slug from restaurant name (lowercase, spaces to hyphens)"""
@@ -181,10 +185,13 @@ def scrape_nytimes_restaurants(url):
         print(f"Parsing error: {e}")
         return []
 
-def save_restaurants_json(restaurants, filename='../data/Lists/NYTTop100.json'):
+def save_restaurants_json(restaurants, filename=None):
     """
     Save restaurants data to JSON file
     """
+    if filename is None:
+        filename = os.path.join(DATA_DIR, "NYTTop100.json")
+
     try:
         # Create the final JSON structure
         data = {

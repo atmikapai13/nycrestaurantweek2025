@@ -1,7 +1,11 @@
 import requests
 import json
+import os
 from typing import List, Dict, Optional
 import urllib.parse
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(SCRIPT_DIR, "..", "..", "data", "Lists")
 
 class MichelinAlgoliaScraper:
     def __init__(self):
@@ -25,29 +29,32 @@ class MichelinAlgoliaScraper:
             'Sec-Fetch-Site': 'cross-site',
         }
     
-    def search_michelin_restaurants(self, page: int = 0, hits_per_page: int = 48, include_bib_gourmand: bool = True) -> Optional[Dict]:
+    def search_michelin_restaurants(self, page: int = 0, hits_per_page: int = 48, include_bib_gourmand: bool = True, include_plate: bool = True) -> Optional[Dict]:
         """Search for Michelin starred restaurants using Algolia API"""
-        
+
         # URL parameters (from your network trace)
         url_params = {
             'x-algolia-agent': 'Algolia for JavaScript (4.19.1); Browser (lite)',
             'x-algolia-api-key': self.algolia_api_key,
             'x-algolia-application-id': self.algolia_app_id
         }
-        
+
         # Build URL with query parameters
         url_with_params = f"{self.base_url}?" + "&".join([f"{k}={urllib.parse.quote(str(v))}" for k, v in url_params.items()])
-        
-        # Build facet filters - include both stars and Bib Gourmand
+
+        # Build facet filters - include stars, Bib Gourmand, and The Plate (unstarred, "Selected Restaurants")
         distinction_filters = [
             "distinction.slug:1-star-michelin",
-            "distinction.slug:2-stars-michelin", 
+            "distinction.slug:2-stars-michelin",
             "distinction.slug:3-stars-michelin"
         ]
-        
+
         if include_bib_gourmand:
             distinction_filters.append("distinction.slug:bib-gourmand")
-        
+
+        if include_plate:
+            distinction_filters.append("distinction.slug:the-plate-michelin")
+
         # Build the facet filter string properly
         quoted_filters = [f'"{f}"' for f in distinction_filters]
         facet_filters = f'[[{",".join(quoted_filters)}]]'
@@ -87,7 +94,7 @@ class MichelinAlgoliaScraper:
         payload_json = json.dumps(payload)
         
         try:
-            filter_type = "Michelin stars + Bib Gourmand" if include_bib_gourmand else "Michelin stars only"
+            filter_type = self._describe_filters(include_bib_gourmand, include_plate)
             print(f"🔍 Searching page {page + 1} ({filter_type}, up to {hits_per_page} restaurants)...")
             
             response = requests.post(
@@ -117,18 +124,26 @@ class MichelinAlgoliaScraper:
             print(f"❌ Request failed: {e}")
             return None
     
-    def get_all_michelin_restaurants(self, include_bib_gourmand: bool = True) -> List[Dict]:
-        """Get all Michelin starred restaurants in NYC area"""
-        
-        filter_type = "Michelin stars + Bib Gourmand" if include_bib_gourmand else "Michelin stars only"
+    def _describe_filters(self, include_bib_gourmand: bool, include_plate: bool) -> str:
+        parts = ["Michelin stars"]
+        if include_bib_gourmand:
+            parts.append("Bib Gourmand")
+        if include_plate:
+            parts.append("The Plate")
+        return " + ".join(parts)
+
+    def get_all_michelin_restaurants(self, include_bib_gourmand: bool = True, include_plate: bool = True) -> List[Dict]:
+        """Get all Michelin Guide restaurants in NYC area (stars, Bib Gourmand, and/or The Plate)"""
+
+        filter_type = self._describe_filters(include_bib_gourmand, include_plate)
         print(f"🌟 Starting Michelin restaurant scraping ({filter_type})...")
-        
+
         all_restaurants = []
         page = 0
         hits_per_page = 48  # Default from your network trace
-        
+
         while True:
-            data = self.search_michelin_restaurants(page, hits_per_page, include_bib_gourmand)
+            data = self.search_michelin_restaurants(page, hits_per_page, include_bib_gourmand, include_plate)
             
             if not data:
                 print(f"No data returned for page {page + 1}, stopping...")
@@ -203,9 +218,12 @@ class MichelinAlgoliaScraper:
         
         return cleaned
     
-    def save_data(self, restaurants: List[Dict], filename: str = "../data/Lists/MichelinNYC.json"):
+    def save_data(self, restaurants: List[Dict], filename: str = None):
         """Save restaurant data to JSON file"""
-        
+
+        if filename is None:
+            filename = os.path.join(DATA_DIR, "MichelinNYC.json")
+
         try:
             with open(filename, 'w', encoding='utf-8') as f:
                 json.dump(restaurants, f, indent=2, ensure_ascii=False)
@@ -219,8 +237,8 @@ def main():
     
     scraper = MichelinAlgoliaScraper()
     
-    # Get all Michelin restaurants (including Bib Gourmand by default)
-    raw_restaurants = scraper.get_all_michelin_restaurants(include_bib_gourmand=True)
+    # Get all Michelin Guide restaurants (stars, Bib Gourmand, and The Plate by default)
+    raw_restaurants = scraper.get_all_michelin_restaurants(include_bib_gourmand=True, include_plate=True)
     
     if raw_restaurants:
         print(f"\n🎉 Successfully scraped {len(raw_restaurants)} Michelin restaurants!")
@@ -229,8 +247,8 @@ def main():
         clean_restaurants = scraper.clean_restaurant_data(raw_restaurants)
         
         # Save both raw and cleaned data
-        scraper.save_data(raw_restaurants, "../data/Lists/MichelinNYC_Raw.json")
-        scraper.save_data(clean_restaurants, "../data/Lists/MichelinNYC.json")
+        scraper.save_data(raw_restaurants, os.path.join(DATA_DIR, "MichelinNYC_Raw.json"))
+        scraper.save_data(clean_restaurants, os.path.join(DATA_DIR, "MichelinNYC.json"))
         
         # Print summary stats
         print(f"\n📊 Summary:")

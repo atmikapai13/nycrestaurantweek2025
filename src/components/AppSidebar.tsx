@@ -13,7 +13,7 @@ export function AppSidebar({ onSelect }: { onSelect: (r: Restaurant) => void }) 
       <SidebarHeader className="pl-1 pr-5 pt-2 pb-2">
         <div className="flex items-center gap-1">
           <img
-            src={asset('/gemini_remi_football.png')}
+            src={asset('/remi_tall2.png')}
             alt="Remi"
             className="h-[17rem] w-auto shrink-0 object-contain -mb-3"
           />
@@ -26,9 +26,9 @@ export function AppSidebar({ onSelect }: { onSelect: (r: Restaurant) => void }) 
               className="mt-2 font-['Righteous'] text-2xl uppercase tracking-wide"
               style={{ WebkitTextStroke: '1.5px #1a1a1a', paintOrder: 'stroke' }}
             >
-              <span style={{ color: '#ED2939' }}>World</span>{' '}
-              <span style={{ color: '#FFFFFF' }}>Cup</span>{' '}
-              <span style={{ color: '#2660E6' }}>Edition</span>
+              <span style={{ color: '#ED2939' }}>2026</span>{' '}
+              <span style={{ color: '#ED2939' }}>Summer</span>{' '}
+              <span style={{ color: '#2660E6' }}>Restaurant Week</span>
             </p>
           </div>
         </div>

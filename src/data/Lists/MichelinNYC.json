@@ -28,6 +28,57 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/icca"
   },
   {
+    "name": "Chambers",
+    "slug": "chambers",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/chambers"
+  },
+  {
+    "name": "Ito",
+    "slug": "ito-1201767",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/ito-1201767"
+  },
+  {
     "name": "Atera",
     "slug": "atera",
     "michelin_award": "TWO_STARS",
@@ -51,6 +102,29 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/atera"
   },
   {
+    "name": "Farra",
+    "slug": "farra",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/farra"
+  },
+  {
     "name": "Huso",
     "slug": "huso-1218089",
     "michelin_award": "ONE_STAR",
@@ -72,6 +146,34 @@
     },
     "area_name": "Manhattan",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/huso-1218089"
+  },
+  {
+    "name": "Manhatta",
+    "slug": "manhatta",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/manhatta"
   },
   {
     "name": "Jungsik New York",
@@ -102,6 +204,52 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/jungsik-new-york"
   },
   {
+    "name": "Tamarind",
+    "slug": "tamarind",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1059",
+        "label": "Indian",
+        "slug": "indian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/tamarind"
+  },
+  {
+    "name": "One White Street",
+    "slug": "one-white-street",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": "Galen Kennemer",
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/one-white-street"
+  },
+  {
     "name": "Crown Shy",
     "slug": "crown-shy",
     "michelin_award": "ONE_STAR",
@@ -130,6 +278,85 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/crown-shy"
   },
   {
+    "name": "Maison Passerelle",
+    "slug": "maison-passerelle",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1049",
+        "label": "French",
+        "slug": "french"
+      },
+      {
+        "code": "TYC_1001",
+        "label": "African",
+        "slug": "african"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/maison-passerelle"
+  },
+  {
+    "name": "Eulalie",
+    "slug": "eulalie",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1049",
+        "label": "French",
+        "slug": "french"
+      },
+      {
+        "code": "TYC_1050",
+        "label": "Classic French",
+        "slug": "classic-french"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/eulalie"
+  },
+  {
+    "name": "Cha Kee",
+    "slug": "cha-kee",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1010",
+        "label": "Asian",
+        "slug": "asian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/cha-kee"
+  },
+  {
     "name": "Saga",
     "slug": "saga",
     "michelin_award": "TWO_STARS",
@@ -151,6 +378,34 @@
     },
     "area_name": "Manhattan",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/saga"
+  },
+  {
+    "name": "Lei",
+    "slug": "lei",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/lei"
   },
   {
     "name": "Bridges",
@@ -204,6 +459,34 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/dim-sum-go-go"
   },
   {
+    "name": "Carne Mare",
+    "slug": "carne-mare",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_75",
+        "label": "Steakhouse",
+        "slug": "steakhouse"
+      },
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/carne-mare"
+  },
+  {
     "name": "Yamada",
     "slug": "yamada",
     "michelin_award": "ONE_STAR",
@@ -225,6 +508,34 @@
     },
     "area_name": "Manhattan",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/yamada"
+  },
+  {
+    "name": "La Mercerie",
+    "slug": "la-mercerie",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1049",
+        "label": "French",
+        "slug": "french"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/la-mercerie"
   },
   {
     "name": "Le Coucou",
@@ -271,6 +582,34 @@
     },
     "area_name": "Manhattan",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/muku"
+  },
+  {
+    "name": "L’abeille à Côté",
+    "slug": "l-abeille-a-cote",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1049",
+        "label": "French",
+        "slug": "french"
+      },
+      {
+        "code": "TYC_1010",
+        "label": "Asian",
+        "slug": "asian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/l-abeille-a-cote"
   },
   {
     "name": "L’Abeille",
@@ -352,6 +691,34 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/corima"
   },
   {
+    "name": "Shabushabu Mayumon",
+    "slug": "shabushabu-mayumon",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1258",
+        "label": "Shabu-shabu",
+        "slug": "shabushabu"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/shabushabu-mayumon"
+  },
+  {
     "name": "Thai Diner",
     "slug": "thai-diner",
     "michelin_award": "BIB_GOURMAND",
@@ -408,6 +775,34 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/cervo-s"
   },
   {
+    "name": "Wayan",
+    "slug": "wayan",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1062",
+        "label": "Indonesian",
+        "slug": "indonesian"
+      },
+      {
+        "code": "TYC_1112",
+        "label": "South East Asian",
+        "slug": "south-east-asian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/wayan"
+  },
+  {
     "name": "Potluck Club",
     "slug": "potluck-club",
     "michelin_award": "BIB_GOURMAND",
@@ -436,6 +831,80 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/potluck-club"
   },
   {
+    "name": "Altro Paradiso",
+    "slug": "cafe-altro-paradiso",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/cafe-altro-paradiso"
+  },
+  {
+    "name": "Ma•dé",
+    "slug": "ma•de",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1112",
+        "label": "South East Asian",
+        "slug": "south-east-asian"
+      },
+      {
+        "code": "TYC_9",
+        "label": "Seafood",
+        "slug": "seafood"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/ma•de"
+  },
+  {
+    "name": "Comal",
+    "slug": "comal-1242778",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1084",
+        "label": "Mexican",
+        "slug": "mexican"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/comal-1242778"
+  },
+  {
     "name": "Tolo",
     "slug": "tolo",
     "michelin_award": "BIB_GOURMAND",
@@ -457,6 +926,34 @@
     },
     "area_name": "Manhattan",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/tolo"
+  },
+  {
+    "name": "Bistrot Ha",
+    "slug": "bistrot-ha",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_1129",
+        "label": "Vietnamese",
+        "slug": "vietnamese"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/bistrot-ha"
   },
   {
     "name": "Dirt Candy",
@@ -485,6 +982,54 @@
     },
     "area_name": "Manhattan",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/dirt-candy"
+  },
+  {
+    "name": "The River Café",
+    "slug": "the-river-cafe",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/the-river-cafe"
+  },
+  {
+    "name": "Raoul's",
+    "slug": "raoul-s",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1049",
+        "label": "French",
+        "slug": "french"
+      },
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/raoul-s"
   },
   {
     "name": "Pinch Chinese",
@@ -543,6 +1088,34 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/cesar"
   },
   {
+    "name": "Sushi Ikumi",
+    "slug": "sushi-ikumi",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/sushi-ikumi"
+  },
+  {
     "name": "Torrisi",
     "slug": "torrisi",
     "michelin_award": "ONE_STAR",
@@ -571,6 +1144,29 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/torrisi"
   },
   {
+    "name": "Forsythia",
+    "slug": "forsythia",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/forsythia"
+  },
+  {
     "name": "Russ & Daughters Cafe",
     "slug": "russ-daughters-cafe",
     "michelin_award": "BIB_GOURMAND",
@@ -592,6 +1188,62 @@
     },
     "area_name": "Manhattan",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/russ-daughters-cafe"
+  },
+  {
+    "name": "The Musket Room",
+    "slug": "the-musket-room",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_1182",
+        "label": "American Contemporary",
+        "slug": "american-contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/the-musket-room"
+  },
+  {
+    "name": "King",
+    "slug": "king",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1083",
+        "label": "Mediterranean Cuisine",
+        "slug": "mediterranean-cuisine"
+      },
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/king"
   },
   {
     "name": "Estela",
@@ -622,6 +1274,34 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/estela"
   },
   {
+    "name": "Ballato",
+    "slug": "emilio-s-ballato",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1179",
+        "label": "Italian-American",
+        "slug": "italian-american"
+      },
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/emilio-s-ballato"
+  },
+  {
     "name": "Dhamaka",
     "slug": "dhamaka",
     "michelin_award": "BIB_GOURMAND",
@@ -643,6 +1323,29 @@
     },
     "area_name": "Manhattan",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/dhamaka"
+  },
+  {
+    "name": "Raf's",
+    "slug": "raf-s",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_53",
+        "label": "European",
+        "slug": "european"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/raf-s"
   },
   {
     "name": "Torien",
@@ -671,6 +1374,85 @@
     },
     "area_name": "Manhattan",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/torien"
+  },
+  {
+    "name": "Cove",
+    "slug": "cove-1244899",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/cove-1244899"
+  },
+  {
+    "name": "Carbone",
+    "slug": "carbone",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      },
+      {
+        "code": "TYC_1179",
+        "label": "Italian-American",
+        "slug": "italian-american"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/carbone"
+  },
+  {
+    "name": "Lord's",
+    "slug": "lord-s",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_99",
+        "label": "English",
+        "slug": "english"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/lord-s"
   },
   {
     "name": "8282",
@@ -724,6 +1506,80 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/laliko"
   },
   {
+    "name": "Ernesto's",
+    "slug": "ernesto-s",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1044",
+        "label": "Spanish",
+        "slug": "spanish"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/ernesto-s"
+  },
+  {
+    "name": "Le Chêne",
+    "slug": "le-chene",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1049",
+        "label": "French",
+        "slug": "french"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/le-chene"
+  },
+  {
+    "name": "Dame",
+    "slug": "dame",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1096",
+        "label": "Seafood",
+        "slug": "seafood-1096"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/dame"
+  },
+  {
     "name": "C as in Charlie",
     "slug": "c-as-in-charlie",
     "michelin_award": "BIB_GOURMAND",
@@ -745,6 +1601,26 @@
     },
     "area_name": "Manhattan",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/c-as-in-charlie"
+  },
+  {
+    "name": "Inga's Bar",
+    "slug": "inga-s-bar",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/inga-s-bar"
   },
   {
     "name": "Una Pizza Napoletana",
@@ -770,6 +1646,57 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/una-pizza-napoletana"
   },
   {
+    "name": "Kabawa",
+    "slug": "kabawa",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_48",
+        "label": "Caribbean",
+        "slug": "caribbean"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/kabawa"
+  },
+  {
+    "name": "Crevette",
+    "slug": "crevette",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1096",
+        "label": "Seafood",
+        "slug": "seafood-1096"
+      },
+      {
+        "code": "TYC_1044",
+        "label": "Spanish",
+        "slug": "spanish"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/crevette"
+  },
+  {
     "name": "Sami & Susu",
     "slug": "sami-susu",
     "michelin_award": "BIB_GOURMAND",
@@ -791,6 +1718,34 @@
     },
     "area_name": "Manhattan",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/sami-susu"
+  },
+  {
+    "name": "MayRee",
+    "slug": "mayree",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1117",
+        "label": "Thai",
+        "slug": "thai"
+      },
+      {
+        "code": "TYC_1101",
+        "label": "Regional Cuisine",
+        "slug": "regional-cuisine"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/mayree"
   },
   {
     "name": "Nami Nori",
@@ -849,6 +1804,34 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/yoshino-1185037"
   },
   {
+    "name": "Minetta Tavern",
+    "slug": "minetta-tavern",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_75",
+        "label": "Steakhouse",
+        "slug": "steakhouse"
+      },
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/minetta-tavern"
+  },
+  {
     "name": "Katz's",
     "slug": "katz-s",
     "michelin_award": "BIB_GOURMAND",
@@ -895,7 +1878,7 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/bungalow"
   },
   {
-    "name": "63 Clinton",
+    "name": "Sixty Three Clinton",
     "slug": "63-clinton",
     "michelin_award": "ONE_STAR",
     "cuisines": [
@@ -916,6 +1899,57 @@
     },
     "area_name": "Manhattan",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/63-clinton"
+  },
+  {
+    "name": "Wild Cherry",
+    "slug": "wild-cherry",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/wild-cherry"
+  },
+  {
+    "name": "The Commerce Inn",
+    "slug": "the-commerce-inn",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      },
+      {
+        "code": "TYC_75",
+        "label": "Steakhouse",
+        "slug": "steakhouse"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/the-commerce-inn"
   },
   {
     "name": "Sushi Nakazawa New York",
@@ -944,6 +1978,80 @@
     },
     "area_name": "Manhattan",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/sushi-nakazawa"
+  },
+  {
+    "name": "Ivan Ramen",
+    "slug": "ivan-ramen",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_839",
+        "label": "Ramen",
+        "slug": "ramen"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/ivan-ramen"
+  },
+  {
+    "name": "Le Gigot",
+    "slug": "le-gigot",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1049",
+        "label": "French",
+        "slug": "french"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/le-gigot"
+  },
+  {
+    "name": "Cynthia",
+    "slug": "cynthia",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/cynthia"
   },
   {
     "name": "Little Myanmar",
@@ -1015,6 +2123,103 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/jeju-noodle-bar"
   },
   {
+    "name": "I Sodi",
+    "slug": "i-sodi",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/i-sodi"
+  },
+  {
+    "name": "Red Paper Clip",
+    "slug": "red-paper-clip",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/red-paper-clip"
+  },
+  {
+    "name": "Via Carota",
+    "slug": "via-carota",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/via-carota"
+  },
+  {
+    "name": "Secchu Yokota",
+    "slug": "secchu-yokota",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1174",
+        "label": "Tempura",
+        "slug": "tempura"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/secchu-yokota"
+  },
+  {
     "name": "Frevo",
     "slug": "frevo",
     "michelin_award": "ONE_STAR",
@@ -1036,6 +2241,29 @@
     },
     "area_name": "Manhattan",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/frevo"
+  },
+  {
+    "name": "Adda",
+    "slug": "adda-1165339",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1059",
+        "label": "Indian",
+        "slug": "indian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/adda-1165339"
   },
   {
     "name": "Shmoné",
@@ -1066,6 +2294,34 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/shmone"
   },
   {
+    "name": "Odo East Village",
+    "slug": "odo-east-village",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1219",
+        "label": "Izakaya",
+        "slug": "izakaya"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/odo-east-village"
+  },
+  {
     "name": "CheLi",
     "slug": "cheli",
     "michelin_award": "BIB_GOURMAND",
@@ -1092,6 +2348,34 @@
     },
     "area_name": "Manhattan",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/cheli"
+  },
+  {
+    "name": "Ariari",
+    "slug": "ariari",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_1101",
+        "label": "Regional Cuisine",
+        "slug": "regional-cuisine"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/ariari"
   },
   {
     "name": "Soda Club",
@@ -1178,6 +2462,85 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/mala-project"
   },
   {
+    "name": "Nudibranch",
+    "slug": "nudibranch",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_1010",
+        "label": "Asian",
+        "slug": "asian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/nudibranch"
+  },
+  {
+    "name": "Moody Tongue Sushi",
+    "slug": "moody-tongue-sushi",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/moody-tongue-sushi"
+  },
+  {
+    "name": "Pylos",
+    "slug": "pylos",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1056",
+        "label": "Greek",
+        "slug": "greek"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/pylos"
+  },
+  {
     "name": "Ruffian",
     "slug": "ruffian",
     "michelin_award": "BIB_GOURMAND",
@@ -1257,6 +2620,98 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/soba-ya"
   },
   {
+    "name": "Avant Garden",
+    "slug": "avant-garden",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_90",
+        "label": "Vegan",
+        "slug": "vegan-90"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/avant-garden"
+  },
+  {
+    "name": "Miss Lily’s",
+    "slug": "miss-lily-s",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_103",
+        "label": "Jamaican",
+        "slug": "jamaican"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/miss-lily-s"
+  },
+  {
+    "name": "Claud",
+    "slug": "claud",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/claud"
+  },
+  {
+    "name": "Penny",
+    "slug": "penny",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1096",
+        "label": "Seafood",
+        "slug": "seafood-1096"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/penny"
+  },
+  {
     "name": "Superiority Burger",
     "slug": "superiority-burger",
     "michelin_award": "BIB_GOURMAND",
@@ -1283,6 +2738,80 @@
     },
     "area_name": "Manhattan",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/superiority-burger"
+  },
+  {
+    "name": "The Office of Mr. Moto",
+    "slug": "the-office-at-mr-moto",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/the-office-at-mr-moto"
+  },
+  {
+    "name": "4 Charles Prime Rib",
+    "slug": "4-charles-prime-rib",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_75",
+        "label": "Steakhouse",
+        "slug": "steakhouse"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/4-charles-prime-rib"
+  },
+  {
+    "name": "Smithereens",
+    "slug": "smithereens",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1096",
+        "label": "Seafood",
+        "slug": "seafood-1096"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/smithereens"
   },
   {
     "name": "Bar Miller",
@@ -1364,6 +2893,57 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/pranakhon"
   },
   {
+    "name": "Rosella",
+    "slug": "rosella",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/rosella"
+  },
+  {
+    "name": "Kubeh",
+    "slug": "kubeh",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_66",
+        "label": "Middle Eastern",
+        "slug": "middle-eastern"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/kubeh"
+  },
+  {
     "name": "Semma",
     "slug": "semma",
     "michelin_award": "ONE_STAR",
@@ -1392,6 +2972,82 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/semma"
   },
   {
+    "name": "HAGS",
+    "slug": "hags",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_1064",
+        "label": "Innovative",
+        "slug": "innovative"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/hags"
+  },
+  {
+    "name": "Kanoyama",
+    "slug": "kanoyama",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/kanoyama"
+  },
+  {
+    "name": "Confidant",
+    "slug": "confidant",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/confidant"
+  },
+  {
     "name": "Momofuku Noodle Bar",
     "slug": "momofuku-noodle-bar",
     "michelin_award": "BIB_GOURMAND",
@@ -1413,6 +3069,26 @@
     },
     "area_name": "Manhattan",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/momofuku-noodle-bar"
+  },
+  {
+    "name": "Al Badawi",
+    "slug": "al-badawi",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_66",
+        "label": "Middle Eastern",
+        "slug": "middle-eastern"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/al-badawi"
   },
   {
     "name": "Bánh Anh Em",
@@ -1461,6 +3137,29 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/yellow-rose"
   },
   {
+    "name": "Bartolo",
+    "slug": "bartolo",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1044",
+        "label": "Spanish",
+        "slug": "spanish"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/bartolo"
+  },
+  {
     "name": "Odre",
     "slug": "odre",
     "michelin_award": "BIB_GOURMAND",
@@ -1482,6 +3181,80 @@
     },
     "area_name": "Manhattan",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/odre"
+  },
+  {
+    "name": "Soothr",
+    "slug": "soothr",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1117",
+        "label": "Thai",
+        "slug": "thai"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/soothr"
+  },
+  {
+    "name": "Le B",
+    "slug": "le-b-1210894",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1049",
+        "label": "French",
+        "slug": "french"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/le-b-1210894"
+  },
+  {
+    "name": "Don Angie",
+    "slug": "don-angie",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      },
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/don-angie"
   },
   {
     "name": "Kosaka",
@@ -1535,6 +3308,150 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/ishq"
   },
   {
+    "name": "Bangkok Supper Club",
+    "slug": "bangkok-supper-club",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1117",
+        "label": "Thai",
+        "slug": "thai"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/bangkok-supper-club"
+  },
+  {
+    "name": "Gage & Tollner",
+    "slug": "gage-tollner",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_75",
+        "label": "Steakhouse",
+        "slug": "steakhouse"
+      },
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/gage-tollner"
+  },
+  {
+    "name": "The Dining Room at RH Guesthouse",
+    "slug": "the-dining-room-at-the-guesthouse",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/the-dining-room-at-the-guesthouse"
+  },
+  {
+    "name": "Saint Julivert Fisherie",
+    "slug": "saint-julivert-fisherie",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1096",
+        "label": "Seafood",
+        "slug": "seafood-1096"
+      },
+      {
+        "code": "TYC_1044",
+        "label": "Spanish",
+        "slug": "spanish"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/saint-julivert-fisherie"
+  },
+  {
+    "name": "La Vara",
+    "slug": "la-vara",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1044",
+        "label": "Spanish",
+        "slug": "spanish"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/la-vara"
+  },
+  {
+    "name": "Kanyakumari",
+    "slug": "kanyakumari",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1059",
+        "label": "Indian",
+        "slug": "indian"
+      },
+      {
+        "code": "TYC_1101",
+        "label": "Regional Cuisine",
+        "slug": "regional-cuisine"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/kanyakumari"
+  },
+  {
     "name": "Casa Mono",
     "slug": "casa-mono",
     "michelin_award": "ONE_STAR",
@@ -1586,6 +3503,34 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/la-dong"
   },
   {
+    "name": "Kyma",
+    "slug": "kyma",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1056",
+        "label": "Greek",
+        "slug": "greek"
+      },
+      {
+        "code": "TYC_1096",
+        "label": "Seafood",
+        "slug": "seafood-1096"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/kyma"
+  },
+  {
     "name": "Sal Tang's",
     "slug": "sal-tang-s",
     "michelin_award": "BIB_GOURMAND",
@@ -1604,6 +3549,146 @@
     },
     "area_name": "Brooklyn",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/sal-tang-s"
+  },
+  {
+    "name": "Portale",
+    "slug": "portale",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/portale"
+  },
+  {
+    "name": "Genesis House Restaurant",
+    "slug": "genesis-house-restaurant",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/genesis-house-restaurant"
+  },
+  {
+    "name": "abcV",
+    "slug": "abcv",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1126",
+        "label": "Vegetarian",
+        "slug": "vegetarian"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/abcv"
+  },
+  {
+    "name": "Oceans",
+    "slug": "oceans",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1096",
+        "label": "Seafood",
+        "slug": "seafood-1096"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/oceans"
+  },
+  {
+    "name": "Carlotto",
+    "slug": "carlotto",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_1179",
+        "label": "Italian-American",
+        "slug": "italian-american"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/carlotto"
   },
   {
     "name": "bōm",
@@ -1660,6 +3745,29 @@
     },
     "area_name": "Manhattan",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/oiji-mi"
+  },
+  {
+    "name": "Len Len",
+    "slug": "len-len",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1117",
+        "label": "Thai",
+        "slug": "thai"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/len-len"
   },
   {
     "name": "Gramercy Tavern",
@@ -1774,6 +3882,105 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/odo"
   },
   {
+    "name": "Massara",
+    "slug": "massara",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      },
+      {
+        "code": "TYC_1101",
+        "label": "Regional Cuisine",
+        "slug": "regional-cuisine"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/massara"
+  },
+  {
+    "name": "Mile End",
+    "slug": "mile-end",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_51",
+        "label": "Deli",
+        "slug": "deli"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/mile-end"
+  },
+  {
+    "name": "Cosme",
+    "slug": "cosme",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1084",
+        "label": "Mexican",
+        "slug": "mexican"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/cosme"
+  },
+  {
+    "name": "La Devozione: The Oval",
+    "slug": "la-devozione-the-oval",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/la-devozione-the-oval"
+  },
+  {
     "name": "Untable",
     "slug": "untable",
     "michelin_award": "BIB_GOURMAND",
@@ -1792,6 +3999,29 @@
     },
     "area_name": "Brooklyn",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/untable"
+  },
+  {
+    "name": "Crane Club",
+    "slug": "crane-club",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_75",
+        "label": "Steakhouse",
+        "slug": "steakhouse"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/crane-club"
   },
   {
     "name": "Noz 17",
@@ -1820,6 +4050,34 @@
     },
     "area_name": "Manhattan",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/noz17"
+  },
+  {
+    "name": "Novitá",
+    "slug": "novita",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      },
+      {
+        "code": "TYC_1101",
+        "label": "Regional Cuisine",
+        "slug": "regional-cuisine"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/novita"
   },
   {
     "name": "Coqodaq",
@@ -1951,6 +4209,59 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/shota-omakase"
   },
   {
+    "name": "La Tête d’Or",
+    "slug": "la-tete-d-or",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_75",
+        "label": "Steakhouse",
+        "slug": "steakhouse"
+      },
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/la-tete-d-or"
+  },
+  {
+    "name": "Sunday in Brooklyn",
+    "slug": "sunday-in-brooklyn",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/sunday-in-brooklyn"
+  },
+  {
     "name": "Eleven Madison Park",
     "slug": "eleven-madison-park",
     "michelin_award": "THREE_STARS",
@@ -1979,6 +4290,54 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/eleven-madison-park"
   },
   {
+    "name": "Junoon",
+    "slug": "junoon",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1059",
+        "label": "Indian",
+        "slug": "indian"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/junoon"
+  },
+  {
+    "name": "Glin Thai Bistro",
+    "slug": "glin-thai-bistro",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1117",
+        "label": "Thai",
+        "slug": "thai"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/glin-thai-bistro"
+  },
+  {
     "name": "Francie",
     "slug": "francie",
     "michelin_award": "ONE_STAR",
@@ -2004,6 +4363,266 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/francie"
   },
   {
+    "name": "Los Burritos Juárez",
+    "slug": "los-burritos-juarez",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1084",
+        "label": "Mexican",
+        "slug": "mexican"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/los-burritos-juarez"
+  },
+  {
+    "name": "Mesiba",
+    "slug": "mesiba",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_66",
+        "label": "Middle Eastern",
+        "slug": "middle-eastern"
+      },
+      {
+        "code": "TYC_1101",
+        "label": "Regional Cuisine",
+        "slug": "regional-cuisine"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/mesiba"
+  },
+  {
+    "name": "Meadowsweet",
+    "slug": "meadowsweet",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1083",
+        "label": "Mediterranean Cuisine",
+        "slug": "mediterranean-cuisine"
+      },
+      {
+        "code": "TYC_1182",
+        "label": "American Contemporary",
+        "slug": "american-contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/meadowsweet"
+  },
+  {
+    "name": "Upland",
+    "slug": "upland",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1083",
+        "label": "Mediterranean Cuisine",
+        "slug": "mediterranean-cuisine"
+      },
+      {
+        "code": "TYC_1182",
+        "label": "American Contemporary",
+        "slug": "american-contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/upland"
+  },
+  {
+    "name": "Il Fiorista",
+    "slug": "il-fiorista",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_1083",
+        "label": "Mediterranean Cuisine",
+        "slug": "mediterranean-cuisine"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/il-fiorista"
+  },
+  {
+    "name": "Peter Luger",
+    "slug": "peter-luger",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_75",
+        "label": "Steakhouse",
+        "slug": "steakhouse"
+      },
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/peter-luger"
+  },
+  {
+    "name": "Café Kestrel",
+    "slug": "cafe-kestrel",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_53",
+        "label": "European",
+        "slug": "european"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/cafe-kestrel"
+  },
+  {
+    "name": "Atoboy",
+    "slug": "atoboy",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/atoboy"
+  },
+  {
+    "name": "Ulivo",
+    "slug": "ulivo",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      },
+      {
+        "code": "TYC_1105",
+        "label": "Sardinian",
+        "slug": "sardinian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/ulivo"
+  },
+  {
+    "name": "Café Carmellini",
+    "slug": "cafe-carmellini",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      },
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/cafe-carmellini"
+  },
+  {
     "name": "Miss Ada",
     "slug": "miss-ada",
     "michelin_award": "BIB_GOURMAND",
@@ -2027,6 +4646,94 @@
     },
     "area_name": "Brooklyn",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/miss-ada"
+  },
+  {
+    "name": "Red Hook Tavern",
+    "slug": "red-hook-tavern",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/red-hook-tavern"
+  },
+  {
+    "name": "Hungry Thirsty",
+    "slug": "hungry-thirsty",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1117",
+        "label": "Thai",
+        "slug": "thai"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/hungry-thirsty"
+  },
+  {
+    "name": "Markette",
+    "slug": "markette",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_48",
+        "label": "Caribbean",
+        "slug": "caribbean"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/markette"
+  },
+  {
+    "name": "Mango Bay",
+    "slug": "mango-bay",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_48",
+        "label": "Caribbean",
+        "slug": "caribbean"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/mango-bay"
   },
   {
     "name": "Atomix",
@@ -2057,6 +4764,54 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/atomix"
   },
   {
+    "name": "Elcielo New York",
+    "slug": "elcielo-new-york",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1033",
+        "label": "Colombian",
+        "slug": "colombian"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/elcielo-new-york"
+  },
+  {
+    "name": "Sailor",
+    "slug": "sailor",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/sailor"
+  },
+  {
     "name": "Norma Gastronomia Siciliana",
     "slug": "norma-gastronomia-siciliana",
     "michelin_award": "BIB_GOURMAND",
@@ -2083,6 +4838,121 @@
     },
     "area_name": "Manhattan",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/norma-gastronomia-siciliana"
+  },
+  {
+    "name": "Enso",
+    "slug": "enso-1211186",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/enso-1211186"
+  },
+  {
+    "name": "6 Restaurant",
+    "slug": "6-restaurant",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_53",
+        "label": "European",
+        "slug": "european"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/6-restaurant"
+  },
+  {
+    "name": "Theodora",
+    "slug": "theodora",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1083",
+        "label": "Mediterranean Cuisine",
+        "slug": "mediterranean-cuisine"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/theodora"
+  },
+  {
+    "name": "I Cavallini",
+    "slug": "i-cavallini",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/i-cavallini"
+  },
+  {
+    "name": "Laser Wolf",
+    "slug": "laser-wolf",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_66",
+        "label": "Middle Eastern",
+        "slug": "middle-eastern"
+      },
+      {
+        "code": "TYC_1101",
+        "label": "Regional Cuisine",
+        "slug": "regional-cuisine"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/laser-wolf"
   },
   {
     "name": "HanGawi",
@@ -2166,6 +5036,85 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/joo-ok-1214822"
   },
   {
+    "name": "Moono",
+    "slug": "moono",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/moono"
+  },
+  {
+    "name": "Hav & Mar",
+    "slug": "hav-mar",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_83",
+        "label": "Ethiopian",
+        "slug": "ethiopian"
+      },
+      {
+        "code": "TYC_1161",
+        "label": "Fusion",
+        "slug": "fusion-1161"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/hav-mar"
+  },
+  {
+    "name": "Dons Bogam",
+    "slug": "dons-bogam",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_1143",
+        "label": "Barbecue",
+        "slug": "barbecue-1143"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/dons-bogam"
+  },
+  {
     "name": "Nōksu",
     "slug": "noksu",
     "michelin_award": "ONE_STAR",
@@ -2194,6 +5143,34 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/noksu"
   },
   {
+    "name": "Hyun",
+    "slug": "hyun",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_75",
+        "label": "Steakhouse",
+        "slug": "steakhouse"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/hyun"
+  },
+  {
     "name": "Hometown Bar B Que New York",
     "slug": "hometown-bar-b-que",
     "michelin_award": "BIB_GOURMAND",
@@ -2212,6 +5189,34 @@
     },
     "area_name": "Brooklyn",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/hometown-bar-b-que"
+  },
+  {
+    "name": "Seoul Salon",
+    "slug": "seoul-salon",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/seoul-salon"
   },
   {
     "name": "Café Mars",
@@ -2239,6 +5244,59 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/cafe-mars"
   },
   {
+    "name": "Octo",
+    "slug": "octo-1212173",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1203",
+        "label": "Asian Contemporary",
+        "slug": "asian-contemporary"
+      },
+      {
+        "code": "TYC_55",
+        "label": "Fusion",
+        "slug": "fusion"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/octo-1212173"
+  },
+  {
+    "name": "Runner & Stone",
+    "slug": "runner-stone",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_42",
+        "label": "Bakery",
+        "slug": "bakery"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/runner-stone"
+  },
+  {
     "name": "Shalom Japan",
     "slug": "shalom-japan",
     "michelin_award": "BIB_GOURMAND",
@@ -2264,6 +5322,81 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/shalom-japan"
   },
   {
+    "name": "Sawa",
+    "slug": "sawa-1214172",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_66",
+        "label": "Middle Eastern",
+        "slug": "middle-eastern"
+      },
+      {
+        "code": "TYC_1071",
+        "label": "Lebanese",
+        "slug": "lebanese"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/sawa-1214172"
+  },
+  {
+    "name": "Lingo",
+    "slug": "lingo",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/lingo"
+  },
+  {
+    "name": "Chez Ma Tante",
+    "slug": "chez-ma-tante",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1182",
+        "label": "American Contemporary",
+        "slug": "american-contemporary"
+      },
+      {
+        "code": "TYC_1101",
+        "label": "Regional Cuisine",
+        "slug": "regional-cuisine"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/chez-ma-tante"
+  },
+  {
     "name": "Cho Dang Gol",
     "slug": "cho-dang-gol",
     "michelin_award": "BIB_GOURMAND",
@@ -2285,6 +5418,31 @@
     },
     "area_name": "Manhattan",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/cho-dang-gol"
+  },
+  {
+    "name": "KRU",
+    "slug": "kru",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1117",
+        "label": "Thai",
+        "slug": "thai"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/kru"
   },
   {
     "name": "Tonchin",
@@ -2315,6 +5473,57 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/tonchin"
   },
   {
+    "name": "Ci Siamo",
+    "slug": "ci-siamo",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/ci-siamo"
+  },
+  {
+    "name": "Ai Fiori",
+    "slug": "ai-fiori",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      },
+      {
+        "code": "TYC_1049",
+        "label": "French",
+        "slug": "french"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/ai-fiori"
+  },
+  {
     "name": "Little Alley",
     "slug": "little-alley",
     "michelin_award": "BIB_GOURMAND",
@@ -2341,6 +5550,192 @@
     },
     "area_name": "Manhattan",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/little-alley"
+  },
+  {
+    "name": "arthur",
+    "slug": "arthur",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_800",
+        "label": "French Contemporary",
+        "slug": "french-contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/arthur"
+  },
+  {
+    "name": "Peak",
+    "slug": "peak",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/peak"
+  },
+  {
+    "name": "Sofreh",
+    "slug": "sofreh",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_68",
+        "label": "Persian",
+        "slug": "persian"
+      },
+      {
+        "code": "TYC_1101",
+        "label": "Regional Cuisine",
+        "slug": "regional-cuisine"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/sofreh"
+  },
+  {
+    "name": "Entre Nous",
+    "slug": "entre-nous-1217771",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1049",
+        "label": "French",
+        "slug": "french"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/entre-nous-1217771"
+  },
+  {
+    "name": "Papa San",
+    "slug": "papa-san",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1130",
+        "label": "Peruvian",
+        "slug": "peruvian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/papa-san"
+  },
+  {
+    "name": "Uzuki",
+    "slug": "uzuki",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1197",
+        "label": "Soba",
+        "slug": "soba"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/uzuki"
+  },
+  {
+    "name": "Madre",
+    "slug": "madre-1185329",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/madre-1185329"
+  },
+  {
+    "name": "Place des Fêtes",
+    "slug": "place-des-fetes",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/place-des-fetes"
   },
   {
     "name": "Haenyeo",
@@ -2446,6 +5841,34 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/restaurant-yuu"
   },
   {
+    "name": "Kjun",
+    "slug": "kjun",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_81",
+        "label": "Cajun",
+        "slug": "cajun"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/kjun"
+  },
+  {
     "name": "Peppercorn Station",
     "slug": "peppercorn-station",
     "michelin_award": "BIB_GOURMAND",
@@ -2472,6 +5895,62 @@
     },
     "area_name": "Manhattan",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/peppercorn-station"
+  },
+  {
+    "name": "Oyatte",
+    "slug": "oyatte",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_1250",
+        "label": "Seasonal Cuisine",
+        "slug": "seasonal-cuisine"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/oyatte"
+  },
+  {
+    "name": "Szechuan Gourmet",
+    "slug": "szechuan-gourmet",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      },
+      {
+        "code": "TYC_1116",
+        "label": "Sichuan",
+        "slug": "sichuan"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/szechuan-gourmet"
   },
   {
     "name": "Chef's Table at Brooklyn Fare",
@@ -2615,6 +6094,31 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/sushi-sho-1213976"
   },
   {
+    "name": "Wenwen",
+    "slug": "wenwen",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_842",
+        "label": "Taiwanese",
+        "slug": "taiwanese"
+      },
+      {
+        "code": "TYC_1010",
+        "label": "Asian",
+        "slug": "asian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/wenwen"
+  },
+  {
     "name": "Gabriel Kreuther",
     "slug": "gabriel-kreuther",
     "michelin_award": "TWO_STARS",
@@ -2671,6 +6175,59 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/le-pavillon-1192744"
   },
   {
+    "name": "Fausto",
+    "slug": "fausto",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      },
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/fausto"
+  },
+  {
+    "name": "Sushi Yasuda",
+    "slug": "sushi-yasuda",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/sushi-yasuda"
+  },
+  {
     "name": "Jōji",
     "slug": "joji",
     "michelin_award": "ONE_STAR",
@@ -2699,6 +6256,34 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/joji"
   },
   {
+    "name": "Izakaya Futago",
+    "slug": "soba-totto",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1197",
+        "label": "Soba",
+        "slug": "soba"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/soba-totto"
+  },
+  {
     "name": "Bonnie's",
     "slug": "bonnie-s",
     "michelin_award": "BIB_GOURMAND",
@@ -2722,6 +6307,147 @@
     },
     "area_name": "Brooklyn",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/bonnie-s"
+  },
+  {
+    "name": "The Lambs Club",
+    "slug": "the-lambs-club",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_75",
+        "label": "Steakhouse",
+        "slug": "steakhouse"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/the-lambs-club"
+  },
+  {
+    "name": "Ammazzacaffè",
+    "slug": "ammazzacaffe",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/ammazzacaffe"
+  },
+  {
+    "name": "Veerays",
+    "slug": "veerays",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1059",
+        "label": "Indian",
+        "slug": "indian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/veerays"
+  },
+  {
+    "name": "Balera",
+    "slug": "balera",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      },
+      {
+        "code": "TYC_70",
+        "label": "Pizza",
+        "slug": "pizza"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/balera"
+  },
+  {
+    "name": "Vato",
+    "slug": "vato",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1084",
+        "label": "Mexican",
+        "slug": "mexican"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/vato"
+  },
+  {
+    "name": "Casa Ora",
+    "slug": "casa-ora",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_114",
+        "label": "Venezuelan",
+        "slug": "venezuelan"
+      },
+      {
+        "code": "TYC_63",
+        "label": "Latin American",
+        "slug": "latin-american"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/casa-ora"
   },
   {
     "name": "Win Son",
@@ -2774,6 +6500,57 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/meju"
   },
   {
+    "name": "Fasano",
+    "slug": "fasano-1210236",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/fasano-1210236"
+  },
+  {
+    "name": "Gui",
+    "slug": "gui-1207502",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_75",
+        "label": "Steakhouse",
+        "slug": "steakhouse"
+      },
+      {
+        "code": "TYC_1191",
+        "label": "Korean Contemporary",
+        "slug": "korean-contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/gui-1207502"
+  },
+  {
     "name": "Kochi",
     "slug": "kochi",
     "michelin_award": "ONE_STAR",
@@ -2802,6 +6579,34 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/kochi"
   },
   {
+    "name": "Hwaro",
+    "slug": "hwaro",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1034",
+        "label": "Korean",
+        "slug": "korean"
+      },
+      {
+        "code": "TYC_1191",
+        "label": "Korean Contemporary",
+        "slug": "korean-contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/hwaro"
+  },
+  {
     "name": "Mari",
     "slug": "mari",
     "michelin_award": "ONE_STAR",
@@ -2823,6 +6628,51 @@
     },
     "area_name": "Manhattan",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/mari"
+  },
+  {
+    "name": "Hart's",
+    "slug": "hart-s",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1083",
+        "label": "Mediterranean Cuisine",
+        "slug": "mediterranean-cuisine"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/hart-s"
+  },
+  {
+    "name": "Casa Enrique",
+    "slug": "casa-enrique",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1084",
+        "label": "Mexican",
+        "slug": "mexican"
+      },
+      {
+        "code": "TYC_1101",
+        "label": "Regional Cuisine",
+        "slug": "regional-cuisine"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Queens",
+      "slug": "queens",
+      "exonyms": []
+    },
+    "area_name": "Queens",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/casa-enrique"
   },
   {
     "name": "Hupo",
@@ -2875,6 +6725,29 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/runner-up"
   },
   {
+    "name": "Jupiter",
+    "slug": "jupiter",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/jupiter"
+  },
+  {
     "name": "Kung Fu Little Steamed Buns Ramen",
     "slug": "kung-fu-little-steamed-buns-ramen",
     "michelin_award": "BIB_GOURMAND",
@@ -2903,6 +6776,105 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/kung-fu-little-steamed-buns-ramen"
   },
   {
+    "name": "Le Rock",
+    "slug": "le-rock",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_1049",
+        "label": "French",
+        "slug": "french"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/le-rock"
+  },
+  {
+    "name": "See No Evil Pizza",
+    "slug": "see-no-evil-pizza",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_70",
+        "label": "Pizza",
+        "slug": "pizza"
+      },
+      {
+        "code": "TYC_1182",
+        "label": "American Contemporary",
+        "slug": "american-contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/see-no-evil-pizza"
+  },
+  {
+    "name": "R40",
+    "slug": "r40",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1008",
+        "label": "Argentinian",
+        "slug": "argentinian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Queens",
+      "slug": "queens",
+      "exonyms": []
+    },
+    "area_name": "Queens",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/r40"
+  },
+  {
+    "name": "Don Antonio",
+    "slug": "don-antonio-by-starita",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_70",
+        "label": "Pizza",
+        "slug": "pizza"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/don-antonio-by-starita"
+  },
+  {
     "name": "Le Bernardin",
     "slug": "le-bernardin",
     "michelin_award": "THREE_STARS",
@@ -2926,7 +6898,83 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/le-bernardin"
   },
   {
-    "name": "Chalong",
+    "name": "The Grill",
+    "slug": "the-grill",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      },
+      {
+        "code": "TYC_1182",
+        "label": "American Contemporary",
+        "slug": "american-contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/the-grill"
+  },
+  {
+    "name": "Cafe Mado",
+    "slug": "cafe-mado",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1182",
+        "label": "American Contemporary",
+        "slug": "american-contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/cafe-mado"
+  },
+  {
+    "name": "Le Jardinier New York",
+    "slug": "le-jardinier",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1049",
+        "label": "French",
+        "slug": "french"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/le-jardinier"
+  },
+  {
+    "name": "Chalong Southern Thai",
     "slug": "chalong",
     "michelin_award": "BIB_GOURMAND",
     "cuisines": [
@@ -2954,6 +7002,34 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/chalong"
   },
   {
+    "name": "Lobster Club",
+    "slug": "lobster-club",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/lobster-club"
+  },
+  {
     "name": "LORE",
     "slug": "lore",
     "michelin_award": "BIB_GOURMAND",
@@ -2979,6 +7055,80 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/lore"
   },
   {
+    "name": "Gallaghers",
+    "slug": "gallaghers",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_75",
+        "label": "Steakhouse",
+        "slug": "steakhouse"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/gallaghers"
+  },
+  {
+    "name": "Santi",
+    "slug": "santi",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_814",
+        "label": "Italian Contemporary",
+        "slug": "italian-contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/santi"
+  },
+  {
+    "name": "53",
+    "slug": "53",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1010",
+        "label": "Asian",
+        "slug": "asian"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/53"
+  },
+  {
     "name": "The Modern",
     "slug": "the-modern",
     "michelin_award": "TWO_STARS",
@@ -3000,6 +7150,80 @@
     },
     "area_name": "Manhattan",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/the-modern"
+  },
+  {
+    "name": "Hyderabadi Zaiqa",
+    "slug": "hyderabadi-zaiqa",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1059",
+        "label": "Indian",
+        "slug": "indian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/hyderabadi-zaiqa"
+  },
+  {
+    "name": "Caviar Russe",
+    "slug": "caviar-russe",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_1096",
+        "label": "Seafood",
+        "slug": "seafood-1096"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/caviar-russe"
+  },
+  {
+    "name": "Benoit",
+    "slug": "benoit",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1049",
+        "label": "French",
+        "slug": "french"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/benoit"
   },
   {
     "name": "YingTao",
@@ -3056,6 +7280,29 @@
     },
     "area_name": "Manhattan",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/aquavit"
+  },
+  {
+    "name": "Four Twenty Five",
+    "slug": "four-twenty-five",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/four-twenty-five"
   },
   {
     "name": "Chavela’s",
@@ -3123,6 +7370,82 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/agi-s-counter"
   },
   {
+    "name": "Chola",
+    "slug": "chola",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1059",
+        "label": "Indian",
+        "slug": "indian"
+      },
+      {
+        "code": "TYC_1101",
+        "label": "Regional Cuisine",
+        "slug": "regional-cuisine"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/chola"
+  },
+  {
+    "name": "Bong",
+    "slug": "bong",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_93",
+        "label": "Cambodian",
+        "slug": "cambodian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/bong"
+  },
+  {
+    "name": "YŪGIN",
+    "slug": "yugin",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      },
+      {
+        "code": "TYC_1115",
+        "label": "Sushi",
+        "slug": "sushi"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/yugin"
+  },
+  {
     "name": "Sobre Masa",
     "slug": "sobre-masa",
     "michelin_award": "BIB_GOURMAND",
@@ -3171,6 +7494,57 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/per-se"
   },
   {
+    "name": "Marea",
+    "slug": "marea",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_9",
+        "label": "Seafood",
+        "slug": "seafood"
+      },
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/marea"
+  },
+  {
+    "name": "Le Veau d'Or",
+    "slug": "le-veau-d-or",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1049",
+        "label": "French",
+        "slug": "french"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/le-veau-d-or"
+  },
+  {
     "name": "Masa",
     "slug": "masa",
     "michelin_award": "TWO_STARS",
@@ -3197,6 +7571,31 @@
     },
     "area_name": "Manhattan",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/masa"
+  },
+  {
+    "name": "Daphne's",
+    "slug": "daphne-s",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1179",
+        "label": "Italian-American",
+        "slug": "italian-american"
+      },
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/daphne-s"
   },
   {
     "name": "Jean-Georges",
@@ -3278,6 +7677,77 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/lungi"
   },
   {
+    "name": "Vert Frais",
+    "slug": "vert-frais",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Long Island City",
+      "slug": "long-island-city",
+      "exonyms": []
+    },
+    "area_name": "Queens",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/vert-frais"
+  },
+  {
+    "name": "JoJo",
+    "slug": "jojo",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/jojo"
+  },
+  {
+    "name": "Tatiana",
+    "slug": "tatiana",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1161",
+        "label": "Fusion",
+        "slug": "fusion-1161"
+      },
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/tatiana"
+  },
+  {
     "name": "Bayon",
     "slug": "bayon",
     "michelin_award": "BIB_GOURMAND",
@@ -3324,6 +7794,130 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/daniel"
   },
   {
+    "name": "El Fish Marisqueria",
+    "slug": "el-fish-marisqueria",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1084",
+        "label": "Mexican",
+        "slug": "mexican"
+      },
+      {
+        "code": "TYC_1096",
+        "label": "Seafood",
+        "slug": "seafood-1096"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/el-fish-marisqueria"
+  },
+  {
+    "name": "Cafe Commerce",
+    "slug": "cafe-commerce",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      },
+      {
+        "code": "TYC_800",
+        "label": "French Contemporary",
+        "slug": "french-contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/cafe-commerce"
+  },
+  {
+    "name": "Tong",
+    "slug": "tong",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1117",
+        "label": "Thai",
+        "slug": "thai"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/tong"
+  },
+  {
+    "name": "Risbo",
+    "slug": "risbo",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      },
+      {
+        "code": "TYC_1162",
+        "label": "Grills",
+        "slug": "grills-1162"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/risbo"
+  },
+  {
+    "name": "Mission Ceviche",
+    "slug": "mission-ceviche",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1130",
+        "label": "Peruvian",
+        "slug": "peruvian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/mission-ceviche"
+  },
+  {
     "name": "Bohemian Spirit",
     "slug": "bohemian-spirit",
     "michelin_award": "BIB_GOURMAND",
@@ -3347,6 +7941,52 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/bohemian-spirit"
   },
   {
+    "name": "Persepolis",
+    "slug": "persepolis",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_68",
+        "label": "Persian",
+        "slug": "persian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/persepolis"
+  },
+  {
+    "name": "Chez Fifi",
+    "slug": "chez-fifi-1212832",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1049",
+        "label": "French",
+        "slug": "french"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/chez-fifi-1212832"
+  },
+  {
     "name": "Gordo's Cantina",
     "slug": "gordo-s-cantina",
     "michelin_award": "BIB_GOURMAND",
@@ -3365,6 +8005,174 @@
     },
     "area_name": "Brooklyn",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/gordo-s-cantina"
+  },
+  {
+    "name": "J.G. Melon",
+    "slug": "j-g-melon",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/j-g-melon"
+  },
+  {
+    "name": "Kebab aur Sharab",
+    "slug": "kebab-aur-sharab",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1059",
+        "label": "Indian",
+        "slug": "indian"
+      },
+      {
+        "code": "TYC_1101",
+        "label": "Regional Cuisine",
+        "slug": "regional-cuisine"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/kebab-aur-sharab"
+  },
+  {
+    "name": "Marcel",
+    "slug": "marcel-1247960",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1049",
+        "label": "French",
+        "slug": "french"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/marcel-1247960"
+  },
+  {
+    "name": "Orsay",
+    "slug": "orsay",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1049",
+        "label": "French",
+        "slug": "french"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/orsay"
+  },
+  {
+    "name": "Sushi Akira",
+    "slug": "sushi-akira-1241412",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1068",
+        "label": "Japanese",
+        "slug": "japanese"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/sushi-akira-1241412"
+  },
+  {
+    "name": "Sempre Oggi",
+    "slug": "sempre-oggi",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/sempre-oggi"
+  },
+  {
+    "name": "Bolivian Llama Party",
+    "slug": "bolivian-llama-party",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1170",
+        "label": "South American",
+        "slug": "south-american"
+      },
+      {
+        "code": "TYC_63",
+        "label": "Latin American",
+        "slug": "latin-american"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Woodside",
+      "slug": "ny-woodside",
+      "exonyms": []
+    },
+    "area_name": "Queens",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/bolivian-llama-party"
   },
   {
     "name": "Sushi Noz",
@@ -3519,6 +8327,29 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/chuan-tian-xia"
   },
   {
+    "name": "Ly Ly Vietnam Cookhouse",
+    "slug": "ly-ly-vietnam-cookhouse",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1129",
+        "label": "Vietnamese",
+        "slug": "vietnamese"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/ly-ly-vietnam-cookhouse"
+  },
+  {
     "name": "Olmo",
     "slug": "olmo-1244242",
     "michelin_award": "BIB_GOURMAND",
@@ -3539,6 +8370,57 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/olmo-1244242"
   },
   {
+    "name": "Cafe Sabarsky",
+    "slug": "cafe-sabarsky",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1013",
+        "label": "Austrian",
+        "slug": "austrian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/cafe-sabarsky"
+  },
+  {
+    "name": "Eléa",
+    "slug": "elea-greek",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1056",
+        "label": "Greek",
+        "slug": "greek"
+      },
+      {
+        "code": "TYC_1096",
+        "label": "Seafood",
+        "slug": "seafood-1096"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/elea-greek"
+  },
+  {
     "name": "Rolo's",
     "slug": "rolo-s",
     "michelin_award": "BIB_GOURMAND",
@@ -3557,6 +8439,127 @@
     },
     "area_name": "Queens",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/rolo-s"
+  },
+  {
+    "name": "East Harbor Seafood Palace",
+    "slug": "east-harbor-seafood-palace",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      },
+      {
+        "code": "TYC_1041",
+        "label": "Dim Sum",
+        "slug": "dim-sum"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Brooklyn",
+      "slug": "brooklyn",
+      "exonyms": []
+    },
+    "area_name": "Brooklyn",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/east-harbor-seafood-palace"
+  },
+  {
+    "name": "il Gigante",
+    "slug": "il-gigante-1218340",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Queens",
+      "slug": "queens",
+      "exonyms": []
+    },
+    "area_name": "Queens",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/il-gigante-1218340"
+  },
+  {
+    "name": "Pierogi Boys",
+    "slug": "pierogi-boys",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1097",
+        "label": "Polish",
+        "slug": "polish"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Ridgewood",
+      "slug": "ridgewood",
+      "exonyms": []
+    },
+    "area_name": "Queens",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/pierogi-boys"
+  },
+  {
+    "name": "Chick Chick",
+    "slug": "chick-chick",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1010",
+        "label": "Asian",
+        "slug": "asian"
+      },
+      {
+        "code": "TYC_1209",
+        "label": "Chicken Specialities",
+        "slug": "chicken-specialities"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/chick-chick"
+  },
+  {
+    "name": "Dagon",
+    "slug": "dagon",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1083",
+        "label": "Mediterranean Cuisine",
+        "slug": "mediterranean-cuisine"
+      },
+      {
+        "code": "TYC_66",
+        "label": "Middle Eastern",
+        "slug": "middle-eastern"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/dagon"
   },
   {
     "name": "Tanoreen",
@@ -3597,6 +8600,56 @@
     },
     "area_name": "Brooklyn",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/yemenat"
+  },
+  {
+    "name": "Enoteca Maria",
+    "slug": "enoteca-maria",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      },
+      {
+        "code": "TYC_1065",
+        "label": "International",
+        "slug": "international"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Staten Island",
+      "slug": "staten-island",
+      "exonyms": []
+    },
+    "area_name": "Staten Island",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/enoteca-maria"
+  },
+  {
+    "name": "AbuQir",
+    "slug": "abuqir",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_9",
+        "label": "Seafood",
+        "slug": "seafood"
+      },
+      {
+        "code": "TYC_98",
+        "label": "Egyptian",
+        "slug": "egyptian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Queens",
+      "slug": "queens",
+      "exonyms": []
+    },
+    "area_name": "Queens",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/abuqir"
   },
   {
     "name": "Phayul",
@@ -3644,6 +8697,102 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/zaab-zaab"
   },
   {
+    "name": "Miss Mamie's Spoonbread Too",
+    "slug": "miss-mamie-s-spoonbread-too",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_72",
+        "label": "Southern",
+        "slug": "southern"
+      },
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/miss-mamie-s-spoonbread-too"
+  },
+  {
+    "name": "Taverna Kyclades",
+    "slug": "taverna-kyclades",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1056",
+        "label": "Greek",
+        "slug": "greek"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Astoria",
+      "slug": "astoria",
+      "exonyms": []
+    },
+    "area_name": "Queens",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/taverna-kyclades"
+  },
+  {
+    "name": "Seppe Pizza Bar",
+    "slug": "seppe-pizza-bar",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_70",
+        "label": "Pizza",
+        "slug": "pizza"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Staten Island",
+      "slug": "staten-island",
+      "exonyms": []
+    },
+    "area_name": "Staten Island",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/seppe-pizza-bar"
+  },
+  {
+    "name": "Melba's",
+    "slug": "melba-s",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_72",
+        "label": "Southern",
+        "slug": "southern"
+      },
+      {
+        "code": "TYC_40",
+        "label": "American",
+        "slug": "american"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/melba-s"
+  },
+  {
     "name": "SaRanRom Thai",
     "slug": "saranrom-thai",
     "michelin_award": "BIB_GOURMAND",
@@ -3664,6 +8813,79 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/saranrom-thai"
   },
   {
+    "name": "Lakruwana",
+    "slug": "lakruwana",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_88",
+        "label": "Sri Lankan",
+        "slug": "sri-lankan"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Staten Island",
+      "slug": "staten-island",
+      "exonyms": []
+    },
+    "area_name": "Staten Island",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/lakruwana"
+  },
+  {
+    "name": "Barawine",
+    "slug": "barawine",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_6",
+        "label": "Contemporary",
+        "slug": "contemporary"
+      },
+      {
+        "code": "TYC_800",
+        "label": "French Contemporary",
+        "slug": "french-contemporary"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New York",
+      "slug": "new-york",
+      "exonyms": [
+        "Nueva York",
+        "New York"
+      ]
+    },
+    "area_name": "Manhattan",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/barawine"
+  },
+  {
+    "name": "Seis Vecinos",
+    "slug": "seis-vecinos",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_63",
+        "label": "Latin American",
+        "slug": "latin-american"
+      },
+      {
+        "code": "TYC_1101",
+        "label": "Regional Cuisine",
+        "slug": "regional-cuisine"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Bronx",
+      "slug": "bronx",
+      "exonyms": []
+    },
+    "area_name": "The Bronx",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/seis-vecinos"
+  },
+  {
     "name": "Caleta 111 Cevicheria",
     "slug": "caleta-111-cevicheria",
     "michelin_award": "BIB_GOURMAND",
@@ -3682,6 +8904,31 @@
     },
     "area_name": "Queens",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/caleta-111-cevicheria"
+  },
+  {
+    "name": "Asian Jewels",
+    "slug": "asian-jewels",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1030",
+        "label": "Chinese",
+        "slug": "chinese"
+      },
+      {
+        "code": "TYC_1041",
+        "label": "Dim Sum",
+        "slug": "dim-sum"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Queens",
+      "slug": "queens",
+      "exonyms": []
+    },
+    "area_name": "Queens",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/asian-jewels"
   },
   {
     "name": "Jiang Nan",
@@ -3759,6 +9006,56 @@
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/tong-sam-gyup-goo-yi"
   },
   {
+    "name": "Çka Ka Qëllu",
+    "slug": "cka-ka-qellu",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1181",
+        "label": "Balkan",
+        "slug": "balkan"
+      },
+      {
+        "code": "TYC_1102",
+        "label": "Country cooking",
+        "slug": "country"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Bronx",
+      "slug": "bronx",
+      "exonyms": []
+    },
+    "area_name": "The Bronx",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/cka-ka-qellu"
+  },
+  {
+    "name": "Tra Di Noi",
+    "slug": "tra-di-noi",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      },
+      {
+        "code": "TYC_1179",
+        "label": "Italian-American",
+        "slug": "italian-american"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Bronx",
+      "slug": "bronx",
+      "exonyms": []
+    },
+    "area_name": "The Bronx",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/tra-di-noi"
+  },
+  {
     "name": "Legend of Taste",
     "slug": "legend-of-taste",
     "michelin_award": "BIB_GOURMAND",
@@ -3782,5 +9079,105 @@
     },
     "area_name": "Queens",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/legend-of-taste"
+  },
+  {
+    "name": "Patricia’s",
+    "slug": "patricia-s",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1179",
+        "label": "Italian-American",
+        "slug": "italian-american"
+      },
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Bronx",
+      "slug": "bronx",
+      "exonyms": []
+    },
+    "area_name": "The Bronx",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/patricia-s"
+  },
+  {
+    "name": "Tobalá",
+    "slug": "tobala",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1084",
+        "label": "Mexican",
+        "slug": "mexican"
+      },
+      {
+        "code": "TYC_1101",
+        "label": "Regional Cuisine",
+        "slug": "regional-cuisine"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "Bronx",
+      "slug": "bronx",
+      "exonyms": []
+    },
+    "area_name": "The Bronx",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/tobala"
+  },
+  {
+    "name": "Dubrovnik",
+    "slug": "dubrovnik1184228",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_95",
+        "label": "Croatian",
+        "slug": "croatian"
+      },
+      {
+        "code": "TYC_1096",
+        "label": "Seafood",
+        "slug": "seafood-1096"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New Rochelle",
+      "slug": "new-rochelle",
+      "exonyms": []
+    },
+    "area_name": "Westchester",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/dubrovnik1184228"
+  },
+  {
+    "name": "Maria Restaurant",
+    "slug": "maria-restaurant",
+    "michelin_award": "selected",
+    "cuisines": [
+      {
+        "code": "TYC_1067",
+        "label": "Italian",
+        "slug": "italian"
+      },
+      {
+        "code": "TYC_1179",
+        "label": "Italian-American",
+        "slug": "italian-american"
+      }
+    ],
+    "chef": null,
+    "city": {
+      "name": "New Rochelle",
+      "slug": "new-rochelle",
+      "exonyms": []
+    },
+    "area_name": "Westchester",
+    "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/maria-restaurant"
   }
 ]

@@ -96,47 +96,38 @@ class RestaurantCoordinateExtractor:
             }
 
     def extract_from_staticmap(self, page_content: str) -> Optional[Tuple[float, float]]:
-        """Extract coordinates from Google Maps staticmap URL with full precision"""
-        # Pattern captures all decimal places (typically 7+ decimals from Google Maps)
-        pattern = r'maps\.googleapis\.com/maps/api/staticmap\?center=([+-]?\d+\.\d+),([+-]?\d+\.\d+)'
+        """Extract coordinates from the Google Maps directions link embedded in the
+        site's Next.js RSC payload, e.g.
+        https://www.google.com/maps/dir/Current+Location/40.7272851,-73.9852368"""
+        pattern = r'maps/dir/Current\+Location/([+-]?\d+\.\d+),([+-]?\d+\.\d+)'
         matches = re.search(pattern, page_content)
 
         if matches:
             lat_str, lon_str = matches.groups()
-            # Convert to float preserving all decimal places
             return (float(lat_str), float(lon_str))
 
         return None
 
     def extract_address_from_html(self, page_content: str) -> Optional[str]:
-        """Extract address from HTML content"""
+        """Extract address from the structured JSON fields embedded in the
+        site's Next.js RSC payload, e.g.
+        "address1":"128 First Ave.","address2":"","address3":"","city":"Manhattan","state":"NY","zip":"10009" """
 
-        # Try pattern 1: locationAddress div
-        pattern1 = r'<div[^>]*class="[^"]*locationAddress[^"]*"[^>]*>(.*?)</div>'
-        matches = re.search(pattern1, page_content, re.DOTALL)
+        pattern = (
+            r'\\?"address1\\?":\\?"(?P<address1>[^"\\]*)\\?",'
+            r'\\?"address2\\?":\\?"(?P<address2>[^"\\]*)\\?",'
+            r'\\?"address3\\?":\\?"(?P<address3>[^"\\]*)\\?",'
+            r'\\?"city\\?":\\?"(?P<city>[^"\\]*)\\?",'
+            r'\\?"state\\?":\\?"(?P<state>[^"\\]*)\\?",'
+            r'\\?"zip\\?":\\?"(?P<zip>[^"\\]*)\\?"'
+        )
+        matches = re.search(pattern, page_content)
         if matches:
-            html_block = matches.group(1)
-            # Extract text from <p> tags
-            text_pattern = r'<p[^>]*>(.*?)</p>'
-            text_matches = re.findall(text_pattern, html_block, re.DOTALL)
-            if text_matches:
-                # Clean HTML entities and whitespace
-                address = text_matches[0].strip()
-                address = re.sub(r'\s+', ' ', address)  # Normalize whitespace
-                if len(address) > 10:  # Sanity check
-                    return address
-
-        # Try pattern 2: Location section
-        pattern2 = r'<p[^>]*>\s*(\d+[^<]+(?:Manhattan|Brooklyn|Queens|Bronx|Staten Island)[^<]*\d{5})\s*</p>'
-        matches = re.search(pattern2, page_content, re.IGNORECASE)
-        if matches:
-            return matches.group(1).strip()
-
-        # Try pattern 3: Broader NYC address pattern
-        pattern3 = r'(\d+\s+[NSEW]\.?\s+\w+\s+(?:St\.|Street|Ave\.|Avenue|Blvd\.|Boulevard|Rd\.|Road|Pl\.|Place)[^,]*,\s*(?:Manhattan|Brooklyn|Queens|Bronx|Staten Island),?\s*NY,?\s*\d{5})'
-        matches = re.search(pattern3, page_content, re.IGNORECASE)
-        if matches:
-            return matches.group(1).strip()
+            parts = matches.groupdict()
+            street = ', '.join(p for p in [parts['address1'], parts['address2'], parts['address3']] if p)
+            if street:
+                address = f"{street}, {parts['city']}, {parts['state']} {parts['zip']}".strip()
+                return re.sub(r'\s+', ' ', address)
 
         return None
 

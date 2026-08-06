@@ -34,13 +34,7 @@ export default function DealsPanel({
 }: {
   onSelect: (r: Restaurant) => void
 }) {
-  const { allRestaurants, filteredRestaurants, userLocation, setUserLocation, searchTerm, setSearchTerm } = useMap()
-
-  // Open a specific restaurant's card on the map by slug (used by the inline deal links).
-  const openBySlug = (slug: string) => {
-    const match = allRestaurants.find((r) => r.slug === slug)
-    if (match) onSelect(match)
-  }
+  const { filteredRestaurants, userLocation, setUserLocation, searchTerm, setSearchTerm } = useMap()
 
   // Ask for the visitor's location once (non-blocking) so we can rank by distance.
   useEffect(() => {
@@ -73,31 +67,10 @@ export default function DealsPanel({
       <div className="flex flex-col gap-3 sm:mt-4 sm:py-3 text-base sm:text-lg leading-snug font-normal sm:font-semibold">
         <p className="font-semibold sm:hidden">Welcome to NYC Eats — World Cup Edition!</p>
         <p>
-          800+ restaurants offer <em className="italic text-pink-500">affordable $26 deals </em>and limited
-          edition collectibles in celebration of the World Cup. <br></br>All hail Mamdani.
-        </p>
-        <p>
+          In this sweltering and calamitious summer, 600+ restaurants offer <em className="italic text-pink-500">$30-$65 prix fixe</em> experiences.{' '}<br></br><br></br>
           <span className="sm:hidden">And I, Remy, help</span>
           <span className="hidden sm:inline">And Remy helps</span>
-          {' '}you find the best experiences from oysters and martini at{' '}
-          <button
-            type="button"
-            onClick={() => openBySlug('fbws-francie')}
-            className="cursor-pointer appearance-none border-none bg-transparent p-0 text-inherit"
-            style={{ font: 'inherit' }}
-          >
-          Francie, a Michelin 1-star,
-          </button>{' '}
-          to full meals at {' '}
-          <button
-            type="button"
-            onClick={() => openBySlug('fbws-grotta-azzurra')}
-            className="cursor-pointer appearance-none border-none bg-transparent p-0 text-inherit"
-            style={{ font: 'inherit' }}
-          >
-            Grotta Azzurra,
-          </button>{' '}
-          all for 26 bucks.
+          {' '}you find the best deals — from <em className="italic text-pink-500">Michelin-starred</em> restaurants to <em className="italic text-pink-500">NY Times Top 100</em> picks. Toggle the filters on the map to find your dream spot.
         </p>
       </div>
 
@@ -147,47 +120,6 @@ export default function DealsPanel({
           ))}
         </ul>
       </div>
-
-      <div className="px-0 text-xl font-semibold uppercase tracking-widest text-pink-500">
-        And more:
-      </div>
-      <p className="-mt-4 py-0 text-lg leading-snug font-bold">
-        As a restaurateur, you can participate by{' '}
-        <a
-          href="https://admintools.nyctourism.com/world-cup-cuisine"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-pink-500"
-          style={{ textDecoration: "none" }}
-        >
-          registering
-        </a>{' '}
-        by July 1.
-      </p>
-
-      <p className="-mt-4 py-3 text-lg leading-snug font-bold">
-        Mamdani's also got {' '}
-        <a
-          href="https://www.nyctourism.com/worldcup26/world-cup-offers-and-events/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-pink-500"
-          style={{ textDecoration: "none" }}
-        >
-         World Cup events
-        </a>{' '}
-        or {' '}
-        <a
-          href="https://www.nyctourism.com/worldcup26/the-nyc-neighborhood-passport-world-cup-program/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-pink-500"
-          style={{ textDecoration: "none" }}
-        >
-        Neighborhood Passport program
-        </a>
-        .
-      </p>
     </div>
   )
 }

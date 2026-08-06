@@ -349,6 +349,14 @@
   line-height: 1;
 }
 
+.filter-pill-icon-img {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
 .filter-pill-label {
   font-weight: 500;
 }

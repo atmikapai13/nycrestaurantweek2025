@@ -88,7 +88,12 @@ class RestaurantCharacteristicsExtractor:
                 if description:
                     characteristics['summary2'] = description
 
-                # 7. Add NYC Tourism Restaurant Week URL
+                # 7. Extract gallery images
+                gallery_images = self.extract_gallery_images(soup)
+                if gallery_images:
+                    characteristics['gallery_images'] = gallery_images
+
+                # 8. Add NYC Tourism Restaurant Week URL
                 characteristics['nytourism_url'] = restaurant_url
 
                 # Update restaurant with new characteristics
@@ -262,6 +267,26 @@ class RestaurantCharacteristicsExtractor:
                 return matches[0]
         
         return None
+
+    def extract_gallery_images(self, soup: BeautifulSoup) -> Optional[List[Dict[str, str]]]:
+        """Extract photo gallery images (src + alt text) from the page"""
+        images = []
+        seen_urls = set()
+
+        for img in soup.find_all('img', class_='image-gallery-image'):
+            src = img.get('src')
+            alt = img.get('alt', '').strip()
+            # Site falls back to a generic NYC skyline stock photo (alt="Default Image")
+            # when a restaurant hasn't uploaded real photos — skip it.
+            if not src or src in seen_urls or alt.lower() == 'default image':
+                continue
+            seen_urls.add(src)
+            images.append({
+                'url': src,
+                'alt': alt
+            })
+
+        return images or None
 
     def extract_description(self, soup: BeautifulSoup) -> Optional[str]:
         """Extract the longer description from the page"""
@@ -528,7 +553,8 @@ def main():
         'facebook_url': 0,
         'instagram_url': 0,
         'menu_url': 0,
-        'summary2': 0
+        'summary2': 0,
+        'gallery_images': 0
     }
     
     for restaurant in processed_restaurants:

@@ -8,6 +8,7 @@ export interface Restaurant {
   summary2?: string;
   website?: string;
   image_url?: string;
+  gallery_images?: { url: string; alt: string }[];
   meal_types?: string[];
   participation_weeks?: string[];
   participation_weeks2?: string;

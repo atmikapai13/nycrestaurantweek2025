@@ -15,23 +15,20 @@ interface Card {
 
 const CARDS: Card[] = [
   {
-    title: 'Welcome to NYC Eats — World Cup Edition!',
+    title: 'Welcome to NYC Eats — Restaurant Week Edition!',
     body: [
-      { text: '800+ restaurants offer ' },
-      { text: 'affordable $26 deals', className: 'mobile-onboarding-highlight' },
-      { text: ' and limited edition collectibles in celebration of the World Cup.' },
-      { break: true },
-      { break: true },
-      { text: ' All thanks to Mamdani!' }
+      { text: '600+ restaurants offer ' },
+      { text: 'affordable $30–$65 prix fixe menus', className: 'mobile-onboarding-highlight' },
+      { text: ' this Summer Restaurant Week.' },
     ],
   },
   {
     body: [
-      { text: 'And I, Remy, help you find the best experiences.' },
+      { text: 'And I, Remy, help you find the best deals.' },
       { break: true },
       { break: true },
       {
-        text: 'From oysters and martini at Francie, a Michelin 1-star, to full meals at Grotta Azzurra, enjoy it all for 26 bucks!',
+        text: 'From Michelin-starred spots to NY Times Top 100 favorites, indulge for a fraction of the price!',
       },
     ],
   },

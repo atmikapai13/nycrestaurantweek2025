@@ -666,18 +666,9 @@ def main():
         else:
             print(f"✅ No corrections needed")
 
-        # Filter to only include Manhattan restaurants
-        print(f"\n🗽 Filtering to Manhattan only...")
-        print(f"   Before filter: {len(final_data)} restaurants")
-        manhattan_only = [r for r in final_data if r.get('borough', '').lower() == 'manhattan']
-        print(f"   After filter: {len(manhattan_only)} restaurants (Manhattan only)")
-
-        # Save to FinalData.json (Manhattan only)
+        # Save to FinalData.json (all boroughs)
         final_data_output = resolve_path("../data/FinalData.json")
-        save_joined_data(manhattan_only, final_data_output)
-
-        # Update final_data to use Manhattan-only for analysis
-        final_data = manhattan_only
+        save_joined_data(final_data, final_data_output)
     else:
         print("❌ Failed to load 2025 data, skipping merge")
         final_data = final_joined_data

@@ -324,7 +324,7 @@ export default function Map({
 
     // Desktop viewport
     const desktopCenter: [number, number] = MIDTOWN;
-    const desktopZoom = 10.50;
+    const desktopZoom = 10.80;
     const desktopPitch = 30;
     const desktopBearing = 0;
 
@@ -364,6 +364,20 @@ export default function Map({
         attributionObserver.observe(attribEl, { attributes: true, attributeFilter: ["class"] });
       }
     }
+
+    // Close the selected restaurant card when clicking empty map background.
+    // Clicks on a marker or on the card/popup itself are excluded — markers
+    // handle their own select/deselect toggle, and clicking the card content
+    // (buttons, scrollable areas) shouldn't dismiss it.
+    map.current.on("click", (e) => {
+      const target = e.originalEvent.target as HTMLElement | null;
+      if (target?.closest(".mapboxgl-marker") || target?.closest(".mapboxgl-popup")) {
+        return;
+      }
+      if (selectedRestaurantRef.current) {
+        setSelectedRestaurant(null);
+      }
+    });
 
     // Add zoom event listener to update marker sizes (throttled with rAF)
     map.current.on("zoom", () => {

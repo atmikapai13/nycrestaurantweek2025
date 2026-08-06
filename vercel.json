@@ -8,7 +8,7 @@
   "outputDirectory": "dist",
   "framework": "vite",
   "rewrites": [
-    { "source": "/worldcup2026/api/:path*", "destination": "/api/:path*" }
+    { "source": "/summer2026/api/:path*", "destination": "/api/:path*" }
   ],
   "headers": [
     {
