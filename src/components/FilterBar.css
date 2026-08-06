@@ -852,6 +852,6 @@
    so trim it back closer to normal-desktop's effective position. */
 @media (min-width: 1536px) {
   .filter-bar-container {
-    top: 2%;
+    top: 1%;
   }
 }
