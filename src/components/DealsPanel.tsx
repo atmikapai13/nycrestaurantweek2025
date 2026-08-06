@@ -16,17 +16,13 @@ function distanceMi(aLat: number, aLng: number, bLat: number, bLng: number): num
   return 2 * R * Math.asin(Math.sqrt(h))
 }
 
-// Short label for the $26 deal a restaurant offers (or collectible-only).
+// Price-only label for the prix fixe deal a restaurant offers, e.g. "$30" or "$30-$60".
 function dealLabel(r: Restaurant): string {
-  const tags = r.deal_tags ?? []
-  if (r.has_26_offer) {
-    if (tags.includes('desserts')) return '$26 Dessert'
-    if (tags.includes('meal_drink_combo')) return '$26 Meal + Drink'
-    if (tags.includes('food_only')) return '$26 Meal'
-    if (tags.includes('drink_only')) return '$26 Drink'
-    return '$26 Deal'
-  }
-  return 'World "Cup" Collectible'
+  const prices = Array.from(
+    new Set((r.meal_types ?? []).map((m) => m.match(/^\$\d+/)?.[0]).filter((p): p is string => !!p))
+  ).sort((a, b) => Number(a.slice(1)) - Number(b.slice(1)))
+  if (prices.length === 0) return 'Prix Fixe'
+  return prices.length === 1 ? prices[0] : `${prices[0]}-${prices[prices.length - 1]}`
 }
 
 export default function DealsPanel({

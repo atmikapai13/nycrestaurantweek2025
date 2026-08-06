@@ -412,7 +412,7 @@ export default function FilterBar() {
             className={`filter-pill-base ${hasMenuActive ? "active" : ""}`}
             onClick={() => setHasMenuActive((v) => !v)}
           >
-            Menu
+            Has Menu
           </button>
 
           <button

@@ -21,6 +21,44 @@ function optimizedImageUrl(url: string, width = 640): string {
   return `${url}${url.includes('?') ? '&' : '?'}width=${width}&format=webp`
 }
 
+// Sunday-specific labels fold into their weekday counterpart, except brunch
+// (which has no weekday equivalent) — so "Sunday Dinner" reads as "Dinner"
+// but "Sunday Lunch/Brunch" becomes "Sunday Brunch".
+const MEAL_NAME_ALIASES: Record<string, string> = {
+  'Sunday Lunch/Brunch': 'Sunday Brunch',
+  'Sunday Dinner': 'Dinner',
+}
+
+// Display order for meal names; anything not listed here falls to the end,
+// in the order it was first encountered.
+const MEAL_NAME_ORDER = ['Sunday Brunch', 'Lunch', 'Dinner']
+
+// Split meal_types (e.g. "$30 Lunch", "$45 Sunday Dinner") into distinct
+// prices ("$30", "$45") and meal names ("Lunch", "Dinner"), the latter
+// sorted per MEAL_NAME_ORDER.
+function splitMealTypes(mealTypes: string[]): { prices: string[]; meals: string[] } {
+  const prices: string[] = []
+  const meals: string[] = []
+  mealTypes.forEach((m) => {
+    const match = m.match(/^(\$\d+)\s+(.+)$/)
+    if (!match) return
+    const [, price, rawMeal] = match
+    const meal = MEAL_NAME_ALIASES[rawMeal] ?? rawMeal
+    if (!prices.includes(price)) prices.push(price)
+    if (!meals.includes(meal)) meals.push(meal)
+  })
+  prices.sort((a, b) => Number(a.slice(1)) - Number(b.slice(1)))
+  meals.sort((a, b) => {
+    const ai = MEAL_NAME_ORDER.indexOf(a)
+    const bi = MEAL_NAME_ORDER.indexOf(b)
+    if (ai === -1 && bi === -1) return 0
+    if (ai === -1) return 1
+    if (bi === -1) return -1
+    return ai - bi
+  })
+  return { prices, meals }
+}
+
 // Format a blob of text into paragraph breaks every couple of sentences.
 function formatBody(text: string): string {
   return text.split('. ').reduce((acc: string, sentence: string, index: number, array: string[]) => {
@@ -160,7 +198,15 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
           {displayRestaurant.participation_weeks2 && (
             <p><b>Dates:</b> {displayRestaurant.participation_weeks2}</p>
           )}
-          {/* <p><b>Offering:</b> {displayRestaurant.meal_types.join(', ')}</p> */}
+          {(() => {
+            const { prices, meals } = splitMealTypes(displayRestaurant.meal_types)
+            return (
+              <>
+                <p><b>Price:</b> {prices.length > 1 ? `${prices[0]}—${prices[prices.length - 1]}` : prices[0]}</p>
+                <p><b>Meal:</b> {meals.join(', ')}</p>
+              </>
+            )
+          })()}
           <div className="restaurant-week-buttons">
             {displayRestaurant.menu_url && displayRestaurant.menu_url.trim() !== '' && (
               <a
