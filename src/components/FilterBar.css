@@ -1,7 +1,7 @@
 /* FilterBar Container Wrapper */
 .filter-bar-container {
   position: absolute;
-  top: 24px; /* fixed, not viewport-height-relative — keeps position consistent across screen sizes */
+  top: 3%;
   /* Position relative to chat panel: 20px (chat left) + min(35vw, 500px) (chat width) + 10px (gap) */
   left: calc(20px + min(35vw, 500px) + 10px);
   right: 50px; /* Add right constraint with extra space for scroll arrow */
@@ -844,5 +844,14 @@
     /* Chat panel is 45%/600px max on tablets, so adjust left position */
     left: calc(20px + min(45vw, 600px) + 10px);
     right: 10px;
+  }
+}
+
+/* Large/ultra-wide screens (matches useIsLargeScreen's 1536px breakpoint) —
+   3% of a much taller viewport pushes the Refine button noticeably lower,
+   so trim it back closer to normal-desktop's effective position. */
+@media (min-width: 1536px) {
+  .filter-bar-container {
+    top: 2%;
   }
 }
