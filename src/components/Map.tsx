@@ -311,6 +311,9 @@ export default function Map({
 
     // Detect mobile viewport
     const isMobile = window.innerWidth <= 768;
+    // Above a normal desktop viewport (large/ultra-wide monitors) — matches
+    // Tailwind's `2xl` breakpoint, same as useIsLargeScreen.
+    const isLargeScreen = window.innerWidth >= 1536;
 
     // Fallback center when geolocation is unavailable/denied or the user is
     // outside NYC: Manhattan Midtown (~Bryant Park).
@@ -322,9 +325,10 @@ export default function Map({
     const mobilePitch = 45;
     const mobileBearing = 0;
 
-    // Desktop viewport
+    // Desktop viewport — zoomed in a bit more on large screens so the map
+    // doesn't look zoomed-out relative to the extra sidebar/screen space.
     const desktopCenter: [number, number] = MIDTOWN;
-    const desktopZoom = 10.80;
+    const desktopZoom = isLargeScreen ? 12.0 : 10.80;
     const desktopPitch = 30;
     const desktopBearing = 0;
 

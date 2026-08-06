@@ -3,6 +3,7 @@ import { Search } from 'lucide-react'
 import { useMap, hasAnyAward } from '../contexts/MapContext'
 import type { Restaurant } from '../types/restaurant'
 import { Input } from '@/components/ui/input'
+import { useIsLargeScreen } from '@/hooks/use-large-screen'
 
 // Great-circle distance in miles
 function distanceMi(aLat: number, aLng: number, bLat: number, bLng: number): number {
@@ -31,6 +32,8 @@ export default function DealsPanel({
   onSelect: (r: Restaurant) => void
 }) {
   const { filteredRestaurants, userLocation, setUserLocation, searchTerm, setSearchTerm } = useMap()
+  const isLargeScreen = useIsLargeScreen()
+  const listSize = isLargeScreen ? 10 : 5
 
   // Ask for the visitor's location once (non-blocking) so we can rank by distance.
   useEffect(() => {
@@ -43,7 +46,7 @@ export default function DealsPanel({
     }
   }, [userLocation, setUserLocation])
 
-  // Top 5: purely by distance when geolocated, otherwise award-winners first.
+  // Top 5 (10 on large screens): purely by distance when geolocated, otherwise award-winners first.
   const { top5, byDistance } = useMemo(() => {
     const pool = filteredRestaurants.filter((r) => r.latitude && r.longitude)
     if (userLocation) {
@@ -52,11 +55,11 @@ export default function DealsPanel({
           distanceMi(userLocation.latitude, userLocation.longitude, a.latitude!, a.longitude!) -
           distanceMi(userLocation.latitude, userLocation.longitude, b.latitude!, b.longitude!)
       )
-      return { top5: sorted.slice(0, 5), byDistance: true }
+      return { top5: sorted.slice(0, listSize), byDistance: true }
     }
     const sorted = [...pool].sort((a, b) => Number(hasAnyAward(b)) - Number(hasAnyAward(a)))
-    return { top5: sorted.slice(0, 5), byDistance: false }
-  }, [filteredRestaurants, userLocation])
+    return { top5: sorted.slice(0, listSize), byDistance: false }
+  }, [filteredRestaurants, userLocation, listSize])
 
   return (
     <div className="flex flex-col gap-7">
@@ -84,7 +87,7 @@ export default function DealsPanel({
 
       <div>
         <div className="px-0 text-xl font-semibold uppercase tracking-widest text-pink-500">
-          {byDistance ? "NEAR YOU" : 'Top 5 picks'}
+          {byDistance ? "NEAR YOU" : `Top ${listSize} picks`}
         </div>
         <ul className="mt-1 flex list-none flex-col gap-0.5 p-0">
           {top5.map((r, i) => (
