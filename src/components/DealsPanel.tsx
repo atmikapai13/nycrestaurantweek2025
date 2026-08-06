@@ -63,10 +63,10 @@ export default function DealsPanel({
       <div className="flex flex-col gap-3 sm:mt-4 sm:py-3 text-base sm:text-lg leading-snug font-normal sm:font-semibold">
         <p className="font-semibold sm:hidden">Welcome to NYC Eats — World Cup Edition!</p>
         <p>
-          In this sweltering and calamitious summer, 600+ restaurants offer <em className="italic text-pink-500">$30-$65 prix fixe</em> experiences.{' '}<br></br><br></br>
+          In this sweltering and calamitious summer, 600+ restaurants offer <span className="text-pink-500">$30 to $60 </span> prix fixe experiences in NYC as part of Summer Restaurant Week.{' '}<br></br><br></br>
           <span className="sm:hidden">And I, Remy, help</span>
           <span className="hidden sm:inline">And Remy helps</span>
-          {' '}you find the best deals — from <em className="italic text-pink-500">Michelin-starred</em> restaurants to <em className="italic text-pink-500">NY Times Top 100</em> picks. Toggle the filters on the map to find your dream spot.
+          {' '}you find the best deals — from <span className="text-pink-500">Michelin-starred</span> restaurants to <span className="text-pink-500">NY Times Top 100</span> picks. Toggle the filters on the map to find your dream spot.
         </p>
       </div>
 

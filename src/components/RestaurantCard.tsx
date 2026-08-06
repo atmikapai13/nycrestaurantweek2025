@@ -202,7 +202,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
             const { prices, meals } = splitMealTypes(displayRestaurant.meal_types)
             return (
               <>
-                <p><b>Price:</b> {prices.length > 1 ? `${prices[0]}—${prices[prices.length - 1]}` : prices[0]}</p>
+                <p><b>Price:</b> {prices.length > 1 ? `${prices[0]} - ${prices[prices.length - 1]}` : prices[0]}</p>
                 <p><b>Meal:</b> {meals.join(', ')}</p>
               </>
             )

@@ -18,7 +18,7 @@ const CARDS: Card[] = [
     title: 'Welcome to NYC Eats — Restaurant Week Edition!',
     body: [
       { text: '600+ restaurants offer ' },
-      { text: 'affordable $30–$65 prix fixe menus', className: 'mobile-onboarding-highlight' },
+      { text: 'affordable $30 to $60 prix fixe menus', className: 'mobile-onboarding-highlight' },
       { text: ' this Summer Restaurant Week.' },
     ],
   },

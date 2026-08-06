@@ -20,6 +20,7 @@ export type GeoJSONGeometry =
 export const AWARDS_OPTIONS: { value: string; label: string }[] = [
   { value: "michelin", label: "Michelin-starred" },
   { value: "bib", label: "Bib Gourmand" },
+  { value: "michelin_recommended", label: "Michelin Plate" },
   { value: "nyt", label: "NYT Top 100" },
   { value: "james_beard", label: "James Beard Awardee" },
 ];
@@ -29,6 +30,50 @@ export const AWARDS_OPTIONS: { value: string; label: string }[] = [
 export function hasJamesBeardMention(restaurant: Restaurant): boolean {
   const text = `${restaurant.summary || ""} ${restaurant.summary2 || ""}`;
   return /\bjames beard\b/i.test(text);
+}
+
+// Shared by the Awards filter's OR-together matching and by FilterBar's
+// live per-option restaurant counts, so the two can't drift apart.
+export function matchesAwardValue(restaurant: Restaurant, value: string): boolean {
+  if (value === "michelin")
+    return Boolean(
+      restaurant.michelin_award &&
+        ["ONE_STAR", "TWO_STARS", "THREE_STARS"].includes(restaurant.michelin_award)
+    );
+  if (value === "bib") return restaurant.michelin_award === "BIB_GOURMAND";
+  if (value === "michelin_recommended") return restaurant.michelin_award === "selected";
+  if (value === "nyt")
+    return Boolean(restaurant.nyttop100_rank && restaurant.nyttop100_rank !== "");
+  if (value === "james_beard") return hasJamesBeardMention(restaurant);
+  return false;
+}
+
+// "Drinks" filter dropdown — from drinks_tag (7_join_menu_tags.py). OR together.
+export const DRINKS_OPTIONS: { value: string; label: string }[] = [
+  { value: "included", label: "Included in Meal" },
+  { value: "discount", label: "Discounted" },
+  { value: "wine_pairing", label: "Wine Pairings (+$$)" },
+];
+
+export function matchesDrinkValue(restaurant: Restaurant, value: string): boolean {
+  return restaurant.drinks_tag === value;
+}
+
+// "Prix Fixe Course" filter dropdown — from course_counts/bonus_course
+// (7_join_menu_tags.py). OR together.
+export const COURSE_OPTIONS: { value: string; label: string }[] = [
+  { value: "2", label: "2-Course" },
+  { value: "3", label: "3-Course" },
+  { value: "bonus", label: "Bonus Courses" },
+];
+
+export function matchesCourseValue(restaurant: Restaurant, value: string): boolean {
+  // "Bonus Courses" covers both a free/optional extra tacked onto a 2- or
+  // 3-course base (bonus_course=true) AND a menu that's inherently 4+
+  // courses (there's no separate "4+" option in the dropdown — see COURSE_OPTIONS).
+  if (value === "bonus")
+    return restaurant.bonus_course === true || (restaurant.course_counts ?? []).includes("4+");
+  return (restaurant.course_counts ?? []).includes(value as "2" | "3" | "4+");
 }
 
 // "Date Night" vibe filter: catches restaurants described as warm, intimate,
@@ -86,6 +131,7 @@ export interface ToggleFilterState {
   awardsActive: boolean;
   highReviewCountActive: boolean;
   dateNightActive: boolean;
+  rawBarActive: boolean;
   legendFilters: string[];
 }
 
@@ -133,24 +179,13 @@ export function applyRestaurantFilters(
         switch (filterType) {
           // Awards dropdown: selected badges OR together
           case "Awards":
-            return values.some((a) => {
-              if (a === "michelin")
-                return Boolean(
-                  restaurant.michelin_award &&
-                    ["ONE_STAR", "TWO_STARS", "THREE_STARS"].includes(
-                      restaurant.michelin_award
-                    )
-                );
-              if (a === "bib")
-                return restaurant.michelin_award === "BIB_GOURMAND";
-              if (a === "nyt")
-                return Boolean(
-                  restaurant.nyttop100_rank && restaurant.nyttop100_rank !== ""
-                );
-              if (a === "james_beard")
-                return hasJamesBeardMention(restaurant);
-              return false;
-            });
+            return values.some((a) => matchesAwardValue(restaurant, a));
+          // Drinks dropdown: selected tags OR together
+          case "Drinks":
+            return values.some((d) => matchesDrinkValue(restaurant, d));
+          // Prix Fixe Course dropdown: selected tags OR together
+          case "Course":
+            return values.some((c) => matchesCourseValue(restaurant, c));
           case "Cuisine":
             if (!restaurant.cuisine) return false;
             return values.some(
@@ -257,6 +292,9 @@ export function applyRestaurantFilters(
   if (toggles.dateNightActive) {
     filtered = filtered.filter(matchesDateNightVibe);
   }
+  if (toggles.rawBarActive) {
+    filtered = filtered.filter((r) => r.raw_bar === true);
+  }
 
   // Apply legend filters
   if (toggles.legendFilters.length > 0) {
@@ -331,6 +369,7 @@ interface MapContextType {
   awardsActive: boolean;
   highReviewCountActive: boolean;
   dateNightActive: boolean;
+  rawBarActive: boolean;
 
   // Filter actions
   setActiveFilters: React.Dispatch<
@@ -345,6 +384,7 @@ interface MapContextType {
   setAwardsActive: React.Dispatch<React.SetStateAction<boolean>>;
   setHighReviewCountActive: React.Dispatch<React.SetStateAction<boolean>>;
   setDateNightActive: React.Dispatch<React.SetStateAction<boolean>>;
+  setRawBarActive: React.Dispatch<React.SetStateAction<boolean>>;
 
   // Layer state
   isochroneLayers: IsochroneLayer[];
@@ -420,6 +460,7 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
   const [awardsActive, setAwardsActive] = useState(false);
   const [highReviewCountActive, setHighReviewCountActive] = useState(false);
   const [dateNightActive, setDateNightActive] = useState(false);
+  const [rawBarActive, setRawBarActive] = useState(false);
 
   // Layer state
   const [isochroneLayers, setIsochroneLayers] = useState<IsochroneLayer[]>([]);
@@ -512,6 +553,7 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
       awardsActive,
       highReviewCountActive,
       dateNightActive,
+      rawBarActive,
       legendFilters,
     });
   }, [
@@ -525,6 +567,7 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
     awardsActive,
     highReviewCountActive,
     dateNightActive,
+    rawBarActive,
     legendFilters,
     favorites,
   ]);
@@ -685,6 +728,8 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
         setHighReviewCountActive,
         dateNightActive,
         setDateNightActive,
+        rawBarActive,
+        setRawBarActive,
         isochroneLayers,
         layerVisibilityMap,
         addLayers,

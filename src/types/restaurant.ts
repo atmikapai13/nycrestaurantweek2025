@@ -10,6 +10,11 @@ export interface Restaurant {
   image_url?: string;
   gallery_images?: { url: string; alt: string }[];
   meal_types?: string[];
+  // From 7_join_menu_tags.py — derived from extracted Restaurant Week menu PDFs
+  raw_bar?: boolean;
+  drinks_tag?: "wine_pairing" | "included" | "discount";
+  course_counts?: ("2" | "3" | "4+")[];
+  bonus_course?: boolean;
   participation_weeks?: string[];
   participation_weeks2?: string;
   collections?: string[];

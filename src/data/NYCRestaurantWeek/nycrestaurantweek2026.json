@@ -229,7 +229,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "El Coco - Hell's Kitchen",
@@ -278,7 +283,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Danji",
@@ -339,7 +349,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Sabai Thai",
@@ -476,7 +491,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Oceana",
@@ -535,7 +555,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "drinks_tag": "wine_pairing",
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Nar Restaurant",
@@ -610,7 +636,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Langan's",
@@ -679,7 +710,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": true
   },
   {
     "name": "French Louie",
@@ -766,7 +802,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "La Pecora Bianca Bryant Park",
@@ -870,7 +912,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Tara Kitchen TriBeCa",
@@ -921,7 +968,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Ben & Jack's 44th Street",
@@ -984,7 +1036,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Delmonico's",
@@ -1059,7 +1116,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Fish Cheeks",
@@ -1190,7 +1252,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Noreetuh",
@@ -1326,7 +1393,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": true
   },
   {
     "name": "Frankie & Johnnie’s Steakhouse",
@@ -1387,7 +1459,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Il Mulino New York | Madison",
@@ -1442,7 +1520,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Socarrat Paella Bar - Chelsea",
@@ -1523,7 +1606,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Blue Fin",
@@ -1586,7 +1674,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Stout NYC Financial District",
@@ -1989,7 +2082,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": true
   },
   {
     "name": "Indian Table",
@@ -2075,7 +2174,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "A La Turka",
@@ -2148,7 +2252,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": true
   },
   {
     "name": "Felice on Hudson",
@@ -2310,7 +2420,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Greywind",
@@ -2474,7 +2589,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Cuna NYC",
@@ -2566,7 +2686,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Nick + Stef's Steakhouse",
@@ -2611,7 +2736,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Barbalu Bklyn",
@@ -2660,7 +2790,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Warren Street Bar & Restaurant",
@@ -2810,7 +2946,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": true
   },
   {
     "name": "Maya",
@@ -2863,7 +3004,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Club A Steakhouse",
@@ -2919,7 +3065,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "The Dutch",
@@ -2981,7 +3132,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Talavera",
@@ -3091,7 +3248,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Tuome",
@@ -3159,7 +3321,12 @@
     "michelin_slug": "tuome",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/tuome",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Socarrat Paella Bar - Nolita",
@@ -3296,7 +3463,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Felice 83",
@@ -3429,7 +3601,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Aqua Boil",
@@ -3570,7 +3748,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Bar Bianchi",
@@ -3627,7 +3811,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Calle Dão - Bryant Park",
@@ -3677,7 +3867,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Gyu-Kaku Japanese BBQ – Flushing",
@@ -3735,7 +3930,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Churrascaria Plataforma Brazilian Steakhouse",
@@ -3792,7 +3992,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Kashkaval Garden",
@@ -3853,7 +4058,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3",
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Wayward Fare",
@@ -3916,7 +4127,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Yingtao",
@@ -4023,7 +4239,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Casa Lever",
@@ -4094,7 +4315,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Nudibranch",
@@ -4159,7 +4385,12 @@
     "michelin_slug": "nudibranch",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/nudibranch",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Sushi of Gari 46",
@@ -4222,7 +4453,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Burger & Lobster Bryant Park",
@@ -4290,7 +4526,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Nusr-Et - Midtown",
@@ -4347,7 +4588,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Tavern on the Green",
@@ -4413,7 +4659,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Anassa Taverna - Manhattan",
@@ -4458,7 +4710,12 @@
     "michelin_slug": "manhatta",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/manhatta",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Brass & the Tusk Bar",
@@ -4567,7 +4824,12 @@
     "michelin_slug": "gramercy-tavern",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/gramercy-tavern",
     "nyttop100_rank": 47,
-    "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#gramercy-tavern"
+    "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#gramercy-tavern",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Tha Phraya",
@@ -4630,7 +4892,8 @@
     "michelin_slug": "tha-phraya",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/tha-phraya",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "drinks_tag": "wine_pairing"
   },
   {
     "name": "Gallaghers Steakhouse",
@@ -4746,7 +5009,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Bixi",
@@ -4796,7 +5065,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Riverpark",
@@ -4856,7 +5130,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Altesi Ristorante",
@@ -4905,7 +5184,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Plado Tasting Bar",
@@ -5025,7 +5310,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Miriam Upper East Side",
@@ -5186,7 +5477,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "drinks_tag": "wine_pairing",
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Limani",
@@ -5248,7 +5545,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Stout NYC Bryant Park",
@@ -5421,7 +5723,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "One Dine",
@@ -5535,7 +5843,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "BOTA Supper Club",
@@ -5809,7 +6122,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Mito - Bayside",
@@ -5866,7 +6184,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Golden Unicorn",
@@ -5927,7 +6250,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Soogil",
@@ -6120,7 +6448,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Del Frisco's Grille",
@@ -6267,7 +6600,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Estiatorio Milos",
@@ -6426,7 +6765,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Hudson VU",
@@ -6546,7 +6890,12 @@
     "michelin_slug": "kru",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/kru",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Il Fiorista",
@@ -6660,7 +7009,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Wagamama - Nomad/Flatiron",
@@ -6707,7 +7062,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "drinks_tag": "wine_pairing",
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Marseille",
@@ -6773,7 +7134,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Leonetta",
@@ -6834,7 +7201,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "La Sirene",
@@ -6887,7 +7259,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Café Boulud",
@@ -6963,7 +7340,12 @@
     "michelin_slug": "cafe-boulud",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/cafe-boulud",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "The Parliament",
@@ -7026,7 +7408,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": true
   },
   {
     "name": "Fandi Mata",
@@ -7077,7 +7464,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Rosevale Cocktail Room",
@@ -7253,7 +7646,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "'ino",
@@ -7376,7 +7774,13 @@
     "michelin_slug": "hangawi",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/hangawi",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "drinks_tag": "wine_pairing",
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Il Falco",
@@ -7426,7 +7830,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Morandi",
@@ -7529,7 +7939,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Del Frisco's Grille - Brookfield Place",
@@ -7658,7 +8073,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "drinks_tag": "wine_pairing",
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Socarrat Paella Bar - Midtown East",
@@ -7736,7 +8157,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": true
   },
   {
     "name": "Tarallucci e Vino - Upper West Side",
@@ -7801,7 +8228,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Momofuku Noodle Bar",
@@ -7861,7 +8294,14 @@
     "michelin_slug": "momofuku-noodle-bar",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/momofuku-noodle-bar",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "drinks_tag": "discount",
+    "course_counts": [
+      "3",
+      "4+"
+    ],
+    "bonus_course": true
   },
   {
     "name": "Philippe Chow Fifth Avenue",
@@ -7925,7 +8365,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "The Chemistry Room",
@@ -8050,7 +8496,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Coqodaq",
@@ -8104,7 +8555,12 @@
     "michelin_slug": "coqodaq",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/coqodaq",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "abcV",
@@ -8217,7 +8673,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Little Alley",
@@ -8272,7 +8733,13 @@
     "michelin_slug": "little-alley",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/little-alley",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "drinks_tag": "wine_pairing",
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Wayan",
@@ -8349,7 +8816,12 @@
     "michelin_slug": "wayan",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/wayan",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Aqua Roma",
@@ -8404,7 +8876,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Francie",
@@ -8462,7 +8939,12 @@
     "michelin_slug": "francie",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/francie",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Bar Primi - Penn District",
@@ -8505,7 +8987,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2"
+    ],
+    "bonus_course": true
   },
   {
     "name": "Animo!",
@@ -8577,7 +9064,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": true
   },
   {
     "name": "Legasea",
@@ -8625,7 +9118,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Romeo's Italian Restaurant",
@@ -8728,7 +9226,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Veselka",
@@ -8860,7 +9363,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Ilili Restaurant",
@@ -8978,7 +9486,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": true
   },
   {
     "name": "The Dram Shop Bar",
@@ -9035,7 +9548,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Nizza",
@@ -9083,7 +9601,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "DubuHaus",
@@ -9142,7 +9665,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "GupShup",
@@ -9187,7 +9715,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Rosemary's East",
@@ -9252,7 +9785,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Harta",
@@ -9313,7 +9851,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": true,
+    "drinks_tag": "wine_pairing"
   },
   {
     "name": "Beauty & Essex",
@@ -9459,7 +10003,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Royal 35 Steakhouse",
@@ -9579,7 +10128,14 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": true,
+    "drinks_tag": "wine_pairing"
   },
   {
     "name": "Luigi's",
@@ -9687,7 +10243,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Folk",
@@ -9746,7 +10307,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Isabelle's Osteria",
@@ -9792,7 +10358,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": true
   },
   {
     "name": "American Cut Tribeca",
@@ -9902,7 +10474,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Bar Sprezzatura",
@@ -9966,7 +10543,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Bananas",
@@ -10025,7 +10608,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Mark's Off Madison",
@@ -10157,7 +10745,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Maizal",
@@ -10389,7 +10982,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Marsanne",
@@ -10683,7 +11281,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Maison Madison",
@@ -10923,7 +11526,12 @@
     "michelin_slug": "manhatta",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/manhatta",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "La Pecora Bianca Upper East Side",
@@ -11029,7 +11637,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Cha Cha Tang",
@@ -11313,7 +11926,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "The Russian Tea Room",
@@ -11396,7 +12014,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Pera SoHo",
@@ -11461,7 +12085,8 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "drinks_tag": "wine_pairing"
   },
   {
     "name": "DiWine",
@@ -11790,7 +12415,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Palermo Argentinian Bistro - NYC",
@@ -11905,7 +12535,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "drinks_tag": "wine_pairing",
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Morton's The Steakhouse—Manhattan",
@@ -12016,7 +12652,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": false,
+    "drinks_tag": "wine_pairing"
   },
   {
     "name": "Dinosaur Bar-B-Que - Harlem",
@@ -12088,7 +12730,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3",
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Sicily Osteria",
@@ -12148,7 +12796,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Flava of the Bronx",
@@ -12256,7 +12909,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Shan",
@@ -12307,7 +12966,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Maison Passerelle",
@@ -12361,7 +13025,13 @@
     "michelin_slug": "maison-passerelle",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/maison-passerelle",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": true
   },
   {
     "name": "Ayza",
@@ -12433,7 +13103,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Giorgio's of Gramercy",
@@ -12493,7 +13168,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Monterey",
@@ -12540,7 +13221,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Zero Otto Nove - Flatiron",
@@ -12589,7 +13276,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Alta Calidad",
@@ -12625,7 +13317,13 @@
     "michelin_slug": "alta-calidad",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/alta-calidad",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Crave Fishbar - Midtown",
@@ -12735,7 +13433,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Steak Frites Bistro",
@@ -12795,7 +13498,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Red Rooster Harlem",
@@ -12861,7 +13569,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Del Friscos Double Eagle Steakhouse New York",
@@ -13127,7 +13840,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Da Andrea - Greenwich Village",
@@ -13470,7 +14188,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Rosemary's Midtown",
@@ -13514,7 +14237,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Arte Cafe",
@@ -13579,7 +14307,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Playa Betty's",
@@ -13628,7 +14361,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Central Park Boathouse",
@@ -13751,7 +14489,13 @@
     "michelin_slug": "manhatta",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/manhatta",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Mission Ceviche - Union Square",
@@ -13798,7 +14542,13 @@
     "michelin_slug": "mission-ceviche",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/mission-ceviche",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Hunt & Fish Club NYC",
@@ -13884,7 +14634,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Patsy's Italian Restaurant",
@@ -13988,7 +14743,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Pasta Lovers",
@@ -14189,7 +14950,12 @@
     "michelin_slug": "le-jardinier",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/le-jardinier",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Da Andrea - Chelsea",
@@ -14470,7 +15236,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Kyma",
@@ -14517,7 +15288,13 @@
     "michelin_slug": "kyma",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/kyma",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "City Winery",
@@ -14648,7 +15425,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Bocca Di Bacco—Chelsea",
@@ -14709,7 +15491,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Bryant Park Grill",
@@ -14815,7 +15602,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Tudor City Steakhouse",
@@ -14871,7 +15663,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Trattoria Dell'Arte",
@@ -14918,7 +15716,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": true
   },
   {
     "name": "Felice Columbus",
@@ -14971,7 +15775,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Nice Matin",
@@ -15040,7 +15849,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Sereneco",
@@ -15096,7 +15910,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Little Maven",
@@ -15146,7 +15965,14 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "drinks_tag": "wine_pairing",
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Alice",
@@ -15234,7 +16060,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Vin Sur Vingt - E. 51st St.",
@@ -15289,7 +16120,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "drinks_tag": "wine_pairing",
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "A Pasta Bar",
@@ -15401,7 +16238,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Bad Roman",
@@ -15465,7 +16307,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Carne Mare",
@@ -15578,7 +16425,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Askili Orchard",
@@ -15644,7 +16497,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Uva Next Door",
@@ -15707,7 +16566,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Rynn Thai Restaurant & Bar",
@@ -15771,7 +16635,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Sushi Sen-Nin",
@@ -15833,7 +16703,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Catch n' Chop",
@@ -15937,7 +16812,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Ma•dé",
@@ -16004,7 +16884,12 @@
     "michelin_slug": "ma•de",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/ma•de",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "DomoDomo NYC",
@@ -16145,7 +17030,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": true
   },
   {
     "name": "Hutong",
@@ -16200,7 +17091,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "drinks_tag": "wine_pairing",
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "David Burke Tavern",
@@ -16263,7 +17160,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Jacques Brasserie",
@@ -16327,7 +17230,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Olio e Più Bryant Park",
@@ -16399,7 +17307,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "The Palm - Midtown",
@@ -16468,7 +17382,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Passerine",
@@ -16576,7 +17496,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "ilili - Midtown",
@@ -16684,7 +17610,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Momofuku Noodle Bar - Uptown",
@@ -16744,7 +17675,14 @@
     "michelin_slug": "momofuku-noodle-bar",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/momofuku-noodle-bar",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "drinks_tag": "discount",
+    "course_counts": [
+      "3",
+      "4+"
+    ],
+    "bonus_course": true
   },
   {
     "name": "Manuela",
@@ -16810,7 +17748,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Sweet Catch",
@@ -16887,7 +17830,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Fushimi - Williamsburg",
@@ -17073,7 +18021,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Markette",
@@ -17133,7 +18087,12 @@
     "michelin_slug": "markette",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/markette",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Sempre Oggi",
@@ -17178,7 +18137,12 @@
     "michelin_slug": "sempre-oggi",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/sempre-oggi",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "La Pecora Bianca Upper West Side",
@@ -17285,7 +18249,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Pera Mediterranean Brasserie",
@@ -17346,7 +18315,14 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "drinks_tag": "included",
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": true
   },
   {
     "name": "Masseria East",
@@ -17411,7 +18387,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "La Marchande",
@@ -17475,7 +18456,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Catch NYC",
@@ -17544,7 +18530,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Momoya - Upper West Side",
@@ -17655,7 +18646,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "drinks_tag": "wine_pairing",
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": true
   },
   {
     "name": "tán By Chef Richard Sandoval",
@@ -17709,7 +18706,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Dagon",
@@ -17762,7 +18764,13 @@
     "michelin_slug": "dagon",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/dagon",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Zou Zou's",
@@ -17818,7 +18826,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Verde on Smith",
@@ -17881,7 +18894,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Taste of India II",
@@ -17936,7 +18954,14 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "drinks_tag": "wine_pairing",
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": true
   },
   {
     "name": "Pylos",
@@ -18001,7 +19026,13 @@
     "michelin_slug": "pylos",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/pylos",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": true
   },
   {
     "name": "Little Chef Little Cafe",
@@ -18055,7 +19086,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Tinto Tapas Restaurant & Wine Bar",
@@ -18167,7 +19203,12 @@
     "michelin_slug": "ci-siamo",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/ci-siamo",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Brooklyn Chop House - Downtown",
@@ -18214,7 +19255,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Charlie Palmer Steak IV",
@@ -18474,7 +19520,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Mastro's Steakhouse NYC",
@@ -18580,7 +19631,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Empire Steak House - Midtown West",
@@ -18642,7 +19698,14 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3",
+      "4+"
+    ],
+    "bonus_course": false,
+    "drinks_tag": "wine_pairing"
   },
   {
     "name": "La Pecora Bianca NoMad",
@@ -18793,7 +19856,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Jacob's Pickles",
@@ -18839,7 +19907,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Kellari Taverna",
@@ -18965,7 +20038,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "drinks_tag": "wine_pairing",
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Blackbarn",
@@ -19027,7 +20106,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Crave Fishbar - Upper West Side",
@@ -19137,7 +20221,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Morton's The Steakhouse—World Trade Center",
@@ -19254,7 +20343,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Archer & Goat",
@@ -19366,7 +20460,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Mezze on the River",
@@ -19432,7 +20531,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": true
   },
   {
     "name": "Brooklyn Chop House - Times Square",
@@ -19686,7 +20791,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false,
+    "drinks_tag": "wine_pairing"
   },
   {
     "name": "La Contenta Oeste",
@@ -19746,7 +20857,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Chela",
@@ -19855,7 +20971,14 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "drinks_tag": "wine_pairing",
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": true
   },
   {
     "name": "Tarallucci e Vino - Union Square",
@@ -19983,7 +21106,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Gage & Tollner",
@@ -20045,7 +21173,12 @@
     "michelin_slug": "gage-tollner",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/gage-tollner",
     "nyttop100_rank": 45,
-    "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#gage-tollner"
+    "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#gage-tollner",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Perry Street",
@@ -20171,7 +21304,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "drinks_tag": "wine_pairing",
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "The Parlour Room",
@@ -20582,7 +21721,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Tasca NYC",
@@ -20630,7 +21774,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Narkara",
@@ -20735,7 +21884,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Baires Grill New York",
@@ -20799,7 +21953,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "La Fleur Rouge",
@@ -20863,7 +22023,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Atrio Wine Bar & Restaurant",
@@ -20928,7 +22093,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "The Flatiron Room - Murray Hill",
@@ -20985,7 +22155,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "drinks_tag": "wine_pairing",
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "The Greenhouse Cafe",
@@ -21083,7 +22259,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false,
+    "drinks_tag": "wine_pairing"
   },
   {
     "name": "Gaonnuri",
@@ -21130,7 +22312,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Musaek",
@@ -21193,7 +22380,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2"
+    ],
+    "bonus_course": true
   },
   {
     "name": "Lele's Roman",
@@ -21316,7 +22508,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "The Gallery",
@@ -21372,7 +22569,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Four Twenty Five",
@@ -21485,7 +22687,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Cebu Bar & Bistro",
@@ -21598,7 +22805,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Hav & Mar",
@@ -21643,7 +22855,12 @@
     "michelin_slug": "hav-mar",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/hav-mar",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Maison Pickle",
@@ -21693,7 +22910,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Robert",
@@ -21834,7 +23056,13 @@
     "michelin_slug": "the-modern",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/the-modern",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Jack & Charlie’s No. 118",
@@ -21903,7 +23131,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Mamo",
@@ -21968,7 +23201,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Eléa",
@@ -22032,7 +23270,13 @@
     "michelin_slug": "elea-greek",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/elea-greek",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Lorenzo's Restaurant, Bar & Cabaret",
@@ -22217,7 +23461,14 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "drinks_tag": "included",
+    "course_counts": [
+      "3",
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Smith & Wollensky",
@@ -22267,7 +23518,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Quality Bistro",
@@ -22311,7 +23567,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Psaraki",
@@ -22423,7 +23684,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Yakiniku Toraji An",
@@ -22487,7 +23753,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Lure Fishbar",
@@ -22542,7 +23813,14 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "drinks_tag": "wine_pairing",
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Dinner Party",
@@ -22608,7 +23886,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Lore",
@@ -22675,7 +23958,13 @@
     "michelin_slug": "lore",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/lore",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "drinks_tag": "wine_pairing",
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Meadowsweet",
@@ -22741,7 +24030,12 @@
     "michelin_slug": "meadowsweet",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/meadowsweet",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "San Carlo",
@@ -22807,7 +24101,14 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false,
+    "drinks_tag": "wine_pairing"
   },
   {
     "name": "Draught 55",
@@ -22856,7 +24157,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "La Tête d’Or",
@@ -22901,7 +24208,12 @@
     "michelin_slug": "la-tete-d-or",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/la-tete-d-or",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Bonsaii Tapas & Wine Bar",
@@ -22964,7 +24276,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Becco",
@@ -23072,7 +24389,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Berimbau - Midtown",
@@ -23124,7 +24446,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": true
   },
   {
     "name": "Stout NYC Grand Central",
@@ -23282,7 +24609,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Crown Shy",
@@ -23328,7 +24660,12 @@
     "michelin_slug": "crown-shy",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/crown-shy",
     "nyttop100_rank": 35,
-    "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#crown-shy"
+    "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#crown-shy",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": true
   },
   {
     "name": "Sushi Lab Rooftop",
@@ -23440,7 +24777,13 @@
     "michelin_slug": "raf-s",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/raf-s",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Bobo",
@@ -23529,7 +24872,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Le Gratin",
@@ -23584,7 +24932,14 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false,
+    "drinks_tag": "wine_pairing"
   },
   {
     "name": "Temple Court",
@@ -23653,7 +25008,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Strip House Downtown",
@@ -23729,7 +25089,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Le B.",
@@ -23833,7 +25198,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Hasaki",
@@ -23895,7 +25266,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Aqua Kyoto",
@@ -23963,7 +25339,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": true
   },
   {
     "name": "Wan Waan",
@@ -24091,7 +25472,14 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3",
+      "4+"
+    ],
+    "bonus_course": false,
+    "drinks_tag": "wine_pairing"
   },
   {
     "name": "Stout NYC Penn Station",
@@ -24199,7 +25587,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": false,
+    "drinks_tag": "wine_pairing"
   },
   {
     "name": "Barawine",
@@ -24259,7 +25653,12 @@
     "michelin_slug": "barawine",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/barawine",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Felice Montague",
@@ -24375,7 +25774,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "The Terrace and Outdoor Gardens",
@@ -24436,7 +25840,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "drinks_tag": "wine_pairing",
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "The Flatiron Room - NoMad",
@@ -24497,7 +25907,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "drinks_tag": "wine_pairing",
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "BLT Prime",
@@ -24568,7 +25984,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Akoya",
@@ -24702,7 +26123,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Palo Santo",
@@ -24767,7 +26193,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Il Nonno",
@@ -24821,7 +26252,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Mito - Forest Hills",
@@ -24890,7 +26327,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "drinks_tag": "included",
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Veerays",
@@ -25016,7 +26459,13 @@
     "michelin_slug": "kubeh",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/kubeh",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": true
   },
   {
     "name": "Dos Caminos Lexington",
@@ -25075,7 +26524,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Park Ave Kitchen by David Burke",
@@ -25129,7 +26584,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Ginger Ristoranti",
@@ -25193,7 +26654,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "53",
@@ -25358,7 +26825,12 @@
     "michelin_slug": "hupo",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/hupo",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Ai Fiori",
@@ -25473,7 +26945,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Aromi",
@@ -25618,7 +27096,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "drinks_tag": "wine_pairing",
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Leuca",
@@ -25696,7 +27180,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Boucherie West Village",
@@ -25765,7 +27255,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Gran Morsi",
@@ -25824,7 +27319,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": true
   },
   {
     "name": "Red Hook Lobster Pound",
@@ -25952,7 +27452,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Suprema Provisions",
@@ -26029,7 +27535,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Frenchette",
@@ -26215,7 +27726,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Urban Cove Society & Kitchen",
@@ -26476,7 +27992,12 @@
     "michelin_slug": "atoboy",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/atoboy",
     "nyttop100_rank": 15,
-    "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#atoboy"
+    "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#atoboy",
+    "raw_bar": false,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Lattanzi Cucina Italiana",
@@ -26558,7 +28079,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "RA Sushi Bar Restaurant – Times Square",
@@ -26605,7 +28131,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Kokomo",
@@ -26731,7 +28262,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Point Seven",
@@ -26791,7 +28327,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Gui Steakhouse",
@@ -26976,7 +28517,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Tachi",
@@ -27040,7 +28586,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Zaytinya",
@@ -27103,7 +28654,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "drinks_tag": "wine_pairing",
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "El Coco - Chelsea",
@@ -27152,7 +28709,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Olio e Più",
@@ -27229,7 +28791,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Casa Felix",
@@ -27279,7 +28847,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Atlantis Prime",
@@ -27344,7 +28918,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3",
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Tamarind Tribeca",
@@ -27396,7 +28976,12 @@
     "michelin_slug": "tamarind",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/tamarind",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Miriam West Village",
@@ -27507,7 +29092,12 @@
     "michelin_slug": "le-pavillon-1192744",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/le-pavillon-1192744",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Barbounia",
@@ -27553,7 +29143,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "EdoYa",
@@ -27614,7 +29210,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Cut",
@@ -27769,7 +29370,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Casa Brazilian",
@@ -27824,7 +29431,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Haven Rooftop",
@@ -28005,7 +29617,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Cosme",
@@ -28131,7 +29748,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Le Rock",
@@ -28195,7 +29817,14 @@
     "michelin_slug": "le-rock",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/le-rock",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": true,
+    "drinks_tag": "wine_pairing"
   },
   {
     "name": "Bourbon Steak New York",
@@ -28261,7 +29890,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2"
+    ],
+    "bonus_course": true
   },
   {
     "name": "Zuma",
@@ -28325,7 +29959,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Balade",
@@ -28394,7 +30033,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "AperiBar",
@@ -28502,7 +30146,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": true
   },
   {
     "name": "ABC Cocina",
@@ -28607,7 +30256,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "La Gioconda",
@@ -28667,7 +30322,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": true
   },
   {
     "name": "Poppy",
@@ -28714,7 +30375,14 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "drinks_tag": "wine_pairing",
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Carlotto",
@@ -28779,7 +30447,12 @@
     "michelin_slug": "carlotto",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/carlotto",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Limusina",
@@ -28841,7 +30514,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2"
+    ],
+    "bonus_course": false
   },
   {
     "name": "French Roast",
@@ -28889,7 +30567,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Osteria 57",
@@ -28981,7 +30665,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "La Boca",
@@ -29040,7 +30729,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2"
+    ],
+    "bonus_course": false
   },
   {
     "name": "L'Express",
@@ -29106,7 +30800,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Restaurant Nippon",
@@ -29167,7 +30867,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": true
   },
   {
     "name": "Boucherie Union Square",
@@ -29244,7 +30950,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Barano",
@@ -29352,7 +31063,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Industry Kitchen",
@@ -29416,7 +31133,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": true
   },
   {
     "name": "Junoon",
@@ -29485,7 +31208,13 @@
     "michelin_slug": "junoon",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/junoon",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": true
   },
   {
     "name": "Nino's",
@@ -29533,7 +31262,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Via 13",
@@ -29597,7 +31331,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Majorelle",
@@ -29658,7 +31398,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Maiella",
@@ -29707,7 +31452,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Roey's",
@@ -29756,7 +31506,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Gyu-Kaku Japanese BBQ - Midtown",
@@ -29819,7 +31574,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Fogo de Chão Brazilian Steakhouse",
@@ -30002,7 +31762,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Dowling’s at The Carlyle",
@@ -30053,7 +31818,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "The Long Room",
@@ -30102,7 +31873,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": true
   },
   {
     "name": "JoJo",
@@ -30232,7 +32009,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Qanoon",
@@ -30347,7 +32129,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": true
   },
   {
     "name": "Quality Italian",
@@ -30391,7 +32179,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Fogo de Chão Brazilian Steakhouse - Brooklyn",
@@ -30482,7 +32275,14 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "drinks_tag": "wine_pairing",
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Pico De Gallo Bar & Kitchen",
@@ -30525,7 +32325,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "RokuNana",
@@ -30571,7 +32376,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Nonna Dora's - Tribeca",
@@ -30669,7 +32479,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Docks Off 5th",
@@ -30813,7 +32628,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "drinks_tag": "wine_pairing",
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Margaux by La Sirène",
@@ -30859,7 +32680,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Sistina",
@@ -31039,7 +32865,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "La Baraka",
@@ -31098,7 +32929,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Tarallucci e Vino - Manhattan West",
@@ -31146,7 +32982,13 @@
     "michelin_slug": "manhatta",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/manhatta",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Allora Fifth Ave",
@@ -31236,7 +33078,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Bistro Eloise",
@@ -31334,7 +33182,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Traveler",
@@ -31381,7 +33234,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Cantina 138",
@@ -31429,7 +33287,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "drinks_tag": "wine_pairing",
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Laut",
@@ -31568,7 +33432,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Nuyores",
@@ -31613,7 +33482,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Jack's All Day",
@@ -31705,7 +33579,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Seahorse",
@@ -31755,7 +33634,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Leon’s",
@@ -31799,7 +33684,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Murano Ristorante",
@@ -31938,7 +33828,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Mari.ne Handroll",
@@ -32032,7 +33927,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Malvan",
@@ -32078,7 +33979,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Maggie's Place",
@@ -32136,7 +34042,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Lido",
@@ -32204,7 +34116,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Pastai",
@@ -32470,7 +34388,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Bocca Di Bacco—Hell's Kitchen",
@@ -32539,7 +34462,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Little Thai Kitchen",
@@ -32720,7 +34648,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Chelsea Ristorante",
@@ -32769,7 +34702,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": true
   },
   {
     "name": "T Bar",
@@ -32814,7 +34753,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Oncheon",
@@ -32894,7 +34838,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Le Tout Va Bien",
@@ -33034,7 +34984,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Rialto Ristorante",
@@ -33176,7 +35132,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "SoZo Sip Bar + Omakase",
@@ -33224,7 +35186,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Dhamaka",
@@ -33267,7 +35234,12 @@
     "michelin_slug": "dhamaka",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/dhamaka",
     "nyttop100_rank": 38,
-    "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#dhamaka"
+    "nyt_url": "https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#dhamaka",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Masalawala & Sons",
@@ -33405,7 +35377,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Fish Cheeks Brooklyn",
@@ -33588,7 +35566,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Izakaya Futago",
@@ -33685,7 +35668,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Yoon Haeundae Galbi",
@@ -33818,7 +35807,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2"
+    ],
+    "bonus_course": false
   },
   {
     "name": "The Kunjip",
@@ -33863,7 +35857,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Thep",
@@ -33995,7 +35995,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Benoit Restaurant & Wine Bar",
@@ -34048,7 +36053,12 @@
     "michelin_slug": "benoit",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/benoit",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": true
   },
   {
     "name": "Joseph's",
@@ -34172,7 +36182,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Oceans",
@@ -34233,7 +36248,12 @@
     "michelin_slug": "oceans",
     "michelin_url": "https://guide.michelin.com/en/new-york-state/new-york/restaurant/oceans",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "La Voglia",
@@ -34283,7 +36303,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Lafayette",
@@ -34345,7 +36370,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Saar",
@@ -34398,7 +36429,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "La Pecora Bianca Midtown",
@@ -34524,7 +36560,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Morgan's Brooklyn Barbecue",
@@ -34595,7 +36636,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Sotto la Luna",
@@ -34648,7 +36694,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Niku X",
@@ -34788,7 +36840,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Amasa",
@@ -34832,7 +36889,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Viv",
@@ -34976,7 +37038,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "drinks_tag": "included",
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Frida Midtown",
@@ -35166,7 +37234,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "San Pietro Ristorante",
@@ -35216,7 +37289,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Masaaki",
@@ -35357,7 +37435,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Amélie - West Village",
@@ -35541,7 +37624,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Tinos",
@@ -35622,7 +37711,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "4+"
+    ],
+    "bonus_course": true
   },
   {
     "name": "ABC Kitchens DUMBO",
@@ -35754,7 +37849,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": true
   },
   {
     "name": "YongChuan",
@@ -35800,7 +37901,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Ishq",
@@ -36035,7 +38141,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Florentin Bistro",
@@ -36083,7 +38194,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": true
   },
   {
     "name": "Miru",
@@ -36126,7 +38243,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Lalyn",
@@ -36176,7 +38299,14 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "drinks_tag": "wine_pairing",
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": true
   },
   {
     "name": "Benihana",
@@ -36222,7 +38352,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "SaiTong Thai",
@@ -36362,7 +38497,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Code Red Restaurant & Lounge",
@@ -36455,7 +38595,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": true,
+    "course_counts": [
+      "2"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Hanaya Omakase",
@@ -36547,7 +38692,12 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "4+"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Yasouvlaki West",
@@ -36594,7 +38744,13 @@
     "michelin_slug": "",
     "michelin_url": "",
     "nyttop100_rank": "",
-    "nyt_url": ""
+    "nyt_url": "",
+    "raw_bar": false,
+    "course_counts": [
+      "2",
+      "3"
+    ],
+    "bonus_course": false
   },
   {
     "name": "Felice Flatiron",

@@ -1,7 +1,7 @@
 import { useMemo, useState, useEffect, useRef } from "react";
 import { Search } from "lucide-react";
 import FilterDropdown from "./FilterDropdown";
-import { useMap, hasAnyAward, applyRestaurantFilters, AWARDS_OPTIONS, MEAL_TYPE_OPTIONS, parseMealType } from "../contexts/MapContext";
+import { useMap, hasAnyAward, applyRestaurantFilters, matchesAwardValue, matchesDrinkValue, matchesCourseValue, AWARDS_OPTIONS, DRINKS_OPTIONS, COURSE_OPTIONS, MEAL_TYPE_OPTIONS, parseMealType } from "../contexts/MapContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { asset } from "../utils/asset";
 import "./FilterBar.css";
@@ -45,6 +45,8 @@ export default function FilterBar() {
     highReviewCountActive,
     dateNightActive,
     setDateNightActive,
+    rawBarActive,
+    setRawBarActive,
     legendFilters,
     onboardingRefineHint,
     setOnboardingDismissRequested,
@@ -99,6 +101,7 @@ export default function FilterBar() {
     setFavoritesActive(false);
     setHasMenuActive(false);
     setDateNightActive(false);
+    setRawBarActive(false);
   };
 
   const toggleExpanded = () => {
@@ -150,50 +153,90 @@ export default function FilterBar() {
 
   // Prix fixe price tiers, derived from the price prefix on meal_types
   // (e.g. "$60 Dinner") — price_range itself is almost always just "$".
+  // Counts are dynamic (same "exclude this filter's own key" pattern as
+  // Cuisine/Awards below) so they reflect every other active filter.
   const priceOptions = useMemo(() => {
-    const priceCounts = new Map<string, number>();
+    // Membership (which price tiers exist at all) comes from the full
+    // dataset so the option list itself never shrinks — only counts do.
+    const allPriceTiers = new Set<string>();
     allRestaurants.forEach((r) => {
       (r.meal_types || []).forEach((meal) => {
         const match = meal.match(/^\$\d+/);
-        if (match) {
-          const price = match[0];
-          priceCounts.set(price, (priceCounts.get(price) || 0) + 1);
-        }
+        if (match) allPriceTiers.add(match[0]);
       });
     });
 
+    const scoped = isochroneRegionSlugs
+      ? allRestaurants.filter((r) => isochroneRegionSlugs.includes(r.slug))
+      : allRestaurants;
+    const searched = searchTerm.trim()
+      ? scoped.filter((r) => r.name?.toLowerCase().includes(searchTerm.toLowerCase()))
+      : scoped;
+    const excludingPrice = applyRestaurantFilters(searched, activeFilters, {
+      favorites,
+      favoritesActive,
+      restaurantWeekActive,
+      hasMenuActive,
+      awardsActive,
+      highReviewCountActive,
+      dateNightActive,
+      rawBarActive,
+      legendFilters,
+    }, "Price");
+
+    const priceCounts = new Map<string, number>();
+    excludingPrice.forEach((r) => {
+      const seen = new Set<string>();
+      (r.meal_types || []).forEach((meal) => {
+        const match = meal.match(/^\$\d+/);
+        if (match) seen.add(match[0]);
+      });
+      seen.forEach((price) => priceCounts.set(price, (priceCounts.get(price) || 0) + 1));
+    });
+
+    const otherFiltersActive =
+      isochroneRegionSlugs !== null ||
+      searchTerm.trim() !== "" ||
+      favoritesActive ||
+      restaurantWeekActive ||
+      hasMenuActive ||
+      awardsActive ||
+      highReviewCountActive ||
+      dateNightActive ||
+      rawBarActive ||
+      legendFilters.length > 0 ||
+      Object.keys(activeFilters).some((k) => k !== "Price" && activeFilters[k]?.length > 0);
+
     const allPrices = ["$30", "$45", "$60"];
     return allPrices
-      .filter((price) => priceCounts.has(price))
+      .filter((price) => allPriceTiers.has(price))
       .map((price) => {
         const count = priceCounts.get(price) || 0;
         return {
           value: price,
           label: (
             <>
-              {price} <span style={{ color: "#888" }}>· {count}</span>
+              {price} <span style={{ color: "#888" }}>{count}</span>
             </>
           ),
+          disabled: otherFiltersActive && count === 0,
         };
       });
-  }, [allRestaurants]);
-
-  // Toggle a single Awards value in/out of the "Awards" filter array.
-  const toggleAward = (value: string) => {
-    setActiveFilters((prevFilters) => {
-      const current = prevFilters["Awards"] || [];
-      const next = current.includes(value)
-        ? current.filter((v) => v !== value)
-        : [...current, value];
-      const newFilters = { ...prevFilters };
-      if (next.length === 0) {
-        delete newFilters["Awards"];
-      } else {
-        newFilters["Awards"] = next;
-      }
-      return newFilters;
-    });
-  };
+  }, [
+    allRestaurants,
+    isochroneRegionSlugs,
+    searchTerm,
+    activeFilters,
+    favorites,
+    favoritesActive,
+    restaurantWeekActive,
+    hasMenuActive,
+    awardsActive,
+    highReviewCountActive,
+    dateNightActive,
+    rawBarActive,
+    legendFilters,
+  ]);
 
   const cuisineOptions = useMemo(() => {
     // Collect all distinct non-empty cuisines from the full dataset (so the
@@ -226,6 +269,7 @@ export default function FilterBar() {
       awardsActive,
       highReviewCountActive,
       dateNightActive,
+      rawBarActive,
       legendFilters,
     }, "Cuisine");
 
@@ -245,6 +289,7 @@ export default function FilterBar() {
       awardsActive ||
       highReviewCountActive ||
       dateNightActive ||
+      rawBarActive ||
       legendFilters.length > 0 ||
       Object.keys(activeFilters).some((k) => k !== "Cuisine" && activeFilters[k]?.length > 0);
 
@@ -257,7 +302,7 @@ export default function FilterBar() {
           label:
             count > 0 ? (
               <>
-                {cuisine} <span style={{ color: "#888" }}>· {count}</span>
+                {cuisine} <span style={{ color: "#888" }}>{count}</span>
               </>
             ) : (
               cuisine
@@ -277,14 +322,238 @@ export default function FilterBar() {
     awardsActive,
     highReviewCountActive,
     dateNightActive,
+    rawBarActive,
+    legendFilters,
+  ]);
+
+  // Award Winners dropdown counts, same "exclude this filter's own key so its
+  // options never all zero out" pattern as Cuisine above.
+  const awardsOptions = useMemo(() => {
+    const scoped = isochroneRegionSlugs
+      ? allRestaurants.filter((r) => isochroneRegionSlugs.includes(r.slug))
+      : allRestaurants;
+    const searched = searchTerm.trim()
+      ? scoped.filter((r) => r.name?.toLowerCase().includes(searchTerm.toLowerCase()))
+      : scoped;
+    const excludingAwards = applyRestaurantFilters(searched, activeFilters, {
+      favorites,
+      favoritesActive,
+      restaurantWeekActive,
+      hasMenuActive,
+      awardsActive,
+      highReviewCountActive,
+      dateNightActive,
+      rawBarActive,
+      legendFilters,
+    }, "Awards");
+
+    const otherFiltersActive =
+      isochroneRegionSlugs !== null ||
+      searchTerm.trim() !== "" ||
+      favoritesActive ||
+      restaurantWeekActive ||
+      hasMenuActive ||
+      awardsActive ||
+      highReviewCountActive ||
+      dateNightActive ||
+      rawBarActive ||
+      legendFilters.length > 0 ||
+      Object.keys(activeFilters).some((k) => k !== "Awards" && activeFilters[k]?.length > 0);
+
+    return AWARDS_OPTIONS.map(({ value, label }) => {
+      const count = excludingAwards.filter((r) => matchesAwardValue(r, value)).length;
+      return {
+        value,
+        icon: AWARD_ICONS[value],
+        label:
+          count > 0 ? (
+            <>
+              {label} <span style={{ color: "#888" }}>{count}</span>
+            </>
+          ) : (
+            label
+          ),
+        disabled: otherFiltersActive && count === 0,
+      };
+    });
+  }, [
+    allRestaurants,
+    isochroneRegionSlugs,
+    searchTerm,
+    activeFilters,
+    favorites,
+    favoritesActive,
+    restaurantWeekActive,
+    hasMenuActive,
+    awardsActive,
+    highReviewCountActive,
+    dateNightActive,
+    rawBarActive,
+    legendFilters,
+  ]);
+
+  // Drinks dropdown counts — same dynamic pattern as Awards above.
+  const drinksOptions = useMemo(() => {
+    const scoped = isochroneRegionSlugs
+      ? allRestaurants.filter((r) => isochroneRegionSlugs.includes(r.slug))
+      : allRestaurants;
+    const searched = searchTerm.trim()
+      ? scoped.filter((r) => r.name?.toLowerCase().includes(searchTerm.toLowerCase()))
+      : scoped;
+    const excludingDrinks = applyRestaurantFilters(searched, activeFilters, {
+      favorites,
+      favoritesActive,
+      restaurantWeekActive,
+      hasMenuActive,
+      awardsActive,
+      highReviewCountActive,
+      dateNightActive,
+      rawBarActive,
+      legendFilters,
+    }, "Drinks");
+
+    const otherFiltersActive =
+      isochroneRegionSlugs !== null ||
+      searchTerm.trim() !== "" ||
+      favoritesActive ||
+      restaurantWeekActive ||
+      hasMenuActive ||
+      awardsActive ||
+      highReviewCountActive ||
+      dateNightActive ||
+      rawBarActive ||
+      legendFilters.length > 0 ||
+      Object.keys(activeFilters).some((k) => k !== "Drinks" && activeFilters[k]?.length > 0);
+
+    return DRINKS_OPTIONS.map(({ value, label }) => {
+      const count = excludingDrinks.filter((r) => matchesDrinkValue(r, value)).length;
+      return {
+        value,
+        label:
+          count > 0 ? (
+            <>
+              {label} <span style={{ color: "#888" }}>{count}</span>
+            </>
+          ) : (
+            label
+          ),
+        disabled: otherFiltersActive && count === 0,
+      };
+    });
+  }, [
+    allRestaurants,
+    isochroneRegionSlugs,
+    searchTerm,
+    activeFilters,
+    favorites,
+    favoritesActive,
+    restaurantWeekActive,
+    hasMenuActive,
+    awardsActive,
+    highReviewCountActive,
+    dateNightActive,
+    rawBarActive,
+    legendFilters,
+  ]);
+
+  // Prix Fixe Course dropdown counts — same dynamic pattern as Drinks above.
+  const courseOptions = useMemo(() => {
+    const scoped = isochroneRegionSlugs
+      ? allRestaurants.filter((r) => isochroneRegionSlugs.includes(r.slug))
+      : allRestaurants;
+    const searched = searchTerm.trim()
+      ? scoped.filter((r) => r.name?.toLowerCase().includes(searchTerm.toLowerCase()))
+      : scoped;
+    const excludingCourse = applyRestaurantFilters(searched, activeFilters, {
+      favorites,
+      favoritesActive,
+      restaurantWeekActive,
+      hasMenuActive,
+      awardsActive,
+      highReviewCountActive,
+      dateNightActive,
+      rawBarActive,
+      legendFilters,
+    }, "Course");
+
+    const otherFiltersActive =
+      isochroneRegionSlugs !== null ||
+      searchTerm.trim() !== "" ||
+      favoritesActive ||
+      restaurantWeekActive ||
+      hasMenuActive ||
+      awardsActive ||
+      highReviewCountActive ||
+      dateNightActive ||
+      rawBarActive ||
+      legendFilters.length > 0 ||
+      Object.keys(activeFilters).some((k) => k !== "Course" && activeFilters[k]?.length > 0);
+
+    return COURSE_OPTIONS.map(({ value, label }) => {
+      const count = excludingCourse.filter((r) => matchesCourseValue(r, value)).length;
+      return {
+        value,
+        label:
+          count > 0 ? (
+            <>
+              {label} <span style={{ color: "#888" }}>{count}</span>
+            </>
+          ) : (
+            label
+          ),
+        disabled: otherFiltersActive && count === 0,
+      };
+    });
+  }, [
+    allRestaurants,
+    isochroneRegionSlugs,
+    searchTerm,
+    activeFilters,
+    favorites,
+    favoritesActive,
+    restaurantWeekActive,
+    hasMenuActive,
+    awardsActive,
+    highReviewCountActive,
+    dateNightActive,
+    rawBarActive,
     legendFilters,
   ]);
 
   // Meal Type is the price-independent half of meal_types (e.g. "$60 Dinner"
-  // → "Dinner"). Counts restaurants offering that type at ANY price.
+  // → "Dinner"). Counts restaurants offering that type at ANY price, dynamic
+  // against every other active filter (same pattern as Price/Cuisine/Awards).
   const mealTypeOptions = useMemo(() => {
-    const typeCounts = new Map<string, number>();
+    // Membership (which meal types exist at all) comes from the full
+    // dataset so the option list itself never shrinks — only counts do.
+    const allTypesSeen = new Set<string>();
     allRestaurants.forEach((r) => {
+      (r.meal_types || []).forEach((mealType) => {
+        const parsed = parseMealType(mealType);
+        if (parsed) allTypesSeen.add(parsed.type);
+      });
+    });
+
+    const scoped = isochroneRegionSlugs
+      ? allRestaurants.filter((r) => isochroneRegionSlugs.includes(r.slug))
+      : allRestaurants;
+    const searched = searchTerm.trim()
+      ? scoped.filter((r) => r.name?.toLowerCase().includes(searchTerm.toLowerCase()))
+      : scoped;
+    const excludingMealType = applyRestaurantFilters(searched, activeFilters, {
+      favorites,
+      favoritesActive,
+      restaurantWeekActive,
+      hasMenuActive,
+      awardsActive,
+      highReviewCountActive,
+      dateNightActive,
+      rawBarActive,
+      legendFilters,
+    }, "Meal Type");
+
+    const typeCounts = new Map<string, number>();
+    excludingMealType.forEach((r) => {
       const typesSeen = new Set<string>();
       (r.meal_types || []).forEach((mealType) => {
         const parsed = parseMealType(mealType);
@@ -295,6 +564,19 @@ export default function FilterBar() {
       });
     });
 
+    const otherFiltersActive =
+      isochroneRegionSlugs !== null ||
+      searchTerm.trim() !== "" ||
+      favoritesActive ||
+      restaurantWeekActive ||
+      hasMenuActive ||
+      awardsActive ||
+      highReviewCountActive ||
+      dateNightActive ||
+      rawBarActive ||
+      legendFilters.length > 0 ||
+      Object.keys(activeFilters).some((k) => k !== "Meal Type" && activeFilters[k]?.length > 0);
+
     // Display-only label overrides — the underlying values stay as parsed
     // from the data ("Sunday Lunch/Brunch", "Sunday Dinner") for matching.
     const displayLabel: Record<string, string> = {
@@ -302,18 +584,33 @@ export default function FilterBar() {
       "Sunday Dinner": "Dinner (Sunday's)",
     };
 
-    return MEAL_TYPE_OPTIONS.filter((type) => typeCounts.has(type)).map((type) => {
+    return MEAL_TYPE_OPTIONS.filter((type) => allTypesSeen.has(type)).map((type) => {
       const count = typeCounts.get(type) || 0;
       return {
         value: type,
         label: (
           <>
-            {displayLabel[type] ?? type} <span style={{ color: "#888" }}>· {count}</span>
+            {displayLabel[type] ?? type} <span style={{ color: "#888" }}>{count}</span>
           </>
         ),
+        disabled: otherFiltersActive && count === 0,
       };
     });
-  }, [allRestaurants]);
+  }, [
+    allRestaurants,
+    isochroneRegionSlugs,
+    searchTerm,
+    activeFilters,
+    favorites,
+    favoritesActive,
+    restaurantWeekActive,
+    hasMenuActive,
+    awardsActive,
+    highReviewCountActive,
+    dateNightActive,
+    rawBarActive,
+    legendFilters,
+  ]);
 
   void showLeftArrow;
   void showRightArrow;
@@ -371,6 +668,30 @@ export default function FilterBar() {
           />
 
           <FilterDropdown
+            label="Meal Type"
+            icon=""
+            options={mealTypeOptions}
+            selectedValues={activeFilters["Meal Type"] || []}
+            onChange={(values) => handleFilterChange("Meal Type", values)}
+          />
+
+          <FilterDropdown
+            label="Prix Fixe Course"
+            icon=""
+            options={courseOptions}
+            selectedValues={activeFilters["Course"] || []}
+            onChange={(values) => handleFilterChange("Course", values)}
+          />
+
+          <FilterDropdown
+            label="Drinks"
+            icon=""
+            options={drinksOptions}
+            selectedValues={activeFilters["Drinks"] || []}
+            onChange={(values) => handleFilterChange("Drinks", values)}
+          />
+
+          <FilterDropdown
             label="Cuisine"
             icon=""
             options={cuisineOptions}
@@ -378,20 +699,13 @@ export default function FilterBar() {
             onChange={(values) => handleFilterChange("Cuisine", values)}
           />
 
-          {AWARDS_OPTIONS.map(({ value, label }) => (
-            <button
-              key={value}
-              className={`filter-pill-base ${
-                (activeFilters["Awards"] || []).includes(value) ? "active" : ""
-              }`}
-              onClick={() => toggleAward(value)}
-            >
-              {AWARD_ICONS[value] && (
-                <img src={AWARD_ICONS[value]} alt="" className="filter-pill-icon-img" />
-              )}
-              {label}
-            </button>
-          ))}
+          <FilterDropdown
+            label="Award Winners"
+            icon=""
+            options={awardsOptions}
+            selectedValues={activeFilters["Awards"] || []}
+            onChange={(values) => handleFilterChange("Awards", values)}
+          />
 
           <button
             className={`filter-pill-base ${dateNightActive ? "active" : ""}`}
@@ -400,13 +714,12 @@ export default function FilterBar() {
             For Date Night
           </button>
 
-          <FilterDropdown
-            label="Prix Fixe Course"
-            icon=""
-            options={mealTypeOptions}
-            selectedValues={activeFilters["Meal Type"] || []}
-            onChange={(values) => handleFilterChange("Meal Type", values)}
-          />
+          <button
+            className={`filter-pill-base ${rawBarActive ? "active" : ""}`}
+            onClick={() => setRawBarActive((v) => !v)}
+          >
+            Raw Bar
+          </button>
 
           <button
             className={`filter-pill-base ${hasMenuActive ? "active" : ""}`}
@@ -422,7 +735,7 @@ export default function FilterBar() {
             ♥ Favorites
           </button>
 
-          {(Object.keys(activeFilters).length > 0 || favoritesActive || hasMenuActive || dateNightActive) && (
+          {(Object.keys(activeFilters).length > 0 || favoritesActive || hasMenuActive || dateNightActive || rawBarActive) && (
             <button
               className="filter-reset-button"
               onClick={handleResetFilters}
