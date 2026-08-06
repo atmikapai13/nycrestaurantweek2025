@@ -66,7 +66,7 @@ export default function DealsPanel({
           In this sweltering and calamitious summer, 600+ restaurants offer <span className="text-pink-500">$30 to $60 </span> prix fixe experiences in NYC as part of Summer Restaurant Week.{' '}<br></br><br></br>
           <span className="sm:hidden">And I, Remy, help</span>
           <span className="hidden sm:inline">And Remy helps</span>
-          {' '}you find the best deals — from <span className="text-pink-500">Michelin-starred</span> restaurants to <span className="text-pink-500">NY Times Top 100</span> picks. Toggle the filters on the map to find your dream spot.
+          {' '}you find the best deals — from <span className="text-pink-500">Michelin-starred</span> restaurants to <span className="text-pink-500">NY Times Top 100</span> picks. Toggle the filters on the map to find your dream spot, or search for a restaurant below:
         </p>
       </div>
 
