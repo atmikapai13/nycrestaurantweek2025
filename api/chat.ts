@@ -39,6 +39,143 @@ try {
   console.error("❌ Failed to load restaurant data:", error);
 }
 
+// ============ MCP CONTEXT CACHE ============
+// The MCP connection, tool list, spatial reference docs, and dataset schemas are all
+// static across requests (they only change when the MCP server/dataset config changes),
+// but were previously re-fetched over the network on EVERY chat message. Caching them at
+// module scope means a warm serverless instance pays this cost once, not per-message.
+interface McpContext {
+  mcpClient: Awaited<ReturnType<typeof createMCPClient>> | null;
+  mcpTools: ToolSet;
+  spatialReference: string;
+  sqlTables: string;
+  docCollections: string;
+}
+
+let mcpContextPromise: Promise<McpContext> | null = null;
+
+async function createMcpContext(): Promise<McpContext> {
+  const empty: McpContext = {
+    mcpClient: null,
+    mcpTools: {},
+    spatialReference: "",
+    sqlTables: "",
+    docCollections: "",
+  };
+
+  if (!env.MCP_SERVER_URL || !env.MCP_API_KEY) {
+    console.warn("⚠️ MCP not configured (missing MCP_SERVER_URL or MCP_API_KEY), continuing with local tools only");
+    return empty;
+  }
+
+  try {
+    const mcpController = new AbortController();
+    const mcpTimeoutId = setTimeout(() => mcpController.abort(), 10000); // 10s timeout
+
+    const transport = new StreamableHTTPClientTransport(
+      new URL(env.MCP_SERVER_URL),
+      {
+        requestInit: {
+          headers: { Authorization: `Bearer ${env.MCP_API_KEY}` },
+          signal: mcpController.signal,
+        },
+      }
+    );
+
+    const mcpClient = await createMCPClient({ transport });
+    clearTimeout(mcpTimeoutId);
+    console.log("✅ Connected to MCP (caching for warm instance)");
+
+    // Fetch Spatial Reference and Examples
+    let spatialReference = "";
+    try {
+      const [spatialFuncs, spatialExamples] = await Promise.all([
+        mcpClient.readResource({ uri: "spatial-functions://reference" }),
+        mcpClient.readResource({ uri: "spatial-query-examples://duckdb" }),
+      ]);
+
+      if (spatialFuncs?.contents?.[0]?.text) {
+        spatialReference += `\n### DUCKDB SPATIAL FUNCTIONS REFERENCE:\n${spatialFuncs.contents[0].text}\n`;
+      }
+      if (spatialExamples?.contents?.[0]?.text) {
+        spatialReference += `\n### SPATIAL QUERY EXAMPLES:\n${spatialExamples.contents[0].text}\n`;
+      }
+    } catch (err) {
+      console.error("⚠️ Failed to fetch spatial resources:", err);
+    }
+
+    const mcpTools = await mcpClient.tools();
+    console.log("📦 MCP Tools (cached):", Object.keys(mcpTools).join(", "));
+
+    // Fetch dataset schemas (static per analysisId, so cacheable alongside the rest)
+    let sqlTables = "";
+    let docCollections = "";
+    const analysisId = env.MCP_ANALYSIS_ID;
+    if (analysisId) {
+      console.log(`📂 Fetching datasets for analysis: ${analysisId} (caching)`);
+      const datasetsRes = await mcpClient.readResource({
+        uri: `analysis://${analysisId}/datasets`,
+      });
+      const firstContent = datasetsRes?.contents?.[0];
+      if (
+        firstContent &&
+        "text" in firstContent &&
+        typeof firstContent.text === "string"
+      ) {
+        const data = JSON.parse(firstContent.text);
+        if (data.datasets?.length > 0) {
+          for (const ds of data.datasets) {
+            const vId = ds.versionId || ds.version_id;
+            const tName = ds.tableName || ds.table_name;
+            const kind = typeof ds.kind === "string" ? ds.kind.toLowerCase() : "";
+
+            const schemaRes = await mcpClient.readResource({
+              uri: `analysis://${analysisId}/dataset/${vId}/schema`,
+            });
+            const schemaContent = schemaRes?.contents?.[0];
+            const schemaText =
+              schemaContent &&
+              "text" in schemaContent &&
+              typeof schemaContent.text === "string"
+                ? schemaContent.text
+                : "No schema available";
+
+            if (kind === "unstructured") {
+              // Clean up schema text to avoid calling it a table
+              const cleanedSchema = schemaText
+                .replace(/\*\*Table:.*?\*\*/gi, "")
+                .replace(/"table_name":/gi, '"collection_id":');
+              docCollections += `\n### DOCUMENT COLLECTION: "${ds.name}"\nID: ${vId}\n${cleanedSchema}\n`;
+            } else {
+              sqlTables += `\n### SQL TABLE: "${tName}"\nName: ${ds.name}\n${schemaText}\n`;
+            }
+          }
+          console.log(`✅ Schemas loaded for ${data.datasets.length} datasets (cached)`);
+        }
+      }
+    }
+
+    return { mcpClient, mcpTools, spatialReference, sqlTables, docCollections };
+  } catch (mcpError) {
+    console.warn("⚠️ MCP connection failed, continuing with local tools only:", mcpError);
+    return empty;
+  }
+}
+
+// Returns the cached MCP context, creating it on first call per warm instance.
+// If the connection failed, the failure is NOT cached, so the next request retries
+// instead of being stuck with MCP disabled for the container's lifetime.
+async function getMcpContext(): Promise<McpContext> {
+  if (!mcpContextPromise) {
+    mcpContextPromise = createMcpContext();
+  }
+  const result = await mcpContextPromise;
+  if (!result.mcpClient) {
+    mcpContextPromise = null;
+  }
+  return result;
+}
+
 // ============ FUZZY MATCHING HELPERS ============
 
 /**
@@ -365,11 +502,7 @@ const chatHandler = async (c: any) => {
   })) as UIMessage[];
 
   const analysisId = env.MCP_ANALYSIS_ID;
-  let mcpTools: ToolSet = {};
   let datasetContext = "";
-  let sqlTables = "";
-  let docCollections = "";
-  let spatialReference = "";
 
   // Initialize geometry cache for this request
   const geometryCache = new GeometryCache();
@@ -378,66 +511,21 @@ const chatHandler = async (c: any) => {
   // Stores arrays from each isochrone call - intersection is computed for multi-party scenarios
   const allIsochroneSlugs: string[][] = [];
 
-  // 1. Connect and Fetch Tools/Resources with error handling
-  let mcpClient: Awaited<ReturnType<typeof createMCPClient>> | null = null;
-  let optimizedTools: ToolSet = {};
+  // 1. Reuse the cached MCP connection/tools/resources (created once per warm instance)
+  const { mcpClient, mcpTools, spatialReference, sqlTables, docCollections } =
+    await getMcpContext();
 
-  // Validate MCP config before attempting connection
-  if (!env.MCP_SERVER_URL || !env.MCP_API_KEY) {
-    console.warn("⚠️ MCP not configured (missing MCP_SERVER_URL or MCP_API_KEY), continuing with local tools only");
-  } else {
-    try {
-      // Create abort controller for MCP connection timeout
-      const mcpController = new AbortController();
-      const mcpTimeoutId = setTimeout(() => mcpController.abort(), 10000); // 10s timeout
-
-      const transport = new StreamableHTTPClientTransport(
-        new URL(env.MCP_SERVER_URL),
-        {
-          requestInit: {
-            headers: { Authorization: `Bearer ${env.MCP_API_KEY}` },
-            signal: mcpController.signal,
-          },
-        }
-      );
-
-      mcpClient = await createMCPClient({ transport });
-      clearTimeout(mcpTimeoutId);
-      console.log("✅ Connected to MCP");
-
-      // Fetch Spatial Reference and Examples
-      try {
-        console.log("📂 Fetching spatial reference and examples...");
-        const [spatialFuncs, spatialExamples] = await Promise.all([
-          mcpClient.readResource({ uri: "spatial-functions://reference" }),
-          mcpClient.readResource({ uri: "spatial-query-examples://duckdb" }),
-        ]);
-
-        if (spatialFuncs?.contents?.[0]?.text) {
-          spatialReference += `\n### DUCKDB SPATIAL FUNCTIONS REFERENCE:\n${spatialFuncs.contents[0].text}\n`;
-        }
-        if (spatialExamples?.contents?.[0]?.text) {
-          spatialReference += `\n### SPATIAL QUERY EXAMPLES:\n${spatialExamples.contents[0].text}\n`;
-        }
-      } catch (err) {
-        console.error("⚠️ Failed to fetch spatial resources:", err);
-      }
-
-      mcpTools = await mcpClient.tools();
-      console.log("📦 MCP Tools:", Object.keys(mcpTools).join(", "));
-
-      // Wrap MCP tools with geometry optimization
-      optimizedTools = wrapToolsWithGeometryOptimization(
-        mcpTools,
-        geometryCache
-      );
-    } catch (mcpError) {
-      console.warn("⚠️ MCP connection failed, continuing with local tools only:", mcpError);
-      mcpClient = null;
-      mcpTools = {};
-      optimizedTools = {};
-    }
+  if (sqlTables) {
+    datasetContext += `\nDATASETS AVAILABLE FOR SQL QUERIES:\n${sqlTables}`;
   }
+  if (docCollections) {
+    datasetContext += `\nDATASETS AVAILABLE FOR DOCUMENT SEARCH:\n${docCollections}`;
+  }
+
+  // Wrap MCP tools with geometry optimization (cheap, request-scoped, no network calls)
+  const optimizedTools: ToolSet = mcpClient
+    ? wrapToolsWithGeometryOptimization(mcpTools, geometryCache)
+    : {};
 
   // Create a custom tool for displaying restaurant cards
   const displayRestaurantsTool = createTool({
@@ -797,57 +885,7 @@ IMPORTANT: If user mentions "restaurant week", "prix fixe", or "$30/$45/$60 deal
     },
   });
 
-  // 2. Fetch Dataset Schemas (Let it fail/throw)
-  if (analysisId) {
-    console.log(`📂 Fetching datasets for analysis: ${analysisId}`);
-    const datasetsRes = await mcpClient.readResource({
-      uri: `analysis://${analysisId}/datasets`,
-    });
-    const firstContent = datasetsRes?.contents?.[0];
-    if (
-      firstContent &&
-      "text" in firstContent &&
-      typeof firstContent.text === "string"
-    ) {
-      const data = JSON.parse(firstContent.text);
-      if (data.datasets?.length > 0) {
-        for (const ds of data.datasets) {
-          const vId = ds.versionId || ds.version_id;
-          const tName = ds.tableName || ds.table_name;
-          const kind = typeof ds.kind === "string" ? ds.kind.toLowerCase() : "";
-
-          const schemaRes = await mcpClient.readResource({
-            uri: `analysis://${analysisId}/dataset/${vId}/schema`,
-          });
-          const schemaContent = schemaRes?.contents?.[0];
-          const schemaText =
-            schemaContent &&
-            "text" in schemaContent &&
-            typeof schemaContent.text === "string"
-              ? schemaContent.text
-              : "No schema available";
-
-          if (kind === "unstructured") {
-            // Clean up schema text to avoid calling it a table
-            const cleanedSchema = schemaText
-              .replace(/\*\*Table:.*?\*\*/gi, "")
-              .replace(/"table_name":/gi, '"collection_id":');
-            docCollections += `\n### DOCUMENT COLLECTION: "${ds.name}"\nID: ${vId}\n${cleanedSchema}\n`;
-          } else {
-            sqlTables += `\n### SQL TABLE: "${tName}"\nName: ${ds.name}\n${schemaText}\n`;
-          }
-        }
-
-        if (sqlTables) {
-          datasetContext += `\nDATASETS AVAILABLE FOR SQL QUERIES:\n${sqlTables}`;
-        }
-        if (docCollections) {
-          datasetContext += `\nDATASETS AVAILABLE FOR DOCUMENT SEARCH:\n${docCollections}`;
-        }
-        console.log(`✅ Schemas loaded for ${data.datasets.length} datasets`);
-      }
-    }
-  }
+  // Dataset schemas are fetched once per warm instance inside getMcpContext() above.
 
   // Build the tool instructions based on available dataset types
   let toolInstructions = `
@@ -870,10 +908,12 @@ IMPORTANT: If user mentions "restaurant week", "prix fixe", or "$30/$45/$60 deal
   3. After execute_sql/get_isoline: displayRestaurants({ restaurant_names: [...] })
   **ALWAYS call this to show restaurant cards!**`;
 
-  if (sqlTables) {
+  if (optimizedTools.execute_sql) {
     toolInstructions += `
 - execute_sql: Use ONLY for structured fields: price ($/$$/$$$/$$$$), cuisine TYPE (Italian, Japanese, etc.), awards.
-  **DO NOT use for**: vegetarian, vegan, dietary preferences, vibes, ambiance, or neighborhood/location queries - ALWAYS geocode for locations!`;
+  **DO NOT use for**: vegetarian, vegan, dietary preferences, vibes, ambiance, or neighborhood/location queries - ALWAYS geocode for locations!
+  **⚠️ TABLE NAME**: The FROM table is EXACTLY \`"${analysisId}"\` (quoted, matches the analysis ID above). NEVER guess "restaurants" or "Restaurants", and NEVER run \`information_schema.tables\` to look it up - you already know it.
+    Example: \`SELECT restaurant_name FROM "${analysisId}" WHERE cuisine ILIKE '%Italian%'\``;
   }
   if (docCollections) {
     toolInstructions += `
@@ -954,7 +994,8 @@ get_isoline returns a GEO_REF ID (e.g., "GEO_REF_ABC12"). Use in SQL: \`ST_GeomF
 
 **GEO_REF IDs are REQUEST-SCOPED** - they expire after each response! For follow-up queries, re-call get_isoline to get fresh IDs.
 
-"Between" queries: geocode both locations → get_isoline twice → \`ST_Intersection(ST_GeomFromGeoJSON(ID1), ST_GeomFromGeoJSON(ID2))\` → displayRestaurants
+"Between" queries (e.g. "meet in the middle of A and B"): geocode both locations → call get_isoline twice (once per location).
+**DO NOT manually write \`ST_Intersection\`/\`ST_GeomFromGeoJSON\` SQL for this** - the backend automatically restricts the NEXT execute_sql or semantic_search_restaurants call to only restaurants reachable from ALL the isochrones you just created. Just call execute_sql with your normal filter (e.g. cuisine/price/awards) or semantic_search_restaurants with your vibe query, then displayRestaurants - no geometry SQL needed.
 
 ### ISOCHRONE + SEMANTIC SEARCH (CRITICAL TOOL CHAINING)
 For location + vibe queries ("cozy spots near Times Square", "date night Japanese within 20 min of my place"):
@@ -1188,8 +1229,18 @@ Never mention GEO_REF IDs, table UUIDs, or internal mechanics to users.`;
           }
 
           // 2. Extract polygon geometry from result
-          // The geometry could be in different places depending on MCP response format
-          const geojson = (result as any).geojson || (result as any).geometry || (result as any).results?.[0]?.geojson;
+          // The geometry could be in different places depending on MCP response format.
+          // The MCP tool's actual shape nests it under structuredContent.results[0].geojson
+          // (confirmed against the live server) - check that first, then fall back to
+          // flatter shapes in case the server format changes.
+          const structured = (result as any).structuredContent;
+          const geojson =
+            structured?.results?.[0]?.geojson ||
+            structured?.geojson ||
+            structured?.geometry ||
+            (result as any).geojson ||
+            (result as any).geometry ||
+            (result as any).results?.[0]?.geojson;
 
           if (!geojson) {
             console.log("⚠️ get_isoline: No geometry found in result, returning as-is");
@@ -1523,33 +1574,13 @@ Never mention GEO_REF IDs, table UUIDs, or internal mechanics to users.`;
           if (isError) console.error("      Detail:", res);
         });
       },
-      onFinish: async () => {
-        // Close MCP client only when stream fully completes
-        // NOTE: Do NOT use finally block - it runs immediately after return,
-        // not after the stream completes, which would close MCP prematurely
-        if (mcpClient) {
-          try {
-            await mcpClient.close();
-            console.log("✅ MCP client closed");
-          } catch (closeError) {
-            console.warn("⚠️ Error closing MCP client:", closeError);
-          }
-        }
-      },
     });
 
     return result.toUIMessageStreamResponse();
   } catch (error) {
     console.error("❌ Fatal error in stream:", error);
-    // Close MCP client on error (before streaming started)
-    if (mcpClient) {
-      try {
-        await mcpClient.close();
-        console.log("✅ MCP client closed (on error)");
-      } catch (closeError) {
-        console.warn("⚠️ Error closing MCP client:", closeError);
-      }
-    }
+    // NOTE: mcpClient is a shared, module-cached connection reused across requests
+    // (see getMcpContext()), so it is intentionally NOT closed here.
 
     // Check for Gemini rate limit error (429)
     const errorStr = error instanceof Error ? error.message : String(error);
