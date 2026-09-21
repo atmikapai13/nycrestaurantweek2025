@@ -58,19 +58,25 @@ function loadRestaurants(): Restaurant[] {
   return restaurantsCache!;
 }
 
+// Reused across calls within a warm serverless instance instead of reconstructing
+// per-request - client construction/auth setup has real (if small) overhead.
+let embeddingModelSingleton: ReturnType<GoogleGenerativeAI["getGenerativeModel"]> | null = null;
+let pineconeIndexSingleton: ReturnType<Pinecone["index"]> | null = null;
+
 /**
  * Generate embedding for search query using Google's gemini-embedding-001
  */
 async function generateQueryEmbedding(query: string): Promise<number[]> {
-  const apiKey = process.env.GOOGLE_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY;
-  if (!apiKey) {
-    throw new Error("GOOGLE_API_KEY not configured");
+  if (!embeddingModelSingleton) {
+    const apiKey = process.env.GOOGLE_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY;
+    if (!apiKey) {
+      throw new Error("GOOGLE_API_KEY not configured");
+    }
+    const genAI = new GoogleGenerativeAI(apiKey);
+    embeddingModelSingleton = genAI.getGenerativeModel({ model: EMBEDDING_MODEL });
   }
 
-  const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: EMBEDDING_MODEL });
-
-  const result = await model.embedContent({
+  const result = await embeddingModelSingleton.embedContent({
     content: { role: "user", parts: [{ text: query }] },
     outputDimensionality: 768,
   });
@@ -84,13 +90,15 @@ async function queryPinecone(
   embedding: number[],
   topK: number = 50
 ): Promise<PineconeMatch[]> {
-  const apiKey = process.env.PINECONE_API_KEY;
-  if (!apiKey) {
-    throw new Error("PINECONE_API_KEY not configured");
+  if (!pineconeIndexSingleton) {
+    const apiKey = process.env.PINECONE_API_KEY;
+    if (!apiKey) {
+      throw new Error("PINECONE_API_KEY not configured");
+    }
+    const pc = new Pinecone({ apiKey });
+    pineconeIndexSingleton = pc.index(INDEX_NAME);
   }
-
-  const pc = new Pinecone({ apiKey });
-  const index = pc.index(INDEX_NAME);
+  const index = pineconeIndexSingleton;
 
   // Query Pinecone - get 3x more results to account for filtering
   const queryRequest = {
