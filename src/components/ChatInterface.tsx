@@ -233,8 +233,8 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
         label: "By Midpoint",
         type: "guided" as const,
         remiResponse:
-          "<strong>Meeting up with a friend?</strong> Tell me where you both are, and I'll find restaurants in between! \n\n*e.g. I'm by AMC Times Square, and my friend is at One Manhattan West. We can travel 15 minutes by subway. Find spots between us, Remi.*",
-        example: "I'm by AMC Times Square, and my friend is at One Manhattan West. We can travel 15 minutes by subway. Find spots between us, Remi.",
+          "<strong>Meeting up with a friend?</strong> Tell me where you both are, and I'll find restaurants in between! \n\n*e.g. I'm by AMC Times Square, and my friend is at One Manhattan West. We can travel 15 minutes by subway. Find American spots between us, Remi.*",
+        example: "I'm by AMC Times Square, and my friend is at One Manhattan West. We can travel 15 minutes by subway. Find American spots between us, Remi.",
       },
       {
         label: "By Vibes",
