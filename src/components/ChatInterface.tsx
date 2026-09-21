@@ -1572,23 +1572,18 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                     toolCounts[toolKey] = (toolCounts[toolKey] || 0) + 1;
                                     const occurrenceNum = toolCounts[toolKey];
 
-                                    // Batched calls (e.g. geocoding/isolining two locations at once)
-                                    // only need a single combined status line, not one per call.
-                                    if (
-                                      occurrenceNum > 1 &&
-                                      (toolKey === "geocode" || toolKey === "get_isochrone")
-                                    ) {
-                                      return null;
-                                    }
-
                                     // Varied messages for geocode
                                     const geocodeDoneMessages = [
                                       "My friends in the subway helped me figure out the coordinates!",
+                                      "Found the second spot too!",
+                                      "And there's the next location!",
                                     ];
 
                                     // Varied messages for isochrone
                                     const isochroneDoneMessages = [
                                       "We're about to map!",
+                                      "Mapping the second isochrone too!",
+                                      "All areas are about to map!",
                                     ];
 
                                     // Varied messages for execute_sql
