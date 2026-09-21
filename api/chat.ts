@@ -949,6 +949,7 @@ The user's device location is available: latitude ${userLocation.latitude}, long
 2. **displayRestaurants is REQUIRED** - users see nothing without it! Always call it after any search/filter tool.
 3. **BE TERSE** - Max 2-3 sentences. No apologies. Highlight 1-2 restaurants with meaningful insight (award, famous dish or chef, unique vibe).
 4. **Never call displayRestaurants with empty arguments** - always pass restaurant_names!
+5. **SPEED: batch independent tool calls together.** If you need to call the same tool multiple times with inputs that don't depend on each other's results (e.g. geocoding two different locations, or getting isolines for two already-geocoded points), emit ALL of those calls in the SAME turn instead of one at a time waiting for each result. Only call tools sequentially when a later call genuinely needs an earlier call's output (e.g. get_isoline needs geocode's coordinates first).
 
 ### TOOL SELECTION
 - **semantic_search_restaurants**: vibes, dietary, ambiance ("cozy", "romantic", "vegan") - SQL cannot search these!
@@ -994,7 +995,7 @@ get_isoline returns a GEO_REF ID (e.g., "GEO_REF_ABC12"). Use in SQL: \`ST_GeomF
 
 **GEO_REF IDs are REQUEST-SCOPED** - they expire after each response! For follow-up queries, re-call get_isoline to get fresh IDs.
 
-"Between" queries (e.g. "meet in the middle of A and B"): geocode both locations → call get_isoline twice (once per location).
+"Between" queries (e.g. "meet in the middle of A and B"): call geocode for BOTH locations in the same turn (they don't depend on each other), then once you have both coordinates, call get_isoline for BOTH points in the same next turn.
 **DO NOT manually write \`ST_Intersection\`/\`ST_GeomFromGeoJSON\` SQL for this** - the backend automatically restricts the NEXT execute_sql or semantic_search_restaurants call to only restaurants reachable from ALL the isochrones you just created. Just call execute_sql with your normal filter (e.g. cuisine/price/awards) or semantic_search_restaurants with your vibe query, then displayRestaurants - no geometry SQL needed.
 
 ### ISOCHRONE + SEMANTIC SEARCH (CRITICAL TOOL CHAINING)
