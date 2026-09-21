@@ -233,8 +233,8 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
         label: "By Midpoint",
         type: "guided" as const,
         remiResponse:
-          "<strong>Meeting up with a friend?</strong> Tell me where you both are, and I'll find restaurants in between! \n\n*e.g. I'm by AMC Times Square, and my friend is at One Manhattan West. We can travel 15 minutes by subway. Find happy hour spots between us, Remi.*",
-        example: "I'm by AMC Times Square, and my friend is at One Manhattan West. We can travel 15 minutes by subway. Find happy hour spots between us, Remi.",
+          "<strong>Meeting up with a friend?</strong> Tell me where you both are, and I'll find restaurants in between! \n\n*e.g. I'm by AMC Times Square, and my friend is at One Manhattan West. We can travel 15 minutes by subway. Find spots between us, Remi.*",
+        example: "I'm by AMC Times Square, and my friend is at One Manhattan West. We can travel 15 minutes by subway. Find spots between us, Remi.",
       },
       {
         label: "By Vibes",
@@ -1572,23 +1572,18 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                     toolCounts[toolKey] = (toolCounts[toolKey] || 0) + 1;
                                     const occurrenceNum = toolCounts[toolKey];
 
-                                    // Batched calls (e.g. geocoding/isolining two locations at once)
-                                    // only need a single combined status line, not one per call.
-                                    if (
-                                      occurrenceNum > 1 &&
-                                      (toolKey === "geocode" || toolKey === "get_isochrone")
-                                    ) {
-                                      return null;
-                                    }
-
                                     // Varied messages for geocode
                                     const geocodeDoneMessages = [
                                       "My friends in the subway helped me figure out the coordinates!",
+                                      "Found the second spot too!",
+                                      "And there's the next location!",
                                     ];
 
                                     // Varied messages for isochrone
                                     const isochroneDoneMessages = [
                                       "We're about to map!",
+                                      "Mapping the second isochrone too!",
+                                      "All areas are about to map!",
                                     ];
 
                                     // Varied messages for execute_sql
