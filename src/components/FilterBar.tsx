@@ -668,17 +668,6 @@ export default function FilterBar() {
               <span
                 style={{ display: "flex", alignItems: "center", gap: "4px" }}
               >
-                <span
-                  style={{
-                    display: "inline-block",
-                    width: "10px",
-                    height: "10px",
-                    borderRadius: "50%",
-                    backgroundColor: "#c81224",
-                    border: "1px solid white",
-                    boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
-                  }}
-                ></span>
                 Awarded
               </span>
             }

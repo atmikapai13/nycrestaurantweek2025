@@ -700,36 +700,25 @@ export default function Map({
       });
     }
 
-    // Sort restaurants so higher priority markers render last (on top)
-    // Order: default (0) → awards (1) → favorites (2)
-    const sortedRestaurants = [...restaurantsToRender].sort((a, b) => {
-      const getPriority = (r: Restaurant) => {
-        if (favorites.includes(r.name)) return 2;
-        if (hasAnyAward(r)) return 1;
-        return 0;
-      };
-      return getPriority(a) - getPriority(b);
-    });
+    // Sort restaurants so favorites render last (on top of grey markers)
+    const sortedRestaurants = [...restaurantsToRender].sort(
+      (a, b) => Number(favorites.includes(a.name)) - Number(favorites.includes(b.name))
+    );
 
     // Render restaurants with coordinates
     sortedRestaurants.forEach((restaurant) => {
       if (restaurant.latitude && restaurant.longitude) {
         const isFavorite = favorites.includes(restaurant.name);
-        const isAwardWinner = hasAnyAward(restaurant);
 
+        // Pink for favorites, grey for everything else
         let markerColor = '#928f8e'  // Default grey
         let baseMarkerSize = 10;     // Base size for grey markers
         let zIndex = 0
 
-        // COLOR PRIORITY: Pink (favorites) > Red (awards) > Grey (default)
         if (isFavorite) {
           markerColor = "#ff67b2"; // Pink
           baseMarkerSize = 12;
           zIndex = 3;
-        } else if (isAwardWinner) {
-          markerColor = "#c81224"; // Red
-          baseMarkerSize = 12;
-          zIndex = 2;
         }
 
         let marker: mapboxgl.Marker;

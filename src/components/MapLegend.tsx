@@ -51,7 +51,7 @@ export const MapLegend: React.FC = () => {
                 fontWeight: awardsActive ? 600 : 400
               }}
             >
-              <div className="legend-marker" style={{ backgroundColor: '#FF9100', width: '8px', height: '8px' }}></div>
+              <div className="legend-marker" style={{ backgroundColor: '#928f8e', width: '8px', height: '8px' }}></div>
               <span>{awardWinnersCount} award-winners</span>
             </div>
           )}
@@ -65,7 +65,7 @@ export const MapLegend: React.FC = () => {
               fontWeight: favoritesActive ? 600 : 400
             }}
           >
-            <div className="legend-marker" style={{ backgroundColor: '#c81224', width: '8px', height: '8px' }}></div>
+            <div className="legend-marker" style={{ backgroundColor: '#ff67b2', width: '8px', height: '8px' }}></div>
             <span>{favoritesCount === 0 ? '0 favorited as of yet' : `${favoritesCount} favorited`}</span>
           </div>
         </div>
