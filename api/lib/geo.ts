@@ -1,13 +1,21 @@
 /**
- * Geocoding + isochrones via Geoapify (the provider the MCP server wrapped),
- * called directly to skip the MCP hop. Known Manhattan places resolve from a
- * local table; everything else is cached per warm instance so repeat queries
- * are instant and return identical coordinates/polygons.
+ * Geocoding and isochrones, Manhattan only.
+ *
+ * Users name landmarks and buildings far more than addresses, so geocoding
+ * tries, in order: a local table of neighborhoods/landmarks, Mapbox Search Box
+ * (fast, good at named buildings like "One Manhattan West"), then Geoapify
+ * (addresses, cross streets, areas). An answer is only accepted when it
+ * validates — Mapbox's place name must match the query, Geoapify must be
+ * confident and not just "somewhere in Manhattan" — otherwise we report
+ * not-found and Remi asks, rather than dropping a wrong pin. (The intent parser
+ * already rewrites descriptions like "the Accenture building" into names.)
+ *
+ * Isochrones come from Geoapify (the provider the old MCP server wrapped; it
+ * supports transit). Results are cached per warm instance.
  */
 import { booleanPointInPolygon, point } from "@turf/turf";
 import type { Feature, MultiPolygon, Polygon } from "geojson";
 import type { Restaurant } from "../../src/types/restaurant.js";
-import { expandNYCSlang } from "../../src/utils/nycSlang.js";
 
 export type TravelMode = "walking" | "cycling" | "driving" | "transit";
 
@@ -107,8 +115,41 @@ const BOROUGH_NAMES = /\b(brooklyn|queens|bronx|staten\s*island)\b/i;
 // Brooklyn 112xx, Queens 113xx–119xx, Bronx 104xx, Staten Island 103xx
 const NON_MANHATTAN_POSTCODE = /^(112\d{2}|11[3-9]\d{2}|104\d{2}|103\d{2})$/;
 
-// Geoapify transit isochrones occasionally take 20s+; give up and let the caller fall back.
 const REQUEST_TIMEOUT_MS = 8000;
+
+// Geoapify usually answers in 0.3–3s but roughly 1 in 10 calls stalls for 15s+.
+// If no answer arrives within HEDGE_AFTER_MS, send a duplicate request and take
+// whichever returns first; a stall rarely repeats, so the duplicate is usually fast.
+const HEDGE_AFTER_MS = 2500;
+const HEDGE_TIMEOUT_MS = 12000;
+
+async function hedgedJson(url: string): Promise<any> {
+  const controllers: AbortController[] = [];
+  const attempt = async () => {
+    const controller = new AbortController();
+    controllers.push(controller);
+    const res = await fetch(url, { signal: AbortSignal.any([controller.signal, AbortSignal.timeout(HEDGE_TIMEOUT_MS)]) });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json();
+  };
+  const first = attempt();
+  const backup = new Promise((resolve, reject) => {
+    const fire = () => attempt().then(resolve, reject);
+    const timer = setTimeout(fire, HEDGE_AFTER_MS);
+    first.then(
+      () => clearTimeout(timer),
+      () => {
+        clearTimeout(timer);
+        fire();
+      }
+    );
+  });
+  try {
+    return await Promise.any([first, backup]);
+  } finally {
+    controllers.forEach((c) => c.abort());
+  }
+}
 
 const geocodeCache = new Map<string, GeocodeResult>();
 const isolineCache = new Map<string, Feature<Polygon | MultiPolygon>>();
@@ -119,12 +160,145 @@ function apiKey(): string {
   return key;
 }
 
+
+/**
+ * Lowercase and drop a trailing ", Manhattan, NY"-style suffix — never words inside a
+ * name ("One Manhattan West"). Slang ("ktown", "the Met") is already expanded by the
+ * intent parser.
+ */
 function normalizePlace(query: string): string {
-  return expandNYCSlang(query)
-    .replace(/,?\s*(manhattan|new york city|new york|nyc|ny|united states|usa|us)\b/gi, "")
+  return query
+    .replace(/(,?\s*\b(manhattan|new york city|new york|nyc|ny|united states|usa|us)\b)+[\s.,]*$/i, "")
     .replace(/[.,]+$/, "")
     .trim()
     .toLowerCase();
+}
+
+const ABBREVIATIONS: Record<string, string> = {
+  st: "street", ave: "avenue", av: "avenue", blvd: "boulevard", pl: "place", sq: "square",
+  w: "west", e: "east", n: "north", s: "south",
+};
+
+const nameTokens = (s: string) =>
+  new Set(
+    s
+      .toLowerCase()
+      .replace(/[^a-z0-9\s]/g, " ")
+      .split(/\s+/)
+      .filter((t) => t && t !== "the")
+      .map((t) => ABBREVIATIONS[t] ?? t)
+  );
+
+/** Share of the query's words that appear in `text` (an address can contain much more). */
+function queryCoverage(query: string, text: string): number {
+  const q = nameTokens(query);
+  const t = nameTokens(text);
+  return [...q].filter((w) => t.has(w)).length / (q.size || 1);
+}
+
+/** Token overlap (Jaccard) between the query and a provider's place name. */
+function nameSimilarity(a: string, b: string): number {
+  const ta = nameTokens(a);
+  const tb = nameTokens(b);
+  const shared = [...ta].filter((t) => tb.has(t)).length;
+  return shared / (new Set([...ta, ...tb]).size || 1);
+}
+
+interface Candidate {
+  latitude: number;
+  longitude: number;
+  formattedAddress: string;
+  /** Text checked for borough names / postcodes when validating Manhattan. */
+  addressText: string;
+  postcode?: string;
+  county?: string;
+  /** How well this matches the query, comparable only within one provider. */
+  score: number;
+  /** A neighborhood/locality rather than a single venue; wins name ties ("Astoria"). */
+  isArea: boolean;
+}
+
+const mapboxToken = () => process.env.MAPBOX_TOKEN || process.env.VITE_MAPBOX_TOKEN || "";
+
+/** Mapbox Search Box hits whose place name closely matches the query. */
+async function mapboxCandidates(place: string): Promise<Candidate[]> {
+  const token = mapboxToken();
+  if (!token) return [];
+  const url =
+    `https://api.mapbox.com/search/searchbox/v1/forward?q=${encodeURIComponent(place)}` +
+    `&bbox=-74.26,40.49,-73.70,40.92&proximity=-73.98,40.75&limit=5&access_token=${token}`;
+  const res = await fetch(url, { signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) });
+  if (!res.ok) return [];
+  return ((await res.json()).features ?? [])
+    .map((f: any) => {
+      const address = f.properties.full_address ?? f.properties.place_formatted ?? "";
+      return {
+        latitude: f.geometry.coordinates[1],
+        longitude: f.geometry.coordinates[0],
+        formattedAddress: `${f.properties.name}, ${address}`,
+        addressText: address,
+        postcode: f.properties.context?.postcode?.name,
+        score: nameSimilarity(place, f.properties?.name ?? ""),
+        isArea: ["neighborhood", "locality", "place", "district"].includes(f.properties.feature_type),
+      };
+    })
+    .filter((c: Candidate) => c.score >= 0.6);
+}
+
+const GEOAPIFY_MATCH_RANK: Record<string, number> = { full_match: 2, inner_part: 1 };
+
+/** Geoapify hits that are confident and not a fallback to the whole city/borough. */
+async function geoapifyCandidates(place: string): Promise<Candidate[]> {
+  const url =
+    `https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(`${place}, New York, NY`)}` +
+    `&filter=${NYC_RECT}&bias=proximity:-73.98,40.75&limit=5&format=json&apiKey=${apiKey()}`;
+  return ((await hedgedJson(url)).results ?? [])
+    .filter(
+      (r: any) =>
+        (r.rank?.confidence ?? 0) >= 0.8 &&
+        r.rank?.match_type !== "match_by_city_or_disrict" &&
+        !["city", "county", "state", "country"].includes(r.result_type)
+    )
+    .map((r: any) => ({
+      latitude: r.lat,
+      longitude: r.lon,
+      formattedAddress: r.formatted,
+      addressText: r.formatted ?? "",
+      postcode: r.postcode,
+      county: r.county,
+      // Bonus for addresses containing the query's words, so "Broadway & W 72nd St" picks
+      // Manhattan's West 72nd St corner over Queens' "72 St & Broadway" or a 69th St corner.
+      score:
+        (GEOAPIFY_MATCH_RANK[r.rank?.match_type] ?? 0.5) +
+        (r.rank?.confidence ?? 0) +
+        queryCoverage(place, r.formatted ?? ""),
+      isArea: ["suburb", "district", "postcode"].includes(r.result_type),
+    }));
+}
+
+function isInManhattan(c: Candidate): boolean {
+  return (
+    (!c.county || c.county === "New York County") &&
+    isInsideManhattanBounds(c.latitude, c.longitude) &&
+    !NON_MANHATTAN_POSTCODE.test(c.postcode ?? "") &&
+    !BOROUGH_NAMES.test(c.addressText)
+  );
+}
+
+/**
+ * Prefer a Manhattan reading of an ambiguous name ("Broadway & 72nd St" also exists
+ * in Queens): take the best Manhattan hit unless a non-Manhattan hit matches strictly
+ * better (e.g. "Williamsburg" the neighborhood vs. the Williamsburg Bridge).
+ */
+function pickManhattan(candidates: Candidate[]): Candidate | "outside" | null {
+  if (!candidates.length) return null;
+  const best = (cs: Candidate[]) => cs.reduce<Candidate | null>((a, c) => (!a || c.score > a.score ? c : a), null);
+  const inside = best(candidates.filter(isInManhattan));
+  const outside = best(candidates.filter((c) => !isInManhattan(c)));
+  if (!inside) return "outside";
+  if (!outside || inside.score > outside.score) return inside;
+  // Tie: a real neighborhood beats a same-named venue (Queens' Astoria vs. a café called Astoria).
+  return inside.score === outside.score && (inside.isArea || !outside.isArea) ? inside : "outside";
 }
 
 export function isInsideManhattanBounds(lat: number, lng: number): boolean {
@@ -147,22 +321,17 @@ export async function geocode(query: string, useCache = true): Promise<GeocodeRe
   }
   if (useCache && geocodeCache.has(key)) return { ...geocodeCache.get(key)!, query };
 
-  const url =
-    `https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(`${key}, New York, NY`)}` +
-    `&filter=${NYC_RECT}&bias=proximity:-73.98,40.75&limit=1&format=json&apiKey=${apiKey()}`;
-  const res = await fetch(url, { signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) });
-  if (!res.ok) throw new Error(`Geoapify geocode failed: HTTP ${res.status}`);
-  const top = (await res.json()).results?.[0];
-  if (!top) throw new GeocodeNotFoundError(query);
+  // Start both lookups; use Mapbox if it settles it (~0.3s), else wait for Geoapify (2–5s).
+  const geoapify = geoapifyCandidates(key).catch(() => []);
+  const fromMapbox = pickManhattan(await mapboxCandidates(key).catch(() => []));
+  const fromGeoapify = fromMapbox && fromMapbox !== "outside" ? null : pickManhattan(await geoapify);
+  const best = [fromMapbox, fromGeoapify].find((c): c is Candidate => !!c && c !== "outside");
+  if (!best) {
+    if (fromMapbox === "outside" || fromGeoapify === "outside") throw new OutsideManhattanError(query);
+    throw new GeocodeNotFoundError(query);
+  }
 
-  const outside =
-    (top.county && top.county !== "New York County") ||
-    !isInsideManhattanBounds(top.lat, top.lon) ||
-    NON_MANHATTAN_POSTCODE.test(top.postcode ?? "") ||
-    BOROUGH_NAMES.test(top.formatted ?? "");
-  if (outside) throw new OutsideManhattanError(query);
-
-  const result = { query, latitude: top.lat, longitude: top.lon, formattedAddress: top.formatted };
+  const result = { query, latitude: best.latitude, longitude: best.longitude, formattedAddress: best.formattedAddress };
   geocodeCache.set(key, result);
   return result;
 }
@@ -181,9 +350,7 @@ export async function isochrone(
   const url =
     `https://api.geoapify.com/v1/isoline?lat=${latitude}&lon=${longitude}&type=time` +
     `&mode=${GEOAPIFY_MODE[mode]}&range=${Math.round(minutes * 60)}&apiKey=${apiKey()}`;
-  const res = await fetch(url, { signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) });
-  if (!res.ok) throw new Error(`Geoapify isoline failed: HTTP ${res.status}`);
-  const feature = (await res.json()).features?.[0];
+  const feature = (await hedgedJson(url)).features?.[0];
   if (!feature?.geometry) throw new Error("Geoapify isoline returned no geometry");
 
   isolineCache.set(cacheKey, feature);

@@ -54,9 +54,17 @@ function assumptionNote(outcome: SearchOutcome): string {
   return `\nASSUMED TRAVEL: the user didn't fully specify how they're getting around, so this searched a ${travel.minutes}-minute ${trip}. Mention that assumption in one short clause and invite them to say if they'd rather walk, bike, take transit, or allow more or less time.`;
 }
 
+/** Where each place was pinned, so Remi can confirm it and a wrong pin is easy to catch. */
+function placementNote(outcome: SearchOutcome): string {
+  const locations = ("locations" in outcome ? outcome.locations : []).filter((l) => l.query !== "your location");
+  if (!locations.length) return "";
+  const pins = locations.map((l) => `"${l.query}" → ${l.formattedAddress}`).join("; ");
+  return `\nPLACED ON THE MAP: ${pins}. Briefly confirm where you placed each one in short form (e.g. "One Manhattan West on 9th Ave"), so the user can correct a wrong spot.`;
+}
+
 function buildPrompt(userMessage: string, intent: SearchIntent, outcome: SearchOutcome): string {
   const travel = "travel" in outcome ? outcome.travel : null;
-  const asked = `USER MESSAGE: ${userMessage}\nSEARCHED FOR: ${describeSearch(intent, travel)}${assumptionNote(outcome)}`;
+  const asked = `USER MESSAGE: ${userMessage}\nSEARCHED FOR: ${describeSearch(intent, travel)}${placementNote(outcome)}${assumptionNote(outcome)}`;
 
   switch (outcome.status) {
     case "chitchat":

@@ -34,7 +34,7 @@ export function buildIntentSchema(cuisines: string[]) {
     locations: z
       .array(z.string())
       .describe(
-        `Places to search around, one entry per person/place, as written (e.g. "Times Square", "Murray Hill"). Use "${MY_LOCATION}" for "me", "my location", "near me", "where I am". [] if no location.`
+        `Places to search around, one entry per person/place, each rewritten into the form a map search finds best: the official name of a landmark, venue, or building ("the Accenture building" → "One Manhattan West", "the Met" → "Metropolitan Museum of Art", "AMC Times Square" → "AMC Empire 25"); "Street & Cross Street" for intersections ("72nd and Broadway" → "Broadway & W 72nd St"); neighborhoods as names ("Murray Hill"). Use "${MY_LOCATION}" for "me", "my location", "near me", "where I am". [] if no location.`
       ),
     travelMode: z.enum(MODES).describe("walk→walking, bike→cycling, car/uber/taxi→driving, subway/train/bus/transit→transit. unspecified if not stated."),
     travelMinutes: z.number().int().nullable().describe("Travel time in minutes if stated, else null."),

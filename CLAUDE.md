@@ -8,7 +8,7 @@ NYC Eats is a conversational geospatial restaurant discovery tool for Manhattan.
 - **Frontend**: React 18 + TypeScript + Vite + Mapbox GL
 - **Backend**: Hono on Vercel Functions, AI SDK UI-message streaming
 - **AI**: Google Gemini 2.5 Flash: one structured-output call to parse the request, one streamed call to narrate. Retrieval is plain code.
-- **Geo**: Geoapify geocoding + isochrones (walk / bike / drive / transit)
+- **Geo**: Mapbox Search Box + Geoapify geocoding (validated, Manhattan-preferring); Geoapify isochrones (walk / bike / drive / transit), hedged against occasional stalls
 - **Search**: in-memory cosine search over `src/data/embeddings.json` (`gemini-embedding-001`, 768-d), hybrid 70% semantic / 30% keyword
 - **Data**: 644 restaurants in `src/data/FinalData.json` (Yelp, Reddit sentiment, Michelin/NYT awards, Restaurant Week meal types, coordinates)
 
@@ -43,7 +43,7 @@ This branch (`spring2026`) is built as a self-contained subpath app:
 Three steps; see `api/README.md` for detail.
 
 1. **Parse** — `lib/intent.ts`: one Gemini call with a Zod schema (temperature 0, fixed seed, thinking off) → `SearchIntent` (kind, locations, travel mode/minutes, vibes, cuisines from the dataset's own list, prices, awards, Restaurant Week). The previous turn's intent is passed in so "cheaper" / "show me more" refine it.
-2. **Search** — `lib/searchPipeline.ts`, no LLM: geocode (`lib/geo.ts`: a known-places table, then Geoapify, rejecting non-Manhattan by county) → isochrones in parallel → intersect for multiple people (if mode/minutes are missing, `travelPlan` starts at a 15-min walk for one place or 20-min transit for several, and widens only until something matches; stated values are never changed) → `filterPool`/cuisine/price/award/RW filters → rank by `lib/vectorSearch.ts` if vibes were given, else a fixed quality score (ties broken by slug) → top 5.
+2. **Search** — `lib/searchPipeline.ts`, no LLM: geocode (`lib/geo.ts`: known-places table → Mapbox Search Box → Geoapify; a hit is only accepted if it validates — name match / confidence — and ambiguous names prefer the Manhattan reading; otherwise Remi asks) → isochrones in parallel → intersect for multiple people (if mode/minutes are missing, `travelPlan` starts at a 15-min walk for one place or 20-min transit for several, and widens only until something matches; stated values are never changed) → `filterPool`/cuisine/price/award/RW filters → rank by `lib/vectorSearch.ts` if vibes were given, else a fixed quality score (ties broken by slug) → top 5.
 3. **Narrate** — `lib/narrate.ts`: one short streamed call that only describes the chosen restaurants; clarifications and out-of-Manhattan replies are canned.
 
 Same prompt ⇒ same intent ⇒ same restaurants. Intents, geocodes, isochrones and query embeddings are cached per warm instance; the header `x-nyceats-cache: off` bypasses that.
