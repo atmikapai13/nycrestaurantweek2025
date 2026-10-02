@@ -99,23 +99,27 @@ export interface ScoredRestaurant {
   similarity: number;
 }
 
-/** Rank `candidates` by semantic + keyword relevance to `query`. */
-export async function semanticRank(
+/**
+ * Embed `query` once and return a function that ranks any candidate set by
+ * semantic + keyword relevance to it (used repeatedly when the search area widens).
+ */
+export async function createSemanticRanker(
   query: string,
-  candidates: Restaurant[],
   useCache = true
-): Promise<ScoredRestaurant[]> {
+): Promise<(candidates: Restaurant[]) => ScoredRestaurant[]> {
   const embeddings = loadEmbeddings();
   const queryVector = await embedQuery(query, useCache);
   const queryNorm = Math.hypot(...queryVector);
 
-  const scored: ScoredRestaurant[] = [];
-  for (const restaurant of candidates) {
-    const stored = embeddings.get(restaurant.slug);
-    if (!stored) continue;
-    const similarity = cosine(queryVector, queryNorm, stored.vector, stored.norm);
-    if (similarity < MIN_SIMILARITY) continue;
-    scored.push({ restaurant, similarity, score: similarity * 0.7 + keywordBoost(query, restaurant) * 0.3 });
-  }
-  return scored.sort((a, b) => b.score - a.score || a.restaurant.slug.localeCompare(b.restaurant.slug));
+  return (candidates) => {
+    const scored: ScoredRestaurant[] = [];
+    for (const restaurant of candidates) {
+      const stored = embeddings.get(restaurant.slug);
+      if (!stored) continue;
+      const similarity = cosine(queryVector, queryNorm, stored.vector, stored.norm);
+      if (similarity < MIN_SIMILARITY) continue;
+      scored.push({ restaurant, similarity, score: similarity * 0.7 + keywordBoost(query, restaurant) * 0.3 });
+    }
+    return scored.sort((a, b) => b.score - a.score || a.restaurant.slug.localeCompare(b.restaurant.slug));
+  };
 }

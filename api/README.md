@@ -10,7 +10,9 @@ pipeline where the LLM only handles language:
    awards, Restaurant Week, and kind (search / lookup / area summary / more / chitchat).
    The previous intent is passed in so follow-ups like "cheaper" refine it.
 2. **Search** (`lib/searchPipeline.ts`): plain code, no LLM. Geocode and isochrones
-   via Geoapify in parallel (`lib/geo.ts`), intersection for multiple people,
+   via Geoapify in parallel (`lib/geo.ts`), intersection for multiple people
+   (unstated travel defaults to a 15-min walk for one place or 20-min transit for
+   several, widening step by step only until something matches),
    in-memory filters, then ranking: semantic (`lib/vectorSearch.ts`, local
    embeddings) when vibes are given, otherwise a fixed quality score. Top 5.
 3. **Narrate** (`lib/narrate.ts`): one short streamed Gemini call describes the

@@ -139,6 +139,17 @@ const chatHandler = async (c: any) => {
           metrics.toolFinished(metricIndex.get(toolCallId)!, false);
           write({ type: "tool-output-error", toolCallId, errorText });
         },
+        async measure(name, input, fn) {
+          const index = metrics.toolStarted(name, input);
+          try {
+            const result = await fn();
+            metrics.toolFinished(index, true);
+            return result;
+          } catch (error) {
+            metrics.toolFinished(index, false);
+            throw error;
+          }
+        },
       };
 
       // 2. Deterministic search.

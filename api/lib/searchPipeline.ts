@@ -29,16 +29,45 @@ import {
   isNytTop100,
   isRestaurantWeek,
 } from "./restaurants.js";
-import { semanticRank } from "./vectorSearch.js";
+import { createSemanticRanker } from "./vectorSearch.js";
 
 export const RESULTS_PER_PAGE = 5;
-const DEFAULT_MINUTES = 15;
+
+export interface Travel {
+  mode: TravelMode;
+  minutes: number;
+  /** True when the user didn't specify mode and/or minutes and a default was used. */
+  assumed: boolean;
+}
+
+/**
+ * Travel settings to try, narrowest first. Anything the user stated is kept;
+ * whatever they left out widens step by step until something matches, so results
+ * stay as local as possible (and "show me more" widens once nearby matches run out).
+ * Defaults come from measured coverage: a 15-min walk keeps "near X" local for one
+ * place, but two people's walking areas rarely overlap, while 20-min transit does.
+ */
+function travelPlan(intent: SearchIntent): Travel[] {
+  const { travelMode: mode, travelMinutes: minutes } = intent;
+  if (mode !== "unspecified" && minutes != null) return [{ mode, minutes, assumed: false }];
+  if (mode !== "unspecified") return [15, 20, 25].map((m) => ({ mode, minutes: m, assumed: true }));
+  if (minutes != null) {
+    return (["walking", "transit"] as const).map((m) => ({ mode: m, minutes, assumed: true }));
+  }
+  const steps: Array<[TravelMode, number]> =
+    intent.locations.length > 1
+      ? [["transit", 20], ["transit", 25]]
+      : [["walking", 15], ["transit", 15], ["transit", 20], ["transit", 25]];
+  return steps.map(([m, n]) => ({ mode: m, minutes: n, assumed: true }));
+}
 
 /** Reports progress as tool calls; implemented by the route to write stream parts. */
 export interface ToolReporter {
   start(toolName: string, input: unknown, options?: { dynamic?: boolean }): string;
   finish(id: string, output: unknown): void;
   fail(id: string, message: string): void;
+  /** Time work that isn't streamed as a tool part (e.g. isochrones tried while widening). */
+  measure<T>(name: string, input: unknown, fn: () => Promise<T>): Promise<T>;
 }
 
 export interface PipelineContext {
@@ -64,12 +93,11 @@ export type SearchOutcome =
       shown: Restaurant[];
       totalMatches: number;
       locations: GeocodeResult[];
-      travel: { mode: TravelMode; minutes: number } | null;
+      travel: Travel | null;
       usedSemanticSearch: boolean;
       areaStats?: AreaStats;
     }
-  | { status: "no_results"; locations: GeocodeResult[]; travel: { mode: TravelMode; minutes: number } | null; areaCounts: number[] }
-  | { status: "needs_travel_mode"; places: string[] }
+  | { status: "no_results"; locations: GeocodeResult[]; travel: Travel | null; areaCounts: number[] }
   | { status: "needs_user_location" }
   | { status: "outside_manhattan"; place: string }
   | { status: "location_not_found"; place: string }
@@ -169,70 +197,83 @@ export async function runSearch(intent: SearchIntent, ctx: PipelineContext): Pro
     return { status: "ok", shown: unique.slice(0, RESULTS_PER_PAGE), totalMatches: unique.length, locations: [], travel: null, usedSemanticSearch: false };
   }
 
-  // ---- Where: filter pool ∩ every isochrone ----
-  let pool = ctx.filterPool.length
+  const basePool = ctx.filterPool.length
     ? allRestaurants.filter((r) => ctx.filterPool.includes(r.slug))
     : allRestaurants;
 
+  // Ranks a pool: filters, drops already-shown ("more"), then orders by vibe or quality.
+  const ranker = intent.vibes.length ? await createSemanticRanker(intent.vibes.join(", "), ctx.useCache) : null;
+  const rank = (pool: Restaurant[]) => {
+    const candidates = applyFilters(pool, intent);
+    const unseen = intent.kind === "more" ? candidates.filter((r) => !ctx.previouslyShown.includes(r.slug)) : candidates;
+    const ranked = ranker ? ranker(unseen).map((s) => s.restaurant) : [...unseen].sort(byQuality);
+    return { candidates, ranked };
+  };
+
   let locations: GeocodeResult[] = [];
-  let travel: { mode: TravelMode; minutes: number } | null = null;
-  const areaCounts: number[] = [];
+  let travel: Travel | null = null;
+  let areaCounts: number[] = [];
+  let result = rank(basePool);
 
   if (intent.locations.length) {
-    if (intent.travelMode === "unspecified") return { status: "needs_travel_mode", places: intent.locations };
-    travel = { mode: intent.travelMode, minutes: intent.travelMinutes ?? DEFAULT_MINUTES };
-
     const resolved = await resolveLocations(intent, ctx);
     if (!Array.isArray(resolved)) return resolved;
     locations = resolved;
 
-    const polygons = await Promise.all(
-      locations.map(async (loc) => {
-        const input = { latitude: loc.latitude, longitude: loc.longitude, mode: travel!.mode, minutes: travel!.minutes };
-        const id = ctx.tools.start("get_isoline", input, { dynamic: true });
-        try {
-          const feature = await isochrone(loc.latitude, loc.longitude, travel!.mode, travel!.minutes, ctx.useCache);
-          const inside = restaurantsInPolygon(pool, feature);
-          // The frontend reads structuredContent.results[0].geojson to draw the layer.
-          ctx.tools.finish(id, {
-            structuredContent: { results: [{ geojson: feature }] },
-            restaurantSlugs: inside.map((r) => r.slug),
-            count: inside.length,
-          });
-          return { feature, inside };
-        } catch (err) {
-          ctx.tools.fail(id, err instanceof Error ? err.message : String(err));
-          throw err;
-        }
-      })
-    );
+    // Try each travel setting until something matches, then draw only that one.
+    const plan = travelPlan(intent);
+    let chosen: { travel: Travel; areas: Array<{ feature: Awaited<ReturnType<typeof isochrone>>; inside: Restaurant[] }> } | null = null;
+    for (const [i, step] of plan.entries()) {
+      let areas;
+      try {
+        areas = await Promise.all(
+          locations.map(async (loc) => {
+            const feature = await ctx.tools.measure("isochrone", { ...step, place: loc.query }, () =>
+              isochrone(loc.latitude, loc.longitude, step.mode, step.minutes, ctx.useCache)
+            );
+            return { feature, inside: restaurantsInPolygon(basePool, feature) };
+          })
+        );
+      } catch (err) {
+        // A slow/failed step falls through to the next, wider one; only the last step is fatal.
+        if (i < plan.length - 1) continue;
+        throw err;
+      }
+      const reachableFromAll = areas
+        .map((a) => new Set(a.inside.map((r) => r.slug)))
+        .reduce((acc, set) => new Set([...acc].filter((slug) => set.has(slug))));
+      result = rank(basePool.filter((r) => reachableFromAll.has(r.slug)));
+      chosen = { travel: step, areas };
+      if (result.ranked.length > 0) break;
+    }
 
-    polygons.forEach((p) => areaCounts.push(p.inside.length));
-    const reachableFromAll = polygons
-      .map((p) => new Set(p.inside.map((r) => r.slug)))
-      .reduce((acc, set) => new Set([...acc].filter((slug) => set.has(slug))));
-    pool = pool.filter((r) => reachableFromAll.has(r.slug));
+    travel = chosen!.travel;
+    areaCounts = chosen!.areas.map((a) => a.inside.length);
+    chosen!.areas.forEach((area, i) => {
+      const loc = locations[i];
+      const id = ctx.tools.start(
+        "get_isoline",
+        { latitude: loc.latitude, longitude: loc.longitude, mode: travel!.mode, minutes: travel!.minutes },
+        { dynamic: true }
+      );
+      // The frontend reads structuredContent.results[0].geojson to draw the layer.
+      ctx.tools.finish(id, {
+        structuredContent: { results: [{ geojson: area.feature }] },
+        restaurantSlugs: area.inside.map((r) => r.slug),
+        count: area.inside.length,
+      });
+    });
   }
 
-  // ---- What: structured filters ----
-  const candidates = applyFilters(pool, intent);
-  const areaStats = intent.kind === "area_summary" ? computeAreaStats(candidates) : undefined;
-  const unseen = intent.kind === "more" ? candidates.filter((r) => !ctx.previouslyShown.includes(r.slug)) : candidates;
-
-  // ---- Order: semantic relevance to the vibes, or quality ----
-  let ranked: Restaurant[];
-  const usedSemanticSearch = intent.vibes.length > 0;
+  const { candidates, ranked } = result;
+  const usedSemanticSearch = ranker !== null;
   if (usedSemanticSearch) {
-    const query = intent.vibes.join(", ");
-    const id = ctx.tools.start("semantic_search_restaurants", { query, candidates: unseen.length });
-    ranked = (await semanticRank(query, unseen, ctx.useCache)).map((s) => s.restaurant);
+    const id = ctx.tools.start("semantic_search_restaurants", { query: intent.vibes.join(", ") });
     ctx.tools.finish(id, {
       restaurantSlugs: ranked.slice(0, RESULTS_PER_PAGE).map((r) => r.slug),
       count: ranked.length,
       restaurantWeekDetected: intent.restaurantWeek,
     });
-  } else {
-    ranked = [...unseen].sort(byQuality);
   }
 
   if (!ranked.length) return { status: "no_results", locations, travel, areaCounts };
@@ -243,12 +284,12 @@ export async function runSearch(intent: SearchIntent, ctx: PipelineContext): Pro
     locations,
     travel,
     usedSemanticSearch,
-    areaStats,
+    areaStats: intent.kind === "area_summary" ? computeAreaStats(candidates) : undefined,
   };
 }
 
 /** One-line human description of what was searched, for narration and logs. */
-export function describeSearch(intent: SearchIntent): string {
+export function describeSearch(intent: SearchIntent, travel: Travel | null = null): string {
   const parts: string[] = [];
   if (intent.vibes.length) parts.push(intent.vibes.join(", "));
   if (intent.cuisines.length) parts.push(intent.cuisines.join(" or "));
@@ -257,8 +298,9 @@ export function describeSearch(intent: SearchIntent): string {
   if (intent.restaurantWeek) parts.push("Restaurant Week participants");
   if (intent.locations.length) {
     const places = intent.locations.map((l) => (l === MY_LOCATION ? "the user's location" : l)).join(" and ");
-    const minutes = intent.travelMinutes ?? DEFAULT_MINUTES;
-    parts.push(`within ${minutes} min ${intent.travelMode} of ${places}`);
+    const mode = travel?.mode ?? intent.travelMode;
+    const minutes = travel?.minutes ?? intent.travelMinutes;
+    parts.push(`within ${minutes ?? "?"} min ${mode} of ${places}`);
   }
   return parts.join(" · ") || "restaurants";
 }

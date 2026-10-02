@@ -14,8 +14,6 @@ const OUTSIDE_MANHATTAN =
 /** Fixed reply for outcomes that don't need the LLM, or null if narration should run. */
 export function cannedReply(outcome: SearchOutcome): string | null {
   switch (outcome.status) {
-    case "needs_travel_mode":
-      return `How are you getting around from ${outcome.places.join(" and ")}: walking, biking, transit, or driving? And roughly how many minutes are you willing to travel? (I'll assume 15 if you don't say.)`;
     case "needs_user_location":
       return "I can't see your location yet. Allow location access in your browser (or tell me a nearby address or neighborhood) and I'll map what's around you.";
     case "outside_manhattan":
@@ -48,8 +46,17 @@ function compactRestaurant(r: any) {
   };
 }
 
+/** Tells the model when travel mode/time were assumed, so Remi says so and the user can correct it. */
+function assumptionNote(outcome: SearchOutcome): string {
+  const travel = "travel" in outcome ? outcome.travel : null;
+  if (!travel?.assumed) return "";
+  const trip = { walking: "walk", cycling: "bike ride", driving: "drive", transit: "subway/bus ride" }[travel.mode];
+  return `\nASSUMED TRAVEL: the user didn't fully specify how they're getting around, so this searched a ${travel.minutes}-minute ${trip}. Mention that assumption in one short clause and invite them to say if they'd rather walk, bike, take transit, or allow more or less time.`;
+}
+
 function buildPrompt(userMessage: string, intent: SearchIntent, outcome: SearchOutcome): string {
-  const asked = `USER MESSAGE: ${userMessage}\nSEARCHED FOR: ${describeSearch(intent)}`;
+  const travel = "travel" in outcome ? outcome.travel : null;
+  const asked = `USER MESSAGE: ${userMessage}\nSEARCHED FOR: ${describeSearch(intent, travel)}${assumptionNote(outcome)}`;
 
   switch (outcome.status) {
     case "chitchat":

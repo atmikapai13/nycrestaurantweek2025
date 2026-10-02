@@ -43,7 +43,7 @@ This branch (`spring2026`) is built as a self-contained subpath app:
 Three steps; see `api/README.md` for detail.
 
 1. **Parse** — `lib/intent.ts`: one Gemini call with a Zod schema (temperature 0, fixed seed, thinking off) → `SearchIntent` (kind, locations, travel mode/minutes, vibes, cuisines from the dataset's own list, prices, awards, Restaurant Week). The previous turn's intent is passed in so "cheaper" / "show me more" refine it.
-2. **Search** — `lib/searchPipeline.ts`, no LLM: geocode (`lib/geo.ts`: a known-places table, then Geoapify, rejecting non-Manhattan by county) → isochrones in parallel → intersect for multiple people → `filterPool`/cuisine/price/award/RW filters → rank by `lib/vectorSearch.ts` if vibes were given, else a fixed quality score (ties broken by slug) → top 5.
+2. **Search** — `lib/searchPipeline.ts`, no LLM: geocode (`lib/geo.ts`: a known-places table, then Geoapify, rejecting non-Manhattan by county) → isochrones in parallel → intersect for multiple people (if mode/minutes are missing, `travelPlan` starts at a 15-min walk for one place or 20-min transit for several, and widens only until something matches; stated values are never changed) → `filterPool`/cuisine/price/award/RW filters → rank by `lib/vectorSearch.ts` if vibes were given, else a fixed quality score (ties broken by slug) → top 5.
 3. **Narrate** — `lib/narrate.ts`: one short streamed call that only describes the chosen restaurants; clarifications and out-of-Manhattan replies are canned.
 
 Same prompt ⇒ same intent ⇒ same restaurants. Intents, geocodes, isochrones and query embeddings are cached per warm instance; the header `x-nyceats-cache: off` bypasses that.

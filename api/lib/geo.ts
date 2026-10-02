@@ -107,6 +107,9 @@ const BOROUGH_NAMES = /\b(brooklyn|queens|bronx|staten\s*island)\b/i;
 // Brooklyn 112xx, Queens 113xx–119xx, Bronx 104xx, Staten Island 103xx
 const NON_MANHATTAN_POSTCODE = /^(112\d{2}|11[3-9]\d{2}|104\d{2}|103\d{2})$/;
 
+// Geoapify transit isochrones occasionally take 20s+; give up and let the caller fall back.
+const REQUEST_TIMEOUT_MS = 8000;
+
 const geocodeCache = new Map<string, GeocodeResult>();
 const isolineCache = new Map<string, Feature<Polygon | MultiPolygon>>();
 
@@ -147,7 +150,7 @@ export async function geocode(query: string, useCache = true): Promise<GeocodeRe
   const url =
     `https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(`${key}, New York, NY`)}` +
     `&filter=${NYC_RECT}&bias=proximity:-73.98,40.75&limit=1&format=json&apiKey=${apiKey()}`;
-  const res = await fetch(url);
+  const res = await fetch(url, { signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) });
   if (!res.ok) throw new Error(`Geoapify geocode failed: HTTP ${res.status}`);
   const top = (await res.json()).results?.[0];
   if (!top) throw new GeocodeNotFoundError(query);
@@ -178,7 +181,7 @@ export async function isochrone(
   const url =
     `https://api.geoapify.com/v1/isoline?lat=${latitude}&lon=${longitude}&type=time` +
     `&mode=${GEOAPIFY_MODE[mode]}&range=${Math.round(minutes * 60)}&apiKey=${apiKey()}`;
-  const res = await fetch(url);
+  const res = await fetch(url, { signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) });
   if (!res.ok) throw new Error(`Geoapify isoline failed: HTTP ${res.status}`);
   const feature = (await res.json()).features?.[0];
   if (!feature?.geometry) throw new Error("Geoapify isoline returned no geometry");
