@@ -1,6 +1,5 @@
 /**
  * RAG Search Logic for Semantic Restaurant Search
- * Ported from DEPRECATED_LANGRAPH (api)/_lib/ragSearchLogic.js
  *
  * Uses 70% semantic (Pinecone) + 30% keyword hybrid scoring
  * Supports filterPool pre-filtering via restaurantIds parameter

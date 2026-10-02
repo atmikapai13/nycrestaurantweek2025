@@ -4,167 +4,83 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-NYC Eats is a conversational geospatial restaurant discovery tool for Manhattan. It combines:
-- **Frontend**: React 18 + TypeScript + Vite + Mapbox GL for interactive mapping
-- **Backend**: Hono on Vercel Functions with AI SDK + MCP (Model Context Protocol)
-- **AI**: Google Gemini 2.5 Flash with streaming multi-tool function calling
-- **Search**: Pinecone vector DB for semantic search (hybrid 70% semantic + 30% keyword scoring)
-- **Data**: 628 restaurants in `src/data/FinalData.json` with Yelp reviews, Reddit sentiment, Michelin/NYT awards, coordinates
+NYC Eats is a conversational geospatial restaurant discovery tool for Manhattan. "Remi" (Ratatouille persona) answers chat queries by calling geo + search tools and rendering results on a map.
+- **Frontend**: React 18 + TypeScript + Vite + Mapbox GL
+- **Backend**: Hono on Vercel Functions, AI SDK (`streamText`) + MCP client (marauders-query-mcp) for geocode / isochrone / DuckDB SQL
+- **AI**: Google Gemini 2.5 Flash, multi-step tool calling (`stopWhen: stepCountIs(10)`)
+- **Search**: Pinecone + `gemini-embedding-001`, hybrid 70% semantic / 30% keyword scoring
+- **Data**: 644 restaurants in `src/data/FinalData.json` (Yelp, Reddit sentiment, Michelin/NYT awards, Restaurant Week meal types, coordinates)
 
-## Common Commands
+## Commands
 
 ```bash
-# Development
-npm run dev                    # Vite frontend dev server (port 5173)
-npm run api:dev               # API server with tsx watch (port 3001)
-npm run vercel-dev            # Vercel Functions locally (port 3000)
-
-# Build & Deploy
-npm run build                 # tsc + vite build
-npm run deploy                # Deploy to GitHub Pages via gh-pages
-
-# Linting (no test suite configured)
-npm run lint                  # ESLint check
-
-# Vector Embeddings (Pinecone RAG)
-npm run embeddings:generate   # Generate embeddings from FinalData.json
-npm run embeddings:upload     # Upload to Pinecone
-npm run embeddings:setup      # Both generate + upload
+npm run dev                   # Vite frontend (5173), served under /spring2026/
+npm run api:dev               # Local Hono API server with tsx watch (3001) — REQUIRED for chat in dev
+npm run vercel-dev            # Vercel Functions locally (3000)
+npm run build                 # tsc + vite build → dist/spring2026
+npm run lint                  # ESLint, --max-warnings 0
+npm run embeddings:setup      # Regenerate + upload Pinecone embeddings from FinalData.json
 ```
 
-## Architecture
+There is no test suite or chat-endpoint test harness. `scripts/` holds only the Pinecone embedding scripts (run them whenever `FinalData.json` changes) and `node scripts/validate-restaurant-data.js`, which checks `FinalData.json` for missing fields.
 
-```
-User Message
-    ↓
-ChatInterface.tsx → POST /api/chat (streaming)
-    ↓
-api/chat.ts → AI SDK streamText() + MCP Client
-    ↓
-Gemini calls tools via MCP protocol:
-    - geocode → get_isoline → displayRestaurants (location queries)
-    - semantic_search_restaurants → displayRestaurants (vibe/dietary queries)
-    - execute_sql → displayRestaurants (structured filters)
-    ↓
-Streaming response with tool results → Frontend renders progressively
-```
+## Development Setup
 
-### Backend (api/)
+In dev, `src/config/features.ts` hard-codes the chat/transcribe endpoints to `http://localhost:3001`, so `npm run dev` alone gives a working map but a broken chat — run `npm run api:dev` alongside it. The MCP server is remote (`MCP_SERVER_URL`); it does not need to run locally.
 
-- **`chat.ts`** (~1,591 lines): Central file — Hono endpoint, AI SDK streaming, system prompt (Remy from Ratatouille persona), all tool definitions, fuzzy restaurant matching
-- **`server.ts`**: Local dev server using `@hono/node-server`, routes `/chat` and `/transcribe`, port 3001
-- **`transcribe.ts`**: Audio transcription endpoint for voice input
-- **`env.ts`**: T3 Env type-safe environment variables (Google API, MCP, Pinecone)
-- **`schemas/chat.ts`**: Zod validation for UIMessage, message parts, tool invocations
-- **`lib/ragSearchLogic.ts`** (~324 lines): Pinecone semantic search — `generateQueryEmbedding()`, `queryPinecone()`, `calculateKeywordBoost()`, `performRagSearch()`. Adaptive result count (10 if high quality, 5 if lower)
-- **`utils/geometryOptimizer.ts`**: Simplifies GeoJSON polygons via Turf.js, creates `GEO_REF_*` cache IDs (50KB → 500 bytes)
-- **`utils/toolWrapper.ts`**: Wraps MCP tools with geometry optimization middleware
+## Deployment (subpath build)
 
-### Frontend (src/)
+This branch (`spring2026`) is built as a self-contained subpath app:
+- `vite.config.ts` sets `base: "/spring2026/"` and `outDir: "dist/spring2026"`. The site is served at `nyceats.live/spring2026/` via a separate Vercel router project, and also on its own `.vercel.app` domain.
+- **Public assets must go through `asset()`** (`src/utils/asset.ts`), e.g. `asset("/characters/anton.png")`. Hard-coded `/foo.png` paths break under the subpath.
+- `vercel.json` rewrites `/spring2026/api/*` → `/api/*`; functions have a 60s max duration (the chat stream aborts at 55s). Vercel deploys from this branch; the `gh-pages` branch is excluded. `npm run deploy` (gh-pages) is legacy.
+- Kill switch: set `CHATBOT_DOWN = true` in `src/components/ChatInterface.tsx` to take Remi offline (shows a down message instead of calling the API).
 
-- **`components/ChatInterface.tsx`** (~1,000 lines): Main chat UI using AI SDK `useChat` hook, handles tool results and map actions
-- **`components/Map.tsx`**: Mapbox GL with markers, isochrone visualization, point-in-polygon filtering
-- **`components/RestaurantCard.tsx`**: Restaurant detail cards with accordions
-- **`components/RestaurantCarousel.tsx`**: Horizontal scrollable restaurant cards in chat
-- **`components/FilterBar.tsx`** + **`FilterDropdown.tsx`**: Cuisine, price, awards, vibes filters that scope queries via `filterPool`
-- **`components/FloatingHeader.tsx`**: Top UI bar
-- **`components/IsochroneMessage.tsx`**: Isochrone display in chat
-- **`contexts/MapContext.tsx`** (~551 lines): Central state — filter state (cuisine, price, awards, vibes, favorites, Yelp rating), isochrone layers, markers, search state, user geolocation, computed `filterPoolSlugs`
-- **`types/restaurant.ts`**: Restaurant interface (name, slug, coordinates, cuisine, awards, Yelp data, socials, price, collections)
+## Request Flow (`api/chat.ts`)
 
-## Tool System
+`api/chat.ts` holds the whole backend: Hono handler, system prompt, tool definitions, MCP wrappers, fuzzy matching. Per request:
 
-### Tools Defined in api/chat.ts
+1. **Name-lookup short-circuit** (top of `chatHandler`): a regex extracts a possible restaurant name from the last user message and runs `fuzzyMatchRestaurant()`. If it matches (and isn't a generic term like "italian" or "cozy"), the handler streams a hand-built `displayRestaurants` response **without calling Gemini**.
+2. **MCP context** from `getMcpContext()`: the MCP connection, tool list, spatial-function reference docs, and dataset schemas are cached at module scope per warm instance (failures are not cached). Schemas and spatial docs are injected into the system prompt.
+3. **Tool wrapping**: MCP tools are wrapped with request-scoped logic (see below), combined with local tools, and passed to `streamText`.
+4. Response streams via `toUIMessageStreamResponse()`; the frontend renders tool parts progressively.
 
-1. **`displayRestaurants`**: Render restaurant cards. MUST be called after any search/filter.
-2. **`lookupRestaurant`**: Fuzzy match lookup for specific restaurants by name.
-3. **`semantic_search_restaurants`**: RAG-powered search via Pinecone for vibes/dietary queries ("cozy", "vegan"). Accepts `scopeToSlugs` for isochrone scoping.
-4. **`geocode`** (MCP): Address → lat/lng with Manhattan bounds validation.
-5. **`get_isoline`** (MCP): Travel-time polygon (walking, transit, cycling, driving). Returns `GEO_REF_*` ID + `restaurantSlugs`.
-6. **`execute_sql`** (MCP): DuckDB spatial queries for structured filters (cuisine, price, awards).
+### Tools actually registered (`allTools`)
 
-### Tool Chaining Pattern
+- `geocode` (MCP) — wrapper validates Manhattan via bounds, postcode, and borough names; a `MANHATTAN_NEIGHBORHOODS` table overrides the MCP geocoder, which tends to return Central Park for neighborhood queries.
+- `get_isoline` (MCP) — wrapper does point-in-polygon (Turf) against all restaurants, returns `restaurantSlugs` + summaries, and pushes the slugs to the request-scoped `allIsochroneSlugs`.
+- `execute_sql` (MCP, DuckDB) — wrapper rewrites `cuisine = 'X'` / `cuisine IN (...)` to `ILIKE '%X%'` and injects the `filterPool` constraint. The table name is the quoted `MCP_ANALYSIS_ID`.
+- `semantic_search_restaurants` (local, `api/lib/ragSearchLogic.ts`) — scope priority: `scopeToSlugs` arg > intersection of `allIsochroneSlugs` > `filterPool` > all. Restaurant Week intent narrows to restaurants with `meal_types`.
+- `displayRestaurants` (local) — resolves names/slugs (exact, then fuzzy) within `filterPool`, preserves input order, caps at 5 cards. Users see nothing unless this is called.
 
-Location + vibe queries require multi-step tool calls:
-```
-"cozy spots near Times Square"
-→ geocode("Times Square") → { lat, lng }
-→ get_isoline(lat, lng, 15min) → { GEO_REF_ID, restaurantSlugs }
-→ semantic_search_restaurants({ query: "cozy", scopeToSlugs: restaurantSlugs })
-→ displayRestaurants({ restaurant_names: [...] })
-```
+`lookupRestaurantTool` and the `search_documents` wrapper are defined but **not registered**.
 
-### GEO_REF Pattern
+### Isochrone scoping & midpoints
 
-Isochrone polygons are cached with short IDs to reduce token usage:
-- `get_isoline` returns `GEO_REF_ABC123` instead of full polygon
-- SQL queries reference `ST_GeomFromGeoJSON(GEO_REF_ABC123)`
-- **IDs are request-scoped** — expire after each response, must re-call `get_isoline` for follow-ups
+Every `get_isoline` call in a request appends to `allIsochroneSlugs`. The next `execute_sql`/`semantic_search_restaurants` is automatically restricted to the **intersection** of all of them, which is how "between A and B" queries work — the model should not write `ST_Intersection` SQL. This state is request-scoped; follow-up turns must re-call `get_isoline`.
 
-### Filter Pool Scoping
+### GEO_REF pattern
 
-Frontend filter selections are passed as `filterPool` in request context:
-- `execute_sql` injects `WHERE slug IN (...)` clause
-- `semantic_search_restaurants` accepts `scopeToSlugs` from prior isochrone
-- `filterPoolSlugs` is computed in MapContext.tsx from active filter state
+`api/utils/toolWrapper.ts` + `geometryOptimizer.ts` simplify isochrone polygons and replace them with short `GEO_REF_*` IDs in what the model sees (SQL can reference `ST_GeomFromGeoJSON(GEO_REF_X)`). IDs expire after each response.
 
-## Fuzzy Restaurant Matching
+### Filter pool
 
-`fuzzyMatchRestaurant()` in chat.ts uses 5-tier matching:
-1. Exact slug match
-2. Normalized name match (removes articles, "and", special chars)
-3. Partial name match (substring)
-4. Slug similarity match
-5. Levenshtein distance (typo tolerance, threshold 2-3)
+`MapContext.tsx` computes `filterPoolSlugs` from the filter bar; `ChatInterface.tsx`'s custom transport injects it (plus `userLocation` from browser geolocation) into `context` on every request. Backend tools scope to it as described above.
 
-## Map Marker Colors
+## Frontend ↔ Backend Contract
 
-Priority system (higher overrides lower):
-1. **Orange (#FF9100)** — Selected restaurant
-2. **Pink (#ff67b2)** — Favorites
-3. **Red (#c81224)** — Award winners (Michelin/NYT)
-4. **Grey (#928f8e)** — Default
+`ChatInterface.tsx` drives the map by matching **tool names and output shapes** from the stream: `geocode` → `results[0].latitude/longitude` (character markers), `get_isoline` → `geojson` (isochrone layers; waits for all isoline parts in a message before intersecting), `execute_sql` → `rows`, `displayRestaurants` → card payload. Renaming a tool or changing its output shape on the backend silently breaks map rendering — update both sides together.
+
+## Map Markers
+
+Restaurant dot colors by priority: selected orange `#FF9100` > favorite pink `#ff67b2` > award red `#c81224` > default grey `#928f8e`. At zoom ≥15 (14.5 mobile) dots become cuisine-emoji teardrops (`CUISINE_EMOJI` in `Map.tsx`). Geocoded locations render as character portraits in pink-rimmed circles (`.isochrone-character-marker`); the user's own location is a pulsing blue dot.
 
 ## Environment Variables
 
-```
-# Backend (api/)
-GOOGLE_API_KEY                  # Google Gemini API key
-GOOGLE_GENERATIVE_AI_API_KEY    # Alternative Gemini key
-MCP_SERVER_URL                  # MCP server endpoint (marauders-query-mcp)
-MCP_API_KEY                     # MCP authentication
-MCP_ANALYSIS_ID                 # Dataset ID in MCP
-PINECONE_API_KEY                # Pinecone vector DB
-PINECONE_INDEX_NAME             # Pinecone index name
-API2_PORT                       # API server port (default 3001)
+Backend (`api/env.ts`, T3 Env): `GOOGLE_API_KEY` / `GOOGLE_GENERATIVE_AI_API_KEY`, `MCP_SERVER_URL`, `MCP_API_KEY`, `MCP_ANALYSIS_ID`, `PINECONE_API_KEY`, `PINECONE_INDEX_NAME`, `API2_PORT` (default 3001). Frontend: `VITE_MAPBOX_TOKEN`. The `.env*` files contain real secrets — stage files explicitly rather than `git add -A`.
 
-# Frontend (Vite, prefixed with VITE_)
-VITE_MAPBOX_TOKEN               # Mapbox GL JS map rendering
-```
+## Debugging
 
-## Development Workflow
-
-1. **Frontend only**: `npm run dev` (port 5173) — works with production API
-2. **Full stack local**:
-   - Terminal 1: Start MCP server (marauders-query-mcp)
-   - Terminal 2: `npm run api:dev` (port 3001)
-   - Terminal 3: `npm run dev` (port 5173)
-   - Vite proxies `/chat` requests to port 3001 (configured in vite.config.ts)
-3. **With Vercel**: `npm run vercel-dev` (port 3000)
-
-**Hot reload**: Vite hot-reloads frontend. Backend uses tsx watch for auto-restart.
-
-## Debugging Tips
-
-- **Tool not being called?** Check system prompt in `api/chat.ts` — query patterns table determines tool selection
-- **Isochrone not scoping?** Ensure `scopeToSlugs` is passed from `get_isoline` to `semantic_search_restaurants`. Check console for `🗺️ Scoping semantic search to X restaurants from isochrone`
-- **Restaurants not displaying?** `displayRestaurants` MUST be called after any search tool. Check `restaurant_names` array is being passed correctly.
-- **Outside Manhattan errors?** `geocode` and `get_isoline` validate against Manhattan bounds (postcodes 100xx–102xx)
-- **Rate limits?** Gemini has RPM limits; monitor console for 429 errors
-
-## Known Limitations
-
-- **Manhattan only** — no other boroughs
-- **Static data** — FinalData.json is manually curated (628 restaurants)
-- **GEO_REF expiration** — IDs expire per request; follow-up queries need fresh isochrones
-- **No test suite** — ad-hoc test scripts in `scripts/` (test-endpoint.js, test-fuzzy-matching.js) but no Jest/Vitest configuration
+- Wrong or missing tool calls: check the system prompt's query-pattern table in `api/chat.ts`; `onStepFinish` logs each step's tools, args, and result sizes.
+- Isochrone not scoping: look for `🗺️ Scoping semantic search…` / `Auto-injecting … isochrone slugs` in the API logs.
+- Gemini 429s are caught and returned as a `RATE_LIMIT` error with a Remi-voiced message.
