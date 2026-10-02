@@ -157,6 +157,35 @@
 }
 
 /* Unified body text class for all content text */
+/* Why Remi picked this restaurant (chat results) */
+.match-reason {
+  margin: 0 0 8px 0;
+  padding: 6px 0 6px 10px;
+  border-left: 2px solid #f63996;
+}
+
+.match-reason-facts {
+  font-size: 12px;
+  font-weight: 600;
+  color: #374151;
+  line-height: 1.4;
+}
+
+.match-reason-quote {
+  margin: 4px 0 0 0;
+  font-size: 13px;
+  font-style: italic;
+  line-height: 1.45;
+  color: #4B5563;
+}
+
+.match-reason-source {
+  font-style: normal;
+  font-size: 11px;
+  color: #9CA3AF;
+  white-space: nowrap;
+}
+
 .card-body-text {
   font-size: 13px;
   line-height: 1.5;

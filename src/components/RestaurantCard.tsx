@@ -171,7 +171,21 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
           <span className="tag tag-price">{displayRestaurant.price}</span>
         )}
       </div>
-      {/* Restaurant Description (skipped when the "why" quote under the card already is the summary) */}
+      {/* Why Remi picked it (chat results only) */}
+      {matchReason && (matchReason.facts.length > 0 || matchReason.quote) && (
+        <div className="match-reason">
+          {matchReason.facts.length > 0 && (
+            <div className="match-reason-facts">{matchReason.facts.join(" · ")}</div>
+          )}
+          {matchReason.quote && (
+            <blockquote className="match-reason-quote">
+              “{matchReason.quote.text}”
+              <span className="match-reason-source"> — {matchReason.quote.source}</span>
+            </blockquote>
+          )}
+        </div>
+      )}
+      {/* Restaurant Description (skipped when the quote above already is the summary) */}
       {matchReason?.quote?.field !== "summary" && (
       <p className="card-body-text review-text">
         {displayRestaurant.summary && displayRestaurant.summary.split('. ').reduce((acc: string, sentence: string, index: number, array: string[]) => {
