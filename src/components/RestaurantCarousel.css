@@ -143,8 +143,46 @@
   padding: 8px 4px 0;
   margin-bottom: 28px;
   font-size: 11.5px;
+  font-weight: 600;
   color: #4B5563;
   line-height: 1.45;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.match-distance {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.match-distance-mode {
+  font-size: 12px;
+  line-height: 1;
+}
+
+/* Matches the character marker for that pin on the map */
+.match-distance-avatar {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1.5px solid #ff67b2;
+  background: #fff;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+/* Matches the pulsing blue "your location" dot */
+.match-distance-you {
+  width: 10px;
+  height: 10px;
+  margin: 0 3px;
+  border-radius: 50%;
+  background: #007aff;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgba(0, 122, 255, 0.35);
+  flex-shrink: 0;
 }
 
 @media (max-width: 768px) {

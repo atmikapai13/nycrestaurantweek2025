@@ -50,6 +50,10 @@ export interface Restaurant {
 export interface MatchReason {
   /** Straight-line distance from each pinned place, e.g. "0.4 mi from Union Square". */
   distances: string[];
+  /** The pinned place behind each distance (same order), to match it to its map marker. */
+  pins?: Array<{ latitude: number; longitude: number; isUser: boolean }>;
+  /** How the search assumed people travel, for the distance-line icon. */
+  travelMode?: "walking" | "cycling" | "driving" | "transit";
   /** Filters it passed, e.g. "Italian", "$45 Lunch · $60 Dinner". */
   facts: string[];
   /** For vibe searches: the restaurant's own sentence that best matches the vibe, verbatim. */

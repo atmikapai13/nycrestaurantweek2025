@@ -1,5 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import type { Restaurant } from "../types/restaurant";
+import { useMap } from "../contexts/MapContext";
+
+const TRAVEL_ICONS = { walking: "🚶", cycling: "🚲", driving: "🚕", transit: "🚇" } as const;
 import RestaurantCard from "./RestaurantCard";
 import "./RestaurantCarousel.css";
 
@@ -136,7 +139,16 @@ export default function RestaurantCarousel({
 
   const currentRestaurant = restaurants[currentIndex];
   // Distance from each pinned place (chat results only), shown between the card and the dots
-  const distances = currentRestaurant?.match_reason?.distances ?? [];
+  const reason = currentRestaurant?.match_reason;
+  const distances = reason?.distances ?? [];
+  const travelIcon = reason?.travelMode ? TRAVEL_ICONS[reason.travelMode] : null;
+  const { geocodedMarkers } = useMap();
+  // The map marker (character portrait) for a pin, matched by coordinates (~50 m)
+  const markerFor = (pin?: { latitude: number; longitude: number }) =>
+    pin &&
+    geocodedMarkers.find(
+      (m) => Math.abs(m.latitude - pin.latitude) < 0.0005 && Math.abs(m.longitude - pin.longitude) < 0.0005
+    );
   const showNavigation = restaurants.length > 1;
   const isFirst = currentIndex === 0;
   const isLast = currentIndex === restaurants.length - 1;
@@ -184,9 +196,21 @@ export default function RestaurantCarousel({
           {/* Distance from each pinned place (chat results only) */}
           {distances.length > 0 && (
             <div className="match-distances">
-              {distances.map((d) => (
-                <div key={d}>{d}</div>
-              ))}
+              {distances.map((d, i) => {
+                const pin = reason?.pins?.[i];
+                const marker = markerFor(pin);
+                return (
+                  <div key={d} className="match-distance">
+                    {travelIcon && <span className="match-distance-mode" aria-hidden="true">{travelIcon}</span>}
+                    {pin?.isUser ? (
+                      <span className="match-distance-you" aria-hidden="true" />
+                    ) : marker ? (
+                      <img className="match-distance-avatar" src={marker.characterImage} alt="" />
+                    ) : null}
+                    <span>{d}</span>
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>

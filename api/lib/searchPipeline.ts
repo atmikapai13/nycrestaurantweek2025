@@ -317,7 +317,7 @@ export async function runSearch(intent: SearchIntent, ctx: PipelineContext): Pro
     status: "ok",
     shown,
     reasons: await ctx.tools.measure("match reasons", { count: shown.length }, () =>
-      buildMatchReasons(shown, intent, locations, vibeRanker, dietEvidence)
+      buildMatchReasons(shown, intent, locations, travel?.mode ?? null, vibeRanker, dietEvidence)
     ),
     totalMatches: ranked.length,
     locations,

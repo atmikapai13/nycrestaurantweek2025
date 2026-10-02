@@ -9,7 +9,7 @@
  *   vibe, verbatim. Chosen by embedding similarity, so it's the same every time.
  */
 import type { MatchReason, Restaurant } from "../../src/types/restaurant.js";
-import type { GeocodeResult } from "./geo.js";
+import type { GeocodeResult, TravelMode } from "./geo.js";
 import type { SearchIntent } from "./intent.js";
 import { hasMichelinStar, isBibGourmand, isNytTop100 } from "./restaurants.js";
 import type { SemanticRanker } from "./vectorSearch.js";
@@ -99,14 +99,25 @@ export async function buildMatchReasons(
   shown: Restaurant[],
   intent: SearchIntent,
   locations: GeocodeResult[],
+  travelMode: TravelMode | null,
   vibeRanker: SemanticRanker | null,
   dietEvidence: Map<string, Quote>
 ): Promise<Record<string, MatchReason>> {
+  const pins = locations.map((l) => ({ latitude: l.latitude, longitude: l.longitude, isUser: l.query === "your location" }));
   const vibeQuotes = vibeRanker ? await findEvidence(shown, vibeRanker) : new Map<string, Quote>();
   return Object.fromEntries(
     shown.map((r) => {
       const quote = dietEvidence.get(r.slug) ?? vibeQuotes.get(r.slug);
-      return [r.slug, { distances: distances(r, locations), facts: facts(r, intent), ...(quote ? { quote } : {}) }];
+      return [
+        r.slug,
+        {
+          distances: distances(r, locations),
+          ...(pins.length ? { pins } : {}),
+          ...(travelMode ? { travelMode } : {}),
+          facts: facts(r, intent),
+          ...(quote ? { quote } : {}),
+        },
+      ];
     })
   );
 }
