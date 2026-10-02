@@ -48,7 +48,9 @@ export interface Restaurant {
 }
 
 export interface MatchReason {
-  /** Why it qualified, e.g. "0.4 mi from Union Square", "Italian", "$45 Lunch · $60 Dinner". */
+  /** Straight-line distance from each pinned place, e.g. "0.4 mi from Union Square". */
+  distances: string[];
+  /** Filters it passed, e.g. "Italian", "$45 Lunch · $60 Dinner". */
   facts: string[];
   /** For vibe searches: the restaurant's own sentence that best matches the vibe, verbatim. */
   quote?: {

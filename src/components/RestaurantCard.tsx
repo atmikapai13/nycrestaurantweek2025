@@ -17,6 +17,23 @@ interface RestaurantCardProps {
 export default function RestaurantCard({ restaurant, placeholderRestaurant, onClose, isFavorited = false, onToggleFavorite, onExpandDrawer, collapsible = false }: RestaurantCardProps) {
   const displayRestaurant = restaurant || placeholderRestaurant
   const matchReason = displayRestaurant?.match_reason
+  const whyBlock = matchReason && (
+    <div className="match-reason">
+      {matchReason.quote && (
+        <blockquote className="match-reason-quote">
+          “{matchReason.quote.text}”
+          <span className="match-reason-source"> — {matchReason.quote.source}</span>
+        </blockquote>
+      )}
+      {matchReason.facts.length > 0 && (
+        <div className="match-reason-facts">
+          {matchReason.facts.map((fact) => (
+            <div key={fact}>{fact}</div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
   const [isContactsOpen, setIsContactsOpen] = useState(false)
   const [isReviewsOpen, setIsReviewsOpen] = useState(false)
   const [isRestaurantWeekOpen, setIsRestaurantWeekOpen] = useState(false)
@@ -171,20 +188,8 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
           <span className="tag tag-price">{displayRestaurant.price}</span>
         )}
       </div>
-      {/* Why Remi picked it (chat results only) */}
-      {matchReason && (matchReason.facts.length > 0 || matchReason.quote) && (
-        <div className="match-reason">
-          {matchReason.facts.length > 0 && (
-            <div className="match-reason-facts">{matchReason.facts.join(" · ")}</div>
-          )}
-          {matchReason.quote && (
-            <blockquote className="match-reason-quote">
-              “{matchReason.quote.text}”
-              <span className="match-reason-source"> — {matchReason.quote.source}</span>
-            </blockquote>
-          )}
-        </div>
-      )}
+      {/* Why Remi picked it (chat results): the quote leads, above the description */}
+      {matchReason?.quote && whyBlock}
       {/* Restaurant Description (skipped when the quote above already is the summary) */}
       {matchReason?.quote?.field !== "summary" && (
       <p className="card-body-text review-text">
@@ -199,6 +204,8 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
         }, '')}
       </p>
       )}
+      {/* No quote: description first, then the filter facts */}
+      {matchReason && !matchReason.quote && matchReason.facts.length > 0 && whyBlock}
 
       {/* Yelp Rating */}
       {displayRestaurant.yelp_rating != null && displayRestaurant.yelp_rating > 0 && displayRestaurant.yelp_review_count != null && displayRestaurant.yelp_review_count > 0 && (

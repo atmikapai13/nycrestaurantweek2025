@@ -2,8 +2,8 @@
  * "Why Remi picked this" for each shown restaurant, rendered under the card and
  * given to the narrator so its reply is grounded in the same evidence.
  *
- * - facts: why it qualified — distance from each pinned place, and whichever
- *   cuisine / price / award / Restaurant Week filters the user asked for.
+ * - distances: straight-line miles from each pinned place (shown under the card).
+ * - facts: whichever cuisine / price / award / Restaurant Week filters it passed.
  * - quote: for vibe searches, the single sentence from the restaurant's own text
  *   (NYC Tourism's description or Yelp's review summary) that best matches the
  *   vibe, verbatim. Chosen by embedding similarity, so it's the same every time.
@@ -43,11 +43,15 @@ function milesBetween(lat1: number, lng1: number, lat2: number, lng2: number): n
   return 3958.8 * 2 * Math.asin(Math.sqrt(a));
 }
 
-function facts(r: Restaurant, intent: SearchIntent, locations: GeocodeResult[]): string[] {
-  const out = locations.map((loc) => {
+function distances(r: Restaurant, locations: GeocodeResult[]): string[] {
+  return locations.map((loc) => {
     const miles = milesBetween(loc.latitude, loc.longitude, Number(r.latitude), Number(r.longitude));
     return `${miles.toFixed(1)} mi from ${loc.query === "your location" ? "you" : loc.query}`;
   });
+}
+
+function facts(r: Restaurant, intent: SearchIntent): string[] {
+  const out: string[] = [];
   if (intent.cuisines.length && r.cuisine) out.push(r.cuisine);
   if (intent.prices.length && r.price) out.push(r.price);
   if (intent.awards.length) {
@@ -102,7 +106,7 @@ export async function buildMatchReasons(
   return Object.fromEntries(
     shown.map((r) => {
       const quote = dietEvidence.get(r.slug) ?? vibeQuotes.get(r.slug);
-      return [r.slug, { facts: facts(r, intent, locations), ...(quote ? { quote } : {}) }];
+      return [r.slug, { distances: distances(r, locations), facts: facts(r, intent), ...(quote ? { quote } : {}) }];
     })
   );
 }

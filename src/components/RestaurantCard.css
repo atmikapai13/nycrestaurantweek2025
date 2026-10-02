@@ -164,6 +164,10 @@
   border-left: 2px solid #f63996;
 }
 
+.match-reason-quote + .match-reason-facts {
+  margin-top: 4px;
+}
+
 .match-reason-facts {
   font-size: 12px;
   font-weight: 600;
@@ -172,7 +176,7 @@
 }
 
 .match-reason-quote {
-  margin: 4px 0 0 0;
+  margin: 0;
   font-size: 13px;
   font-style: italic;
   line-height: 1.45;

@@ -37,7 +37,10 @@ const RULES = `Write the reply that accompanies restaurant cards the user can al
 function compactRestaurant(r: any, reason?: MatchReason) {
   return {
     name: r.name,
-    why: reason && (reason.quote || reason.facts.length) ? { quote: reason.quote?.text, facts: reason.facts } : undefined,
+    why:
+      reason && (reason.quote || reason.facts.length || reason.distances.length)
+        ? { quote: reason.quote?.text, facts: [...reason.facts, ...reason.distances] }
+        : undefined,
     cuisine: r.cuisine,
     price: r.price || undefined,
     neighborhood: r.neighborhood,

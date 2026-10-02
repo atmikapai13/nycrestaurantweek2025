@@ -131,3 +131,25 @@
     height: 6px;
   }
 }
+
+/* Distance from each pinned place, between the card and the dots. The card's usual
+   10% bottom margin (which the dots pull up into) is dropped so the lines sit right
+   under the card, and the bottom margin leaves room for the dots' -20px offset. */
+.carousel-card-wrapper.has-distances .restaurant-card {
+  margin-bottom: 0;
+}
+
+.match-distances {
+  padding: 8px 4px 0;
+  margin-bottom: 28px;
+  font-size: 11.5px;
+  color: #4B5563;
+  line-height: 1.45;
+}
+
+@media (max-width: 768px) {
+  /* On mobile the dots sit below with a positive margin, so no extra room needed */
+  .match-distances {
+    margin-bottom: 0;
+  }
+}

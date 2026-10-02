@@ -135,6 +135,8 @@ export default function RestaurantCarousel({
   }
 
   const currentRestaurant = restaurants[currentIndex];
+  // Distance from each pinned place (chat results only), shown between the card and the dots
+  const distances = currentRestaurant?.match_reason?.distances ?? [];
   const showNavigation = restaurants.length > 1;
   const isFirst = currentIndex === 0;
   const isLast = currentIndex === restaurants.length - 1;
@@ -164,7 +166,7 @@ export default function RestaurantCarousel({
 
         {/* Card */}
         <div className="carousel-card-container">
-          <div className="carousel-card-wrapper">
+          <div className={`carousel-card-wrapper${distances.length ? " has-distances" : ""}`}>
             <RestaurantCard
               key={currentRestaurant.slug || currentIndex}
               restaurant={currentRestaurant}
@@ -179,6 +181,14 @@ export default function RestaurantCarousel({
               onExpandDrawer={onExpandDrawer}
             />
           </div>
+          {/* Distance from each pinned place (chat results only) */}
+          {distances.length > 0 && (
+            <div className="match-distances">
+              {distances.map((d) => (
+                <div key={d}>{d}</div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Right Arrow - Desktop only, shown when not at last card */}
