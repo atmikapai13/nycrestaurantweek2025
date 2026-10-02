@@ -397,13 +397,55 @@
   }
 }
 
-/* Loading tip below typing indicator */
-.loading-tip {
-  font-size: 11px;
-  line-height: 1.4;
-  color: #515151;
-  font-style: italic;
+/* Remi's single in-place status line ("✻ Mapping…"), Claude Code style */
+.remi-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   padding: 4px 0;
+}
+
+.remi-status-glyph {
+  display: inline-block;
+  color: #f63996;
+  animation: remi-status-spin 2.4s linear infinite;
+}
+
+.remi-status-label {
+  font-style: italic;
+  /* Italic glyphs overhang the box; padding keeps the gradient clip from cutting the last letter */
+  padding-right: 2px;
+  background: linear-gradient(90deg, #8a8a8a 0%, #8a8a8a 40%, #2b2b2b 50%, #8a8a8a 60%, #8a8a8a 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: remi-status-shimmer 1.8s linear infinite;
+}
+
+@keyframes remi-status-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes remi-status-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .remi-status-glyph,
+  .remi-status-label {
+    animation: none;
+  }
+  .remi-status-label {
+    color: #8a8a8a;
+  }
 }
 
 /* Tool Status Styles */

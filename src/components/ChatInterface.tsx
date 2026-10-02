@@ -19,12 +19,12 @@ import {
 } from "../contexts/MapContext";
 import { IsochroneMessage } from "./IsochroneMessage";
 import RestaurantCard from "./RestaurantCard";
+import RemiStatus, { remiStage } from "./RemiStatus";
 import RestaurantCarousel from "./RestaurantCarousel";
 import type { UIMessagePart } from "ai";
 import {
   type DynamicToolPart,
   type TextUIPart,
-  type ToolInvocationPart,
   isDynamicToolPart,
   isTextPart,
   isToolInvocationPart,
@@ -313,26 +313,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
     ];
 
 
-    // Tips shown while loading
-    const tips = [
-      
-      "Tap a restaurant marker and hit the heart to favorite it.",
-      "Your favorites appear as pink markers—toggle the heart filter to show only those.",
-      "Award-winning spots—Michelin, Bib Gourmand, or New York Times Top 100—appear as red markers.",
-      "Ask me for a specific vibe or ambiance (cozy, romantic, lively).",
-      "Ask me for the best ramen or happy hour in town.",
-      "Once an isochrone is drawn, refine results by price, Yelp rating, or cuisine in the filter bar.",
-      "Isochrone is a map boundary showing how far you can travel within a set time.",
-      "The current restaurant pool is limited to NYC Restaurant Week within Manhattan.",
-      "Tap on a restaurant for reviews, socials, and more.",
-      "Isochrones support walking, biking, transit, or driving—just tell me your preferred mode.",
-      "Use the '500+ Reviews' in filter bar to find crowd-tested favorites.",
-      "Ask me to find restaurants between two places—just give two addresses and travel times!",
-      "Enjoying NYC Eats? Buy my creator a <a href=\"https://buymeacoffee.com/atmikapai\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color: #FF69B4; text-decoration: underline;\">coffee</a>. Cheers!",
-    ];
-
-    
-
     // Initialize with welcome message
     const [initialMessage] = useState(() => {
       // Select welcome message once to ensure consistency
@@ -471,7 +451,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       
     }, [aiMessages]);
 
-    const [currentTip, setCurrentTip] = useState("");
     const [customMessages, setCustomMessages] = useState<Message[]>([]); // For restaurant cards
 
     const lastMessageRef = useRef<HTMLDivElement>(null);
@@ -1013,24 +992,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       }
     }, [customMessages]);
 
-    // Show a tip when loading starts (mobile: 100%, desktop: 70%)
-    useEffect(() => {
-      if (isLoading) {
-        const isMobile = window.innerWidth <= 768;
-        const probability = isMobile ? 1.0 : 0.7;
-        const shouldShowTip = Math.random() < probability;
-        if (shouldShowTip) {
-          const randomTip = tips[Math.floor(Math.random() * tips.length)];
-          setCurrentTip(randomTip);
-        } else {
-          setCurrentTip("");
-        }
-      } else {
-        // Clear tip when loading finishes
-        setCurrentTip("");
-      }
-    }, [isLoading]);
-
     // Expose addRestaurantCard method to parent via ref
     const addRestaurantCard = (restaurant: Restaurant) => {
       // Don't add cards while Remi is responding
@@ -1429,6 +1390,9 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       allMessages[allMessages.length - 1].type === "restaurant_card";
     const canMergeLoading =
       isLoading && isLastMessageAssistant && !isLastMessageRestaurantCard;
+    // One in-place status line ("✻ Mapping…") until Remi's reply starts streaming
+    const lastAssistantParts = isLastMessageAssistant ? allMessages[allMessages.length - 1].parts ?? [] : [];
+    const remiReplyStarted = lastAssistantParts.some((p) => isTextPart(p) && p.text.trim() !== "");
 
     return (
       <div className="chat-interface">
@@ -1499,9 +1463,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                             {msg.parts && msg.parts.length > 0 ? (
                               <>
                                 {(() => {
-                                  // Track tool occurrences for varied messages
-                                  const toolCounts: Record<string, number> = {};
-
                                   // Sort parts: tool results (cards) come last, everything else maintains original order
                                   const sortedParts = [...msg.parts].sort((a, b) => {
                                     const getPriority = (part: typeof a) => {
@@ -1523,9 +1484,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                     }
                                     return true;
                                   });
-
-                                  // Hide tool statuses when loading completes (same as tips)
-                                  const shouldHideToolStatuses = !isLoading || !isLastMessage;
 
                                   return deduplicatedParts.map((part, pIdx: number) => {
                                   if (isTextPart(part)) {
@@ -1554,99 +1512,8 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                     isToolInvocationPart(part) ||
                                     isDynamicToolPart(part)
                                   ) {
-                                    // Hide tool statuses when loading completes (same trigger as tips)
-                                    if (shouldHideToolStatuses) {
-                                      return null;
-                                    }
-
-                                    const isPending =
-                                      isToolInvocationPart(part);
-                                    let statusText = "";
-
-                                    const toolName = isDynamicToolPart(part)
-                                      ? part.toolName
-                                      : (part as ToolInvocationPart).toolName;
-
-                                    // Track occurrence count for this tool
-                                    const toolKey = toolName === "get_isoline" ? "get_isochrone" : toolName;
-                                    toolCounts[toolKey] = (toolCounts[toolKey] || 0) + 1;
-                                    const occurrenceNum = toolCounts[toolKey];
-
-                                    // Varied messages for geocode
-                                    const geocodeDoneMessages = [
-                                      "My friends in the subway helped me figure out the coordinates!",
-                                      "Found the second spot too!",
-                                      "And there's the next location!",
-                                    ];
-
-                                    // Varied messages for isochrone
-                                    const isochroneDoneMessages = [
-                                      "We're about to map!",
-                                      "Mapping the second isochrone too!",
-                                      "All areas are about to map!",
-                                    ];
-
-                                    // Varied messages for execute_sql
-                                    const sqlDoneMessages = [
-                                      "Perusing Yelp and Reddit Reviews...",
-                                      "Checking what the rats are raving about...",
-                                      "Consulting Bourdain's Kitchen Confidential...",
-                                      "Taking a look at Michelin Guide...",
-                                    ];
-
-                                    if (toolName === "execute_sql") {
-                                      statusText = isPending
-                                        ? "I'm scurrying through the database..."
-                                        : sqlDoneMessages[Math.min(occurrenceNum - 1, sqlDoneMessages.length - 1)];
-                                    } else if (
-                                      toolName === "get_isochrone" ||
-                                      toolName === "get_isoline"
-                                    ) {
-                                      statusText = isPending
-                                        ? "My friends in the subway have helped me map NYC pretty accurately..."
-                                        : isochroneDoneMessages[Math.min(occurrenceNum - 1, isochroneDoneMessages.length - 1)];
-                                    } else if (toolName === "geocode") {
-                                      statusText = isPending
-                                        ? "I'm locating the spot on the map..."
-                                        : geocodeDoneMessages[Math.min(occurrenceNum - 1, geocodeDoneMessages.length - 1)];
-                                    } else if (
-                                      toolName === "search_documents"
-                                    ) {
-                                      statusText = isPending
-                                        ? "I'm leafing through my recipe books..."
-                                        : "I've found some delectable spots!";
-                                    } else if (
-                                      toolName === "displayRestaurants"
-                                    ) {
-                                      statusText = isPending
-                                        ? "I'm plating your recommendations..."
-                                        : "Bon appétit! Here are your options:";
-                                    } else if (
-                                      toolName === "lookup_restaurant"
-                                    ) {
-                                      statusText = isPending
-                                        ? "I'm looking up that restaurant..."
-                                        : "Found it! Here's what I know:";
-                                    } else {
-                                      statusText = isPending
-                                        ? `I'm using my ${toolName} trick...`
-                                        : `The ${toolName} is served!`;
-                                    }
-
-                                    return (
-                                      <div
-                                        key={pIdx}
-                                        className="tool-status interlined-tool-status"
-                                      >
-                                        {isPending && (
-                                          <span className="tool-spinner"></span>
-                                        )}
-                                        {!isPending && (
-                                          <span className="tool-done">✓</span>
-                                        )}
-                                        {statusText}
-                                      </div>
-                                    );
+                                    // Progress is shown by the single RemiStatus line, not per tool.
+                                    return null;
                                   } else if (
                                     part.type === "tool-displayRestaurants" ||
                                     part.type === "tool-lookup_restaurant"
@@ -1654,14 +1521,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                     // Generative UI: Render restaurant cards
                                     switch (part.state) {
                                       case "input-available":
-                                        return (
-                                          <div
-                                            key={pIdx}
-                                            className="tool-loading"
-                                          >
-                                            🍽️ {part.type === "tool-lookup_restaurant" ? "Looking up restaurant..." : "Plating your recommendations..."}
-                                          </div>
-                                        );
+                                        return null;
 
                                       case "output-available":
                                         // Delay rendering cards until streaming ends (only for current message)
@@ -1744,35 +1604,9 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                               </div>
                             )}
 
-                            {/* Render loading ellipsis if merged */}
-                            {isLastMessage && canMergeLoading && (
-                              <div
-                                style={{
-                                  display: "flex",
-                                  flexDirection: "column",
-                                  gap: "8px",
-                                }}
-                              >
-                                <div className="message-content typing-content">
-                                  <span></span>
-                                  <span></span>
-                                  <span></span>
-                                </div>
-                                {currentTip && (
-                                  <div className="loading-tip">
-                                    <span
-                                      style={{
-                                        color: "#f63996",
-                                        fontFamily: "Times New Roman, serif",
-                                        fontWeight: "bold",
-                                      }}
-                                    >
-                                      Tip:
-                                    </span>{" "}
-                                    <span style={{ color: '#666' }} dangerouslySetInnerHTML={{ __html: linkifyText(currentTip) }} />
-                                  </div>
-                                )}
-                              </div>
+                            {/* Status line while Remi works, merged into his message */}
+                            {isLastMessage && canMergeLoading && !remiReplyStarted && (
+                              <RemiStatus stage={remiStage(lastAssistantParts)} />
                             )}
 
                             {/* Controls Section (with divider) - Toggle button only */}
@@ -1893,25 +1727,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                       flex: 1,
                     }}
                   >
-                    <div className="message-content typing-content">
-                      <span></span>
-                      <span></span>
-                      <span></span>
-                    </div>
-                    {currentTip && (
-                      <div className="loading-tip">
-                        <span
-                          style={{
-                            color: "#f63996",
-                            fontFamily: "Times New Roman, serif",
-                            fontWeight: "bold",
-                          }}
-                        >
-                          Tip:
-                        </span>{" "}
-                        <span style={{ color: '#666' }} dangerouslySetInnerHTML={{ __html: linkifyText(currentTip) }} />
-                      </div>
-                    )}
+                    <RemiStatus stage="Tasting" />
                   </div>
                 </div>
               </div>
