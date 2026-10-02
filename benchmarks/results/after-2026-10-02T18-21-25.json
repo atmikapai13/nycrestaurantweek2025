@@ -1,0 +1,2795 @@
+{
+  "args": {
+    "label": "after",
+    "runs": 3,
+    "delay": 3000,
+    "only": null,
+    "url": "http://localhost:3001/chat",
+    "cache": "off"
+  },
+  "startedAt": "2026-10-02T18:21:25.326Z",
+  "results": [
+    {
+      "prompt": {
+        "id": "name",
+        "label": "Restaurant by name",
+        "text": "Carbone"
+      },
+      "errors": 0,
+      "totalMs": 1582,
+      "cardsMs": null,
+      "steps": 2,
+      "modelMs": 1541,
+      "toolMs": 0,
+      "setupMs": 0,
+      "tokensIn": 328,
+      "tokensOut": 81,
+      "tokensThinking": 0,
+      "consistency": {
+        "runs": 3,
+        "identical": true,
+        "distinctResults": 1,
+        "distinctToolPaths": 1,
+        "avgOverlap": 1
+      },
+      "runs": [
+        {
+          "firstByteMs": 873,
+          "cardsMs": null,
+          "totalMs": 1615,
+          "toolSequence": [],
+          "toolInputs": [],
+          "shown": [],
+          "text": "My apologies, Chef. It seems Carbone isn't participating in NYC Restaurant Week. However, I can certainly sniff out some similar establishments that are.",
+          "serverMetrics": {
+            "id": "jmxc7p",
+            "totalMs": 1554,
+            "firstChunkMs": 793,
+            "firstTextMs": 1336,
+            "phases": {
+              "setupTotal": 0
+            },
+            "stepCount": 2,
+            "modelMs": 1541,
+            "toolMs": 0,
+            "tokens": {
+              "input": 328,
+              "output": 77,
+              "reasoning": 0
+            },
+            "steps": [
+              {
+                "step": 1,
+                "ms": 793,
+                "modelMs": 793,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "parse intent"
+                ],
+                "inputTokens": 125,
+                "outputTokens": 45,
+                "reasoningTokens": 0
+              },
+              {
+                "step": 2,
+                "ms": 748,
+                "modelMs": 748,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "narrate"
+                ],
+                "inputTokens": 203,
+                "outputTokens": 32,
+                "reasoningTokens": 0
+              }
+            ],
+            "tools": [],
+            "displayed": []
+          },
+          "intent": {
+            "kind": "lookup",
+            "restaurantNames": [
+              "Carbone"
+            ],
+            "locations": [],
+            "travelMode": "unspecified",
+            "travelMinutes": null,
+            "vibes": [],
+            "cuisines": [],
+            "prices": [],
+            "awards": [],
+            "restaurantWeek": false
+          },
+          "error": null
+        },
+        {
+          "firstByteMs": 894,
+          "cardsMs": null,
+          "totalMs": 1582,
+          "toolSequence": [],
+          "toolInputs": [],
+          "shown": [],
+          "text": "Ah, *Carbone* isn't on the Restaurant Week roster this season, a shame for those seeking a red-sauce spectacle. But fear not, I can certainly dig up some equally compelling options for you!\n",
+          "serverMetrics": {
+            "id": "ypc840",
+            "totalMs": 1567,
+            "firstChunkMs": 862,
+            "firstTextMs": 1246,
+            "phases": {
+              "setupTotal": 0
+            },
+            "stepCount": 2,
+            "modelMs": 1552,
+            "toolMs": 0,
+            "tokens": {
+              "input": 328,
+              "output": 91,
+              "reasoning": 0
+            },
+            "steps": [
+              {
+                "step": 1,
+                "ms": 862,
+                "modelMs": 862,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "parse intent"
+                ],
+                "inputTokens": 125,
+                "outputTokens": 45,
+                "reasoningTokens": 0
+              },
+              {
+                "step": 2,
+                "ms": 690,
+                "modelMs": 690,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "narrate"
+                ],
+                "inputTokens": 203,
+                "outputTokens": 46,
+                "reasoningTokens": 0
+              }
+            ],
+            "tools": [],
+            "displayed": []
+          },
+          "intent": {
+            "kind": "lookup",
+            "restaurantNames": [
+              "Carbone"
+            ],
+            "locations": [],
+            "travelMode": "unspecified",
+            "travelMinutes": null,
+            "vibes": [],
+            "cuisines": [],
+            "prices": [],
+            "awards": [],
+            "restaurantWeek": false
+          },
+          "error": null
+        },
+        {
+          "firstByteMs": 795,
+          "cardsMs": null,
+          "totalMs": 1348,
+          "toolSequence": [],
+          "toolInputs": [],
+          "shown": [],
+          "text": "Apologies, chef, but Carbone isn't participating in NYC Restaurant Week this season. I can, however, find you a similar red-sauce joint that is.\n",
+          "serverMetrics": {
+            "id": "p8v5tu",
+            "totalMs": 1342,
+            "firstChunkMs": 771,
+            "firstTextMs": 1105,
+            "phases": {
+              "setupTotal": 0
+            },
+            "stepCount": 2,
+            "modelMs": 1325,
+            "toolMs": 0,
+            "tokens": {
+              "input": 328,
+              "output": 81,
+              "reasoning": 0
+            },
+            "steps": [
+              {
+                "step": 1,
+                "ms": 770,
+                "modelMs": 770,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "parse intent"
+                ],
+                "inputTokens": 125,
+                "outputTokens": 45,
+                "reasoningTokens": 0
+              },
+              {
+                "step": 2,
+                "ms": 555,
+                "modelMs": 555,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "narrate"
+                ],
+                "inputTokens": 203,
+                "outputTokens": 36,
+                "reasoningTokens": 0
+              }
+            ],
+            "tools": [],
+            "displayed": []
+          },
+          "intent": {
+            "kind": "lookup",
+            "restaurantNames": [
+              "Carbone"
+            ],
+            "locations": [],
+            "travelMode": "unspecified",
+            "travelMinutes": null,
+            "vibes": [],
+            "cuisines": [],
+            "prices": [],
+            "awards": [],
+            "restaurantWeek": false
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "prompt": {
+        "id": "cuisine",
+        "label": "Cuisine + award",
+        "text": "Michelin-starred Italian restaurants"
+      },
+      "errors": 0,
+      "totalMs": 1802,
+      "cardsMs": null,
+      "steps": 2,
+      "modelMs": 1783,
+      "toolMs": 0,
+      "setupMs": 0,
+      "tokensIn": 338,
+      "tokensOut": 110,
+      "tokensThinking": 0,
+      "consistency": {
+        "runs": 3,
+        "identical": true,
+        "distinctResults": 1,
+        "distinctToolPaths": 1,
+        "avgOverlap": 1
+      },
+      "runs": [
+        {
+          "firstByteMs": 910,
+          "cardsMs": null,
+          "totalMs": 1802,
+          "toolSequence": [],
+          "toolInputs": [],
+          "shown": [],
+          "text": "*Mon Dieu*, a Michelin-starred Italian feast is a dream, but it seems we've hit a snag with that exact combination. Perhaps we could broaden our horizons a bit? Dropping the \"Italian\" filter might reveal some other incredible Michelin-starred experiences that will still sing to your palate.",
+          "serverMetrics": {
+            "id": "jwm9wu",
+            "totalMs": 1784,
+            "firstChunkMs": 883,
+            "firstTextMs": 1313,
+            "phases": {
+              "setupTotal": 0
+            },
+            "stepCount": 2,
+            "modelMs": 1783,
+            "toolMs": 0,
+            "tokens": {
+              "input": 338,
+              "output": 110,
+              "reasoning": 0
+            },
+            "steps": [
+              {
+                "step": 1,
+                "ms": 883,
+                "modelMs": 883,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "parse intent"
+                ],
+                "inputTokens": 128,
+                "outputTokens": 49,
+                "reasoningTokens": 0
+              },
+              {
+                "step": 2,
+                "ms": 900,
+                "modelMs": 900,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "narrate"
+                ],
+                "inputTokens": 210,
+                "outputTokens": 61,
+                "reasoningTokens": 0
+              }
+            ],
+            "tools": [],
+            "displayed": []
+          },
+          "intent": {
+            "kind": "search",
+            "restaurantNames": [],
+            "locations": [],
+            "travelMode": "unspecified",
+            "travelMinutes": null,
+            "vibes": [],
+            "cuisines": [
+              "Italian"
+            ],
+            "prices": [],
+            "awards": [
+              "michelin_star"
+            ],
+            "restaurantWeek": false
+          },
+          "error": null
+        },
+        {
+          "firstByteMs": 827,
+          "cardsMs": null,
+          "totalMs": 1615,
+          "toolSequence": [],
+          "toolInputs": [],
+          "shown": [],
+          "text": "*C’est dommage!* It seems we're fresh out of Michelin-starred Italian spots that fit the bill. Perhaps we could broaden our horizons a bit and explore some other fantastic Italian restaurants, even if they haven't quite snagged a star yet?",
+          "serverMetrics": {
+            "id": "sucnxg",
+            "totalMs": 1599,
+            "firstChunkMs": 803,
+            "firstTextMs": 1223,
+            "phases": {
+              "setupTotal": 0
+            },
+            "stepCount": 2,
+            "modelMs": 1596,
+            "toolMs": 0,
+            "tokens": {
+              "input": 338,
+              "output": 104,
+              "reasoning": 0
+            },
+            "steps": [
+              {
+                "step": 1,
+                "ms": 802,
+                "modelMs": 802,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "parse intent"
+                ],
+                "inputTokens": 128,
+                "outputTokens": 49,
+                "reasoningTokens": 0
+              },
+              {
+                "step": 2,
+                "ms": 794,
+                "modelMs": 794,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "narrate"
+                ],
+                "inputTokens": 210,
+                "outputTokens": 55,
+                "reasoningTokens": 0
+              }
+            ],
+            "tools": [],
+            "displayed": []
+          },
+          "intent": {
+            "kind": "search",
+            "restaurantNames": [],
+            "locations": [],
+            "travelMode": "unspecified",
+            "travelMinutes": null,
+            "vibes": [],
+            "cuisines": [
+              "Italian"
+            ],
+            "prices": [],
+            "awards": [
+              "michelin_star"
+            ],
+            "restaurantWeek": false
+          },
+          "error": null
+        },
+        {
+          "firstByteMs": 1677,
+          "cardsMs": null,
+          "totalMs": 2546,
+          "toolSequence": [],
+          "toolInputs": [],
+          "shown": [],
+          "text": "*Mon Dieu*, a Michelin-starred Italian feast is a dream, but it seems we've hit a snag with that exact combination. Perhaps we could broaden our horizons a bit? Dropping the \"Italian\" filter might reveal some other incredible Michelin-starred experiences that will still sing on your palate.",
+          "serverMetrics": {
+            "id": "7jjwz4",
+            "totalMs": 2541,
+            "firstChunkMs": 1630,
+            "firstTextMs": 2232,
+            "phases": {
+              "setupTotal": 0
+            },
+            "stepCount": 2,
+            "modelMs": 2534,
+            "toolMs": 0,
+            "tokens": {
+              "input": 338,
+              "output": 110,
+              "reasoning": 0
+            },
+            "steps": [
+              {
+                "step": 1,
+                "ms": 1629,
+                "modelMs": 1629,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "parse intent"
+                ],
+                "inputTokens": 128,
+                "outputTokens": 49,
+                "reasoningTokens": 0
+              },
+              {
+                "step": 2,
+                "ms": 905,
+                "modelMs": 905,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "narrate"
+                ],
+                "inputTokens": 210,
+                "outputTokens": 61,
+                "reasoningTokens": 0
+              }
+            ],
+            "tools": [],
+            "displayed": []
+          },
+          "intent": {
+            "kind": "search",
+            "restaurantNames": [],
+            "locations": [],
+            "travelMode": "unspecified",
+            "travelMinutes": null,
+            "vibes": [],
+            "cuisines": [
+              "Italian"
+            ],
+            "prices": [],
+            "awards": [
+              "michelin_star"
+            ],
+            "restaurantWeek": false
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "prompt": {
+        "id": "vibe",
+        "label": "Vibe",
+        "text": "cozy romantic spots for a date night"
+      },
+      "errors": 0,
+      "totalMs": 2027,
+      "cardsMs": 974,
+      "steps": 2,
+      "modelMs": 1811,
+      "toolMs": 205,
+      "setupMs": 0,
+      "tokensIn": 1009,
+      "tokensOut": 145,
+      "tokensThinking": 0,
+      "consistency": {
+        "runs": 3,
+        "identical": true,
+        "distinctResults": 1,
+        "distinctToolPaths": 1,
+        "avgOverlap": 1
+      },
+      "runs": [
+        {
+          "firstByteMs": 681,
+          "cardsMs": 899,
+          "totalMs": 1887,
+          "toolSequence": [
+            "semantic_search_restaurants",
+            "displayRestaurants"
+          ],
+          "toolInputs": [
+            {
+              "tool": "semantic_search_restaurants",
+              "input": "{\"query\":\"cozy, date night, romantic\",\"candidates\":644}"
+            },
+            {
+              "tool": "displayRestaurants",
+              "input": "{\"restaurant_names\":[\"olio-e-piu\",\"barbetta\",\"il-buco-alimentari-vineria\",\"cacio-e-pepe-east-village\",\"alice\"]}"
+            }
+          ],
+          "shown": [
+            "olio-e-piu",
+            "barbetta",
+            "il-buco-alimentari-vineria",
+            "cacio-e-pepe-east-village",
+            "alice"
+          ],
+          "text": "Ah, *amore* is in the air, and these Italian gems are ready to set the mood! For a truly theatrical experience, Cacío e Pepe in the East Village offers their signature dish, pasta tossed right out of a wheel of pecorino cheese—now *that's* a conversation starter. Or, if you prefer old-world charm and a lush back garden, Barbetta in the Theatre District has been romancing diners for over a century.",
+          "serverMetrics": {
+            "id": "wpnrwo",
+            "totalMs": 1871,
+            "firstChunkMs": 665,
+            "firstTextMs": 1343,
+            "phases": {
+              "setupTotal": 0
+            },
+            "stepCount": 2,
+            "modelMs": 1668,
+            "toolMs": 202,
+            "tokens": {
+              "input": 1009,
+              "output": 145,
+              "reasoning": 0
+            },
+            "steps": [
+              {
+                "step": 1,
+                "ms": 665,
+                "modelMs": 665,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "parse intent"
+                ],
+                "inputTokens": 130,
+                "outputTokens": 50,
+                "reasoningTokens": 0
+              },
+              {
+                "step": 2,
+                "ms": 1003,
+                "modelMs": 1003,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "narrate"
+                ],
+                "inputTokens": 879,
+                "outputTokens": 95,
+                "reasoningTokens": 0
+              }
+            ],
+            "tools": [
+              {
+                "tool": "semantic_search_restaurants",
+                "ms": 202,
+                "ok": true,
+                "input": "{\"query\":\"cozy, date night, romantic\",\"candidates\":644}"
+              },
+              {
+                "tool": "displayRestaurants",
+                "ms": 0,
+                "ok": true,
+                "input": "{\"restaurant_names\":[\"olio-e-piu\",\"barbetta\",\"il-buco-alimentari-vineria\",\"cacio-e-pepe-east-village\",\"alice\"]}"
+              }
+            ],
+            "displayed": [
+              "olio-e-piu",
+              "barbetta",
+              "il-buco-alimentari-vineria",
+              "cacio-e-pepe-east-village",
+              "alice"
+            ]
+          },
+          "intent": {
+            "kind": "search",
+            "restaurantNames": [],
+            "locations": [],
+            "travelMode": "unspecified",
+            "travelMinutes": null,
+            "vibes": [
+              "cozy",
+              "date night",
+              "romantic"
+            ],
+            "cuisines": [],
+            "prices": [],
+            "awards": [],
+            "restaurantWeek": false
+          },
+          "error": null
+        },
+        {
+          "firstByteMs": 769,
+          "cardsMs": 974,
+          "totalMs": 2027,
+          "toolSequence": [
+            "semantic_search_restaurants",
+            "displayRestaurants"
+          ],
+          "toolInputs": [
+            {
+              "tool": "semantic_search_restaurants",
+              "input": "{\"query\":\"cozy, date night, romantic\",\"candidates\":644}"
+            },
+            {
+              "tool": "displayRestaurants",
+              "input": "{\"restaurant_names\":[\"olio-e-piu\",\"barbetta\",\"il-buco-alimentari-vineria\",\"cacio-e-pepe-east-village\",\"alice\"]}"
+            }
+          ],
+          "shown": [
+            "olio-e-piu",
+            "barbetta",
+            "il-buco-alimentari-vineria",
+            "cacio-e-pepe-east-village",
+            "alice"
+          ],
+          "text": "Ah, *amore*! For a cozy, romantic rendezvous, these Italian gems should do the trick. If you're looking for a truly unique experience, Cacío e Pepe in the East Village offers their namesake pasta theatrically tossed from a wheel of pecorino cheese—now that's a dinner and a show. For something with a touch of old-world charm, Barbetta, owned by the same family for over a century, boasts ornate décor and a lush back garden that's practically begging for a whispered confession of love.",
+          "serverMetrics": {
+            "id": "z3rhcc",
+            "totalMs": 2018,
+            "firstChunkMs": 757,
+            "firstTextMs": 1394,
+            "phases": {
+              "setupTotal": 0
+            },
+            "stepCount": 2,
+            "modelMs": 1811,
+            "toolMs": 206,
+            "tokens": {
+              "input": 1009,
+              "output": 161,
+              "reasoning": 0
+            },
+            "steps": [
+              {
+                "step": 1,
+                "ms": 757,
+                "modelMs": 757,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "parse intent"
+                ],
+                "inputTokens": 130,
+                "outputTokens": 50,
+                "reasoningTokens": 0
+              },
+              {
+                "step": 2,
+                "ms": 1054,
+                "modelMs": 1054,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "narrate"
+                ],
+                "inputTokens": 879,
+                "outputTokens": 111,
+                "reasoningTokens": 0
+              }
+            ],
+            "tools": [
+              {
+                "tool": "semantic_search_restaurants",
+                "ms": 206,
+                "ok": true,
+                "input": "{\"query\":\"cozy, date night, romantic\",\"candidates\":644}"
+              },
+              {
+                "tool": "displayRestaurants",
+                "ms": 0,
+                "ok": true,
+                "input": "{\"restaurant_names\":[\"olio-e-piu\",\"barbetta\",\"il-buco-alimentari-vineria\",\"cacio-e-pepe-east-village\",\"alice\"]}"
+              }
+            ],
+            "displayed": [
+              "olio-e-piu",
+              "barbetta",
+              "il-buco-alimentari-vineria",
+              "cacio-e-pepe-east-village",
+              "alice"
+            ]
+          },
+          "intent": {
+            "kind": "search",
+            "restaurantNames": [],
+            "locations": [],
+            "travelMode": "unspecified",
+            "travelMinutes": null,
+            "vibes": [
+              "cozy",
+              "date night",
+              "romantic"
+            ],
+            "cuisines": [],
+            "prices": [],
+            "awards": [],
+            "restaurantWeek": false
+          },
+          "error": null
+        },
+        {
+          "firstByteMs": 900,
+          "cardsMs": 1104,
+          "totalMs": 2112,
+          "toolSequence": [
+            "semantic_search_restaurants",
+            "displayRestaurants"
+          ],
+          "toolInputs": [
+            {
+              "tool": "semantic_search_restaurants",
+              "input": "{\"query\":\"cozy, date night, romantic\",\"candidates\":644}"
+            },
+            {
+              "tool": "displayRestaurants",
+              "input": "{\"restaurant_names\":[\"olio-e-piu\",\"barbetta\",\"il-buco-alimentari-vineria\",\"cacio-e-pepe-east-village\",\"alice\"]}"
+            }
+          ],
+          "shown": [
+            "olio-e-piu",
+            "barbetta",
+            "il-buco-alimentari-vineria",
+            "cacio-e-pepe-east-village",
+            "alice"
+          ],
+          "text": "Ah, *amore* is in the air, and these Italian gems are ready to set the mood! For a truly theatrical experience, Cacío e Pepe in the East Village offers their namesake pasta dish, dramatically tossed right out of a wheel of Pecorino cheese. If you're seeking a century of romantic tradition, Barbetta in the Theatre District, with its ornate decor and lush garden, has been charming diners for generations.",
+          "serverMetrics": {
+            "id": "8yfzkq",
+            "totalMs": 2095,
+            "firstChunkMs": 881,
+            "firstTextMs": 1548,
+            "phases": {
+              "setupTotal": 0
+            },
+            "stepCount": 2,
+            "modelMs": 1890,
+            "toolMs": 205,
+            "tokens": {
+              "input": 1009,
+              "output": 138,
+              "reasoning": 0
+            },
+            "steps": [
+              {
+                "step": 1,
+                "ms": 881,
+                "modelMs": 881,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "parse intent"
+                ],
+                "inputTokens": 130,
+                "outputTokens": 50,
+                "reasoningTokens": 0
+              },
+              {
+                "step": 2,
+                "ms": 1009,
+                "modelMs": 1009,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "narrate"
+                ],
+                "inputTokens": 879,
+                "outputTokens": 88,
+                "reasoningTokens": 0
+              }
+            ],
+            "tools": [
+              {
+                "tool": "semantic_search_restaurants",
+                "ms": 205,
+                "ok": true,
+                "input": "{\"query\":\"cozy, date night, romantic\",\"candidates\":644}"
+              },
+              {
+                "tool": "displayRestaurants",
+                "ms": 0,
+                "ok": true,
+                "input": "{\"restaurant_names\":[\"olio-e-piu\",\"barbetta\",\"il-buco-alimentari-vineria\",\"cacio-e-pepe-east-village\",\"alice\"]}"
+              }
+            ],
+            "displayed": [
+              "olio-e-piu",
+              "barbetta",
+              "il-buco-alimentari-vineria",
+              "cacio-e-pepe-east-village",
+              "alice"
+            ]
+          },
+          "intent": {
+            "kind": "search",
+            "restaurantNames": [],
+            "locations": [],
+            "travelMode": "unspecified",
+            "travelMinutes": null,
+            "vibes": [
+              "cozy",
+              "date night",
+              "romantic"
+            ],
+            "cuisines": [],
+            "prices": [],
+            "awards": [],
+            "restaurantWeek": false
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "prompt": {
+        "id": "dietary",
+        "label": "Dietary",
+        "text": "vegan-friendly restaurants"
+      },
+      "errors": 0,
+      "totalMs": 1900,
+      "cardsMs": 991,
+      "steps": 2,
+      "modelMs": 1692,
+      "toolMs": 177,
+      "setupMs": 0,
+      "tokensIn": 781,
+      "tokensOut": 125,
+      "tokensThinking": 0,
+      "consistency": {
+        "runs": 3,
+        "identical": true,
+        "distinctResults": 1,
+        "distinctToolPaths": 1,
+        "avgOverlap": 1
+      },
+      "runs": [
+        {
+          "firstByteMs": 808,
+          "cardsMs": 973,
+          "totalMs": 1879,
+          "toolSequence": [
+            "semantic_search_restaurants",
+            "displayRestaurants"
+          ],
+          "toolInputs": [
+            {
+              "tool": "semantic_search_restaurants",
+              "input": "{\"query\":\"vegan-friendly\",\"candidates\":644}"
+            },
+            {
+              "tool": "displayRestaurants",
+              "input": "{\"restaurant_names\":[\"le-basque\",\"amali\",\"motek\",\"ginger-ristoranti-new-york\",\"uva-next-door\"]}"
+            }
+          ],
+          "shown": [
+            "le-basque",
+            "amali",
+            "motek",
+            "ginger-ristoranti-new-york",
+            "uva-next-door"
+          ],
+          "text": "Ah, the plant-based pursuit! You've got a solid selection here for vegan-friendly dining. For a truly unique experience, Le Basque in Union Square offers an upscale French and Spanish plant-based fusion that's quite the culinary adventure, or consider Ginger Ristoranti, which crafts its Italian dishes with a focus on longevity and plant-forward ingredients.",
+          "serverMetrics": {
+            "id": "fbqkh6",
+            "totalMs": 1862,
+            "firstChunkMs": 786,
+            "firstTextMs": 1423,
+            "phases": {
+              "setupTotal": 0
+            },
+            "stepCount": 2,
+            "modelMs": 1692,
+            "toolMs": 169,
+            "tokens": {
+              "input": 781,
+              "output": 120,
+              "reasoning": 0
+            },
+            "steps": [
+              {
+                "step": 1,
+                "ms": 786,
+                "modelMs": 786,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "parse intent"
+                ],
+                "inputTokens": 127,
+                "outputTokens": 46,
+                "reasoningTokens": 0
+              },
+              {
+                "step": 2,
+                "ms": 906,
+                "modelMs": 906,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "narrate"
+                ],
+                "inputTokens": 654,
+                "outputTokens": 74,
+                "reasoningTokens": 0
+              }
+            ],
+            "tools": [
+              {
+                "tool": "semantic_search_restaurants",
+                "ms": 169,
+                "ok": true,
+                "input": "{\"query\":\"vegan-friendly\",\"candidates\":644}"
+              },
+              {
+                "tool": "displayRestaurants",
+                "ms": 0,
+                "ok": true,
+                "input": "{\"restaurant_names\":[\"le-basque\",\"amali\",\"motek\",\"ginger-ristoranti-new-york\",\"uva-next-door\"]}"
+              }
+            ],
+            "displayed": [
+              "le-basque",
+              "amali",
+              "motek",
+              "ginger-ristoranti-new-york",
+              "uva-next-door"
+            ]
+          },
+          "intent": {
+            "kind": "search",
+            "restaurantNames": [],
+            "locations": [],
+            "travelMode": "unspecified",
+            "travelMinutes": null,
+            "vibes": [
+              "vegan-friendly"
+            ],
+            "cuisines": [],
+            "prices": [],
+            "awards": [],
+            "restaurantWeek": false
+          },
+          "error": null
+        },
+        {
+          "firstByteMs": 836,
+          "cardsMs": 1013,
+          "totalMs": 1900,
+          "toolSequence": [
+            "semantic_search_restaurants",
+            "displayRestaurants"
+          ],
+          "toolInputs": [
+            {
+              "tool": "semantic_search_restaurants",
+              "input": "{\"query\":\"vegan-friendly\",\"candidates\":644}"
+            },
+            {
+              "tool": "displayRestaurants",
+              "input": "{\"restaurant_names\":[\"le-basque\",\"amali\",\"motek\",\"ginger-ristoranti-new-york\",\"uva-next-door\"]}"
+            }
+          ],
+          "shown": [
+            "le-basque",
+            "amali",
+            "motek",
+            "ginger-ristoranti-new-york",
+            "uva-next-door"
+          ],
+          "text": "Ah, vegan-friendly, a noble pursuit in this city of carnivores. You've got a few intriguing options here, from the plant-forward Italian at Ginger Ristoranti, which draws inspiration from the world's Blue Zones, to Le Basque, an upscale French and Spanish vegan spot in Union Square that sounds like it's trying to prove something—and I respect that.",
+          "serverMetrics": {
+            "id": "tfg9x3",
+            "totalMs": 1895,
+            "firstChunkMs": 829,
+            "firstTextMs": 1428,
+            "phases": {
+              "setupTotal": 0
+            },
+            "stepCount": 2,
+            "modelMs": 1717,
+            "toolMs": 177,
+            "tokens": {
+              "input": 781,
+              "output": 125,
+              "reasoning": 0
+            },
+            "steps": [
+              {
+                "step": 1,
+                "ms": 828,
+                "modelMs": 828,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "parse intent"
+                ],
+                "inputTokens": 127,
+                "outputTokens": 46,
+                "reasoningTokens": 0
+              },
+              {
+                "step": 2,
+                "ms": 889,
+                "modelMs": 889,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "narrate"
+                ],
+                "inputTokens": 654,
+                "outputTokens": 79,
+                "reasoningTokens": 0
+              }
+            ],
+            "tools": [
+              {
+                "tool": "semantic_search_restaurants",
+                "ms": 177,
+                "ok": true,
+                "input": "{\"query\":\"vegan-friendly\",\"candidates\":644}"
+              },
+              {
+                "tool": "displayRestaurants",
+                "ms": 0,
+                "ok": true,
+                "input": "{\"restaurant_names\":[\"le-basque\",\"amali\",\"motek\",\"ginger-ristoranti-new-york\",\"uva-next-door\"]}"
+              }
+            ],
+            "displayed": [
+              "le-basque",
+              "amali",
+              "motek",
+              "ginger-ristoranti-new-york",
+              "uva-next-door"
+            ]
+          },
+          "intent": {
+            "kind": "search",
+            "restaurantNames": [],
+            "locations": [],
+            "travelMode": "unspecified",
+            "travelMinutes": null,
+            "vibes": [
+              "vegan-friendly"
+            ],
+            "cuisines": [],
+            "prices": [],
+            "awards": [],
+            "restaurantWeek": false
+          },
+          "error": null
+        },
+        {
+          "firstByteMs": 786,
+          "cardsMs": 991,
+          "totalMs": 1905,
+          "toolSequence": [
+            "semantic_search_restaurants",
+            "displayRestaurants"
+          ],
+          "toolInputs": [
+            {
+              "tool": "semantic_search_restaurants",
+              "input": "{\"query\":\"vegan-friendly\",\"candidates\":644}"
+            },
+            {
+              "tool": "displayRestaurants",
+              "input": "{\"restaurant_names\":[\"le-basque\",\"amali\",\"motek\",\"ginger-ristoranti-new-york\",\"uva-next-door\"]}"
+            }
+          ],
+          "shown": [
+            "le-basque",
+            "amali",
+            "motek",
+            "ginger-ristoranti-new-york",
+            "uva-next-door"
+          ],
+          "text": "Ah, a plant-based pilgrimage, I see! While many restaurants dabble in vegan options, Le Basque in Union Square truly commits, offering an upscale French and Spanish experience that's entirely plant-based. And for those who appreciate a more subtle approach, Ginger Ristoranti in Midtown West embraces a plant-forward philosophy, drawing inspiration from the world's Blue Zones for their ingredient-driven Italian fare.",
+          "serverMetrics": {
+            "id": "do1j87",
+            "totalMs": 1895,
+            "firstChunkMs": 774,
+            "firstTextMs": 1505,
+            "phases": {
+              "setupTotal": 0
+            },
+            "stepCount": 2,
+            "modelMs": 1689,
+            "toolMs": 206,
+            "tokens": {
+              "input": 781,
+              "output": 130,
+              "reasoning": 0
+            },
+            "steps": [
+              {
+                "step": 1,
+                "ms": 774,
+                "modelMs": 774,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "parse intent"
+                ],
+                "inputTokens": 127,
+                "outputTokens": 46,
+                "reasoningTokens": 0
+              },
+              {
+                "step": 2,
+                "ms": 915,
+                "modelMs": 915,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "narrate"
+                ],
+                "inputTokens": 654,
+                "outputTokens": 84,
+                "reasoningTokens": 0
+              }
+            ],
+            "tools": [
+              {
+                "tool": "semantic_search_restaurants",
+                "ms": 206,
+                "ok": true,
+                "input": "{\"query\":\"vegan-friendly\",\"candidates\":644}"
+              },
+              {
+                "tool": "displayRestaurants",
+                "ms": 0,
+                "ok": true,
+                "input": "{\"restaurant_names\":[\"le-basque\",\"amali\",\"motek\",\"ginger-ristoranti-new-york\",\"uva-next-door\"]}"
+              }
+            ],
+            "displayed": [
+              "le-basque",
+              "amali",
+              "motek",
+              "ginger-ristoranti-new-york",
+              "uva-next-door"
+            ]
+          },
+          "intent": {
+            "kind": "search",
+            "restaurantNames": [],
+            "locations": [],
+            "travelMode": "unspecified",
+            "travelMinutes": null,
+            "vibes": [
+              "vegan-friendly"
+            ],
+            "cuisines": [],
+            "prices": [],
+            "awards": [],
+            "restaurantWeek": false
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "prompt": {
+        "id": "location-vibe",
+        "label": "Location + vibe",
+        "text": "cozy spots within a 15 minute walk of Times Square"
+      },
+      "errors": 0,
+      "totalMs": 3094,
+      "cardsMs": 2114,
+      "steps": 2,
+      "modelMs": 1879,
+      "toolMs": 908,
+      "setupMs": 0,
+      "tokensIn": 1099,
+      "tokensOut": 138,
+      "tokensThinking": 0,
+      "consistency": {
+        "runs": 3,
+        "identical": true,
+        "distinctResults": 1,
+        "distinctToolPaths": 1,
+        "avgOverlap": 1
+      },
+      "runs": [
+        {
+          "firstByteMs": 843,
+          "cardsMs": 2370,
+          "totalMs": 3411,
+          "toolSequence": [
+            "geocode",
+            "get_isoline",
+            "semantic_search_restaurants",
+            "displayRestaurants"
+          ],
+          "toolInputs": [
+            {
+              "tool": "geocode",
+              "input": "{\"address\":\"Times Square\"}"
+            },
+            {
+              "tool": "get_isoline",
+              "input": "{\"latitude\":40.758,\"longitude\":-73.9855,\"mode\":\"walking\",\"minutes\":15}"
+            },
+            {
+              "tool": "semantic_search_restaurants",
+              "input": "{\"query\":\"cozy\",\"candidates\":124}"
+            },
+            {
+              "tool": "displayRestaurants",
+              "input": "{\"restaurant_names\":[\"the-parlour-room\",\"le-rivage-restaurant\",\"aperibar\",\"so-and-sos\",\"maggies-place\"]}"
+            }
+          ],
+          "shown": [
+            "the-parlour-room",
+            "le-rivage-restaurant",
+            "aperibar",
+            "so-and-sos",
+            "maggies-place"
+          ],
+          "text": "Ah, the eternal quest for coziness amidst the Times Square chaos! You've got some lovely options here. For a truly intimate experience, So & So's sounds like stumbling into a local legend's living room, complete with a piano bar. And if you're looking for a spot where the drinks flow as freely as the conversation, The Parlour Room is noted for its cozy and inviting atmosphere, perfect for enjoying a tipple with friends.",
+          "serverMetrics": {
+            "id": "kdt8tr",
+            "totalMs": 3409,
+            "firstChunkMs": 836,
+            "firstTextMs": 2902,
+            "phases": {
+              "setupTotal": 0
+            },
+            "stepCount": 2,
+            "modelMs": 1879,
+            "toolMs": 1527,
+            "tokens": {
+              "input": 1099,
+              "output": 140,
+              "reasoning": 0
+            },
+            "steps": [
+              {
+                "step": 1,
+                "ms": 836,
+                "modelMs": 836,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "parse intent"
+                ],
+                "inputTokens": 135,
+                "outputTokens": 47,
+                "reasoningTokens": 0
+              },
+              {
+                "step": 2,
+                "ms": 1043,
+                "modelMs": 1043,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "narrate"
+                ],
+                "inputTokens": 964,
+                "outputTokens": 93,
+                "reasoningTokens": 0
+              }
+            ],
+            "tools": [
+              {
+                "tool": "geocode",
+                "ms": 1,
+                "ok": true,
+                "input": "{\"address\":\"Times Square\"}"
+              },
+              {
+                "tool": "get_isoline",
+                "ms": 1105,
+                "ok": true,
+                "input": "{\"latitude\":40.758,\"longitude\":-73.9855,\"mode\":\"walking\",\"minutes\":15}"
+              },
+              {
+                "tool": "semantic_search_restaurants",
+                "ms": 422,
+                "ok": true,
+                "input": "{\"query\":\"cozy\",\"candidates\":124}"
+              },
+              {
+                "tool": "displayRestaurants",
+                "ms": 0,
+                "ok": true,
+                "input": "{\"restaurant_names\":[\"the-parlour-room\",\"le-rivage-restaurant\",\"aperibar\",\"so-and-sos\",\"maggies-place\"]}"
+              }
+            ],
+            "displayed": [
+              "the-parlour-room",
+              "le-rivage-restaurant",
+              "aperibar",
+              "so-and-sos",
+              "maggies-place"
+            ]
+          },
+          "intent": {
+            "kind": "search",
+            "restaurantNames": [],
+            "locations": [
+              "Times Square"
+            ],
+            "travelMode": "walking",
+            "travelMinutes": 15,
+            "vibes": [
+              "cozy"
+            ],
+            "cuisines": [],
+            "prices": [],
+            "awards": [],
+            "restaurantWeek": false
+          },
+          "error": null
+        },
+        {
+          "firstByteMs": 776,
+          "cardsMs": 1577,
+          "totalMs": 2597,
+          "toolSequence": [
+            "geocode",
+            "get_isoline",
+            "semantic_search_restaurants",
+            "displayRestaurants"
+          ],
+          "toolInputs": [
+            {
+              "tool": "geocode",
+              "input": "{\"address\":\"Times Square\"}"
+            },
+            {
+              "tool": "get_isoline",
+              "input": "{\"latitude\":40.758,\"longitude\":-73.9855,\"mode\":\"walking\",\"minutes\":15}"
+            },
+            {
+              "tool": "semantic_search_restaurants",
+              "input": "{\"query\":\"cozy\",\"candidates\":124}"
+            },
+            {
+              "tool": "displayRestaurants",
+              "input": "{\"restaurant_names\":[\"the-parlour-room\",\"le-rivage-restaurant\",\"aperibar\",\"so-and-sos\",\"maggies-place\"]}"
+            }
+          ],
+          "shown": [
+            "the-parlour-room",
+            "le-rivage-restaurant",
+            "aperibar",
+            "so-and-sos",
+            "maggies-place"
+          ],
+          "text": "Ah, a quest for coziness near the bright lights of Times Square – a delightful paradox! For a truly inviting atmosphere, you might consider The Parlour Room, where one visitor specifically noted its \"cozy and inviting atmosphere for enjoying drinks with friends,\" perhaps with a side of oysters. Or, if a dimly lit piano bar sounds like your kind of cozy, So & So's has \"nicely spaced tables\" that reviewers found quite comfortable.",
+          "serverMetrics": {
+            "id": "lpr5kg",
+            "totalMs": 2592,
+            "firstChunkMs": 770,
+            "firstTextMs": 1984,
+            "phases": {
+              "setupTotal": 0
+            },
+            "stepCount": 2,
+            "modelMs": 1793,
+            "toolMs": 798,
+            "tokens": {
+              "input": 1099,
+              "output": 138,
+              "reasoning": 0
+            },
+            "steps": [
+              {
+                "step": 1,
+                "ms": 770,
+                "modelMs": 770,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "parse intent"
+                ],
+                "inputTokens": 135,
+                "outputTokens": 47,
+                "reasoningTokens": 0
+              },
+              {
+                "step": 2,
+                "ms": 1023,
+                "modelMs": 1023,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "narrate"
+                ],
+                "inputTokens": 964,
+                "outputTokens": 91,
+                "reasoningTokens": 0
+              }
+            ],
+            "tools": [
+              {
+                "tool": "geocode",
+                "ms": 0,
+                "ok": true,
+                "input": "{\"address\":\"Times Square\"}"
+              },
+              {
+                "tool": "get_isoline",
+                "ms": 592,
+                "ok": true,
+                "input": "{\"latitude\":40.758,\"longitude\":-73.9855,\"mode\":\"walking\",\"minutes\":15}"
+              },
+              {
+                "tool": "semantic_search_restaurants",
+                "ms": 205,
+                "ok": true,
+                "input": "{\"query\":\"cozy\",\"candidates\":124}"
+              },
+              {
+                "tool": "displayRestaurants",
+                "ms": 0,
+                "ok": true,
+                "input": "{\"restaurant_names\":[\"the-parlour-room\",\"le-rivage-restaurant\",\"aperibar\",\"so-and-sos\",\"maggies-place\"]}"
+              }
+            ],
+            "displayed": [
+              "the-parlour-room",
+              "le-rivage-restaurant",
+              "aperibar",
+              "so-and-sos",
+              "maggies-place"
+            ]
+          },
+          "intent": {
+            "kind": "search",
+            "restaurantNames": [],
+            "locations": [
+              "Times Square"
+            ],
+            "travelMode": "walking",
+            "travelMinutes": 15,
+            "vibes": [
+              "cozy"
+            ],
+            "cuisines": [],
+            "prices": [],
+            "awards": [],
+            "restaurantWeek": false
+          },
+          "error": null
+        },
+        {
+          "firstByteMs": 1237,
+          "cardsMs": 2114,
+          "totalMs": 3094,
+          "toolSequence": [
+            "geocode",
+            "get_isoline",
+            "semantic_search_restaurants",
+            "displayRestaurants"
+          ],
+          "toolInputs": [
+            {
+              "tool": "geocode",
+              "input": "{\"address\":\"Times Square\"}"
+            },
+            {
+              "tool": "get_isoline",
+              "input": "{\"latitude\":40.758,\"longitude\":-73.9855,\"mode\":\"walking\",\"minutes\":15}"
+            },
+            {
+              "tool": "semantic_search_restaurants",
+              "input": "{\"query\":\"cozy\",\"candidates\":124}"
+            },
+            {
+              "tool": "displayRestaurants",
+              "input": "{\"restaurant_names\":[\"the-parlour-room\",\"le-rivage-restaurant\",\"aperibar\",\"so-and-sos\",\"maggies-place\"]}"
+            }
+          ],
+          "shown": [
+            "the-parlour-room",
+            "le-rivage-restaurant",
+            "aperibar",
+            "so-and-sos",
+            "maggies-place"
+          ],
+          "text": "Ah, Times Square, where the only thing cozier than the crowds is finding a quiet corner amidst the chaos. For a truly intimate experience, So & So's sounds like stumbling into a local legend's living room, complete with a piano bar. And if you're feeling a bit more continental, Le Rivage, a traditional French spot run by the Denamiel family since 1984, offers a classic escape.",
+          "serverMetrics": {
+            "id": "gnylq4",
+            "totalMs": 3033,
+            "firstChunkMs": 1116,
+            "firstTextMs": 2528,
+            "phases": {
+              "setupTotal": 0
+            },
+            "stepCount": 2,
+            "modelMs": 2100,
+            "toolMs": 908,
+            "tokens": {
+              "input": 1099,
+              "output": 138,
+              "reasoning": 0
+            },
+            "steps": [
+              {
+                "step": 1,
+                "ms": 1116,
+                "modelMs": 1116,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "parse intent"
+                ],
+                "inputTokens": 135,
+                "outputTokens": 47,
+                "reasoningTokens": 0
+              },
+              {
+                "step": 2,
+                "ms": 984,
+                "modelMs": 984,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "narrate"
+                ],
+                "inputTokens": 964,
+                "outputTokens": 91,
+                "reasoningTokens": 0
+              }
+            ],
+            "tools": [
+              {
+                "tool": "geocode",
+                "ms": 1,
+                "ok": true,
+                "input": "{\"address\":\"Times Square\"}"
+              },
+              {
+                "tool": "get_isoline",
+                "ms": 573,
+                "ok": true,
+                "input": "{\"latitude\":40.758,\"longitude\":-73.9855,\"mode\":\"walking\",\"minutes\":15}"
+              },
+              {
+                "tool": "semantic_search_restaurants",
+                "ms": 334,
+                "ok": true,
+                "input": "{\"query\":\"cozy\",\"candidates\":124}"
+              },
+              {
+                "tool": "displayRestaurants",
+                "ms": 0,
+                "ok": true,
+                "input": "{\"restaurant_names\":[\"the-parlour-room\",\"le-rivage-restaurant\",\"aperibar\",\"so-and-sos\",\"maggies-place\"]}"
+              }
+            ],
+            "displayed": [
+              "the-parlour-room",
+              "le-rivage-restaurant",
+              "aperibar",
+              "so-and-sos",
+              "maggies-place"
+            ]
+          },
+          "intent": {
+            "kind": "search",
+            "restaurantNames": [],
+            "locations": [
+              "Times Square"
+            ],
+            "travelMode": "walking",
+            "travelMinutes": 15,
+            "vibes": [
+              "cozy"
+            ],
+            "cuisines": [],
+            "prices": [],
+            "awards": [],
+            "restaurantWeek": false
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "prompt": {
+        "id": "near-me",
+        "label": "Near me",
+        "text": "lively places within a 10 minute walk of me"
+      },
+      "errors": 0,
+      "totalMs": 3288,
+      "cardsMs": 2006,
+      "steps": 2,
+      "modelMs": 1826,
+      "toolMs": 883,
+      "setupMs": 0,
+      "tokensIn": 1045,
+      "tokensOut": 146,
+      "tokensThinking": 0,
+      "consistency": {
+        "runs": 3,
+        "identical": true,
+        "distinctResults": 1,
+        "distinctToolPaths": 1,
+        "avgOverlap": 1
+      },
+      "runs": [
+        {
+          "firstByteMs": 1779,
+          "cardsMs": 2661,
+          "totalMs": 3685,
+          "toolSequence": [
+            "get_isoline",
+            "semantic_search_restaurants",
+            "displayRestaurants"
+          ],
+          "toolInputs": [
+            {
+              "tool": "get_isoline",
+              "input": "{\"latitude\":40.7359,\"longitude\":-73.9911,\"mode\":\"walking\",\"minutes\":10}"
+            },
+            {
+              "tool": "semantic_search_restaurants",
+              "input": "{\"query\":\"lively\",\"candidates\":56}"
+            },
+            {
+              "tool": "displayRestaurants",
+              "input": "{\"restaurant_names\":[\"lillies-victorian-establishment-union-square\",\"little-maven\",\"the-gallery\",\"sagaponack\",\"kyma\"]}"
+            }
+          ],
+          "shown": [
+            "lillies-victorian-establishment-union-square",
+            "little-maven",
+            "the-gallery",
+            "sagaponack",
+            "kyma"
+          ],
+          "text": "Ah, \"lively,\" the siren song of a good night out. You've got some interesting options here, all within a quick stroll. If you're looking for a place with a bit of theatrical flair, The Gallery offers artwork alongside its Japanese creations, a feast for both the eyes and the palate. But if you're after something truly vibrant with a menu that twists the classics, Little Maven seems to be hitting all the right notes, with attentive service to boot.",
+          "serverMetrics": {
+            "id": "96gs1y",
+            "totalMs": 2712,
+            "firstChunkMs": 801,
+            "firstTextMs": 2074,
+            "phases": {
+              "setupTotal": 0
+            },
+            "stepCount": 2,
+            "modelMs": 1826,
+            "toolMs": 883,
+            "tokens": {
+              "input": 1045,
+              "output": 146,
+              "reasoning": 0
+            },
+            "steps": [
+              {
+                "step": 1,
+                "ms": 800,
+                "modelMs": 800,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "parse intent"
+                ],
+                "inputTokens": 134,
+                "outputTokens": 48,
+                "reasoningTokens": 0
+              },
+              {
+                "step": 2,
+                "ms": 1026,
+                "modelMs": 1026,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "narrate"
+                ],
+                "inputTokens": 911,
+                "outputTokens": 98,
+                "reasoningTokens": 0
+              }
+            ],
+            "tools": [
+              {
+                "tool": "get_isoline",
+                "ms": 690,
+                "ok": true,
+                "input": "{\"latitude\":40.7359,\"longitude\":-73.9911,\"mode\":\"walking\",\"minutes\":10}"
+              },
+              {
+                "tool": "semantic_search_restaurants",
+                "ms": 193,
+                "ok": true,
+                "input": "{\"query\":\"lively\",\"candidates\":56}"
+              },
+              {
+                "tool": "displayRestaurants",
+                "ms": 0,
+                "ok": true,
+                "input": "{\"restaurant_names\":[\"lillies-victorian-establishment-union-square\",\"little-maven\",\"the-gallery\",\"sagaponack\",\"kyma\"]}"
+              }
+            ],
+            "displayed": [
+              "lillies-victorian-establishment-union-square",
+              "little-maven",
+              "the-gallery",
+              "sagaponack",
+              "kyma"
+            ]
+          },
+          "intent": {
+            "kind": "search",
+            "restaurantNames": [],
+            "locations": [
+              "MY_LOCATION"
+            ],
+            "travelMode": "walking",
+            "travelMinutes": 10,
+            "vibes": [
+              "lively"
+            ],
+            "cuisines": [],
+            "prices": [],
+            "awards": [],
+            "restaurantWeek": false
+          },
+          "error": null
+        },
+        {
+          "firstByteMs": 1480,
+          "cardsMs": 2006,
+          "totalMs": 3288,
+          "toolSequence": [
+            "get_isoline",
+            "semantic_search_restaurants",
+            "displayRestaurants"
+          ],
+          "toolInputs": [
+            {
+              "tool": "get_isoline",
+              "input": "{\"latitude\":40.7359,\"longitude\":-73.9911,\"mode\":\"walking\",\"minutes\":10}"
+            },
+            {
+              "tool": "semantic_search_restaurants",
+              "input": "{\"query\":\"lively\",\"candidates\":56}"
+            },
+            {
+              "tool": "displayRestaurants",
+              "input": "{\"restaurant_names\":[\"lillies-victorian-establishment-union-square\",\"little-maven\",\"the-gallery\",\"sagaponack\",\"kyma\"]}"
+            }
+          ],
+          "shown": [
+            "lillies-victorian-establishment-union-square",
+            "little-maven",
+            "the-gallery",
+            "sagaponack",
+            "kyma"
+          ],
+          "text": "Ah, \"lively,\" the siren song of a good night out! You've got some interesting options here, all within a quick stroll. If you're looking for a bit of old-world charm with your revelry, Lillie's Victorian—Union Square promises an \"authentic ostentatious decor\" that's practically a show in itself, though some say the drinks could use a bit more... spirit. For something a touch more modern and art-forward, The Gallery offers a unique blend of \"artwork alongside delicious culinary creations,\" making it a feast for both the eyes and the palate.",
+          "serverMetrics": {
+            "id": "d69pqf",
+            "totalMs": 3282,
+            "firstChunkMs": 1470,
+            "firstTextMs": 2538,
+            "phases": {
+              "setupTotal": 0
+            },
+            "stepCount": 2,
+            "modelMs": 2755,
+            "toolMs": 524,
+            "tokens": {
+              "input": 1045,
+              "output": 172,
+              "reasoning": 0
+            },
+            "steps": [
+              {
+                "step": 1,
+                "ms": 1470,
+                "modelMs": 1470,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "parse intent"
+                ],
+                "inputTokens": 134,
+                "outputTokens": 48,
+                "reasoningTokens": 0
+              },
+              {
+                "step": 2,
+                "ms": 1285,
+                "modelMs": 1285,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "narrate"
+                ],
+                "inputTokens": 911,
+                "outputTokens": 124,
+                "reasoningTokens": 0
+              }
+            ],
+            "tools": [
+              {
+                "tool": "get_isoline",
+                "ms": 267,
+                "ok": true,
+                "input": "{\"latitude\":40.7359,\"longitude\":-73.9911,\"mode\":\"walking\",\"minutes\":10}"
+              },
+              {
+                "tool": "semantic_search_restaurants",
+                "ms": 257,
+                "ok": true,
+                "input": "{\"query\":\"lively\",\"candidates\":56}"
+              },
+              {
+                "tool": "displayRestaurants",
+                "ms": 0,
+                "ok": true,
+                "input": "{\"restaurant_names\":[\"lillies-victorian-establishment-union-square\",\"little-maven\",\"the-gallery\",\"sagaponack\",\"kyma\"]}"
+              }
+            ],
+            "displayed": [
+              "lillies-victorian-establishment-union-square",
+              "little-maven",
+              "the-gallery",
+              "sagaponack",
+              "kyma"
+            ]
+          },
+          "intent": {
+            "kind": "search",
+            "restaurantNames": [],
+            "locations": [
+              "MY_LOCATION"
+            ],
+            "travelMode": "walking",
+            "travelMinutes": 10,
+            "vibes": [
+              "lively"
+            ],
+            "cuisines": [],
+            "prices": [],
+            "awards": [],
+            "restaurantWeek": false
+          },
+          "error": null
+        },
+        {
+          "firstByteMs": 694,
+          "cardsMs": 1713,
+          "totalMs": 2630,
+          "toolSequence": [
+            "get_isoline",
+            "semantic_search_restaurants",
+            "displayRestaurants"
+          ],
+          "toolInputs": [
+            {
+              "tool": "get_isoline",
+              "input": "{\"latitude\":40.7359,\"longitude\":-73.9911,\"mode\":\"walking\",\"minutes\":10}"
+            },
+            {
+              "tool": "semantic_search_restaurants",
+              "input": "{\"query\":\"lively\",\"candidates\":56}"
+            },
+            {
+              "tool": "displayRestaurants",
+              "input": "{\"restaurant_names\":[\"lillies-victorian-establishment-union-square\",\"little-maven\",\"the-gallery\",\"sagaponack\",\"kyma\"]}"
+            }
+          ],
+          "shown": [
+            "lillies-victorian-establishment-union-square",
+            "little-maven",
+            "the-gallery",
+            "sagaponack",
+            "kyma"
+          ],
+          "text": "Ah, \"lively,\" the siren song of a good time! You've got some interesting options here, all within a ten-minute stroll. For a truly unique experience, The Gallery offers a feast for both your eyes and your palate, combining art with chef Hiroki Odo's culinary creations. But if you're after something a bit more classic with a twist, Little Maven's attentive service and highly praised Caesar cups might just hit the spot.",
+          "serverMetrics": {
+            "id": "nqgapq",
+            "totalMs": 2624,
+            "firstChunkMs": 686,
+            "firstTextMs": 2085,
+            "phases": {
+              "setupTotal": 0
+            },
+            "stepCount": 2,
+            "modelMs": 1607,
+            "toolMs": 1015,
+            "tokens": {
+              "input": 1045,
+              "output": 143,
+              "reasoning": 0
+            },
+            "steps": [
+              {
+                "step": 1,
+                "ms": 686,
+                "modelMs": 686,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "parse intent"
+                ],
+                "inputTokens": 134,
+                "outputTokens": 48,
+                "reasoningTokens": 0
+              },
+              {
+                "step": 2,
+                "ms": 921,
+                "modelMs": 921,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "narrate"
+                ],
+                "inputTokens": 911,
+                "outputTokens": 95,
+                "reasoningTokens": 0
+              }
+            ],
+            "tools": [
+              {
+                "tool": "get_isoline",
+                "ms": 822,
+                "ok": true,
+                "input": "{\"latitude\":40.7359,\"longitude\":-73.9911,\"mode\":\"walking\",\"minutes\":10}"
+              },
+              {
+                "tool": "semantic_search_restaurants",
+                "ms": 194,
+                "ok": true,
+                "input": "{\"query\":\"lively\",\"candidates\":56}"
+              },
+              {
+                "tool": "displayRestaurants",
+                "ms": 0,
+                "ok": true,
+                "input": "{\"restaurant_names\":[\"lillies-victorian-establishment-union-square\",\"little-maven\",\"the-gallery\",\"sagaponack\",\"kyma\"]}"
+              }
+            ],
+            "displayed": [
+              "lillies-victorian-establishment-union-square",
+              "little-maven",
+              "the-gallery",
+              "sagaponack",
+              "kyma"
+            ]
+          },
+          "intent": {
+            "kind": "search",
+            "restaurantNames": [],
+            "locations": [
+              "MY_LOCATION"
+            ],
+            "travelMode": "walking",
+            "travelMinutes": 10,
+            "vibes": [
+              "lively"
+            ],
+            "cuisines": [],
+            "prices": [],
+            "awards": [],
+            "restaurantWeek": false
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "prompt": {
+        "id": "midpoint",
+        "label": "Midpoint (2 isochrones)",
+        "text": "I'm in Murray Hill and my friend is in Chelsea. Japanese restaurants within a 15 minute walk of both of us"
+      },
+      "errors": 0,
+      "totalMs": 2514,
+      "cardsMs": null,
+      "steps": 2,
+      "modelMs": 1644,
+      "toolMs": 761,
+      "setupMs": 0,
+      "tokensIn": 417,
+      "tokensOut": 120,
+      "tokensThinking": 0,
+      "consistency": {
+        "runs": 3,
+        "identical": true,
+        "distinctResults": 1,
+        "distinctToolPaths": 1,
+        "avgOverlap": 1
+      },
+      "runs": [
+        {
+          "firstByteMs": 836,
+          "cardsMs": null,
+          "totalMs": 2962,
+          "toolSequence": [
+            "geocode",
+            "geocode",
+            "get_isoline",
+            "get_isoline"
+          ],
+          "toolInputs": [
+            {
+              "tool": "geocode",
+              "input": "{\"address\":\"Murray Hill\"}"
+            },
+            {
+              "tool": "geocode",
+              "input": "{\"address\":\"Chelsea\"}"
+            },
+            {
+              "tool": "get_isoline",
+              "input": "{\"latitude\":40.7479,\"longitude\":-73.9757,\"mode\":\"walking\",\"minutes\":15}"
+            },
+            {
+              "tool": "get_isoline",
+              "input": "{\"latitude\":40.7465,\"longitude\":-74.0014,\"mode\":\"walking\",\"minutes\":15}"
+            }
+          ],
+          "shown": [],
+          "text": "*Mon Dieu*, it seems your discerning tastes for Japanese cuisine, coupled with the geographic challenge of Murray Hill and Chelsea, proved a bridge too far for even my culinary prowess. Perhaps a slight expansion of your walking radius, say to 20 minutes, or even considering a quick taxi ride, might unveil some hidden gems.",
+          "serverMetrics": {
+            "id": "r8zjz3",
+            "totalMs": 2954,
+            "firstChunkMs": 821,
+            "firstTextMs": 2522,
+            "phases": {
+              "setupTotal": 0
+            },
+            "stepCount": 2,
+            "modelMs": 1644,
+            "toolMs": 1308,
+            "tokens": {
+              "input": 417,
+              "output": 115,
+              "reasoning": 0
+            },
+            "steps": [
+              {
+                "step": 1,
+                "ms": 821,
+                "modelMs": 821,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "parse intent"
+                ],
+                "inputTokens": 149,
+                "outputTokens": 50,
+                "reasoningTokens": 0
+              },
+              {
+                "step": 2,
+                "ms": 823,
+                "modelMs": 823,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "narrate"
+                ],
+                "inputTokens": 268,
+                "outputTokens": 65,
+                "reasoningTokens": 0
+              }
+            ],
+            "tools": [
+              {
+                "tool": "geocode",
+                "ms": 1,
+                "ok": true,
+                "input": "{\"address\":\"Murray Hill\"}"
+              },
+              {
+                "tool": "geocode",
+                "ms": 1,
+                "ok": true,
+                "input": "{\"address\":\"Chelsea\"}"
+              },
+              {
+                "tool": "get_isoline",
+                "ms": 1307,
+                "ok": true,
+                "input": "{\"latitude\":40.7479,\"longitude\":-73.9757,\"mode\":\"walking\",\"minutes\":15}"
+              },
+              {
+                "tool": "get_isoline",
+                "ms": 673,
+                "ok": true,
+                "input": "{\"latitude\":40.7465,\"longitude\":-74.0014,\"mode\":\"walking\",\"minutes\":15}"
+              }
+            ],
+            "displayed": []
+          },
+          "intent": {
+            "kind": "search",
+            "restaurantNames": [],
+            "locations": [
+              "Murray Hill",
+              "Chelsea"
+            ],
+            "travelMode": "walking",
+            "travelMinutes": 15,
+            "vibes": [],
+            "cuisines": [
+              "Japanese / Sushi"
+            ],
+            "prices": [],
+            "awards": [],
+            "restaurantWeek": false
+          },
+          "error": null
+        },
+        {
+          "firstByteMs": 693,
+          "cardsMs": null,
+          "totalMs": 2006,
+          "toolSequence": [
+            "geocode",
+            "geocode",
+            "get_isoline",
+            "get_isoline"
+          ],
+          "toolInputs": [
+            {
+              "tool": "geocode",
+              "input": "{\"address\":\"Murray Hill\"}"
+            },
+            {
+              "tool": "geocode",
+              "input": "{\"address\":\"Chelsea\"}"
+            },
+            {
+              "tool": "get_isoline",
+              "input": "{\"latitude\":40.7479,\"longitude\":-73.9757,\"mode\":\"walking\",\"minutes\":15}"
+            },
+            {
+              "tool": "get_isoline",
+              "input": "{\"latitude\":40.7465,\"longitude\":-74.0014,\"mode\":\"walking\",\"minutes\":15}"
+            }
+          ],
+          "shown": [],
+          "text": "Ah, a culinary quest across the urban divide! It seems your discerning palates, and perhaps the city's grid, have conspired against a perfect match this time. I'd suggest either expanding your walking radius a bit – after all, a few extra minutes can lead to delicious discoveries – or perhaps considering a quick taxi or subway ride to bridge the gap.",
+          "serverMetrics": {
+            "id": "nj4eag",
+            "totalMs": 2002,
+            "firstChunkMs": 687,
+            "firstTextMs": 1554,
+            "phases": {
+              "setupTotal": 0
+            },
+            "stepCount": 2,
+            "modelMs": 1446,
+            "toolMs": 555,
+            "tokens": {
+              "input": 417,
+              "output": 123,
+              "reasoning": 0
+            },
+            "steps": [
+              {
+                "step": 1,
+                "ms": 687,
+                "modelMs": 687,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "parse intent"
+                ],
+                "inputTokens": 149,
+                "outputTokens": 50,
+                "reasoningTokens": 0
+              },
+              {
+                "step": 2,
+                "ms": 759,
+                "modelMs": 759,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "narrate"
+                ],
+                "inputTokens": 268,
+                "outputTokens": 73,
+                "reasoningTokens": 0
+              }
+            ],
+            "tools": [
+              {
+                "tool": "geocode",
+                "ms": 0,
+                "ok": true,
+                "input": "{\"address\":\"Murray Hill\"}"
+              },
+              {
+                "tool": "geocode",
+                "ms": 0,
+                "ok": true,
+                "input": "{\"address\":\"Chelsea\"}"
+              },
+              {
+                "tool": "get_isoline",
+                "ms": 555,
+                "ok": true,
+                "input": "{\"latitude\":40.7479,\"longitude\":-73.9757,\"mode\":\"walking\",\"minutes\":15}"
+              },
+              {
+                "tool": "get_isoline",
+                "ms": 198,
+                "ok": true,
+                "input": "{\"latitude\":40.7465,\"longitude\":-74.0014,\"mode\":\"walking\",\"minutes\":15}"
+              }
+            ],
+            "displayed": []
+          },
+          "intent": {
+            "kind": "search",
+            "restaurantNames": [],
+            "locations": [
+              "Murray Hill",
+              "Chelsea"
+            ],
+            "travelMode": "walking",
+            "travelMinutes": 15,
+            "vibes": [],
+            "cuisines": [
+              "Japanese / Sushi"
+            ],
+            "prices": [],
+            "awards": [],
+            "restaurantWeek": false
+          },
+          "error": null
+        },
+        {
+          "firstByteMs": 893,
+          "cardsMs": null,
+          "totalMs": 2514,
+          "toolSequence": [
+            "geocode",
+            "geocode",
+            "get_isoline",
+            "get_isoline"
+          ],
+          "toolInputs": [
+            {
+              "tool": "geocode",
+              "input": "{\"address\":\"Murray Hill\"}"
+            },
+            {
+              "tool": "geocode",
+              "input": "{\"address\":\"Chelsea\"}"
+            },
+            {
+              "tool": "get_isoline",
+              "input": "{\"latitude\":40.7479,\"longitude\":-73.9757,\"mode\":\"walking\",\"minutes\":15}"
+            },
+            {
+              "tool": "get_isoline",
+              "input": "{\"latitude\":40.7465,\"longitude\":-74.0014,\"mode\":\"walking\",\"minutes\":15}"
+            }
+          ],
+          "shown": [],
+          "text": "Ah, a culinary quest across the urban expanse! It seems our search for a Japanese haven equidistant from Murray Hill and Chelsea within a 15-minute stroll proved a bridge too far. Perhaps we could extend our perambulation to 20 minutes, or even consider a quick subway jaunt, to unlock a wider array of delectable options.",
+          "serverMetrics": {
+            "id": "wxcdvi",
+            "totalMs": 2502,
+            "firstChunkMs": 871,
+            "firstTextMs": 2150,
+            "phases": {
+              "setupTotal": 0
+            },
+            "stepCount": 2,
+            "modelMs": 1740,
+            "toolMs": 761,
+            "tokens": {
+              "input": 417,
+              "output": 120,
+              "reasoning": 0
+            },
+            "steps": [
+              {
+                "step": 1,
+                "ms": 870,
+                "modelMs": 870,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "parse intent"
+                ],
+                "inputTokens": 149,
+                "outputTokens": 50,
+                "reasoningTokens": 0
+              },
+              {
+                "step": 2,
+                "ms": 870,
+                "modelMs": 870,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "narrate"
+                ],
+                "inputTokens": 268,
+                "outputTokens": 70,
+                "reasoningTokens": 0
+              }
+            ],
+            "tools": [
+              {
+                "tool": "geocode",
+                "ms": 1,
+                "ok": true,
+                "input": "{\"address\":\"Murray Hill\"}"
+              },
+              {
+                "tool": "geocode",
+                "ms": 1,
+                "ok": true,
+                "input": "{\"address\":\"Chelsea\"}"
+              },
+              {
+                "tool": "get_isoline",
+                "ms": 596,
+                "ok": true,
+                "input": "{\"latitude\":40.7479,\"longitude\":-73.9757,\"mode\":\"walking\",\"minutes\":15}"
+              },
+              {
+                "tool": "get_isoline",
+                "ms": 758,
+                "ok": true,
+                "input": "{\"latitude\":40.7465,\"longitude\":-74.0014,\"mode\":\"walking\",\"minutes\":15}"
+              }
+            ],
+            "displayed": []
+          },
+          "intent": {
+            "kind": "search",
+            "restaurantNames": [],
+            "locations": [
+              "Murray Hill",
+              "Chelsea"
+            ],
+            "travelMode": "walking",
+            "travelMinutes": 15,
+            "vibes": [],
+            "cuisines": [
+              "Japanese / Sushi"
+            ],
+            "prices": [],
+            "awards": [],
+            "restaurantWeek": false
+          },
+          "error": null
+        }
+      ]
+    },
+    {
+      "prompt": {
+        "id": "transit",
+        "label": "Transit isochrone",
+        "text": "cheap eats within 15 minutes by transit from Union Square"
+      },
+      "errors": 0,
+      "totalMs": 2412,
+      "cardsMs": 1568,
+      "steps": 2,
+      "modelMs": 1798,
+      "toolMs": 709,
+      "setupMs": 0,
+      "tokensIn": 1035,
+      "tokensOut": 153,
+      "tokensThinking": 0,
+      "consistency": {
+        "runs": 3,
+        "identical": true,
+        "distinctResults": 1,
+        "distinctToolPaths": 1,
+        "avgOverlap": 1
+      },
+      "runs": [
+        {
+          "firstByteMs": 821,
+          "cardsMs": 1398,
+          "totalMs": 2412,
+          "toolSequence": [
+            "geocode",
+            "get_isoline",
+            "displayRestaurants"
+          ],
+          "toolInputs": [
+            {
+              "tool": "geocode",
+              "input": "{\"address\":\"Union Square\"}"
+            },
+            {
+              "tool": "get_isoline",
+              "input": "{\"latitude\":40.7359,\"longitude\":-73.9911,\"mode\":\"transit\",\"minutes\":15}"
+            },
+            {
+              "tool": "displayRestaurants",
+              "input": "{\"restaurant_names\":[\"cull-pistol-oyster-bar\",\"da-andrea-greenwich-village\",\"serra-by-birreria\",\"noodle-bar-east-village\",\"fish-cheeks\"]}"
+            }
+          ],
+          "shown": [
+            "cull-pistol-oyster-bar",
+            "da-andrea-greenwich-village",
+            "serra-by-birreria",
+            "noodle-bar-east-village",
+            "fish-cheeks"
+          ],
+          "text": "Ah, Union Square, a veritable crossroads of culinary possibility! You've got some solid choices here for a quick bite. For a taste of the sea, Cull & Pistol Oyster Bar in Chelsea Market is a Michelin-acclaimed spot, perfect for a $45 Restaurant Week lunch or dinner. If you're craving something a bit more adventurous, Fish Cheeks in Noho offers family-style Thai seafood, and their crab fried rice is a standout, mentioned in nearly 60% of reviews. Enjoy!",
+          "serverMetrics": {
+            "id": "q35dvu",
+            "totalMs": 2397,
+            "firstChunkMs": 775,
+            "firstTextMs": 1881,
+            "phases": {
+              "setupTotal": 0
+            },
+            "stepCount": 2,
+            "modelMs": 1798,
+            "toolMs": 583,
+            "tokens": {
+              "input": 1035,
+              "output": 153,
+              "reasoning": 0
+            },
+            "steps": [
+              {
+                "step": 1,
+                "ms": 774,
+                "modelMs": 774,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "parse intent"
+                ],
+                "inputTokens": 135,
+                "outputTokens": 48,
+                "reasoningTokens": 0
+              },
+              {
+                "step": 2,
+                "ms": 1024,
+                "modelMs": 1024,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "narrate"
+                ],
+                "inputTokens": 900,
+                "outputTokens": 105,
+                "reasoningTokens": 0
+              }
+            ],
+            "tools": [
+              {
+                "tool": "geocode",
+                "ms": 2,
+                "ok": true,
+                "input": "{\"address\":\"Union Square\"}"
+              },
+              {
+                "tool": "get_isoline",
+                "ms": 582,
+                "ok": true,
+                "input": "{\"latitude\":40.7359,\"longitude\":-73.9911,\"mode\":\"transit\",\"minutes\":15}"
+              },
+              {
+                "tool": "displayRestaurants",
+                "ms": 0,
+                "ok": true,
+                "input": "{\"restaurant_names\":[\"cull-pistol-oyster-bar\",\"da-andrea-greenwich-village\",\"serra-by-birreria\",\"noodle-bar-east-village\",\"fish-cheeks\"]}"
+              }
+            ],
+            "displayed": [
+              "cull-pistol-oyster-bar",
+              "da-andrea-greenwich-village",
+              "serra-by-birreria",
+              "noodle-bar-east-village",
+              "fish-cheeks"
+            ]
+          },
+          "intent": {
+            "kind": "search",
+            "restaurantNames": [],
+            "locations": [
+              "Union Square"
+            ],
+            "travelMode": "transit",
+            "travelMinutes": 15,
+            "vibes": [],
+            "cuisines": [],
+            "prices": [
+              "$",
+              "$$"
+            ],
+            "awards": [],
+            "restaurantWeek": false
+          },
+          "error": null
+        },
+        {
+          "firstByteMs": 739,
+          "cardsMs": 1599,
+          "totalMs": 2306,
+          "toolSequence": [
+            "geocode",
+            "get_isoline",
+            "displayRestaurants"
+          ],
+          "toolInputs": [
+            {
+              "tool": "geocode",
+              "input": "{\"address\":\"Union Square\"}"
+            },
+            {
+              "tool": "get_isoline",
+              "input": "{\"latitude\":40.7359,\"longitude\":-73.9911,\"mode\":\"transit\",\"minutes\":15}"
+            },
+            {
+              "tool": "displayRestaurants",
+              "input": "{\"restaurant_names\":[\"cull-pistol-oyster-bar\",\"da-andrea-greenwich-village\",\"serra-by-birreria\",\"noodle-bar-east-village\",\"fish-cheeks\"]}"
+            }
+          ],
+          "shown": [
+            "cull-pistol-oyster-bar",
+            "da-andrea-greenwich-village",
+            "serra-by-birreria",
+            "noodle-bar-east-village",
+            "fish-cheeks"
+          ],
+          "text": "Ah, Union Square, a veritable crossroads of culinary possibility! For a taste of the sea, Cull & Pistol Oyster Bar in Chelsea Market offers a Michelin-acclaimed experience, or if you're craving authentic Italian, Da Andrea in Greenwich Village is celebrated for its homemade pasta and accommodating staff.",
+          "serverMetrics": {
+            "id": "wgrura",
+            "totalMs": 2300,
+            "firstChunkMs": 729,
+            "firstTextMs": 1993,
+            "phases": {
+              "setupTotal": 0
+            },
+            "stepCount": 2,
+            "modelMs": 1439,
+            "toolMs": 854,
+            "tokens": {
+              "input": 1035,
+              "output": 107,
+              "reasoning": 0
+            },
+            "steps": [
+              {
+                "step": 1,
+                "ms": 728,
+                "modelMs": 728,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "parse intent"
+                ],
+                "inputTokens": 135,
+                "outputTokens": 48,
+                "reasoningTokens": 0
+              },
+              {
+                "step": 2,
+                "ms": 711,
+                "modelMs": 711,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "narrate"
+                ],
+                "inputTokens": 900,
+                "outputTokens": 59,
+                "reasoningTokens": 0
+              }
+            ],
+            "tools": [
+              {
+                "tool": "geocode",
+                "ms": 1,
+                "ok": true,
+                "input": "{\"address\":\"Union Square\"}"
+              },
+              {
+                "tool": "get_isoline",
+                "ms": 853,
+                "ok": true,
+                "input": "{\"latitude\":40.7359,\"longitude\":-73.9911,\"mode\":\"transit\",\"minutes\":15}"
+              },
+              {
+                "tool": "displayRestaurants",
+                "ms": 0,
+                "ok": true,
+                "input": "{\"restaurant_names\":[\"cull-pistol-oyster-bar\",\"da-andrea-greenwich-village\",\"serra-by-birreria\",\"noodle-bar-east-village\",\"fish-cheeks\"]}"
+              }
+            ],
+            "displayed": [
+              "cull-pistol-oyster-bar",
+              "da-andrea-greenwich-village",
+              "serra-by-birreria",
+              "noodle-bar-east-village",
+              "fish-cheeks"
+            ]
+          },
+          "intent": {
+            "kind": "search",
+            "restaurantNames": [],
+            "locations": [
+              "Union Square"
+            ],
+            "travelMode": "transit",
+            "travelMinutes": 15,
+            "vibes": [],
+            "cuisines": [],
+            "prices": [
+              "$",
+              "$$"
+            ],
+            "awards": [],
+            "restaurantWeek": false
+          },
+          "error": null
+        },
+        {
+          "firstByteMs": 865,
+          "cardsMs": 1568,
+          "totalMs": 2693,
+          "toolSequence": [
+            "geocode",
+            "get_isoline",
+            "displayRestaurants"
+          ],
+          "toolInputs": [
+            {
+              "tool": "geocode",
+              "input": "{\"address\":\"Union Square\"}"
+            },
+            {
+              "tool": "get_isoline",
+              "input": "{\"latitude\":40.7359,\"longitude\":-73.9911,\"mode\":\"transit\",\"minutes\":15}"
+            },
+            {
+              "tool": "displayRestaurants",
+              "input": "{\"restaurant_names\":[\"cull-pistol-oyster-bar\",\"da-andrea-greenwich-village\",\"serra-by-birreria\",\"noodle-bar-east-village\",\"fish-cheeks\"]}"
+            }
+          ],
+          "shown": [
+            "cull-pistol-oyster-bar",
+            "da-andrea-greenwich-village",
+            "serra-by-birreria",
+            "noodle-bar-east-village",
+            "fish-cheeks"
+          ],
+          "text": "Ah, Union Square, where the pigeons outnumber the good decisions made after 2 AM. You're looking for a deal, and these spots are certainly worth a look. For a taste of the sea, Cull & Pistol Oyster Bar in Chelsea Market offers a Michelin-acclaimed experience, where you can snag a $45 lunch or dinner. If you're craving something a bit more adventurous, Fish Cheeks in NoHo is known for its family-style Thai seafood and, according to the chatter, their crab fried rice is a must-try.",
+          "serverMetrics": {
+            "id": "9k6au6",
+            "totalMs": 2673,
+            "firstChunkMs": 828,
+            "firstTextMs": 2026,
+            "phases": {
+              "setupTotal": 0
+            },
+            "stepCount": 2,
+            "modelMs": 1956,
+            "toolMs": 709,
+            "tokens": {
+              "input": 1035,
+              "output": 162,
+              "reasoning": 0
+            },
+            "steps": [
+              {
+                "step": 1,
+                "ms": 828,
+                "modelMs": 828,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "parse intent"
+                ],
+                "inputTokens": 135,
+                "outputTokens": 48,
+                "reasoningTokens": 0
+              },
+              {
+                "step": 2,
+                "ms": 1128,
+                "modelMs": 1128,
+                "toolMs": 0,
+                "finishReason": "done",
+                "tools": [
+                  "narrate"
+                ],
+                "inputTokens": 900,
+                "outputTokens": 114,
+                "reasoningTokens": 0
+              }
+            ],
+            "tools": [
+              {
+                "tool": "geocode",
+                "ms": 1,
+                "ok": true,
+                "input": "{\"address\":\"Union Square\"}"
+              },
+              {
+                "tool": "get_isoline",
+                "ms": 709,
+                "ok": true,
+                "input": "{\"latitude\":40.7359,\"longitude\":-73.9911,\"mode\":\"transit\",\"minutes\":15}"
+              },
+              {
+                "tool": "displayRestaurants",
+                "ms": 0,
+                "ok": true,
+                "input": "{\"restaurant_names\":[\"cull-pistol-oyster-bar\",\"da-andrea-greenwich-village\",\"serra-by-birreria\",\"noodle-bar-east-village\",\"fish-cheeks\"]}"
+              }
+            ],
+            "displayed": [
+              "cull-pistol-oyster-bar",
+              "da-andrea-greenwich-village",
+              "serra-by-birreria",
+              "noodle-bar-east-village",
+              "fish-cheeks"
+            ]
+          },
+          "intent": {
+            "kind": "search",
+            "restaurantNames": [],
+            "locations": [
+              "Union Square"
+            ],
+            "travelMode": "transit",
+            "travelMinutes": 15,
+            "vibes": [],
+            "cuisines": [],
+            "prices": [
+              "$",
+              "$$"
+            ],
+            "awards": [],
+            "restaurantWeek": false
+          },
+          "error": null
+        }
+      ]
+    }
+  ]
+}

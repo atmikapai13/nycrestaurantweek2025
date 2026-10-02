@@ -7,10 +7,11 @@ import { config } from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 
-// Load .env.local FIRST, before validation
+// Load .env.local first, then .env for anything it doesn't set (dotenv never overrides).
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 config({ path: path.resolve(__dirname, "../.env.local") });
+config({ path: path.resolve(__dirname, "../.env") });
 
 // Simple environment variable access with defaults
 export const env = {
@@ -18,14 +19,8 @@ export const env = {
   GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
   GOOGLE_GENERATIVE_AI_API_KEY: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
 
-  // MCP Server configuration
-  MCP_SERVER_URL: process.env.MCP_SERVER_URL || "",
-  MCP_API_KEY: process.env.MCP_API_KEY || "",
-  MCP_ANALYSIS_ID: process.env.MCP_ANALYSIS_ID || "",
-
-  // Pinecone configuration (for local semantic search)
-  PINECONE_API_KEY: process.env.PINECONE_API_KEY || "",
-  PINECONE_INDEX_NAME: process.env.PINECONE_INDEX_NAME || "nyc-eats",
+  // Geoapify: geocoding + isochrones (api/lib/geo.ts)
+  GEOAPIFY_API_KEY: process.env.GEOAPIFY_API_KEY || "",
 
   // API server configuration
   API2_PORT: parseInt(process.env.API2_PORT || "3001", 10),

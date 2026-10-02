@@ -23,6 +23,7 @@
   ],
   "functions": {
     "api/**/*.ts": {
+      "includeFiles": "src/data/{FinalData,embeddings}.json",
       "memory": 1024,
       "maxDuration": 60
     }

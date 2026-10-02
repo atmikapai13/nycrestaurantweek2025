@@ -10,6 +10,8 @@
  *
  * Options: --label <name>  --runs <n>  --delay <ms between requests>
  *          --only <comma-separated prompt ids>  --url <chat endpoint>
+ *          --cache on   (default off: server caches are bypassed so every run
+ *                        measures uncached latency and real model determinism)
  *
  * Writes benchmarks/results/<label>-<timestamp>.md (human-readable report) and
  * .json (raw data), and prints the summary table.
@@ -39,7 +41,7 @@ const PROMPTS = [
 ];
 
 function parseArgs(argv) {
-  const args = { label: "run", runs: 3, delay: 3000, only: null, url: "http://localhost:3001/chat" };
+  const args = { label: "run", runs: 3, delay: 3000, only: null, url: "http://localhost:3001/chat", cache: "off" };
   for (let i = 0; i < argv.length; i += 2) {
     const key = argv[i].replace(/^--/, "");
     const value = argv[i + 1];
@@ -61,7 +63,7 @@ const sec = (ms) => (ms == null ? "–" : `${(ms / 1000).toFixed(1)}s`);
 const num = (n) => (n == null ? "–" : Math.round(n).toLocaleString("en-US"));
 
 /** Send one prompt and consume the UI message stream (SSE), timing it client-side. */
-async function runOnce(url, prompt) {
+async function runOnce(url, prompt, cache) {
   const body = {
     id: `bench-${Date.now()}`,
     trigger: "submit-message",
@@ -80,13 +82,14 @@ async function runOnce(url, prompt) {
     shown: [],
     text: "",
     serverMetrics: null,
+    intent: null,
     error: null,
   };
 
   try {
     const res = await fetch(url, {
       method: "POST",
-      headers: { "Content-Type": "application/json", "x-nyceats-metrics": "1" },
+      headers: { "Content-Type": "application/json", "x-nyceats-metrics": "1", "x-nyceats-cache": cache },
       body: JSON.stringify(body),
     });
     if (!res.ok) {
@@ -141,6 +144,9 @@ function handleChunk(chunk, run, elapsed) {
       }
       break;
     }
+    case "data-intent":
+      run.intent = chunk.data;
+      break;
     case "text-delta":
       run.text += chunk.delta ?? "";
       break;
@@ -207,11 +213,18 @@ function consistencyLabel(c) {
   return `❌ ${c.distinctResults} different${overlap}`;
 }
 
+/** Intent without empty fields, for readable reports. */
+function compactIntent(intent) {
+  return Object.fromEntries(
+    Object.entries(intent).filter(([, v]) => !(v === null || v === false || (Array.isArray(v) && !v.length) || v === "unspecified"))
+  );
+}
+
 function toMarkdown(args, results, startedAt) {
   const lines = [];
   lines.push(`# Chat benchmark: ${args.label}`);
   lines.push("");
-  lines.push(`Run ${startedAt.toISOString()} · ${args.runs} runs per prompt · endpoint \`${args.url}\``);
+  lines.push(`Run ${startedAt.toISOString()} · ${args.runs} runs per prompt · server caches ${args.cache} · endpoint \`${args.url}\``);
   lines.push("");
   lines.push("Times are medians across runs. **Cards** = when restaurant cards arrived; **Total** = stream fully finished.");
   lines.push("**Same results?** compares the ordered list of restaurants shown across runs of the same prompt.");
@@ -240,8 +253,8 @@ function toMarkdown(args, results, startedAt) {
     lines.push("## Where the time goes (all runs)");
     lines.push("");
     lines.push(`- **LLM (Gemini) time:** ${pct(model)} of server time`);
-    lines.push(`- **Tool time** (MCP geocode/isoline/SQL, Pinecone): ${pct(tools)}`);
-    lines.push(`- **Setup** (MCP context, message conversion): ${pct(setup)}`);
+    lines.push(`- **Tool/API time** (geocode, isochrones, search): ${pct(tools)}`);
+    lines.push(`- **Setup** (before the first LLM call): ${pct(setup)}`);
     lines.push(`- **Prompts with identical results every run:** ${identical} of ${results.length}`);
     const coldMs = Math.max(...all.map((r) => r.serverMetrics.phases?.mcpContext ?? 0));
     if (coldMs > 1000) {
@@ -285,6 +298,18 @@ function toMarkdown(args, results, startedAt) {
       lines.push("");
       lines.push(...inputs);
     }
+
+    // New pipeline: the parsed intent is the only thing the LLM decides.
+    const intents = s.runs
+      .map((r, i) => (r.intent ? `- Run ${i + 1}: \`${JSON.stringify(compactIntent(r.intent))}\`` : null))
+      .filter(Boolean);
+    if (intents.length) {
+      const distinct = new Set(s.runs.filter((r) => r.intent).map((r) => JSON.stringify(r.intent))).size;
+      lines.push("");
+      lines.push(`Parsed intent (${distinct === 1 ? "identical every run" : `${distinct} different versions`}):`);
+      lines.push("");
+      lines.push(...intents);
+    }
   }
   return lines.join("\n") + "\n";
 }
@@ -300,7 +325,7 @@ async function main() {
     const runs = [];
     for (let i = 0; i < args.runs; i++) {
       process.stdout.write(`  ${prompt.label.padEnd(26)} run ${i + 1}/${args.runs} … `);
-      const run = await runOnce(args.url, prompt);
+      const run = await runOnce(args.url, prompt, args.cache);
       runs.push(run);
       console.log(
         run.error ? `❌ ${run.error.slice(0, 80)}` : `${sec(run.totalMs)}  ${run.shown.join(", ") || "(no cards)"}`

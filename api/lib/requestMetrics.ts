@@ -1,13 +1,13 @@
 /**
  * Per-request latency + token metrics for the chat endpoint.
  *
- * Records setup phases, each LLM step (wall time split into model vs. tool time,
- * token usage incl. Gemini "thinking" tokens), every tool execution, and the
- * restaurants finally displayed. Logged as one summary line per request, and
- * returned to the client as message metadata when the request carries the
- * METRICS_HEADER (used by scripts/benchmark-chat.js).
+ * Records setup phases, each LLM call (duration + token usage incl. Gemini
+ * "thinking" tokens), every tool/API call, and the restaurants finally
+ * displayed. Logged as a readable block per request, and returned to the client
+ * as message metadata when the request carries the METRICS_HEADER (used by
+ * scripts/benchmark-chat.js).
  */
-import type { ToolSet } from "ai";
+import type { LanguageModelUsage } from "ai";
 
 export const METRICS_HEADER = "x-nyceats-metrics";
 
@@ -31,22 +31,11 @@ interface StepMetric {
   reasoningTokens?: number;
 }
 
-interface StepLike {
-  finishReason: string;
-  toolCalls?: Array<{ toolName?: string } | undefined>;
-  usage?: {
-    inputTokens?: number;
-    outputTokens?: number;
-    outputTokenDetails?: { reasoningTokens?: number };
-  };
-}
-
 const round = (n: number) => Math.round(n);
 
 export class RequestMetrics {
   readonly id = Math.random().toString(36).slice(2, 8);
   private readonly start = performance.now();
-  private lastStepEnd: number | null = null;
   private readonly phases: Record<string, number> = {};
   private readonly tools: ToolMetric[] = [];
   private readonly steps: StepMetric[] = [];
@@ -68,76 +57,59 @@ export class RequestMetrics {
     }
   }
 
-  /** Call right before streamText so step 1's duration excludes setup. */
-  markModelStart(): void {
-    this.lastStepEnd = this.now();
-    this.phases.setupTotal = round(this.lastStepEnd);
-  }
-
   recordChunk(type: string): void {
     if (this.firstChunkMs === null) this.firstChunkMs = round(this.now());
     if (type === "text-delta" && this.firstTextMs === null) this.firstTextMs = round(this.now());
   }
 
-  recordStep(step: StepLike): void {
-    const end = this.now();
-    const begin = this.lastStepEnd ?? 0;
-    this.lastStepEnd = end;
-
-    // Tools in this step ran between the previous step boundary and now. Use their
-    // wall-clock span (not the sum) so parallel tool calls aren't double counted.
-    const stepTools = this.tools.filter((t) => t.startMs >= begin && t.endMs <= end);
-    const toolMs = stepTools.length
-      ? Math.max(...stepTools.map((t) => t.endMs)) - Math.min(...stepTools.map((t) => t.startMs))
-      : 0;
-
+  /** Record one LLM call that started at `startMs` (from now()) and just finished. */
+  recordLlmCall(name: string, startMs: number, usage?: LanguageModelUsage, cached = false): void {
+    if (this.phases.setupTotal === undefined) this.phases.setupTotal = round(startMs);
+    const ms = this.now() - startMs;
     this.steps.push({
       step: this.steps.length + 1,
-      ms: round(end - begin),
-      modelMs: round(end - begin - toolMs),
-      toolMs: round(toolMs),
-      finishReason: step.finishReason,
-      tools: (step.toolCalls ?? []).map((t) => t?.toolName ?? "unknown"),
-      inputTokens: step.usage?.inputTokens,
-      outputTokens: step.usage?.outputTokens,
-      reasoningTokens: step.usage?.outputTokenDetails?.reasoningTokens,
+      ms: round(ms),
+      modelMs: cached ? 0 : round(ms),
+      toolMs: 0,
+      finishReason: cached ? "cached" : "done",
+      tools: [name],
+      inputTokens: usage?.inputTokens,
+      outputTokens: usage?.outputTokens,
+      reasoningTokens: usage?.outputTokenDetails?.reasoningTokens,
     });
   }
 
-  /** Wrap every tool's execute() to record its duration, input, and displayed results. */
-  wrapTools<T extends ToolSet>(tools: T): T {
-    const wrapped: ToolSet = {};
-    for (const [name, tool] of Object.entries(tools)) {
-      const execute = (tool as any).execute;
-      if (typeof execute !== "function") {
-        wrapped[name] = tool;
-        continue;
+  toolStarted(name: string, input: unknown): number {
+    this.tools.push({ tool: name, startMs: this.now(), endMs: -1, ok: false, input: JSON.stringify(input ?? {}).slice(0, 300) });
+    return this.tools.length - 1;
+  }
+
+  toolFinished(index: number, ok: boolean): void {
+    this.tools[index].endMs = this.now();
+    this.tools[index].ok = ok;
+  }
+
+  setDisplayed(slugs: string[]): void {
+    this.displayed = slugs;
+  }
+
+  /** Wall-clock time covered by tool calls (parallel calls counted once). */
+  private toolWallMs(): number {
+    const spans = this.tools
+      .filter((t) => t.endMs >= 0)
+      .map((t) => [t.startMs, t.endMs] as const)
+      .sort((x, y) => x[0] - y[0]);
+    let total = 0;
+    let [curStart, curEnd] = spans[0] ?? [0, 0];
+    for (const [start, end] of spans.slice(1)) {
+      if (start > curEnd) {
+        total += curEnd - curStart;
+        [curStart, curEnd] = [start, end];
+      } else {
+        curEnd = Math.max(curEnd, end);
       }
-      wrapped[name] = {
-        ...tool,
-        execute: async (...args: unknown[]) => {
-          const startMs = this.now();
-          let ok = false;
-          try {
-            const result = await execute(...args);
-            ok = !(result as any)?.isError && !(result as any)?.error;
-            if (name === "displayRestaurants") {
-              this.displayed = ((result as any)?.restaurants ?? []).map((r: any) => r.slug);
-            }
-            return result;
-          } finally {
-            this.tools.push({
-              tool: name,
-              startMs,
-              endMs: this.now(),
-              ok,
-              input: JSON.stringify(args[0] ?? {}).slice(0, 300),
-            });
-          }
-        },
-      } as any;
     }
-    return wrapped as T;
+    return total + (curEnd - curStart);
   }
 
   summary() {
@@ -151,12 +123,12 @@ export class RequestMetrics {
       phases: this.phases,
       stepCount: this.steps.length,
       modelMs: this.steps.reduce((acc, s) => acc + s.modelMs, 0),
-      toolMs: this.steps.reduce((acc, s) => acc + s.toolMs, 0),
+      toolMs: round(this.toolWallMs()),
       tokens: { input: sum("inputTokens"), output: sum("outputTokens"), reasoning: sum("reasoningTokens") },
       steps: this.steps,
       tools: this.tools.map((t) => ({
         tool: t.tool,
-        ms: round(t.endMs - t.startMs),
+        ms: t.endMs < 0 ? null : round(t.endMs - t.startMs),
         ok: t.ok,
         input: t.input,
       })),
@@ -171,20 +143,19 @@ export class RequestMetrics {
     const num = (n: number | undefined) => (n ?? 0).toLocaleString("en-US");
     const lines = [
       `⏱️  Request ${s.id} — ${sec(s.totalMs)} total`,
-      `    Setup         ${sec(s.phases.setupTotal)}  (MCP context ${sec(s.phases.mcpContext)}, message conversion ${sec(s.phases.convertMessages)})`,
+      `    Setup         ${sec(s.phases.setupTotal)}`,
       `    First output  ${sec(s.firstChunkMs)}  (first text ${sec(s.firstTextMs)})`,
-      `    LLM steps     ${s.stepCount} steps · model ${sec(s.modelMs)} · tools ${sec(s.toolMs)}`,
+      `    LLM calls     ${s.stepCount} · model ${sec(s.modelMs)} · tools/APIs ${sec(s.toolMs)}`,
       `    Tokens        ${num(s.tokens.input)} in · ${num(s.tokens.output)} out · ${num(s.tokens.reasoning)} thinking`,
     ];
     for (const step of s.steps) {
-      const action = step.tools.length ? `→ ${step.tools.join(", ")}` : `→ (${step.finishReason})`;
       lines.push(
-        `    Step ${step.step}  ${sec(step.ms).padStart(6)}  model ${sec(step.modelMs).padStart(6)} + tools ${sec(step.toolMs).padStart(6)}  ` +
-          `${action.padEnd(36)} ${num(step.inputTokens).padStart(7)} in / ${num(step.outputTokens).padStart(5)} out / ${num(step.reasoningTokens).padStart(5)} thinking`
+        `    LLM ${step.step}  ${step.tools.join(", ").padEnd(14)} ${sec(step.ms).padStart(6)}${step.finishReason === "cached" ? " (cached)" : ""}  ` +
+          `${num(step.inputTokens).padStart(7)} in / ${num(step.outputTokens).padStart(5)} out / ${num(step.reasoningTokens).padStart(5)} thinking`
       );
     }
     for (const t of s.tools) {
-      lines.push(`    Tool  ${t.tool.padEnd(28)} ${sec(t.ms).padStart(6)}  ${t.ok ? "ok" : "❌ error"}`);
+      lines.push(`    Tool  ${t.tool.padEnd(28)} ${sec(t.ms).padStart(6)}  ${t.ok ? "ok" : "❌ error"}  ${t.input.slice(0, 80)}`);
     }
     lines.push(`    Shown         ${s.displayed.length ? s.displayed.join(", ") : "(no cards)"}`);
     console.log(lines.join("\n"));

@@ -15,9 +15,7 @@ console.log(
     env.GOOGLE_GENERATIVE_AI_API_KEY ? "✅ Set" : "❌ Missing"
   }`
 );
-console.log(`   MCP_SERVER_URL: ${env.MCP_SERVER_URL}`);
-console.log(`   MCP_API_KEY: ${env.MCP_API_KEY ? "✅ Set" : "❌ Missing"}`);
-console.log(`   MCP_ANALYSIS_ID: ${env.MCP_ANALYSIS_ID}`);
+console.log(`   GEOAPIFY_API_KEY: ${env.GEOAPIFY_API_KEY ? "✅ Set" : "❌ Missing"}`);
 console.log(`   API2_PORT: ${port}`);
 console.log(`   NODE_ENV: ${env.NODE_ENV}`);
 
