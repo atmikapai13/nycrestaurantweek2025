@@ -42,18 +42,40 @@ function loadEmbeddings(): Map<string, StoredEmbedding> {
   return embeddingsBySlug;
 }
 
-async function embedQuery(text: string, useCache: boolean): Promise<Float32Array> {
-  if (useCache && queryEmbeddingCache.has(text)) return queryEmbeddingCache.get(text)!;
+function embeddingModel() {
   const apiKey = process.env.GOOGLE_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY;
   if (!apiKey) throw new Error("GOOGLE_API_KEY not configured");
-  const model = new GoogleGenerativeAI(apiKey).getGenerativeModel({ model: EMBEDDING_MODEL });
-  const result = await model.embedContent({
+  return new GoogleGenerativeAI(apiKey).getGenerativeModel({ model: EMBEDDING_MODEL });
+}
+
+async function embedQuery(text: string, useCache: boolean): Promise<Float32Array> {
+  if (useCache && queryEmbeddingCache.has(text)) return queryEmbeddingCache.get(text)!;
+  const result = await embeddingModel().embedContent({
     content: { role: "user", parts: [{ text }] },
     outputDimensionality: 768,
   } as any);
   const vector = Float32Array.from(result.embedding.values);
   queryEmbeddingCache.set(text, vector);
   return vector;
+}
+
+// Sentence embeddings for "why this restaurant" quotes. Restaurant text never changes,
+// so these are cached regardless of the request's cache setting.
+const sentenceEmbeddingCache = new Map<string, { vector: Float32Array; norm: number }>();
+
+async function embedSentences(texts: string[]): Promise<Array<{ vector: Float32Array; norm: number }>> {
+  const missing = [...new Set(texts.filter((t) => !sentenceEmbeddingCache.has(t)))];
+  for (let i = 0; i < missing.length; i += 100) {
+    const batch = missing.slice(i, i + 100);
+    const { embeddings } = await embeddingModel().batchEmbedContents({
+      requests: batch.map((text) => ({ content: { role: "user", parts: [{ text }] }, outputDimensionality: 768 })),
+    } as any);
+    embeddings.forEach((e, j) => {
+      const vector = Float32Array.from(e.values);
+      sentenceEmbeddingCache.set(batch[j], { vector, norm: Math.hypot(...vector) });
+    });
+  }
+  return texts.map((t) => sentenceEmbeddingCache.get(t)!);
 }
 
 function cosine(a: Float32Array, aNorm: number, b: Float32Array, bNorm: number): number {
@@ -99,19 +121,33 @@ export interface ScoredRestaurant {
   similarity: number;
 }
 
+export interface SemanticRanker {
+  /** Rank candidates by semantic + keyword relevance to the query. */
+  rank(candidates: Restaurant[]): ScoredRestaurant[];
+  /** Similarity of each text to the query (plus a bonus for literal query words). */
+  scoreTexts(texts: string[]): Promise<number[]>;
+}
+
 /**
- * Embed `query` once and return a function that ranks any candidate set by
- * semantic + keyword relevance to it (used repeatedly when the search area widens).
+ * Embed `query` once and return a ranker for any candidate set (used repeatedly when
+ * the search area widens) that can also score sentences for "why" quotes.
  */
-export async function createSemanticRanker(
-  query: string,
-  useCache = true
-): Promise<(candidates: Restaurant[]) => ScoredRestaurant[]> {
+export async function createSemanticRanker(query: string, useCache = true): Promise<SemanticRanker> {
   const embeddings = loadEmbeddings();
   const queryVector = await embedQuery(query, useCache);
   const queryNorm = Math.hypot(...queryVector);
+  const queryWords = [...new Set(query.toLowerCase().split(/[\s,]+/).filter((t) => t.length > 2 && !STOP_WORDS.has(t)))];
 
-  return (candidates) => {
+  const scoreTexts = async (texts: string[]) => {
+    const vectors = await embedSentences(texts);
+    return texts.map((text, i) => {
+      const lower = text.toLowerCase();
+      const literal = queryWords.some((w) => new RegExp(`\\b${w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`).test(lower));
+      return cosine(queryVector, queryNorm, vectors[i].vector, vectors[i].norm) + (literal ? 0.15 : 0);
+    });
+  };
+
+  const rank = (candidates: Restaurant[]) => {
     const scored: ScoredRestaurant[] = [];
     for (const restaurant of candidates) {
       const stored = embeddings.get(restaurant.slug);
@@ -122,4 +158,6 @@ export async function createSemanticRanker(
     }
     return scored.sort((a, b) => b.score - a.score || a.restaurant.slug.localeCompare(b.restaurant.slug));
   };
+
+  return { rank, scoreTexts };
 }

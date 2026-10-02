@@ -135,6 +135,8 @@ export default function RestaurantCarousel({
   }
 
   const currentRestaurant = restaurants[currentIndex];
+
+  const matchReason = currentRestaurant?.match_reason;
   const showNavigation = restaurants.length > 1;
   const isFirst = currentIndex === 0;
   const isLast = currentIndex === restaurants.length - 1;
@@ -179,6 +181,20 @@ export default function RestaurantCarousel({
               onExpandDrawer={onExpandDrawer}
             />
           </div>
+          {/* Why Remi picked it (chat results only), shown under the card */}
+          {matchReason && (matchReason.facts.length > 0 || matchReason.quote) && (
+            <div className="match-reason">
+              {matchReason.facts.length > 0 && (
+                <div className="match-reason-facts">{matchReason.facts.join(" · ")}</div>
+              )}
+              {matchReason.quote && (
+                <blockquote className="match-reason-quote">
+                  “{matchReason.quote.text}”
+                  <span className="match-reason-source"> — {matchReason.quote.source}</span>
+                </blockquote>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Right Arrow - Desktop only, shown when not at last card */}

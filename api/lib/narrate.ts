@@ -6,6 +6,7 @@
  */
 import { streamText } from "ai";
 import { GEMINI_MODEL, google, NO_THINKING, type SearchIntent } from "./intent.js";
+import type { MatchReason } from "./matchReasons.js";
 import { describeSearch, type SearchOutcome } from "./searchPipeline.js";
 
 const OUTSIDE_MANHATTAN =
@@ -27,14 +28,16 @@ export function cannedReply(outcome: SearchOutcome): string | null {
 
 const PERSONA = `You are Remi, a witty restaurant concierge inspired by Ratatouille's Remy, with Anthony Bourdain's honesty. You help people find Manhattan restaurants, especially NYC Restaurant Week prix-fixe deals ($30/$45/$60 lunch, brunch, and dinner menus at 600+ restaurants).`;
 
-const RULES = `Write the reply that accompanies restaurant cards the user can already see.
-- 2–3 sentences, no lists, no headings. Never list every restaurant name; the cards show them.
-- Highlight 1–2 restaurants with a specific detail taken ONLY from the data given (signature dish, award, standout review point). Never invent facts.
+const RULES = `Write the reply that accompanies restaurant cards the user can already see. Be terse: 2 sentences maximum in total, no lists or headings.
+- Sentence 1 (only if PLACED ON THE MAP or ASSUMED TRAVEL is given): a short clause confirming the pins (e.g. "Pinned you at AMC Empire 25 and your friend at One Manhattan West."). Mention travel mode/time ONLY when ASSUMED TRAVEL is given (don't restate travel the user specified), and never state times or distances that aren't given to you.
+- Last sentence: call out 1–2 restaurants, each with a reason of at most ~8 words paraphrased from its "why" (quote first, else facts), e.g. "Lilia for wood-fired pastas, or Dante's buzzy aperitivo bar." Never paste the quote or use quotation marks (the card shows it), never cite review percentages, never invent details.
+- Don't name the other restaurants; the cards show them. No filler ("solid choices", "you've got options").
 - Never mention tools, databases, search steps, embeddings, or IDs.`;
 
-function compactRestaurant(r: any) {
+function compactRestaurant(r: any, reason?: MatchReason) {
   return {
     name: r.name,
+    why: reason && (reason.quote || reason.facts.length) ? { quote: reason.quote?.text, facts: reason.facts } : undefined,
     cuisine: r.cuisine,
     price: r.price || undefined,
     neighborhood: r.neighborhood,
@@ -51,7 +54,7 @@ function assumptionNote(outcome: SearchOutcome): string {
   const travel = "travel" in outcome ? outcome.travel : null;
   if (!travel?.assumed) return "";
   const trip = { walking: "walk", cycling: "bike ride", driving: "drive", transit: "subway/bus ride" }[travel.mode];
-  return `\nASSUMED TRAVEL: the user didn't fully specify how they're getting around, so this searched a ${travel.minutes}-minute ${trip}. Mention that assumption in one short clause and invite them to say if they'd rather walk, bike, take transit, or allow more or less time.`;
+  return `\nASSUMED TRAVEL: the user didn't fully specify how they're getting around, so this searched a ${travel.minutes}-minute ${trip}. Mention it in a few words so they can correct it.`;
 }
 
 /** Where each place was pinned, so Remi can confirm it and a wrong pin is easy to catch. */
@@ -59,7 +62,7 @@ function placementNote(outcome: SearchOutcome): string {
   const locations = ("locations" in outcome ? outcome.locations : []).filter((l) => l.query !== "your location");
   if (!locations.length) return "";
   const pins = locations.map((l) => `"${l.query}" → ${l.formattedAddress}`).join("; ");
-  return `\nPLACED ON THE MAP: ${pins}. Briefly confirm where you placed each one in short form (e.g. "One Manhattan West on 9th Ave"), so the user can correct a wrong spot.`;
+  return `\nPLACED ON THE MAP: ${pins}. Confirm the pins in a few words (e.g. "One Manhattan West on 9th Ave") so the user can catch a wrong spot.`;
 }
 
 function buildPrompt(userMessage: string, intent: SearchIntent, outcome: SearchOutcome): string {
@@ -78,7 +81,10 @@ function buildPrompt(userMessage: string, intent: SearchIntent, outcome: SearchO
       if (intent.kind === "more") {
         return `${asked}\n\nThe user asked for more, but every matching restaurant has already been shown. Say that's the full list in one sentence and suggest one way to widen the search.`;
       }
-      return `${asked}${areas}\n\nNothing matched. In 1–2 sentences, say so and suggest one concrete way to loosen the search (more minutes, a different mode of travel, or dropping a filter).`;
+      const diet = intent.diets.length
+        ? `\nNo restaurant here has anything in its description or reviews confirming it's ${intent.diets.join(" / ")}-friendly; say exactly that rather than guessing.`
+        : "";
+      return `${asked}${areas}${diet}\n\nNothing matched. In 1–2 sentences, say so and suggest one concrete way to loosen the search (more minutes, a different mode of travel, or dropping a filter).`;
     }
     case "ok": {
       const area = outcome.areaStats
@@ -86,7 +92,7 @@ function buildPrompt(userMessage: string, intent: SearchIntent, outcome: SearchO
         : "";
       return (
         `${asked}\nTOTAL MATCHES: ${outcome.totalMatches} (showing the top ${outcome.shown.length})${area}\n` +
-        `SHOWN RESTAURANTS, in display order:\n${JSON.stringify(outcome.shown.map(compactRestaurant))}`
+        `SHOWN RESTAURANTS, in display order:\n${JSON.stringify(outcome.shown.map((r) => compactRestaurant(r, outcome.reasons[r.slug])))}`
       );
     }
     default:

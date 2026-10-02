@@ -29,6 +29,7 @@ import {
   isNytTop100,
   isRestaurantWeek,
 } from "./restaurants.js";
+import { buildMatchReasons, findEvidence, type MatchReason } from "./matchReasons.js";
 import { createSemanticRanker } from "./vectorSearch.js";
 
 export const RESULTS_PER_PAGE = 5;
@@ -96,6 +97,8 @@ export type SearchOutcome =
       travel: Travel | null;
       usedSemanticSearch: boolean;
       areaStats?: AreaStats;
+      /** Why each shown restaurant was picked, keyed by slug (empty for lookups). */
+      reasons: Record<string, MatchReason>;
     }
   | { status: "no_results"; locations: GeocodeResult[]; travel: Travel | null; areaCounts: number[] }
   | { status: "needs_user_location" }
@@ -194,26 +197,58 @@ export async function runSearch(intent: SearchIntent, ctx: PipelineContext): Pro
       .filter((r): r is Restaurant => r !== null);
     const unique = [...new Map(matches.map((r) => [r.slug, r])).values()];
     if (!unique.length) return { status: "lookup_not_found", names: intent.restaurantNames };
-    return { status: "ok", shown: unique.slice(0, RESULTS_PER_PAGE), totalMatches: unique.length, locations: [], travel: null, usedSemanticSearch: false };
+    return {
+      status: "ok",
+      shown: unique.slice(0, RESULTS_PER_PAGE),
+      totalMatches: unique.length,
+      locations: [],
+      travel: null,
+      usedSemanticSearch: false,
+      reasons: {},
+    };
   }
 
   const basePool = ctx.filterPool.length
     ? allRestaurants.filter((r) => ctx.filterPool.includes(r.slug))
     : allRestaurants;
 
-  // Ranks a pool: filters, drops already-shown ("more"), then orders by vibe or quality.
-  const ranker = intent.vibes.length ? await createSemanticRanker(intent.vibes.join(", "), ctx.useCache) : null;
-  const rank = (pool: Restaurant[]) => {
+  // Vibes and diets both steer ranking; diets are also strict: a restaurant only counts
+  // if one of its own sentences supports the diet (so "vegan" never shows Veselka).
+  const semanticQuery = [...intent.vibes, ...intent.diets].join(", ");
+  const vibeQuery = intent.vibes.join(", ");
+  const dietQuery = intent.diets.join(", ");
+  // One embedding per distinct query, fetched in parallel.
+  const [ranker, vibeOnly, dietOnly] = await Promise.all([
+    semanticQuery ? createSemanticRanker(semanticQuery, ctx.useCache) : null,
+    vibeQuery && dietQuery ? createSemanticRanker(vibeQuery, ctx.useCache) : null,
+    vibeQuery && dietQuery ? createSemanticRanker(dietQuery, ctx.useCache) : null,
+  ]);
+  const vibeRanker = vibeQuery ? (vibeOnly ?? ranker) : null;
+  const dietRanker = dietQuery ? (dietOnly ?? ranker) : null;
+  const dietEvidence = new Map<string, NonNullable<MatchReason["quote"]>>();
+
+  // Ranks a pool: filters, drops already-shown ("more"), orders by vibe/diet or quality,
+  // and for diets keeps only restaurants with supporting evidence.
+  const DIET_CHECK_LIMIT = 25;
+  const rank = async (pool: Restaurant[]) => {
     const candidates = applyFilters(pool, intent);
     const unseen = intent.kind === "more" ? candidates.filter((r) => !ctx.previouslyShown.includes(r.slug)) : candidates;
-    const ranked = ranker ? ranker(unseen).map((s) => s.restaurant) : [...unseen].sort(byQuality);
+    let ranked = ranker ? ranker.rank(unseen).map((s) => s.restaurant) : [...unseen].sort(byQuality);
+    if (dietRanker) {
+      const checked = ranked.slice(0, DIET_CHECK_LIMIT);
+      const evidence = await ctx.tools.measure("diet evidence", { diets: intent.diets, checked: checked.length }, () =>
+        findEvidence(checked, dietRanker)
+      );
+      evidence.forEach((quote, slug) => dietEvidence.set(slug, quote));
+      ranked = checked.filter((r) => evidence.has(r.slug));
+    }
     return { candidates, ranked };
   };
 
   let locations: GeocodeResult[] = [];
   let travel: Travel | null = null;
   let areaCounts: number[] = [];
-  let result = rank(basePool);
+  let result = intent.locations.length ? { candidates: [] as Restaurant[], ranked: [] as Restaurant[] } : await rank(basePool);
 
   if (intent.locations.length) {
     const resolved = await resolveLocations(intent, ctx);
@@ -242,7 +277,7 @@ export async function runSearch(intent: SearchIntent, ctx: PipelineContext): Pro
       const reachableFromAll = areas
         .map((a) => new Set(a.inside.map((r) => r.slug)))
         .reduce((acc, set) => new Set([...acc].filter((slug) => set.has(slug))));
-      result = rank(basePool.filter((r) => reachableFromAll.has(r.slug)));
+      result = await rank(basePool.filter((r) => reachableFromAll.has(r.slug)));
       chosen = { travel: step, areas };
       if (result.ranked.length > 0) break;
     }
@@ -268,7 +303,7 @@ export async function runSearch(intent: SearchIntent, ctx: PipelineContext): Pro
   const { candidates, ranked } = result;
   const usedSemanticSearch = ranker !== null;
   if (usedSemanticSearch) {
-    const id = ctx.tools.start("semantic_search_restaurants", { query: intent.vibes.join(", ") });
+    const id = ctx.tools.start("semantic_search_restaurants", { query: semanticQuery });
     ctx.tools.finish(id, {
       restaurantSlugs: ranked.slice(0, RESULTS_PER_PAGE).map((r) => r.slug),
       count: ranked.length,
@@ -277,9 +312,13 @@ export async function runSearch(intent: SearchIntent, ctx: PipelineContext): Pro
   }
 
   if (!ranked.length) return { status: "no_results", locations, travel, areaCounts };
+  const shown = ranked.slice(0, RESULTS_PER_PAGE);
   return {
     status: "ok",
-    shown: ranked.slice(0, RESULTS_PER_PAGE),
+    shown,
+    reasons: await ctx.tools.measure("match reasons", { count: shown.length }, () =>
+      buildMatchReasons(shown, intent, locations, vibeRanker, dietEvidence)
+    ),
     totalMatches: ranked.length,
     locations,
     travel,
@@ -292,6 +331,7 @@ export async function runSearch(intent: SearchIntent, ctx: PipelineContext): Pro
 export function describeSearch(intent: SearchIntent, travel: Travel | null = null): string {
   const parts: string[] = [];
   if (intent.vibes.length) parts.push(intent.vibes.join(", "));
+  if (intent.diets.length) parts.push(intent.diets.join(" + "));
   if (intent.cuisines.length) parts.push(intent.cuisines.join(" or "));
   if (intent.prices.length) parts.push(intent.prices.join("/"));
   if (intent.awards.length) parts.push(intent.awards.map((a) => a.replace(/_/g, " ")).join(" or "));

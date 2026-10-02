@@ -162,7 +162,7 @@ const chatHandler = async (c: any) => {
       });
 
       if (outcome.status === "ok") {
-        const cards = outcome.shown.map(toCard);
+        const cards = outcome.shown.map((r) => ({ ...toCard(r), match_reason: outcome.reasons[r.slug] }));
         const id = tools.start("displayRestaurants", { restaurant_names: cards.map((r) => r.slug) });
         tools.finish(id, { restaurants: cards, count: cards.length, query: describeSearch(intent) });
         metrics.setDisplayed(cards.map((r) => r.slug));

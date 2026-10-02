@@ -22,6 +22,7 @@ const PRICES = ["$", "$$", "$$$", "$$$$"] as const;
 const AWARDS = ["michelin_star", "bib_gourmand", "nyt_top_100"] as const;
 const MODES = ["walking", "cycling", "driving", "transit", "unspecified"] as const;
 const KINDS = ["search", "lookup", "area_summary", "more", "chitchat"] as const;
+const DIETS = ["vegan", "vegetarian", "gluten-free", "dairy-free", "nut-free", "halal", "kosher", "pescatarian"] as const;
 
 export function buildIntentSchema(cuisines: string[]) {
   return z.object({
@@ -41,8 +42,11 @@ export function buildIntentSchema(cuisines: string[]) {
     vibes: z
       .array(z.string())
       .describe(
-        'Atmosphere, occasion, dietary needs, or specific dishes, as short lowercase phrases. e.g. ["cozy", "romantic"], ["vegan"], ["lively", "date night"], ["omakase"]. Do NOT include cuisines, prices, awards, or locations here.'
+        'Atmosphere, occasion, or specific dishes, as short lowercase phrases. e.g. ["cozy", "romantic"], ["lively", "date night"], ["omakase"], ["happy hour"]. Do NOT include dietary needs, cuisines, prices, awards, or locations here.'
       ),
+    diets: z
+      .array(z.enum(DIETS))
+      .describe('Dietary requirements the user stated ("vegan", "plant-based" → vegan; "veggie" → vegetarian; "celiac" → gluten-free). [] if none.'),
     cuisines: z.array(z.enum(cuisines as [string, ...string[]])).describe("Cuisines the user asked for, mapped to this exact list."),
     prices: z
       .array(z.enum(PRICES))
@@ -69,6 +73,7 @@ export function normalizeIntent(intent: SearchIntent): SearchIntent {
     restaurantNames: intent.restaurantNames.map((n) => n.trim()).filter(Boolean),
     locations: intent.locations.map((l) => l.trim()).filter(Boolean),
     vibes: normalizeList(intent.vibes, true),
+    diets: normalizeList(intent.diets),
     cuisines: normalizeList(intent.cuisines),
     prices: normalizeList(intent.prices),
     awards: normalizeList(intent.awards),

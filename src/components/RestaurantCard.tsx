@@ -16,6 +16,7 @@ interface RestaurantCardProps {
 
 export default function RestaurantCard({ restaurant, placeholderRestaurant, onClose, isFavorited = false, onToggleFavorite, onExpandDrawer, collapsible = false }: RestaurantCardProps) {
   const displayRestaurant = restaurant || placeholderRestaurant
+  const matchReason = displayRestaurant?.match_reason
   const [isContactsOpen, setIsContactsOpen] = useState(false)
   const [isReviewsOpen, setIsReviewsOpen] = useState(false)
   const [isRestaurantWeekOpen, setIsRestaurantWeekOpen] = useState(false)
@@ -170,7 +171,8 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
           <span className="tag tag-price">{displayRestaurant.price}</span>
         )}
       </div>
-      {/* Restaurant Description */}
+      {/* Restaurant Description (skipped when the "why" quote under the card already is the summary) */}
+      {matchReason?.quote?.field !== "summary" && (
       <p className="card-body-text review-text">
         {displayRestaurant.summary && displayRestaurant.summary.split('. ').reduce((acc: string, sentence: string, index: number, array: string[]) => {
           // Add the sentence back with period (except for last one which might already have it)
@@ -182,6 +184,7 @@ export default function RestaurantCard({ restaurant, placeholderRestaurant, onCl
           return acc + (index > 0 ? ' ' : '') + sentenceWithPeriod;
         }, '')}
       </p>
+      )}
 
       {/* Yelp Rating */}
       {displayRestaurant.yelp_rating != null && displayRestaurant.yelp_rating > 0 && displayRestaurant.yelp_review_count != null && displayRestaurant.yelp_review_count > 0 && (

@@ -43,4 +43,17 @@ export interface Restaurant {
   // Additional fields
   price?: string;
   reddit?: string;
+  // Set on chat results only: why Remi picked it (api/lib/matchReasons.ts)
+  match_reason?: MatchReason;
+}
+
+export interface MatchReason {
+  /** Why it qualified, e.g. "0.4 mi from Union Square", "Italian", "$45 Lunch · $60 Dinner". */
+  facts: string[];
+  /** For vibe searches: the restaurant's own sentence that best matches the vibe, verbatim. */
+  quote?: {
+    text: string;
+    field: "summary" | "summary2" | "yelp_review_highlights";
+    source: "NYC Tourism" | "Yelp reviews";
+  };
 } 

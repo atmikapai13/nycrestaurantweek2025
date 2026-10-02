@@ -131,3 +131,30 @@
     height: 6px;
   }
 }
+
+/* Why Remi picked the current restaurant, shown under the card */
+.match-reason {
+  padding: 6px 4px 0;
+}
+
+.match-reason-facts {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #4B5563;
+  line-height: 1.4;
+}
+
+.match-reason-quote {
+  margin: 2px 0 0 0;
+  font-size: 12px;
+  font-style: italic;
+  line-height: 1.45;
+  color: #6B7280;
+}
+
+.match-reason-source {
+  font-style: normal;
+  font-size: 11px;
+  color: #9CA3AF;
+  white-space: nowrap;
+}
