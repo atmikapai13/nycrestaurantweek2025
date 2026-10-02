@@ -25,6 +25,7 @@ import { wrapToolsWithGeometryOptimization } from "./utils/toolWrapper.js";
 import { env, getGoogleApiKey } from "./env.js";
 import { safeParseChatRequest } from "./schemas/chat.js";
 import { performRagSearch } from "./lib/ragSearchLogic.js";
+import { RequestMetrics, METRICS_HEADER } from "./lib/requestMetrics.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -353,6 +354,8 @@ const chatHandler = async (c: any) => {
   }
 
   const { messages: rawMessages, context } = parseResult.data;
+  const metrics = new RequestMetrics();
+  const wantMetrics = c.req.header(METRICS_HEADER) === "1";
   console.log(`📨 Received ${rawMessages.length} messages from client`);
 
   // ============ PRE-PROCESS: Direct Restaurant Name Lookup ============
@@ -513,7 +516,7 @@ const chatHandler = async (c: any) => {
 
   // 1. Reuse the cached MCP connection/tools/resources (created once per warm instance)
   const { mcpClient, mcpTools, spatialReference, sqlTables, docCollections } =
-    await getMcpContext();
+    await metrics.phase("mcpContext", getMcpContext);
 
   if (sqlTables) {
     datasetContext += `\nDATASETS AVAILABLE FOR SQL QUERIES:\n${sqlTables}`;
@@ -1525,16 +1528,25 @@ Never mention GEO_REF IDs, table UUIDs, or internal mechanics to users.`;
   console.log("🛠️ All tools available:", Object.keys(allTools).join(", "));
 
   try {
+    const modelMessages = await metrics.phase("convertMessages", () => convertToModelMessages(messages));
+    metrics.markModelStart();
     const result = streamText({
       model: google("gemini-2.5-flash"), // Try 2.0 if 2.5 is rate limited
       temperature: 0.3, // Slightly less Deterministic responses
-      messages: await convertToModelMessages(messages),
-      tools: allTools,
+      messages: modelMessages,
+      tools: metrics.wrapTools(allTools),
       toolChoice: "auto", // auto 
       system: systemPrompt,
       stopWhen: stepCountIs(10),
       abortSignal: AbortSignal.timeout(55_000), // Under Vercel's 60s limit
+      onChunk: ({ chunk }) => metrics.recordChunk(chunk.type),
+      onFinish: () => metrics.log(),
+      onError: ({ error }) => {
+        console.error("❌ Stream error:", error);
+        metrics.log();
+      },
       onStepFinish: (step) => {
+        metrics.recordStep(step);
         // Log full step info for debugging
         console.log(
           `🎯 Step: ${step.finishReason}${
@@ -1576,7 +1588,11 @@ Never mention GEO_REF IDs, table UUIDs, or internal mechanics to users.`;
       },
     });
 
-    return result.toUIMessageStreamResponse();
+    return result.toUIMessageStreamResponse({
+      // Only the benchmark script asks for metrics; the app's stream is unchanged.
+      messageMetadata: ({ part }) =>
+        wantMetrics && part.type === "finish" ? { metrics: metrics.summary() } : undefined,
+    });
   } catch (error) {
     console.error("❌ Fatal error in stream:", error);
     // NOTE: mcpClient is a shared, module-cached connection reused across requests

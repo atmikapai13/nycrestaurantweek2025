@@ -20,6 +20,7 @@ npm run vercel-dev            # Vercel Functions locally (3000)
 npm run build                 # tsc + vite build → dist/spring2026
 npm run lint                  # ESLint, --max-warnings 0
 npm run embeddings:setup      # Regenerate + upload Pinecone embeddings from FinalData.json
+node scripts/benchmark-chat.js --label <name>   # Speed + consistency benchmark (needs api:dev); report → benchmarks/results/
 ```
 
 There is no test suite or chat-endpoint test harness. `scripts/` holds only the Pinecone embedding scripts (run them whenever `FinalData.json` changes) and `node scripts/validate-restaurant-data.js`, which checks `FinalData.json` for missing fields.
