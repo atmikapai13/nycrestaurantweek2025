@@ -6,7 +6,6 @@ import type { Restaurant } from "../types/restaurant";
 import ChatInterface, { type ChatInterfaceHandle } from "./ChatInterface";
 import { MapLegend } from "./MapLegend";
 import { useMap, hasAnyAward, type IsochroneLayer, type GeocodedMarker } from "../contexts/MapContext";
-import { asset } from "../utils/asset";
 
 // Set your Mapbox access token
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
@@ -418,18 +417,18 @@ export default function Map({
             setUserLocation({ latitude, longitude });
             console.log(`📍 User location detected: ${latitude}, ${longitude}`);
 
-            // Add user location marker (Alfredo with blue pulse)
+            // Add user location marker (blue dot with pulse)
             const userLocationEl = document.createElement("div");
             userLocationEl.className = "user-location-marker";
+            userLocationEl.setAttribute("aria-label", "Your location");
 
             const pulseRing = document.createElement("div");
             pulseRing.className = "pulse-ring";
             userLocationEl.appendChild(pulseRing);
 
-            const alfredoImg = document.createElement("img");
-            alfredoImg.src = asset("/characters/alfredo.png");
-            alfredoImg.alt = "Your location";
-            userLocationEl.appendChild(alfredoImg);
+            const dot = document.createElement("div");
+            dot.className = "user-location-dot";
+            userLocationEl.appendChild(dot);
 
             new mapboxgl.Marker({ element: userLocationEl })
               .setLngLat([longitude, latitude])
