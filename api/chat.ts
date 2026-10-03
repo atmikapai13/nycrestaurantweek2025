@@ -24,6 +24,8 @@ import { allRestaurants, CUISINES, mentionsRestaurantWeek, toCard } from "./lib/
 
 /** Benchmarks send `x-nyceats-cache: off` to measure uncached latency and model determinism. */
 const CACHE_HEADER = "x-nyceats-cache";
+/** Benchmarks send `x-nyceats-pacing: off` to measure engine speed without the stage pauses. */
+const PACING_HEADER = "x-nyceats-pacing";
 
 const RATE_LIMIT_MESSAGE =
   "My buddy, Gemini, is exhausted. He's complaining about hitting API rate limits or something. Give us ~30 seconds to catch our breath and try again!";
@@ -158,6 +160,7 @@ const chatHandler = async (c: any) => {
         filterPool,
         previouslyShown: shownInCurrentSearch(messages),
         useCache,
+        pacing: c.req.header(PACING_HEADER) !== "off",
         tools,
       });
 

@@ -89,7 +89,8 @@ async function runOnce(url, prompt, cache) {
   try {
     const res = await fetch(url, {
       method: "POST",
-      headers: { "Content-Type": "application/json", "x-nyceats-metrics": "1", "x-nyceats-cache": cache },
+      // Pacing off: the UI's deliberate stage pauses would hide engine speed changes.
+      headers: { "Content-Type": "application/json", "x-nyceats-metrics": "1", "x-nyceats-cache": cache, "x-nyceats-pacing": "off" },
       body: JSON.stringify(body),
     });
     if (!res.ok) {

@@ -34,6 +34,16 @@ import { createSemanticRanker } from "./vectorSearch.js";
 
 export const RESULTS_PER_PAGE = 5;
 
+// Minimum on-screen time for the map "beats" (Geocoding… → Mapping… → Tasting…), so
+// the pin drop and the isochrone camera sweep read as distinct moments even when the
+// work itself is near-instant. Only pads the difference; slow steps aren't delayed.
+const GEOCODE_DWELL_MS = 500;
+const MAP_DWELL_MS = 800;
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+/** Wait until at least `minMs` has passed since `since` (performance.now()). */
+const dwell = (since: number, minMs: number) => sleep(Math.max(0, minMs - (performance.now() - since)));
+
 export interface Travel {
   mode: TravelMode;
   minutes: number;
@@ -76,6 +86,8 @@ export interface PipelineContext {
   filterPool: string[];
   previouslyShown: string[];
   useCache: boolean;
+  /** Pad stages to their minimum on-screen time (off for benchmarks). */
+  pacing: boolean;
   tools: ToolReporter;
 }
 
@@ -254,6 +266,7 @@ export async function runSearch(intent: SearchIntent, ctx: PipelineContext): Pro
     const resolved = await resolveLocations(intent, ctx);
     if (!Array.isArray(resolved)) return resolved;
     locations = resolved;
+    const geocodedAt = performance.now();
 
     // Try each travel setting until something matches, then draw only that one.
     const plan = travelPlan(intent);
@@ -284,6 +297,8 @@ export async function runSearch(intent: SearchIntent, ctx: PipelineContext): Pro
 
     travel = chosen!.travel;
     areaCounts = chosen!.areas.map((a) => a.inside.length);
+    // Let the pin drop register before the isochrone appears (skipped for "near me": no pin)
+    if (ctx.pacing && intent.locations.some((l) => l !== MY_LOCATION)) await dwell(geocodedAt, GEOCODE_DWELL_MS);
     chosen!.areas.forEach((area, i) => {
       const loc = locations[i];
       const id = ctx.tools.start(
@@ -300,25 +315,32 @@ export async function runSearch(intent: SearchIntent, ctx: PipelineContext): Pro
     });
   }
 
+  const mappedAt = performance.now();
   const { candidates, ranked } = result;
+  const shown = ranked.slice(0, RESULTS_PER_PAGE);
+  const reasons = shown.length
+    ? await ctx.tools.measure("match reasons", { count: shown.length }, () =>
+        buildMatchReasons(shown, intent, locations, travel, vibeRanker, dietEvidence)
+      )
+    : {};
+  // Hold "Mapping…" while the camera sweeps to the isochrone, before results arrive
+  if (ctx.pacing && locations.length) await dwell(mappedAt, MAP_DWELL_MS);
+
   const usedSemanticSearch = ranker !== null;
   if (usedSemanticSearch) {
     const id = ctx.tools.start("semantic_search_restaurants", { query: semanticQuery });
     ctx.tools.finish(id, {
-      restaurantSlugs: ranked.slice(0, RESULTS_PER_PAGE).map((r) => r.slug),
+      restaurantSlugs: shown.map((r) => r.slug),
       count: ranked.length,
       restaurantWeekDetected: intent.restaurantWeek,
     });
   }
 
   if (!ranked.length) return { status: "no_results", locations, travel, areaCounts };
-  const shown = ranked.slice(0, RESULTS_PER_PAGE);
   return {
     status: "ok",
     shown,
-    reasons: await ctx.tools.measure("match reasons", { count: shown.length }, () =>
-      buildMatchReasons(shown, intent, locations, travel?.mode ?? null, vibeRanker, dietEvidence)
-    ),
+    reasons,
     totalMatches: ranked.length,
     locations,
     travel,

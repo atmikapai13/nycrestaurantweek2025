@@ -2,14 +2,15 @@
  * "Why Remi picked this" for each shown restaurant, rendered under the card and
  * given to the narrator so its reply is grounded in the same evidence.
  *
- * - distances: straight-line miles from each pinned place (shown under the card).
+ * - distances: travel time from each pinned place by the search's mode (miles if
+ *   routing is unavailable), shown under the card.
  * - facts: whichever cuisine / price / award / Restaurant Week filters it passed.
  * - quote: for vibe searches, the single sentence from the restaurant's own text
  *   (NYC Tourism's description or Yelp's review summary) that best matches the
  *   vibe, verbatim. Chosen by embedding similarity, so it's the same every time.
  */
 import type { MatchReason, Restaurant } from "../../src/types/restaurant.js";
-import type { GeocodeResult, TravelMode } from "./geo.js";
+import { travelMinutes, type GeocodeResult, type TravelLeg, type TravelMode } from "./geo.js";
 import type { SearchIntent } from "./intent.js";
 import { hasMichelinStar, isBibGourmand, isNytTop100 } from "./restaurants.js";
 import type { SemanticRanker } from "./vectorSearch.js";
@@ -43,10 +44,14 @@ function milesBetween(lat1: number, lng1: number, lat2: number, lng2: number): n
   return 3958.8 * 2 * Math.asin(Math.sqrt(a));
 }
 
-function distances(r: Restaurant, locations: GeocodeResult[]): string[] {
-  return locations.map((loc) => {
+/** "7 min from AMC Empire 25" (travel time by the search's mode), or miles if unavailable. */
+function distances(r: Restaurant, locations: GeocodeResult[], legs: (TravelLeg | null)[] | undefined): string[] {
+  return locations.map((loc, i) => {
+    const place = loc.query === "your location" ? "you" : loc.query;
+    const leg = legs?.[i];
+    if (leg) return `${leg.upTo ? "≤ " : ""}${leg.minutes} min from ${place}`;
     const miles = milesBetween(loc.latitude, loc.longitude, Number(r.latitude), Number(r.longitude));
-    return `${miles.toFixed(1)} mi from ${loc.query === "your location" ? "you" : loc.query}`;
+    return `${miles.toFixed(1)} mi from ${place}`;
   });
 }
 
@@ -99,21 +104,28 @@ export async function buildMatchReasons(
   shown: Restaurant[],
   intent: SearchIntent,
   locations: GeocodeResult[],
-  travelMode: TravelMode | null,
+  travel: { mode: TravelMode; minutes: number } | null,
   vibeRanker: SemanticRanker | null,
   dietEvidence: Map<string, Quote>
 ): Promise<Record<string, MatchReason>> {
   const pins = locations.map((l) => ({ latitude: l.latitude, longitude: l.longitude, isUser: l.query === "your location" }));
-  const vibeQuotes = vibeRanker ? await findEvidence(shown, vibeRanker) : new Map<string, Quote>();
+  const targets = shown.map((r) => ({ latitude: Number(r.latitude), longitude: Number(r.longitude) }));
+  // Travel times and vibe quotes are independent network calls; run them together
+  const [vibeQuotes, minutes] = await Promise.all([
+    vibeRanker ? findEvidence(shown, vibeRanker) : Promise.resolve(new Map<string, Quote>()),
+    travel && pins.length ? travelMinutes(pins, targets, travel.mode, travel.minutes) : Promise.resolve(null),
+  ]);
   return Object.fromEntries(
     shown.map((r) => {
       const quote = dietEvidence.get(r.slug) ?? vibeQuotes.get(r.slug);
+      const legs = minutes?.map((row) => row[shown.indexOf(r)]);
       return [
         r.slug,
         {
-          distances: distances(r, locations),
+          distances: distances(r, locations, legs),
           ...(pins.length ? { pins } : {}),
-          ...(travelMode ? { travelMode } : {}),
+          ...(travel ? { travelMode: travel.mode } : {}),
+          ...(legs?.some(Boolean) ? { legModes: legs.map((l) => l?.mode ?? null) } : {}),
           facts: facts(r, intent),
           ...(quote ? { quote } : {}),
         },

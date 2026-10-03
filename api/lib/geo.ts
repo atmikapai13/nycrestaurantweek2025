@@ -368,3 +368,102 @@ export function restaurantsInPolygon(
     return booleanPointInPolygon(point([lng, lat]), polygon);
   });
 }
+
+const MATRIX_MODE: Partial<Record<TravelMode, string>> = { walking: "walk", cycling: "bicycle", driving: "drive" };
+const TRAVEL_TIME_BUDGET_MS = 3000;
+
+type Point = { latitude: number; longitude: number };
+
+async function matrixSeconds(origins: Point[], targets: Point[], mode: string): Promise<(number | null)[][] | null> {
+  const res = await fetch(`https://api.geoapify.com/v1/routematrix?apiKey=${apiKey()}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    signal: AbortSignal.timeout(TRAVEL_TIME_BUDGET_MS),
+    body: JSON.stringify({
+      mode,
+      sources: origins.map((p) => ({ location: [p.longitude, p.latitude] })),
+      targets: targets.map((p) => ({ location: [p.longitude, p.latitude] })),
+    }),
+  });
+  if (!res.ok) return null;
+  const rows: Array<Array<{ time?: number }>> = (await res.json()).sources_to_targets ?? [];
+  return origins.map((_, i) => targets.map((_, j) => (typeof rows[i]?.[j]?.time === "number" ? rows[i][j].time! : null)));
+}
+
+const transitBandCache = new Map<string, Array<{ minutes: number; feature: Feature<Polygon | MultiPolygon> }>>();
+
+/** Nested transit isochrones every 5 minutes up to `maxMinutes` (one Geoapify call), smallest first. */
+async function transitBands(origin: Point, maxMinutes: number) {
+  const steps = [...new Set([...Array.from({ length: Math.floor(maxMinutes / 5) }, (_, i) => (i + 1) * 5), maxMinutes])]
+    .filter((m) => m > 0 && m <= maxMinutes)
+    .sort((a, b) => a - b);
+  const key = `${origin.latitude.toFixed(5)},${origin.longitude.toFixed(5)},${steps.join("-")}`;
+  if (transitBandCache.has(key)) return transitBandCache.get(key)!;
+  const url =
+    `https://api.geoapify.com/v1/isoline?lat=${origin.latitude}&lon=${origin.longitude}&type=time&mode=transit` +
+    `&range=${steps.map((m) => m * 60).join(",")}&apiKey=${apiKey()}`;
+  const features: Feature<Polygon | MultiPolygon>[] = (await hedgedJson(url)).features ?? [];
+  const bands = features
+    .map((f) => ({ minutes: Math.round(Number(f.properties?.range) / 60), feature: f }))
+    .filter((b) => b.minutes > 0 && b.feature.geometry)
+    .sort((a, b) => a.minutes - b.minutes);
+  transitBandCache.set(key, bands);
+  return bands;
+}
+
+export interface TravelLeg {
+  minutes: number;
+  /** The mode actually used; transit searches fall back to walking when it's as fast. */
+  mode: TravelMode;
+  /** True for transit: "within N min" from the isochrone bands rather than an exact route time. */
+  upTo: boolean;
+}
+
+/**
+ * Travel time from each origin to each target: legs[origin][target], null where unavailable.
+ * - Walk / bike / drive: exact minutes from one route-matrix call.
+ * - Transit: Geoapify's point-to-point transit routing returns bogus 10–30 m routes for
+ *   short trips, so instead each origin gets nested transit isochrones (5, 10, 15… min)
+ *   and a restaurant's time is the smallest band containing it — the same transit model
+ *   that decided it's reachable. A walking matrix covers hops that are as fast on foot.
+ * Gives up after a few seconds (callers fall back to miles).
+ */
+export async function travelMinutes(
+  origins: Point[],
+  targets: Point[],
+  mode: TravelMode,
+  maxMinutes: number
+): Promise<(TravelLeg | null)[][] | null> {
+  try {
+    const matrixMode = MATRIX_MODE[mode];
+    if (matrixMode) {
+      const seconds = await matrixSeconds(origins, targets, matrixMode);
+      return (
+        seconds &&
+        seconds.map((row) =>
+          row.map((s) => (typeof s === "number" ? { minutes: Math.max(1, Math.round(s / 60)), mode, upTo: false } : null))
+        )
+      );
+    }
+
+    const [walking, bands] = await Promise.all([
+      matrixSeconds(origins, targets, "walk").catch(() => null),
+      Promise.all(origins.map((o) => transitBands(o, maxMinutes).catch(() => []))),
+    ]);
+    return origins.map((_, i) =>
+      targets.map((target, j) => {
+        const band = bands[i].find((b) => booleanPointInPolygon(point([target.longitude, target.latitude]), b.feature));
+        const walkSeconds = walking?.[i]?.[j];
+        const onFoot: TravelLeg | null =
+          typeof walkSeconds === "number"
+            ? { minutes: Math.max(1, Math.round(walkSeconds / 60)), mode: "walking", upTo: false }
+            : null;
+        const byTransit: TravelLeg | null = band ? { minutes: band.minutes, mode: "transit", upTo: true } : null;
+        if (onFoot && byTransit) return onFoot.minutes <= byTransit.minutes ? onFoot : byTransit;
+        return byTransit ?? onFoot;
+      })
+    );
+  } catch {
+    return null;
+  }
+}

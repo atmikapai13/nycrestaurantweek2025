@@ -48,12 +48,14 @@ export interface Restaurant {
 }
 
 export interface MatchReason {
-  /** Straight-line distance from each pinned place, e.g. "0.4 mi from Union Square". */
+  /** Travel time from each pinned place by the search's mode, e.g. "7 min from Union Square" (miles if routing failed). */
   distances: string[];
   /** The pinned place behind each distance (same order), to match it to its map marker. */
   pins?: Array<{ latitude: number; longitude: number; isUser: boolean }>;
   /** How the search assumed people travel, for the distance-line icon. */
   travelMode?: "walking" | "cycling" | "driving" | "transit";
+  /** Mode actually used per distance line (a transit search walks short hops); null = miles. */
+  legModes?: Array<"walking" | "cycling" | "driving" | "transit" | null>;
   /** Filters it passed, e.g. "Italian", "$45 Lunch · $60 Dinner". */
   facts: string[];
   /** For vibe searches: the restaurant's own sentence that best matches the vibe, verbatim. */
