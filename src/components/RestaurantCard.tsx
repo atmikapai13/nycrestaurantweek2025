@@ -20,6 +20,8 @@ interface RestaurantCardProps {
   onToggleFavorite?: () => void;
   onRequestReviewHighlights?: (prompt: string, slug: string) => void;
   onExpandDrawer?: () => void;
+  /** Remi's pick number (1-based) when this is one of his picks: shown in a strip at the top */
+  pickNumber?: number;
 }
 
 const MICHELIN_STARS = ["ONE_STAR", "TWO_STARS", "THREE_STARS"];
@@ -101,6 +103,7 @@ export default function RestaurantCard({
   isFavorited = false,
   onToggleFavorite,
   onExpandDrawer,
+  pickNumber,
 }: RestaurantCardProps) {
   const [showMore, setShowMore] = useState(false);
   // Open section inside Reviews & more: "reviews", "about" or "" (none)
@@ -247,12 +250,16 @@ export default function RestaurantCard({
     <TooltipProvider delayDuration={200}>
     <Card className="restaurant-card tw-reset relative w-full gap-0 border-foreground py-0 font-sans text-foreground shadow-md">
       {/* Close (when shown in a popup) */}
-      <div className="absolute right-2 top-2 flex items-center">
+      <div className={cn("absolute right-2 flex items-center", pickNumber ? "top-0" : "top-2")}>
         {onClose && (
           <Button
             variant="ghost"
             size="icon"
-            className="size-7 text-grey hover:bg-transparent hover:text-muted-foreground"
+            className={cn(
+              "size-7 text-grey hover:bg-transparent hover:text-muted-foreground",
+              // On the black pick strip
+              pickNumber && "size-6 text-background/70 hover:text-background [&_svg]:!size-3.5"
+            )}
             onClick={(e) => {
               e.stopPropagation();
               onClose();
@@ -263,6 +270,13 @@ export default function RestaurantCard({
           </Button>
         )}
       </div>
+
+      {/* Remi's pick number, in a black strip across the top (matching his selected pin) */}
+      {pickNumber && (
+        <div className="rounded-t-[11px] bg-foreground px-4 py-1 pr-10 text-caption font-semibold uppercase tracking-wider text-background">
+          Remi&apos;s pick #{pickNumber}
+        </div>
+      )}
 
       {/* 1. What it is (name, cuisine / price / award tags) and is it good (star arc, top-right) */}
       <CardHeader className={cn("flex flex-row items-start gap-3 p-4 pb-3", onClose && "pr-10")}>

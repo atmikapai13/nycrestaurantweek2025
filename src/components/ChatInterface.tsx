@@ -33,9 +33,11 @@ import {
 } from "../types/ai-message";
 import "./ChatInterface.css";
 import { colors } from "@/styles/tokens";
-import { Button } from "@/components/ui/button";
+import { Message, MessageAvatar, MessageContent } from "@/components/ui/message";
+import { Bubble, BubbleContent, BubbleGroup } from "@/components/ui/bubble";
 import { useIsDesktop } from "../hooks/useIsDesktop";
 import { boldPicks } from "../utils/boldPicks";
+import { friendLandmarkNear, isInManhattan } from "../utils/manhattan";
 
 // Google Analytics gtag declaration
 declare function gtag(command: 'event', eventName: string, eventParams?: Record<string, unknown>): void;
@@ -91,6 +93,32 @@ const CHATBOT_DOWN = false;
 const CHATBOT_DOWN_MESSAGE =
   "Oof — my kitchen is temporarily closed! 🍳 My sous-chef (the AI behind the scenes) has stepped out, so I can't whisk up recommendations right now. We're working to get NYC Eats back up and running soon.<br><br>In the meantime, you can still explore the map, browse restaurant markers, and favorite your spots. Merci for your patience — please check back shortly!";
 
+// Chat rows are shadcn Message + Bubble: Remi's replies are white tiles with his avatar inside
+// (full width, since they hold status lines and toggles); yours are charcoal, on the right.
+const REMI_BUBBLE_CONTENT =
+  "flex w-full gap-3 rounded-2xl rounded-tl-sm px-3 py-2.5 font-sans text-body text-foreground shadow-xs whitespace-pre-wrap";
+const USER_BUBBLE_CONTENT = "rounded-2xl rounded-br-sm px-3 py-2 font-sans text-body whitespace-pre-wrap";
+
+function RemiAvatar() {
+  return (
+    <MessageAvatar className="size-8 self-start bg-transparent md:size-11">
+      <img src={asset("/remi.png")} alt="Remi" className="size-full object-cover" />
+    </MessageAvatar>
+  );
+}
+
+/** Remi's white message tile, with his avatar inside it at the top-left and the content beside. */
+function RemiBubble({ children }: { children: React.ReactNode }) {
+  return (
+    <Bubble variant="outline" className="w-full max-w-full">
+      <BubbleContent className={REMI_BUBBLE_CONTENT}>
+        <img src={asset("/remi.png")} alt="Remi" className="size-10 shrink-0 rounded-full object-cover md:size-12" />
+        <div className="flex min-w-0 flex-1 flex-col gap-2">{children}</div>
+      </BubbleContent>
+    </Bubble>
+  );
+}
+
 const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
   ({ onRestaurantSelect, onToggleFavorite }, ref) => {
     // Use MapContext for data and state management
@@ -103,6 +131,9 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       clearGeocodedMarkers,
       setRecommendedPicks,
       recommendedPicks,
+      isochroneRegionSlugs,
+      geocodedMarkers,
+      markerVisibilityMap,
       allRestaurants,
       setSelectedRestaurant,
       userLocation,
@@ -112,31 +143,30 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
     // Random welcome message selection
     const welcomeMessages = [
-      '<span class="block text-subheading">Hey, I\'m Remi!</span><br>I\'m here in NYC for the winter, scouting the latest epicurean finds. Let\'s help you find the finest spots by:',
+      '<span class="block text-subheading">Hey, I\'m Remi!</span><br>I\'m here in NYC for the winter, scouting the latest epicurean finds. Try one of these, or tell me what you\'re after:',
     ];
 
-    // Quick-start suggestions - clicking these triggers Remi to ask a guiding question
-    const suggestions = [
-      {
-        label: "Area",
-        type: "guided" as const,
-        remiResponse: "<strong>How far are you willing to travel and by what mode of transit?</strong> I can recommend restaurants within your vicinity. \n\nFor example: *I'm in <strong>Soho</strong>. Find <strong>happy hour</strong> spots within <strong>10 min walk</strong>.*",
-        example: "I'm in Soho. Find happy hour spots within 10 min walk.",
-      },
-      {
-        label: "Midpoint",
-        type: "guided" as const,
-        remiResponse:
-          "<strong>Meeting up with a friend?</strong> Tell me where you both are, and I'll find restaurants in between! \n\nFor example: *I'm at <strong>AMC Times Square</strong>, and my friend is by <strong>One Manhattan West</strong>. We can travel <strong>15 minutes by subway</strong>. Find <strong>happy hour, vegan</strong> spots between us, Remi.*",
-        example: "I'm by AMC Times Square, and my friend is at One Manhattan West. We can travel 15 mins by subway. Find lively happy hour spots between us, Remi.",
-      },
-      {
-        label: "Vibes",
-        type: "guided" as const,
-        remiResponse: "<strong>Going for a vibe?</strong> I can suggest:\n• Happy hour spots\n• Cozy date night places\n• Vegan-friendly deals",
-        example: "Find me cozy date night spots around the city, Remi. My gf is vegan. A candleight dinner for our anniversary, perhaps?",
-      },
-    ];
+    // Quick-start prompts under the welcome message: an area search and a midpoint search. Clicking one sends it straight away, so a new user sees results immediately.
+    // When the browser shared a location in Manhattan, the first two start from "me".
+    const userInManhattan = useMemo(
+      () => !!userLocation && isInManhattan(userLocation, allRestaurants),
+      [userLocation, allRestaurants]
+    );
+    // Midpoint prompts state a walking time (a "15-minute city" walk): with none, Remi assumes a
+    // 20-min subway ride from each place, the areas overlap almost everywhere, and the picks
+    // aren't really "between" you. The two places are ~1 km apart so 15-min walks overlap.
+    const friendLandmark = userInManhattan && userLocation ? friendLandmarkNear(userLocation) : null;
+    const quickPrompts = userInManhattan
+      ? [
+          "Happy hour spots within 10-min subway",
+          friendLandmark
+            ? `My friend is at ${friendLandmark}. Find pasta spots within a 15-min walk of both of us.`
+            : "My friend is at Bryant Park. Find pasta spots between us.",
+        ]
+      : [
+          "Happy hour spots within 10-min subway of Soho",
+          "I'm in Washington Square Park, my friend is in Union Square. Find pasta spots within a 15-min walk of both of us.",
+        ];
 
     const test = [
       // Location-based (isochrone)
@@ -241,6 +271,18 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
     }, [filterPoolSlugs]);
 
+    // What's on the map: the travel-time area currently shown (and the places it was drawn from),
+    // or null when none is visible / the user hid it. The API searches inside it on follow-ups.
+    const mapRegionRef = useRef<{ places: string[]; restaurantCount: number } | null>(null);
+    useEffect(() => {
+      mapRegionRef.current = isochroneRegionSlugs
+        ? {
+            places: geocodedMarkers.filter((m) => markerVisibilityMap.get(m.id) !== false).map((m) => m.label),
+            restaurantCount: isochroneRegionSlugs.length,
+          }
+        : null;
+    }, [isochroneRegionSlugs, geocodedMarkers, markerVisibilityMap]);
+
     // Store userLocation in a ref so transport can access current value
     const userLocationRef = useRef<{ latitude: number; longitude: number } | null>(null);
     useEffect(() => {
@@ -261,6 +303,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                 ...originalBody.context,
                 filterPool: filterPoolRef.current,
                 userLocation: userLocationRef.current,
+                mapRegion: mapRegionRef.current,
               },
             };
 
@@ -310,7 +353,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
     // Track processed tool calls to avoid duplicates
     const processedToolCallIds = useRef<Set<string>>(new Set());
-    const guidedExamplesRef = useRef<Map<string, string>>(new Map());
 
     const [input, setInput] = useState("");
     const [isListening, setIsListening] = useState(false);
@@ -960,34 +1002,13 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       handleSend(suggestionText);
     };
 
-    // Handle guided suggestions where Remi asks a question
-    const handleGuidedSuggestion = (remiResponse: string, example?: string) => {
-      // Clear restaurant cards when starting a new guided conversation
+    // Quick-start prompt: send it as if typed (on mobile, open the drawer enough to see results)
+    const handleQuickPrompt = (prompt: string) => {
       setCustomMessages([]);
-
-      // Expand drawer to 55vh on mobile (only from smaller states)
-      const isMobile = window.innerWidth <= 768;
-      if (isMobile && (drawerHeight === 8 || drawerHeight === 30)) {
+      if (window.innerWidth <= 768 && (drawerHeight === 8 || drawerHeight === 30)) {
         setDrawerHeight(55);
       }
-
-      const msgId = `guided-${Date.now()}`;
-      if (example) {
-        guidedExamplesRef.current.set(msgId, example);
-      }
-      const guidedMessage = {
-        id: msgId,
-        role: "assistant" as const,
-        content: remiResponse,
-        createdAt: new Date(),
-        parts: [
-          {
-            type: "text" as const,
-            text: remiResponse,
-          },
-        ],
-      };
-      setMessages([...aiMessages, guidedMessage]);
+      handleSend(prompt);
     };
 
     const handleRestaurantSuggestionClick = (
@@ -1228,6 +1249,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       }
     }, [allMessages, drawerHeight, setDrawerHeight]);
 
+    const conversationStarted = allMessages.some((m) => m.role === "user");
     const isLastMessageAssistant =
       allMessages.length > 0 &&
       allMessages[allMessages.length - 1].role === "assistant";
@@ -1282,36 +1304,14 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
               const isLastMessage = idx === allMessages.length - 1;
 
-              return (
-                <div
+              return msg.role === "assistant" ? (
+                <Message
                   key={idx}
-                  className={`chat-message ${msg.role}`}
+                  className="chat-message assistant"
                   ref={isLastMessage ? lastMessageRef : null}
                 >
-                  {msg.role === "assistant" ? (
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: "8px",
-                          width: "100%",
-                        }}
-                      >
-                        <div className="message-bubble font-sans text-body">
-                          <div className="message-avatar-inside desktop-only">
-                            <img src={asset("/remi.png")} alt="remi" />
-                          </div>
-                          <div className="message-avatar-mobile mobile-only">
-                            <img src={asset("/remi.png")} alt="remi" />
-                          </div>
-                          <div
-                            style={{
-                              display: "flex",
-                              flexDirection: "column",
-                              gap: "8px",
-                              flex: 1,
-                            }}
-                          >
+                  <MessageContent>
+                    <RemiBubble>
                             {msg.parts && msg.parts.length > 0 ? (
                               <>
                                 {(() => {
@@ -1345,7 +1345,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
                                   return deduplicatedParts.map((part, pIdx: number) => {
                                   if (isTextPart(part)) {
-                                    const tryItExample = guidedExamplesRef.current.get(msg.id);
                                     return (
                                       <div key={pIdx}>
                                         <div
@@ -1354,16 +1353,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                             __html: linkifyText(boldPicks(part.text, messagePicks)),
                                           }}
                                         />
-                                        {tryItExample && (
-                                          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                                            <button
-                                              className="try-it-button text-caption font-medium"
-                                              onClick={() => handleSend(tryItExample)}
-                                            >
-                                              Test it↩
-                                            </button>
-                                          </div>
-                                        )}
                                       </div>
                                     );
                                   } else if (
@@ -1481,42 +1470,41 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                             msg.id ? (
                               <IsochroneMessage messageId={msg.id} />
                             ) : null}
+                    </RemiBubble>
 
-                            {/* Intro suggestions after first welcome message */}
-                            {idx === 0 && (
-                              <div className="intro-suggestions-wrapper">
-                                <div className="suggestions-container">
-                                  {suggestions.map(
-                                    (suggestion, suggestionIdx) => (
-                                      <Button
-                                        key={suggestionIdx}
-                                        variant="secondary"
-                                        size="pill"
-                                        className="border border-solid border-primary/40 font-sans font-normal shadow-none"
-                                        onClick={() => {
-                                          handleGuidedSuggestion(suggestion.remiResponse, suggestion.example);
-                                        }}
-                                      >
-                                        {suggestion.label}
-                                      </Button>
-                                    )
-                                  )}
-                                </div>
-                              </div>
-                            )}
-
-                          </div>
-                        </div>
-                      </div>
-                  ) : (
-                    <div
-                      className="message-bubble user-bubble font-sans text-body"
-                      dangerouslySetInnerHTML={{
-                        __html: linkifyText(msg.content),
-                      }}
-                    />
-                  )}
-                </div>
+                    {/* Quick prompts under the welcome message: styled like your messages, on your side;
+                        gone once the conversation has started */}
+                    {idx === 0 && !conversationStarted && (
+                      <BubbleGroup className="items-end">
+                        {quickPrompts.map((prompt) => (
+                          <Bubble key={prompt} variant="user" align="end">
+                            <BubbleContent asChild className="cursor-pointer rounded-2xl rounded-br-sm font-sans text-body transition-colors">
+                              <button type="button" onClick={() => handleQuickPrompt(prompt)}>
+                                {prompt}
+                              </button>
+                            </BubbleContent>
+                          </Bubble>
+                        ))}
+                      </BubbleGroup>
+                    )}
+                  </MessageContent>
+                </Message>
+              ) : (
+                <Message
+                  key={idx}
+                  align="end"
+                  className="chat-message user"
+                  ref={isLastMessage ? lastMessageRef : null}
+                >
+                  <MessageContent>
+                    <Bubble variant="user" align="end" className="max-w-[90%]">
+                      <BubbleContent
+                        className={USER_BUBBLE_CONTENT}
+                        dangerouslySetInnerHTML={{ __html: linkifyText(msg.content) }}
+                      />
+                    </Bubble>
+                  </MessageContent>
+                </Message>
               );
             })}
 
@@ -1530,12 +1518,9 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
               if (customRestaurants.length === 0) return null;
 
               return (
-                <div className="chat-message assistant" ref={lastMessageRef}>
-                  <div className="restaurant-card-message">
-                    <div className="message-avatar-outside desktop-only">
-                      <img src={asset("/remi.png")} alt="remi" />
-                    </div>
-                    <div className="restaurant-card-content">
+                <Message className="chat-message assistant" ref={lastMessageRef}>
+                  <RemiAvatar />
+                  <MessageContent>
                       <RestaurantCarousel
                         restaurants={customRestaurants}
                         startFromLast={true}
@@ -1556,33 +1541,19 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                           }
                         }}
                       />
-                    </div>
-                  </div>
-                </div>
+                  </MessageContent>
+                </Message>
               );
             })()}
 
             {isLoading && !canMergeLoading && (
-              <div className="chat-message assistant">
-                <div className="message-bubble font-sans text-body">
-                  <div className="message-avatar-inside desktop-only">
-                    <img src={asset("/remi.png")} alt="remi" />
-                  </div>
-                  <div className="message-avatar-mobile mobile-only">
-                    <img src={asset("/remi.png")} alt="remi" />
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "8px",
-                      flex: 1,
-                    }}
-                  >
+              <Message className="chat-message assistant">
+                <MessageContent>
+                  <RemiBubble>
                     <RemiStatus stage={openingStage} />
-                  </div>
-                </div>
-              </div>
+                  </RemiBubble>
+                </MessageContent>
+              </Message>
             )}
           </div>
 

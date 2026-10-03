@@ -7,8 +7,8 @@
  *   restaurants-dots            grey dots, pink for favorites; radius grows with zoom
  *   restaurants-picks           red teardrops numbered 1, 2, 3… for Remi's current picks (his order,
  *                               matching the numbers in his reply), a bit smaller, name beside each
- *   restaurants-selected        the same red teardrop, a little bigger, for the selected restaurant
- *                               (numbered if it's one of Remi's picks)
+ *   restaurants-selected        a dark ink teardrop, a little bigger, for the selected restaurant
+ *                               (numbered if it's one of Remi's picks), matching its card
  *
  * Above them, `places-characters` draws the searched places' character portraits
  * (Alfredo, Collette…). Isochrones go beneath everything.
@@ -40,7 +40,7 @@ const PINK = colors.pinkLight;
 const RED = colors.red;
 const PIXEL_RATIO = 2;
 /** Size of the selected restaurant's pin (picks grow from 0.6 to 0.7 with zoom) */
-export const SELECTED_PIN_SCALE = 0.75;
+const SELECTED_PIN_SCALE = 0.75;
 
 function canvas(width: number, height: number) {
   const el = document.createElement("canvas");
@@ -78,10 +78,11 @@ function drawPinShape(ctx: CanvasRenderingContext2D, fill: string, rim: { color:
   ctx.stroke();
 }
 
-/** Red teardrop with a white rim, with Remi's pick number in its round part (or plain). */
-function drawPickPin(number?: number): ImageData {
+/** Teardrop with a white rim (red for Remi's picks, ink when selected), with his pick number in
+    its round part (or plain). */
+function drawPickPin(number?: number, fill: string = RED): ImageData {
   const { el, ctx } = canvas(PIN.W, PIN.H);
-  drawPinShape(ctx, RED, { color: colors.white, width: 2 });
+  drawPinShape(ctx, fill, { color: colors.white, width: 2 });
   if (number) {
     ctx.fillStyle = colors.white;
     ctx.font = `700 ${number > 9 ? 14 : 17}px Inter, -apple-system, BlinkMacSystemFont, sans-serif`;
@@ -95,11 +96,17 @@ function drawPickPin(number?: number): ImageData {
 /** Numbered pins exist for picks 1…MAX_NUMBERED_PICK; later ones use the plain pin. */
 const MAX_NUMBERED_PICK = 10;
 const pickPinImage = (n: number) => `${PICK_PIN_IMAGE}-${n}`;
+const SELECTED_PIN_IMAGE = "pin-selected";
+const selectedPinImage = (n: number) => `${SELECTED_PIN_IMAGE}-${n}`;
 
 function registerImages(map: MapboxMap) {
   for (let n = 1; n <= MAX_NUMBERED_PICK; n++) {
     if (!map.hasImage(pickPinImage(n))) map.addImage(pickPinImage(n), drawPickPin(n), { pixelRatio: PIXEL_RATIO });
+    if (!map.hasImage(selectedPinImage(n)))
+      map.addImage(selectedPinImage(n), drawPickPin(n, colors.ink), { pixelRatio: PIXEL_RATIO });
   }
+  if (!map.hasImage(SELECTED_PIN_IMAGE))
+    map.addImage(SELECTED_PIN_IMAGE, drawPickPin(undefined, colors.ink), { pixelRatio: PIXEL_RATIO });
   if (!map.hasImage(PICK_PIN_IMAGE)) map.addImage(PICK_PIN_IMAGE, drawPickPin(), { pixelRatio: PIXEL_RATIO });
 }
 
@@ -196,8 +203,17 @@ export function addRestaurantLayers(map: MapboxMap, mobile: boolean) {
     type: "symbol",
     source: RESTAURANT_SOURCE,
     filter: highlighted,
-    // Fixed size (the card popup lines up with its top; see MapRestaurantPopup.tsx)
-    layout: { ...teardropLayout, "icon-size": SELECTED_PIN_SCALE },
+    layout: {
+      ...teardropLayout,
+      // Same pin in ink, numbered if it's one of Remi's picks
+      "icon-image": [
+        "case",
+        ["all", [">", ["get", "pickNumber"], 0], ["<=", ["get", "pickNumber"], MAX_NUMBERED_PICK]],
+        ["concat", `${SELECTED_PIN_IMAGE}-`, ["to-string", ["get", "pickNumber"]]],
+        SELECTED_PIN_IMAGE,
+      ],
+      "icon-size": SELECTED_PIN_SCALE,
+    },
   });
 
   // Added last, so the place portraits draw above every restaurant marker

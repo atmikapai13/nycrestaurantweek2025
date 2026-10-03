@@ -37,8 +37,8 @@ export default function FilterBar() {
   } = useMap();
   const { priceOptions, ratingOptions, cuisineOptions, badgeOptions } = useFilterOptions();
 
-  // Expanded on desktop, collapsed on mobile
-  const [isExpanded, setIsExpanded] = useState(() => !isMobile());
+  // Starts collapsed (just Refine) on every screen; opening it is up to the user
+  const [isExpanded, setIsExpanded] = useState(false);
 
   // On mobile, collapse when the drawer is pulled up to 55vh or 80vh
   useEffect(() => {

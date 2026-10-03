@@ -98,6 +98,15 @@
 /* CSS Variables */
 :root {
   --drawer-height: 40vh; /* Default drawer height for mobile */
+  /* Desktop chat panel width; the filter bar sits just right of it (Map.tsx measures it) */
+  --chat-panel-width: max(30vw, 320px);
+}
+
+/* Tablet: a wider chat panel */
+@media (min-width: 769px) and (max-width: 1024px) {
+  :root {
+    --chat-panel-width: min(45vw, 600px);
+  }
 }
 
 /* The app's own reset and page styles. In Tailwind's base layer: v4 puts utilities in a real

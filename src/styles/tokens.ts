@@ -29,6 +29,8 @@ export const colors = {
   greyLight: "#e3e3e3",
   /** Subtle surfaces: hover fills, chips, page background */
   greyLightest: "#f4f4f4",
+  /** Your chat messages and the quick-prompt bubbles */
+  charcoal: "#575e61",
   white: "#ffffff",
 
   /** Remi's picks on the map */

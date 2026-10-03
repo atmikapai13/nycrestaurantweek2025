@@ -4,8 +4,8 @@
 .filter-bar-container {
   position: absolute;
   top: 3%;
-  /* Right of the chat panel: 20px (chat left) + min(35vw, 500px) (chat width) + 10px gap */
-  left: calc(20px + min(35vw, 500px) + 10px);
+  /* Right of the chat panel: 20px (chat left) + its width + 10px gap */
+  left: calc(20px + var(--chat-panel-width) + 10px);
   right: 50px;
   z-index: 850;
   display: flex;
@@ -69,7 +69,6 @@
 /* Tablet: the chat panel is 45vw / 600px max */
 @media (min-width: 769px) and (max-width: 1024px) {
   .filter-bar-container {
-    left: calc(20px + min(45vw, 600px) + 10px);
     right: 10px;
   }
 }

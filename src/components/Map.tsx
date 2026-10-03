@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "./Map.css";
 import type { Restaurant } from "../types/restaurant";
 import ChatInterface, { type ChatInterfaceHandle } from "./ChatInterface";
 import { MapLegend } from "./MapLegend";
-import MapRestaurantPopup, { POPUP_CARD_WIDTH } from "./MapRestaurantPopup";
+import MapRestaurantPanel, { PANEL_CARD_WIDTH, PANEL_INSET } from "./MapRestaurantPanel";
 import { useIsDesktop } from "../hooks/useIsDesktop";
 import { useMap, hasAnyAward, type IsochroneLayer } from "../contexts/MapContext";
 import {
@@ -43,6 +43,12 @@ const arePolygonsEqual = (
   return JSON.stringify(poly1) === JSON.stringify(poly2);
 };
 
+/** Desktop: how far the chat panel reaches into the map from the left (its right edge + 20px). */
+function chatPanelInset(): number {
+  const panel = document.querySelector(".chat-interface");
+  return panel ? Math.round(panel.getBoundingClientRect().right) + 20 : 480;
+}
+
 interface MapProps {
   onRestaurantSelect: (restaurant: Restaurant) => void;
   onToggleFavorite?: (restaurantName: string) => void;
@@ -54,8 +60,6 @@ export default function Map({
 }: MapProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
-  // The map once loaded, as state so the card popup renders when it's ready
-  const [loadedMap, setLoadedMap] = useState<mapboxgl.Map | null>(null);
   const isDesktop = useIsDesktop();
   const chatInterfaceRef = useRef<ChatInterfaceHandle>(null);
   const restaurantsBySlug = useRef<globalThis.Map<string, Restaurant>>(new globalThis.Map()); // for layer clicks
@@ -130,7 +134,6 @@ export default function Map({
     mapInstance.on("load", () => {
       addRestaurantLayers(mapInstance, isMobile);
       restaurantLayersReady.current = true;
-      setLoadedMap(mapInstance);
       renderRestaurants.current();
       renderPlaces.current();
     });
@@ -145,7 +148,7 @@ export default function Map({
       } else {
         setSelectedRestaurant(restaurant);
         onRestaurantSelectRef.current(restaurant);
-        // Desktop shows the card on the map (MapRestaurantPopup); mobile adds it to the chat
+        // Desktop shows the card in the map's corner (MapRestaurantPanel); mobile adds it to the chat
         if (window.innerWidth <= 768) chatInterfaceRef.current?.addRestaurantCard(restaurant);
       }
     });
@@ -410,7 +413,7 @@ export default function Map({
           mapInstance.fitBounds(bounds, {
             padding: isMobileView
               ? { top: 40, bottom: 350, left: 20, right: 20 }  // Mobile: pad bottom for drawer (40vh ≈ 320px)
-              : { top: 100, bottom: 100, left: 480, right: 100 }, // Desktop: pad left for chat panel
+              : { top: 100, bottom: 100, left: chatPanelInset(), right: 100 }, // Desktop: pad left for chat panel
             maxZoom: maxZoomLevel,
             duration: 1500, // Smooth 1.2s animation
           });
@@ -469,9 +472,13 @@ export default function Map({
       const skipZoomThreshold = isMobileView ? 13.5 : 15;
       const { x, y } = map.current.project([longitude, latitude]);
       const container = map.current.getContainer();
+      // Desktop: the pin should sit between the chat panel and the corner card
       const cardFits =
         isMobileView ||
-        (x > 480 && x + POPUP_CARD_WIDTH + 40 < container.clientWidth && y > 100 && y + 380 < container.clientHeight);
+        (x > chatPanelInset() &&
+          x < container.clientWidth - PANEL_CARD_WIDTH - PANEL_INSET.right - 40 &&
+          y > 100 &&
+          y < container.clientHeight - 100);
       if (currentZoom > skipZoomThreshold && isInViewport && cardFits) return;
 
       // Keep current zoom if already zoomed in, otherwise zoom to target (13 for mobile, 14.1 for desktop)
@@ -488,7 +495,7 @@ export default function Map({
         essential: true, // This animation is essential with respect to prefers-reduced-motion
         padding: isMobileView
           ? { top: 10, bottom: 450, left: 20, right: 20 } // Mobile: pad bottom for drawer
-          : { top: 100, bottom: 380, left: 480, right: POPUP_CARD_WIDTH + 60 }, // Desktop: chat panel on the left, card to the right of and below the pin
+          : { top: 100, bottom: 100, left: chatPanelInset(), right: PANEL_CARD_WIDTH + PANEL_INSET.right + 40 }, // Desktop: chat panel on the left, card in the bottom-right corner
       });
     }
   }, [selectedRestaurant]);
@@ -513,8 +520,8 @@ export default function Map({
         onToggleFavorite={onToggleFavorite}
       />
 
-      {/* Desktop: the selected restaurant's card, next to its pin */}
-      {isDesktop && <MapRestaurantPopup map={loadedMap} onToggleFavorite={onToggleFavorite} />}
+      {/* Desktop: the selected restaurant's card, in the map's bottom-right corner */}
+      {isDesktop && <MapRestaurantPanel onToggleFavorite={onToggleFavorite} />}
 
       {/* Map Legend */}
       <MapLegend />

@@ -7,9 +7,7 @@
   z-index: 900;
   display: flex;
   flex-direction: column;
-  width: 35%;
-  min-width: 320px;
-  max-width: 500px;
+  width: var(--chat-panel-width); /* 30% of the window (at least 320px); see index.css */
 }
 
 /* Chat Panel Container - Transparent background */
@@ -92,11 +90,8 @@
   }
 }
 
-/* Individual Message */
+/* Individual message row (shadcn Message): just the entrance animation */
 .chat-message {
-  display: flex;
-  align-items: flex-end;
-  gap: 8px;
   animation: fadeIn 0.3s ease;
 }
 
@@ -117,71 +112,6 @@
   }
 }
 
-.chat-message.assistant {
-  justify-content: flex-start;
-}
-
-.chat-message.user {
-  justify-content: flex-end;
-}
-
-/* Message Bubble - Glassmorphism (matching restaurant card) */
-.message-bubble {
-  max-width: 100%;
-  padding: 8px 12px;
-  border-radius: 16px;
-  word-wrap: break-word;
-  overflow-wrap: anywhere;
-  white-space: pre-wrap;
-  min-width: 0;
-
-  /* Glassmorphism matching restaurant card */
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(3px) saturate(100%);
-  -webkit-backdrop-filter: blur(3px) saturate(100%);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: none;
-
-  color: var(--color-ink);
-}
-
-.chat-message.assistant .message-bubble {
-  border-bottom-left-radius: 4px;
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  padding: 8px 10px;
-}
-
-.chat-message.user .message-bubble {
-  border-bottom-right-radius: 4px;
-}
-
-/* User bubble - dark background for distinction from assistant */
-.user-bubble {
-  display: block !important;
-  background: rgba(36, 36, 36, 0.7) !important;
-  color: var(--color-grey-lightest) !important;
-  width: 90%;
-}
-
-/* Avatar inside bubble for assistant messages */
-.message-avatar-inside {
-  width: 60px;
-  height: 60px;
-  min-width: 35px;
-  border-radius: 50%;
-  overflow: hidden;
-  background: transparent;
-  flex-shrink: 0;
-}
-
-.message-avatar-inside img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
 /* Message content wrapper */
 .message-content {
   flex: 1;
@@ -194,24 +124,6 @@
   color: var(--color-pink);
 }
 
-/* Restaurant card message - avatar outside the card */
-.restaurant-card-message {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  width: 100%;
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
-
-/* Hover effect for clickable restaurant cards */
-.restaurant-card-message[style*="cursor: pointer"]:hover {
-  transform: translateX(4px);
-}
-
-.restaurant-card-message[style*="cursor: pointer"]:active {
-  transform: translateX(2px);
-}
-
 /* Container for multiple restaurant cards from displayRestaurants tool */
 .restaurant-cards-container {
   display: flex;
@@ -219,44 +131,6 @@
   gap: 12px;
   width: 100%;
   margin-top: 8px;
-}
-
-/* Make restaurant cards in the container clickable with hover effect */
-.restaurant-cards-container .restaurant-card-message {
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
-
-.restaurant-cards-container .restaurant-card-message:hover {
-  transform: translateX(4px);
-}
-
-.restaurant-cards-container .restaurant-card-message:active {
-  transform: translateX(2px);
-}
-
-.message-avatar-outside {
-  width: 50px;
-  height: 50px;
-  min-width: 35px;
-  border-radius: 50%;
-  overflow: hidden;
-  background: transparent;
-  flex-shrink: 0;
-}
-
-.message-avatar-outside img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Restaurant card content wrapper - for card + suggestions */
-.restaurant-card-content {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  flex: 1;
-  min-width: 0;
 }
 
 @keyframes typing {
@@ -375,27 +249,7 @@
   to{ transform: rotate(360deg); }
 }
 
-/* Intro Suggestions Wrapper */
-.intro-suggestions-wrapper {
-  background: transparent;
-  border-radius: 0;
-  padding: 0;
-  margin: 0px 0 0 0;
-  max-width: 100%;
-  display: block;
-}
-
-/* Suggestion Pills */
-.suggestions-container {
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-  padding: 0;
-  margin: 0;
-  align-items: center;
-}
-
-/* Vertical variant for meta-learning suggestions */
+/* "Test it" button under Remi's guided examples */
 .try-it-button {
   display: inline-block;
   margin-top: 2px;
@@ -567,13 +421,6 @@
   display: none;
 }
 
-/* Tablet - Wider chat interface for iPads */
-@media (min-width: 769px) and (max-width: 1024px) {
-  .chat-interface {
-    width: 45%;
-    max-width: 600px;
-  }
-}
 
 /* Responsive - Mobile Drawer */
 @media (max-width: 768px) {
@@ -670,8 +517,7 @@
 
   /* Hide content when drawer is minimized at 8vh */
   .drawer-8 .chat-messages,
-  .drawer-8 .chat-input-container,
-  .drawer-8 .intro-suggestions-wrapper {
+  .drawer-8 .chat-input-container {
     display: none;
   }
 
@@ -723,39 +569,6 @@
 
   .mobile-only {
     display: block !important;
-  }
-
-  /* Mobile avatar positioning - top left */
-  .message-avatar-mobile {
-    position: absolute;
-    top: 10px;
-    left: 12px;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    overflow: hidden;
-    background: transparent;
-    z-index: 10;
-  }
-
-  .message-avatar-mobile img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  /* Assistant message bubble positioning for mobile avatar */
-  .chat-message.assistant .message-bubble {
-    position: relative;
-    padding-left: 70px;
-    padding-top: 12px;
-    padding-bottom: 10px;
-    min-height: 70px; /* Ensure bubble contains the 50px avatar positioned at top: 10px */
-  }
-
-  /* Disable hover/active transform on restaurant cards on mobile */
-  .restaurant-cards-container .restaurant-card-message:hover {
-    transform: none;
   }
 }
 

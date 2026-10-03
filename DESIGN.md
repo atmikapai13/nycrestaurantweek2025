@@ -30,6 +30,7 @@ Every color and font in the app is defined once in **`src/styles/tokens.ts`**. R
 | `grey` | `--color-grey` | `grey` | `#888888` | Muted text, placeholders, counts, default map dots |
 | `greyLight` | `--color-grey-light` | `grey-light` | `#e3e3e3` | Borders, dividers |
 | `greyLightest` | `--color-grey-lightest` | `grey-lightest` | `#f4f4f4` | Hover fills, chips, page background |
+| `charcoal` | `--color-charcoal` | `charcoal` | `#575e61` | Your chat messages and the quick-prompt bubbles |
 | `white` | `--color-white` | `white` | `#ffffff` | Surfaces, text on dark |
 
 ### Map and accents
