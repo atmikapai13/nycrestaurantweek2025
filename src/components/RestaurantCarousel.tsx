@@ -1,8 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import type { Restaurant } from "../types/restaurant";
-import { useMap } from "../contexts/MapContext";
-
-const TRAVEL_ICONS = { walking: "🚶", cycling: "🚲", driving: "🚕", transit: "🚇" } as const;
 import RestaurantCard from "./RestaurantCard";
 import "./RestaurantCarousel.css";
 
@@ -14,7 +11,6 @@ interface RestaurantCarouselProps {
   onRequestReviewHighlights?: (prompt: string, slug: string) => void;
   onExpandDrawer?: () => void;
   startFromLast?: boolean; // If true, show newest (last) item; if false, show first item
-  collapsible?: boolean; // If true, hide accordions behind +more toggle (default: true)
 }
 
 export default function RestaurantCarousel({
@@ -25,7 +21,6 @@ export default function RestaurantCarousel({
   onRequestReviewHighlights,
   onExpandDrawer,
   startFromLast = false,
-  collapsible = true,
 }: RestaurantCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -138,17 +133,6 @@ export default function RestaurantCarousel({
   }
 
   const currentRestaurant = restaurants[currentIndex];
-  // Distance from each pinned place (chat results only), shown between the card and the dots
-  const reason = currentRestaurant?.match_reason;
-  const distances = reason?.distances ?? [];
-  const travelIcon = reason?.travelMode ? TRAVEL_ICONS[reason.travelMode] : null;
-  const { geocodedMarkers } = useMap();
-  // The map marker (character portrait) for a pin, matched by coordinates (~50 m)
-  const markerFor = (pin?: { latitude: number; longitude: number }) =>
-    pin &&
-    geocodedMarkers.find(
-      (m) => Math.abs(m.latitude - pin.latitude) < 0.0005 && Math.abs(m.longitude - pin.longitude) < 0.0005
-    );
   const showNavigation = restaurants.length > 1;
   const isFirst = currentIndex === 0;
   const isLast = currentIndex === restaurants.length - 1;
@@ -178,11 +162,10 @@ export default function RestaurantCarousel({
 
         {/* Card */}
         <div className="carousel-card-container">
-          <div className={`carousel-card-wrapper${distances.length ? " has-distances" : ""}`}>
+          <div className="carousel-card-wrapper">
             <RestaurantCard
               key={currentRestaurant.slug || currentIndex}
               restaurant={currentRestaurant}
-              collapsible={collapsible}
               isFavorited={favorites.includes(currentRestaurant.name)}
               onToggleFavorite={
                 onToggleFavorite
@@ -193,33 +176,6 @@ export default function RestaurantCarousel({
               onExpandDrawer={onExpandDrawer}
             />
           </div>
-          {/* Distance from each pinned place (chat results only) */}
-          {distances.length > 0 && (
-            <div className="match-distances">
-              {distances.map((d, i) => {
-                const pin = reason?.pins?.[i];
-                const marker = markerFor(pin);
-                // "0.5 mi from AMC Empire 25" → the pin's avatar goes right before the place name
-                const [, lead = d, place = ""] = d.match(/^(.* from )(.+)$/) ?? [];
-                return (
-                  <div key={d} className="match-distance">
-                    {(() => {
-                      const legMode = reason?.legModes?.[i];
-                      const icon = legMode ? TRAVEL_ICONS[legMode] : travelIcon;
-                      return icon && <span className="match-distance-mode" aria-hidden="true">{icon}</span>;
-                    })()}
-                    <span>{lead}</span>
-                    {pin?.isUser ? (
-                      <span className="match-distance-you" aria-hidden="true" />
-                    ) : marker ? (
-                      <img className="match-distance-avatar" src={marker.characterImage} alt="" />
-                    ) : null}
-                    {place && <span>{place}</span>}
-                  </div>
-                );
-              })}
-            </div>
-          )}
         </div>
 
         {/* Right Arrow - Desktop only, shown when not at last card */}

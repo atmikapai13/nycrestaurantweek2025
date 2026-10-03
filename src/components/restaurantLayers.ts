@@ -5,28 +5,26 @@
  *
  *   restaurants-hit             invisible, larger circles so small dots are easy to tap
  *   restaurants-dots            grey dots, pink for favorites; radius grows with zoom
- *   restaurants-picks           small plain red teardrops (no emoji) for Remi's current picks
- *   restaurants-emoji-highlight cuisine-emoji teardrop for the selected restaurant
- *   restaurants-stars           Yelp-star arc above the selected restaurant
- *
+ *   restaurants-picks           plain red teardrops for Remi's current picks, a bit smaller
+ *   restaurants-selected        the same red teardrop, a little bigger, for the selected restaurant
  *
  * Above them, `places-characters` draws the searched places' character portraits
  * (Alfredo, Collette…). Isochrones go beneath everything.
  *
- * Teardrop, star, and portrait images are drawn once onto a canvas and registered with addImage.
+ * Teardrop and portrait images are drawn once onto a canvas and registered with addImage.
  */
 import type { LayerSpecification, Map as MapboxMap } from "mapbox-gl";
 import type { Restaurant } from "../types/restaurant";
+import { colors } from "@/styles/tokens";
 
 export const RESTAURANT_SOURCE = "restaurants";
 const LAYERS = {
   hit: "restaurants-hit",
   dots: "restaurants-dots",
   picks: "restaurants-picks",
-  emojiHighlight: "restaurants-emoji-highlight",
-  stars: "restaurants-stars",
+  selected: "restaurants-selected",
 };
-export const CLICKABLE_RESTAURANT_LAYERS = [LAYERS.hit, LAYERS.picks, LAYERS.emojiHighlight];
+export const CLICKABLE_RESTAURANT_LAYERS = [LAYERS.hit, LAYERS.picks, LAYERS.selected];
 const PICK_PIN_IMAGE = "pin-pick";
 
 export const PLACES_SOURCE = "places";
@@ -34,19 +32,12 @@ const PLACES_LAYER = "places-characters";
 /** Layers drawn under the restaurants and place portraits (e.g. isochrones) are inserted before this one. */
 export const FIRST_OVERLAY_LAYER = LAYERS.hit;
 
-const GREY = "#7f7576";
-const PINK = "#ff67b2";
-const RED = "#c81224";
-const TEARDROP_FILL = "#FFFAEA"; // Cooking Mama beige cream
+const GREY = colors.grey;
+const PINK = colors.pinkLight;
+const RED = colors.red;
 const PIXEL_RATIO = 2;
-const EMOJI_FONT = '"Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif';
-
-type MarkerKind = "std" | "fav";
-const RIM: Record<MarkerKind, { color: string; width: number }> = {
-  std: { color: "#ffffff", width: 2 },
-  fav: { color: PINK, width: 2.5 },
-};
-const teardropImageId = (emoji: string, kind: MarkerKind) => `teardrop-${emoji}-${kind}`;
+/** Size of the selected restaurant's pin (picks grow from 0.6 to 0.7 with zoom) */
+export const SELECTED_PIN_SCALE = 0.75;
 
 function canvas(width: number, height: number) {
   const el = document.createElement("canvas");
@@ -57,7 +48,7 @@ function canvas(width: number, height: number) {
   return { el, ctx };
 }
 
-// Teardrop geometry shared by the emoji teardrops and the plain pick pins
+// Teardrop geometry (the red pin for Remi's picks and the selected restaurant)
 const PIN = { W: 44, H: 52, cx: 22, cy: 20, r: 15, tipY: 46 };
 
 /** Teardrop outline with its point at the bottom center, filled and stroked with a soft shadow. */
@@ -84,58 +75,14 @@ function drawPinShape(ctx: CanvasRenderingContext2D, fill: string, rim: { color:
   ctx.stroke();
 }
 
-/** Cream teardrop with the cuisine emoji in its round part. */
-function drawTeardrop(emoji: string, kind: MarkerKind): ImageData {
-  const { el, ctx } = canvas(PIN.W, PIN.H);
-  drawPinShape(ctx, TEARDROP_FILL, RIM[kind]);
-  ctx.font = `20px ${EMOJI_FONT}`;
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillText(emoji, PIN.cx, PIN.cy + 1);
-  return ctx.getImageData(0, 0, el.width, el.height);
-}
-
-/** Plain red teardrop (white rim, no emoji) for Remi's picks. */
+/** Plain red teardrop with a white rim: Remi's picks and the selected restaurant. */
 function drawPickPin(): ImageData {
   const { el, ctx } = canvas(PIN.W, PIN.H);
-  drawPinShape(ctx, RED, { color: "#ffffff", width: 2 });
+  drawPinShape(ctx, RED, { color: colors.white, width: 2 });
   return ctx.getImageData(0, 0, el.width, el.height);
 }
 
-/** Arc of ⭐ (one per rounded Yelp star) that sits above a selected teardrop. */
-function drawStars(count: number): ImageData {
-  const W = 90;
-  const H = 50;
-  const originX = W / 2;
-  const originY = 46;
-  const radius = 30;
-  const { el, ctx } = canvas(W, H);
-  ctx.font = `18px ${EMOJI_FONT}`;
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.shadowColor = "rgba(0, 0, 0, 0.2)";
-  ctx.shadowBlur = 2;
-  ctx.shadowOffsetY = 1;
-
-  const totalArc = Math.min(count * 30, 140);
-  const start = 90 + totalArc / 2;
-  for (let i = 0; i < count; i++) {
-    const angle = ((start - (count > 1 ? (i * totalArc) / (count - 1) : 0)) * Math.PI) / 180;
-    ctx.fillText("⭐", originX + radius * Math.cos(angle), originY - radius * Math.sin(angle));
-  }
-  return ctx.getImageData(0, 0, el.width, el.height);
-}
-
-function registerImages(map: MapboxMap, emojis: string[]) {
-  for (const emoji of emojis) {
-    for (const kind of Object.keys(RIM) as MarkerKind[]) {
-      const id = teardropImageId(emoji, kind);
-      if (!map.hasImage(id)) map.addImage(id, drawTeardrop(emoji, kind), { pixelRatio: PIXEL_RATIO });
-    }
-  }
-  for (let n = 1; n <= 5; n++) {
-    if (!map.hasImage(`stars-${n}`)) map.addImage(`stars-${n}`, drawStars(n), { pixelRatio: PIXEL_RATIO });
-  }
+function registerImages(map: MapboxMap) {
   if (!map.hasImage(PICK_PIN_IMAGE)) map.addImage(PICK_PIN_IMAGE, drawPickPin(), { pixelRatio: PIXEL_RATIO });
 }
 
@@ -144,8 +91,8 @@ function registerImages(map: MapboxMap, emojis: string[]) {
 const addLayer = (map: MapboxMap, spec: Record<string, unknown>) => map.addLayer(spec as unknown as LayerSpecification);
 
 /** Add the place-portrait and restaurant sources and layers. Call once, after the style has loaded. */
-export function addRestaurantLayers(map: MapboxMap, emojis: string[], mobile: boolean) {
-  registerImages(map, emojis);
+export function addRestaurantLayers(map: MapboxMap, mobile: boolean) {
+  registerImages(map);
   const empty = { type: "FeatureCollection" as const, features: [] };
   map.addSource(PLACES_SOURCE, { type: "geojson", data: empty });
   map.addSource(RESTAURANT_SOURCE, { type: "geojson", data: empty });
@@ -153,7 +100,7 @@ export function addRestaurantLayers(map: MapboxMap, emojis: string[], mobile: bo
   const favorite = ["get", "favorite"];
   const recommended = ["get", "recommended"];
   const highlighted = ["get", "highlight"];
-  // Remi's picks (unless selected, which gets its emoji teardrop) are drawn as red pins instead
+  // Remi's picks (unless selected, which gets the bigger pin) are drawn as red pins instead
   const pick = ["all", recommended, ["!", ["get", "selected"]]];
   // Dot diameter scales from minScale (zoom 10) to maxScale (zoom 16): base 10px, 12px for favorites
   const [minScale, maxScale] = mobile ? [0.45, 1.5] : [0.5, 1.2];
@@ -162,7 +109,7 @@ export function addRestaurantLayers(map: MapboxMap, emojis: string[], mobile: bo
   const sortKey = ["case", ["get", "selected"], 3, recommended, 2, favorite, 1, 0];
 
   const teardropLayout = {
-    "icon-image": ["get", "icon"],
+    "icon-image": PICK_PIN_IMAGE,
     "icon-anchor": "bottom",
     "icon-offset": [0, 5], // the pin's point (not the shadow margin) touches the location
     "icon-allow-overlap": true,
@@ -187,7 +134,7 @@ export function addRestaurantLayers(map: MapboxMap, emojis: string[], mobile: bo
     paint: {
       "circle-color": ["case", favorite, PINK, GREY],
       "circle-radius": ["interpolate", ["linear"], ["zoom"], 10, radiusAt(minScale), 16, radiusAt(maxScale)],
-      "circle-stroke-color": "#ffffff",
+      "circle-stroke-color": colors.white,
       "circle-stroke-width": 1,
       // Face the camera so dots stay round under the map's 45° pitch (perspective still
       // makes distant ones smaller); "map" would lay them flat and squash them into ovals.
@@ -202,32 +149,18 @@ export function addRestaurantLayers(map: MapboxMap, emojis: string[], mobile: bo
     filter: pick,
     layout: {
       ...teardropLayout,
-      "icon-image": PICK_PIN_IMAGE,
-      // Smaller than the emoji teardrops, growing with zoom like the dots
-      "icon-size": ["interpolate", ["linear"], ["zoom"], 11, 0.55, 16, 0.8],
+      // A bit smaller than the selected restaurant's teardrop, growing with zoom
+      "icon-size": ["interpolate", ["linear"], ["zoom"], 11, 0.6, 16, 0.7],
     },
   });
 
   addLayer(map, {
-    id: LAYERS.emojiHighlight,
+    id: LAYERS.selected,
     type: "symbol",
     source: RESTAURANT_SOURCE,
     filter: highlighted,
-    layout: teardropLayout,
-  });
-
-  addLayer(map, {
-    id: LAYERS.stars,
-    type: "symbol",
-    source: RESTAURANT_SOURCE,
-    filter: ["all", ["get", "selected"], [">", ["get", "stars"], 0]],
-    layout: {
-      "icon-image": ["concat", "stars-", ["to-string", ["get", "stars"]]],
-      "icon-anchor": "bottom",
-      "icon-offset": [0, -21], // arc centered on the teardrop's round part
-      "icon-allow-overlap": true,
-      "icon-ignore-placement": true,
-    },
+    // Fixed size (the card popup lines up with its top; see MapRestaurantPopup.tsx)
+    layout: { ...teardropLayout, "icon-size": SELECTED_PIN_SCALE },
   });
 
   // Added last, so the place portraits draw above every restaurant marker
@@ -246,7 +179,7 @@ export function addRestaurantLayers(map: MapboxMap, emojis: string[], mobile: bo
 /** GeoJSON for the restaurant source. Recommended = in Remi's latest answer (red pin); highlighted = selected. */
 export function restaurantFeatures(
   restaurants: Restaurant[],
-  options: { favorites: string[]; selectedSlug: string | null; recommended: Set<string>; emojiFor: (r: Restaurant) => string }
+  options: { favorites: string[]; selectedSlug: string | null; recommended: Set<string> }
 ): GeoJSON.FeatureCollection<GeoJSON.Point> {
   const features: GeoJSON.Feature<GeoJSON.Point>[] = [];
   for (const r of restaurants) {
@@ -263,8 +196,6 @@ export function restaurantFeatures(
         recommended,
         selected,
         highlight: selected,
-        icon: teardropImageId(options.emojiFor(r), favorite ? "fav" : "std"),
-        stars: r.yelp_rating ? Math.min(5, Math.round(r.yelp_rating)) : 0,
       },
     });
   }
@@ -296,7 +227,7 @@ function registerPortrait(map: MapboxMap, url: string): Promise<void> {
           ctx.shadowOffsetY = 2;
           ctx.beginPath();
           ctx.arc(c, c, r, 0, Math.PI * 2);
-          ctx.fillStyle = "#ffffff";
+          ctx.fillStyle = colors.white;
           ctx.fill();
           ctx.restore();
           // Cover-fit the portrait inside the circle

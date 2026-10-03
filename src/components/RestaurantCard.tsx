@@ -1,632 +1,407 @@
-import { useState, useRef } from 'react'
-import type { Restaurant } from '../types/restaurant'
+import { useState } from "react";
+import { ChevronDown, Globe, Heart, Phone, X } from "lucide-react";
+import TravelTimes from "./TravelTimes";
+import RatingArc from "./RatingArc";
+import type { Restaurant } from "../types/restaurant";
 import { asset } from "../utils/asset";
-import './RestaurantCard.css'
+import { cn } from "@/lib/utils";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface RestaurantCardProps {
-  restaurant: Restaurant | null
-  placeholderRestaurant?: Restaurant | null
-  onClose?: () => void
-  isFavorited?: boolean
-  onToggleFavorite?: () => void
-  onRequestReviewHighlights?: (prompt: string, slug: string) => void
-  onExpandDrawer?: () => void
-  collapsible?: boolean // For displayRestaurants cards - hide accordions behind +/- toggle
+  restaurant: Restaurant | null;
+  placeholderRestaurant?: Restaurant | null;
+  onClose?: () => void;
+  isFavorited?: boolean;
+  onToggleFavorite?: () => void;
+  onRequestReviewHighlights?: (prompt: string, slug: string) => void;
+  onExpandDrawer?: () => void;
 }
 
-export default function RestaurantCard({ restaurant, placeholderRestaurant, onClose, isFavorited = false, onToggleFavorite, onExpandDrawer, collapsible = false }: RestaurantCardProps) {
-  const displayRestaurant = restaurant || placeholderRestaurant
-  const matchReason = displayRestaurant?.match_reason
-  const whyBlock = matchReason && (
-    <div className="match-reason">
-      {matchReason.quote && (
-        <blockquote className="match-reason-quote">
-          “{matchReason.quote.text}”
-          <span className="match-reason-source"> — {matchReason.quote.source}</span>
+const MICHELIN_STARS = ["ONE_STAR", "TWO_STARS", "THREE_STARS"];
+
+/** Drop a location suffix: "Bar Primi - Bowery" / "Sant Ambroeus—SoHo" → the name alone.
+    Splits on a spaced " - " / " – " or any em dash; hyphens inside words (Jean-Georges) stay. */
+export function displayName(name: string): string {
+  return name.split(/\s+[-–]\s+|\s*—\s*/)[0].trim() || name;
+}
+
+/** Split text into paragraphs of two sentences (dropping Yelp's "Yelp categorizes…" opener). */
+function paragraphs(text: string | undefined, dropYelpOpener = false): string {
+  if (!text) return "";
+  let sentences = text.split(". ");
+  if (dropYelpOpener && sentences[0]?.startsWith("Yelp categorizes")) sentences = sentences.slice(1);
+  return sentences.reduce((acc, sentence, i, all) => {
+    const s = i === all.length - 1 && sentence.endsWith(".") ? sentence : `${sentence}.`;
+    return i === 0 ? s : acc + (i % 2 === 0 ? "\n\n" : " ") + s;
+  }, "");
+}
+
+/** Source logo sitting inline at the start of review text, like the first word. */
+function SourceIcon({ src, label }: { src: string; label: string }) {
+  return <img src={src} alt={label} title={label} className="mr-1 inline-block size-3.5 object-contain align-[-2px]" />;
+}
+
+/** Pastel info badge: pill-shaped, no border, not clickable (buttons are bordered and square-ish). */
+const TAG_COLORS = {
+  peach: "bg-peach hover:bg-peach",
+  butter: "bg-butter hover:bg-butter",
+  lavender: "bg-lavender hover:bg-lavender",
+} as const;
+
+function Tag({ color, children }: { color: keyof typeof TAG_COLORS; children: React.ReactNode }) {
+  return (
+    <Badge
+      variant="secondary"
+      className={cn(
+        "cursor-default select-none gap-1 rounded-full border-transparent px-2 py-0 text-caption font-medium text-foreground",
+        TAG_COLORS[color]
+      )}
+    >
+      {children}
+    </Badge>
+  );
+}
+
+/** Outlined square icon button next to Reserve (label shows on hover / for screen readers). */
+function ActionIcon({ href, label, children }: { href: string; label: string; children: React.ReactNode }) {
+  const external = !href.startsWith("tel:");
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button asChild variant="outline" size="icon" className="size-8 shrink-0 rounded-md [&_svg]:size-3.5">
+          <a href={href} aria-label={label} {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}>
+            {children}
+          </a>
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent className="z-[2000] bg-foreground font-sans text-caption text-background">{label}</TooltipContent>
+    </Tooltip>
+  );
+}
+
+/** 1507 → "1.5k", 12345 → "12k", 233 → "233" */
+function compactCount(n: number): string {
+  if (n < 1000) return String(n);
+  const k = n / 1000;
+  return `${k < 10 ? k.toFixed(1).replace(/\.0$/, "") : Math.round(k)}k`;
+}
+
+// Brand icons (lucide no longer ships these)
+const InstagramIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+  </svg>
+);
+
+export default function RestaurantCard({
+  restaurant,
+  placeholderRestaurant,
+  onClose,
+  isFavorited = false,
+  onToggleFavorite,
+  onExpandDrawer,
+}: RestaurantCardProps) {
+  const [showMore, setShowMore] = useState(false);
+  // Open section inside Reviews & more: "reviews", "about" or "" (none)
+  const [openSection, setOpenSection] = useState("");
+  const r = restaurant || placeholderRestaurant;
+  if (!r) return null;
+
+  const reason = r.match_reason;
+  const hasYelp = !!r.yelp_rating && !!r.yelp_review_count;
+  const reserveUrl = r.table_res?.trim()
+    ? r.table_res
+    : r.opentable_id
+      ? `https://www.opentable.com/restaurant/profile/${r.opentable_id}`
+      : null;
+  const mainAction = reserveUrl
+    ? { href: reserveUrl, label: "Reserve a table" }
+    : r.website?.trim()
+      ? { href: r.website, label: "Visit website" }
+      : null;
+  const isStarred = !!r.michelin_award && MICHELIN_STARS.includes(r.michelin_award);
+  const isBib = r.michelin_award === "BIB_GOURMAND";
+  const hasReviews = !!r.yelp_review_highlights || !!r.reddit?.trim();
+  // Preview: Yelp's highlights minus the "Yelp categorizes…" opener and "In Yelp reviews," lead-in
+  const reviewPreview = (() => {
+    const text = paragraphs(r.yelp_review_highlights, true).replace(/\s+/g, " ").trim() || r.reddit?.trim() || "";
+    const t = text.replace(/^In Yelp reviews,\s*/i, "");
+    return t.charAt(0).toUpperCase() + t.slice(1);
+  })();
+  // About: collapsed shows the one-line pitch (summary); expanded shows the longer write-up
+  // (summary2), which often restates the pitch, so the two are never shown together. When
+  // Remi's quote already is the pitch, the preview uses the write-up instead.
+  const shortAbout = r.summary?.trim() ?? "";
+  const longAbout = r.summary2?.trim() || shortAbout;
+  const hasDetails = hasReviews || !!longAbout;
+
+  const whyBlock = reason && (
+    <div className="border-l-2 border-primary py-1 pl-2.5">
+      {reason.quote && (
+        <blockquote className="line-clamp-2 text-body italic text-muted-foreground">
+          “{reason.quote.text}”
+          <span className="whitespace-nowrap text-caption not-italic text-grey"> — {reason.quote.source}</span>
         </blockquote>
       )}
-      {matchReason.facts.length > 0 && (
-        <div className="match-reason-facts">
-          {matchReason.facts.map((fact) => (
+      {reason.facts.length > 0 && (
+        <div className={cn("text-body font-semibold text-foreground", reason.quote && "mt-1")}>
+          {reason.facts.map((fact) => (
             <div key={fact}>{fact}</div>
           ))}
         </div>
       )}
     </div>
-  )
-  const [isContactsOpen, setIsContactsOpen] = useState(false)
-  const [isReviewsOpen, setIsReviewsOpen] = useState(false)
-  const [isRestaurantWeekOpen, setIsRestaurantWeekOpen] = useState(false)
-  const [isAboutOpen, setIsAboutOpen] = useState(false)
-  const [isAccordionSectionOpen, setIsAccordionSectionOpen] = useState(false)
+  );
 
-  // Refs for accordion content
-  const reviewsContentRef = useRef<HTMLDivElement>(null)
-  const restaurantWeekContentRef = useRef<HTMLDivElement>(null)
-  const aboutContentRef = useRef<HTMLDivElement>(null)
-  const contactsContentRef = useRef<HTMLDivElement>(null)
-
-  if (!displayRestaurant) return null
-
-  // Strip "Yelp categorizes..." first sentence from review highlights and add paragraph breaks
-  const processYelpReview = (text: string) => {
-    if (!text) return ''
-    const sentences = text.split('. ')
-    const filteredSentences = sentences[0]?.startsWith('Yelp categorizes')
-      ? sentences.slice(1)
-      : sentences
-
-    // Add paragraph breaks every 2 sentences
-    return filteredSentences.reduce((acc: string, sentence: string, index: number, array: string[]) => {
-      const sentenceWithPeriod = index === array.length - 1 && sentence.endsWith('.') ? sentence : sentence + '.';
-      if (index > 0 && index % 2 === 0) {
-        return acc + '\n\n' + sentenceWithPeriod;
-      }
-      return acc + (index > 0 ? ' ' : '') + sentenceWithPeriod;
-    }, '')
-  }
-
-  // Handle review accordion toggle - expand drawer on mobile
-  const handleReviewToggle = (e: React.MouseEvent) => {
-    e.stopPropagation() // Prevent parent click handler from collapsing drawer
-    const newState = !isReviewsOpen
-    setIsReviewsOpen(newState)
-
-    // Expand drawer to 80vh when opening reviews on mobile
-    if (newState && onExpandDrawer) {
-      onExpandDrawer()
-    }
-
-    // Scroll expanded content into view after animation
-    if (newState && reviewsContentRef.current) {
-      setTimeout(() => {
-        reviewsContentRef.current?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'nearest'
-        })
-      }, 350) // Wait for animation to complete (300ms + buffer)
-    }
-  }
-
-  // Handle Restaurant Week accordion toggle - expand drawer on mobile
-  const handleRestaurantWeekToggle = (e: React.MouseEvent) => {
-    e.stopPropagation() // Prevent parent click handler from collapsing drawer
-    const newState = !isRestaurantWeekOpen
-    setIsRestaurantWeekOpen(newState)
-
-    // Expand drawer to 80vh when opening accordion
-    if (newState && onExpandDrawer) {
-      onExpandDrawer()
-    }
-
-    // Scroll expanded content into view after animation
-    if (newState && restaurantWeekContentRef.current) {
-      setTimeout(() => {
-        restaurantWeekContentRef.current?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'nearest'
-        })
-      }, 350) // Wait for animation to complete (300ms + buffer)
-    }
-  }
-
-  // Handle About accordion toggle - expand drawer on mobile
-  const handleAboutToggle = (e: React.MouseEvent) => {
-    e.stopPropagation() // Prevent parent click handler from collapsing drawer
-    const newState = !isAboutOpen
-    setIsAboutOpen(newState)
-
-    // Expand drawer to 80vh when opening accordion
-    if (newState && onExpandDrawer) {
-      onExpandDrawer()
-    }
-
-    // Scroll expanded content into view after animation
-    if (newState && aboutContentRef.current) {
-      setTimeout(() => {
-        aboutContentRef.current?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'nearest'
-        })
-      }, 350) // Wait for animation to complete (300ms + buffer)
-    }
-  }
-
-  // Handle +more accordion section toggle - expand drawer on mobile
-  const handleAccordionSectionToggle = (e: React.MouseEvent) => {
-    e.stopPropagation() // Prevent parent click handler from collapsing drawer
-    const newState = !isAccordionSectionOpen
-    setIsAccordionSectionOpen(newState)
-
-    // Expand drawer to 80vh when opening on mobile
-    if (newState && onExpandDrawer) {
-      onExpandDrawer()
-    }
-  }
+  // Inside "Reviews & more": Reviews (two-line preview, opens to the full text) and About,
+  // one open at a time; on mobile the chat drawer grows to make room
+  const details = (
+    <Accordion
+      type="single"
+      collapsible
+      value={openSection}
+      onValueChange={(open) => {
+        setOpenSection(open);
+        if (open) onExpandDrawer?.();
+      }}
+    >
+      {hasReviews && (
+        <AccordionItem value="reviews" className="border-grey-light last:border-b-0">
+          <AccordionTrigger className="items-start gap-3 py-2.5 hover:no-underline [&>svg]:mt-0.5">
+            <span className="flex min-w-0 flex-col items-start gap-1 text-left">
+              <span className="text-label font-semibold">Reviews</span>
+              {openSection !== "reviews" && reviewPreview && (
+                <span className="line-clamp-2 text-body font-normal text-muted-foreground">
+                  <SourceIcon src={asset(r.yelp_review_highlights ? "/yelp_logo.png" : "/reddit.webp")} label={r.yelp_review_highlights ? "Yelp" : "Reddit"} />
+                  {reviewPreview}
+                </span>
+              )}
+            </span>
+          </AccordionTrigger>
+          <AccordionContent className="flex flex-col gap-3 pb-3">
+            {r.yelp_review_highlights && (
+              <p className="whitespace-pre-line text-body text-muted-foreground">
+                <SourceIcon src={asset("/yelp_logo.png")} label="Yelp" />
+                {paragraphs(r.yelp_review_highlights, true).replace(/^In Yelp reviews,\s*(.)/i, (_, c: string) => c.toUpperCase())}
+              </p>
+            )}
+            {r.reddit?.trim() && (
+              <p className="whitespace-pre-line text-body text-muted-foreground">
+                <SourceIcon src={asset("/reddit.webp")} label="Reddit" />
+                {paragraphs(r.reddit)}
+              </p>
+            )}
+            {r.yelp_url?.trim() && (
+              <div className="self-end">
+                <ActionIcon href={r.yelp_url} label="Open Yelp">
+                  <img src={asset("/yelp_logo.png")} alt="" className="size-4 object-contain" />
+                </ActionIcon>
+              </div>
+            )}
+          </AccordionContent>
+        </AccordionItem>
+      )}
+      {longAbout && (
+        <AccordionItem value="about" className="border-grey-light last:border-b-0">
+          <AccordionTrigger className="py-2.5 text-label font-semibold hover:no-underline">About</AccordionTrigger>
+          <AccordionContent className="flex flex-col gap-2 pb-3">
+            <p className="whitespace-pre-line text-body text-muted-foreground">{paragraphs(longAbout)}</p>
+            {(r.michelin_award || r.nyttop100_rank) && (
+              <div className="flex justify-end gap-1.5">
+                {r.michelin_award && (
+                  <ActionIcon
+                    href={
+                      r.michelin_url ||
+                      `https://guide.michelin.com/en/new-york-state/new-york/restaurant/${r.michelin_slug || r.slug}`
+                    }
+                    label="Michelin Guide"
+                  >
+                    <img src={asset(isBib ? "/bibgourmand.png" : "/MichelinStar.svg.png")} alt="" className="size-4 object-contain" />
+                  </ActionIcon>
+                )}
+                {r.nyttop100_rank && (
+                  <ActionIcon
+                    href={
+                      r.nyt_url ||
+                      `https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#${r.name
+                        .toLowerCase()
+                        .replace(/[^a-z0-9\s-]/g, "")
+                        .replace(/\s+/g, "-")}`
+                    }
+                    label="NYT Top 100"
+                  >
+                    <img src={asset("/nytimes.png")} alt="" className="size-4 object-contain" />
+                  </ActionIcon>
+                )}
+              </div>
+            )}
+          </AccordionContent>
+        </AccordionItem>
+      )}
+    </Accordion>
+  );
 
   return (
-    <div className="restaurant-card">
-      {/* Top right buttons */}
-      <div className="card-header-buttons">
-        {onToggleFavorite && (
-          <button className="btn-favorite" onClick={onToggleFavorite} aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill={isFavorited ? "#FF69B4" : "none"} stroke="#FF69B4" strokeWidth="2.0">
-              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-            </svg>
-          </button>
-        )}
+    <TooltipProvider delayDuration={200}>
+    <Card className="restaurant-card tw-reset relative w-full border-solid border-foreground font-sans text-foreground shadow-md">
+      {/* Close (when shown in a popup) */}
+      <div className="absolute right-2 top-2 flex items-center">
         {onClose && (
-          <button
-            className="btn-close-card"
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-7 text-grey hover:bg-transparent hover:text-muted-foreground"
             onClick={(e) => {
-              e.stopPropagation(); // Prevent click from bubbling to parent card
+              e.stopPropagation();
               onClose();
             }}
             aria-label="Close"
           >
-            ✕
-          </button>
+            <X className="!size-4" />
+          </Button>
         )}
       </div>
-      {/* Restaurant Name */}
-      <h2 className="restaurant-name">
-        {displayRestaurant.name}
-        {displayRestaurant.michelin_award && ['ONE_STAR', 'TWO_STARS', 'THREE_STARS'].includes(displayRestaurant.michelin_award) && (
-          <img src={asset("/MichelinStar.svg.png")} alt="Michelin Star" className="michelin-star-inline" />
-        )}
-        {displayRestaurant.michelin_award === 'BIB_GOURMAND' && (
-          <img src={asset("/bibgourmand.png")} alt="Bib Gourmand" className="bib-gourmand-inline" />
-        )}
-        {displayRestaurant.nyttop100_rank && (
-          <img src={asset("/nytimes.png")} alt="NYT Top 100" className="nyt-top100-inline" />
-        )}
-      </h2>
-      {/* Restaurant Tags */}
-      <div className="restaurant-tags">
-        <span className="tag tag-cuisine">{displayRestaurant.cuisine}</span>
-        {displayRestaurant.price && (
-          <span className="tag tag-price">{displayRestaurant.price}</span>
-        )}
-      </div>
-      {/* Why Remi picked it (chat results): the quote leads, above the description */}
-      {matchReason?.quote && whyBlock}
-      {/* Restaurant Description (skipped when the quote above already is the summary) */}
-      {matchReason?.quote?.field !== "summary" && (
-      <p className="card-body-text review-text">
-        {displayRestaurant.summary && displayRestaurant.summary.split('. ').reduce((acc: string, sentence: string, index: number, array: string[]) => {
-          // Add the sentence back with period (except for last one which might already have it)
-          const sentenceWithPeriod = index === array.length - 1 && sentence.endsWith('.') ? sentence : sentence + '.';
-          // Add double line break every 2 sentences for paragraph breaks
-          if (index > 0 && index % 2 === 0) {
-            return acc + '\n\n' + sentenceWithPeriod;
-          }
-          return acc + (index > 0 ? ' ' : '') + sentenceWithPeriod;
-        }, '')}
-      </p>
-      )}
-      {/* No quote: description first, then the filter facts */}
-      {matchReason && !matchReason.quote && matchReason.facts.length > 0 && whyBlock}
 
-      {/* Yelp Rating */}
-      {displayRestaurant.yelp_rating != null && displayRestaurant.yelp_rating > 0 && displayRestaurant.yelp_review_count != null && displayRestaurant.yelp_review_count > 0 && (
-        <div className="yelp-price-row">
-          <span className="card-body-text review-text yelp-info"><b>Yelp:</b> {displayRestaurant.yelp_rating.toFixed(1)}★ ({displayRestaurant.yelp_review_count.toLocaleString()} Reviews)</span>
-          {/* Find a Table button - inline for non-collapsible cards */}
-          {!collapsible && (displayRestaurant.table_res || displayRestaurant.opentable_id) && (
-            <a
-              href={
-                displayRestaurant.table_res && displayRestaurant.table_res.trim() !== ''
-                  ? displayRestaurant.table_res
-                  : `https://www.opentable.com/restaurant/profile/${displayRestaurant.opentable_id}`
-              }
-              target="_blank"
-              rel="noopener noreferrer"
-              className="find-table-btn"
-            >
-              Reserve
-            </a>
+      {/* 1. What it is (name, cuisine / price / award tags) and is it good (star arc, top-right) */}
+      <CardHeader className={cn("flex-row items-start gap-3 space-y-0 p-4 pb-3", onClose && "pr-10")}>
+        <div className="flex min-w-0 flex-1 flex-col gap-2">
+          <CardTitle className="text-heading font-bold leading-[1.2] tracking-tight" title={r.name}>
+            {displayName(r.name)}
+          </CardTitle>
+          <div className="flex flex-wrap gap-1.5">
+            {r.cuisine && (
+              <Tag color="peach">
+                {r.cuisine}
+              </Tag>
+            )}
+            {r.price && (
+              <Tag color="butter">
+                {r.price}
+              </Tag>
+            )}
+            {isStarred && (
+              <Tag color="lavender">
+                <img src={asset("/MichelinStar.svg.png")} alt="" className="size-3.5" /> Michelin
+              </Tag>
+            )}
+            {isBib && (
+              <Tag color="lavender">
+                <img src={asset("/bibgourmand.png")} alt="" className="size-3.5" /> Bib Gourmand
+              </Tag>
+            )}
+            {r.nyttop100_rank && (
+              <Tag color="lavender">
+                <img src={asset("/nytimes.png")} alt="" className="size-3.5" /> NYT #{r.nyttop100_rank}
+              </Tag>
+            )}
+          </div>
+        </div>
+        {hasYelp && (
+          <RatingArc size="sm" rating={r.yelp_rating!} reviews={`${compactCount(r.yelp_review_count!)} reviews`} />
+        )}
+      </CardHeader>
+
+      <CardContent className="flex flex-col gap-3 p-4 pt-0">
+        {/* 2. Why Remi picked it (his picks only) */}
+        {whyBlock}
+
+        {/* Travel time from each searched place (Remi's picks) */}
+        <TravelTimes reason={reason} />
+
+        {/* 4. Act on it, across the full width: one solid main action (Reserve, or the website when
+            there's no booking link), then website / Instagram / call / save as icon buttons */}
+        <div className="flex items-center gap-1.5">
+          {mainAction && (
+            <Button asChild className="h-8 flex-1 rounded-md bg-foreground text-label font-semibold text-background hover:bg-foreground/85">
+              <a href={mainAction.href} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}>
+                {mainAction.label}
+              </a>
+            </Button>
           )}
-          {/* + more toggle inline with Yelp when collapsible and NO Reserve button */}
-          {collapsible && !(displayRestaurant.table_res || displayRestaurant.opentable_id) && (
+          {reserveUrl && r.website?.trim() && (
+            <ActionIcon href={r.website} label="Website">
+              <Globe />
+            </ActionIcon>
+          )}
+          {r.instagram_url?.trim() && (
+            <ActionIcon href={r.instagram_url} label="Instagram">
+              <InstagramIcon />
+            </ActionIcon>
+          )}
+          {r.telephone?.trim() && (
+            <ActionIcon href={`tel:${r.telephone}`} label={`Call ${r.telephone}`}>
+              <Phone />
+            </ActionIcon>
+          )}
+          {onToggleFavorite && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="size-8 shrink-0 rounded-md"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onToggleFavorite();
+                  }}
+                  aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}
+                  aria-pressed={isFavorited}
+                >
+                  <Heart className={cn("!size-3.5 text-pink-light", isFavorited && "fill-pink-light")} />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent className="z-[2000] bg-foreground font-sans text-caption text-background">
+                {isFavorited ? "Unfavorite" : "Favorite"}
+              </TooltipContent>
+            </Tooltip>
+          )}
+        </div>
+
+      </CardContent>
+
+      {/* 5. Reviews & more: a grey footer strip that opens downward into the accordions; once
+          open, the strip's title gives way to the sections, with "Show less" at the bottom */}
+      {hasDetails && (
+        <div className="rounded-b-xl border-t bg-muted/60" onClick={(e) => e.stopPropagation()}>
+          {showMore ? (
+            <>
+              <div className="max-h-[50vh] overflow-y-auto px-4 pt-1">{details}</div>
+              <button
+                type="button"
+                className="flex w-full items-center justify-center gap-1 rounded-b-xl py-2 text-caption font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                onClick={() => {
+                  setShowMore(false);
+                  setOpenSection("");
+                }}
+                aria-expanded
+              >
+                Show less
+                <ChevronDown className="size-3.5 rotate-180" />
+              </button>
+            </>
+          ) : (
             <button
-              className="accordion-section-toggle"
-              onClick={handleAccordionSectionToggle}
-              aria-expanded={isAccordionSectionOpen}
-              aria-label={isAccordionSectionOpen ? "Collapse details" : "Expand details"}
+              type="button"
+              className="flex w-full items-center justify-between rounded-b-xl px-4 py-2.5 text-label font-semibold text-foreground transition-colors hover:bg-muted"
+              onClick={() => {
+                setShowMore(true);
+                onExpandDrawer?.();
+              }}
+              aria-expanded={false}
             >
-              <span className="accordion-section-toggle-icon">{isAccordionSectionOpen ? '−' : '+'}</span>
-              <span className="accordion-section-toggle-label">{isAccordionSectionOpen ? 'less' : 'more'}</span>
+              Reviews &amp; more
+              <ChevronDown className="size-4 text-muted-foreground" />
             </button>
           )}
         </div>
       )}
-
-      {/* Reserve + More toggle row for collapsible cards (only when Reserve exists) */}
-      {collapsible && (displayRestaurant.table_res || displayRestaurant.opentable_id) && (
-        <div className="collapsible-actions-row">
-          <a
-            href={
-              displayRestaurant.table_res && displayRestaurant.table_res.trim() !== ''
-                ? displayRestaurant.table_res
-                : `https://www.opentable.com/restaurant/profile/${displayRestaurant.opentable_id}`
-            }
-            target="_blank"
-            rel="noopener noreferrer"
-            className="find-table-btn"
-            onClick={(e) => e.stopPropagation()}
-          >
-            Reserve
-          </a>
-          <button
-            className="accordion-section-toggle"
-            onClick={handleAccordionSectionToggle}
-            aria-expanded={isAccordionSectionOpen}
-            aria-label={isAccordionSectionOpen ? "Collapse details" : "Expand details"}
-          >
-            <span className="accordion-section-toggle-icon">{isAccordionSectionOpen ? '−' : '+'}</span>
-            <span className="accordion-section-toggle-label">{isAccordionSectionOpen ? 'less' : 'more'}</span>
-          </button>
-        </div>
-      )}
-
-      {/* Fallback +more toggle for collapsible cards with no Yelp data and no Reserve button */}
-      {collapsible &&
-       !(displayRestaurant.yelp_rating != null && displayRestaurant.yelp_rating > 0 && displayRestaurant.yelp_review_count != null && displayRestaurant.yelp_review_count > 0) &&
-       !(displayRestaurant.table_res || displayRestaurant.opentable_id) && (
-        <div className="collapsible-actions-row">
-          <button
-            className="accordion-section-toggle"
-            onClick={handleAccordionSectionToggle}
-            aria-expanded={isAccordionSectionOpen}
-            aria-label={isAccordionSectionOpen ? "Collapse details" : "Expand details"}
-          >
-            <span className="accordion-section-toggle-icon">{isAccordionSectionOpen ? '−' : '+'}</span>
-            <span className="accordion-section-toggle-label">{isAccordionSectionOpen ? 'less' : 'more'}</span>
-          </button>
-        </div>
-      )}
-
-      {/* Accordions wrapper - always visible when not collapsible, or when expanded */}
-      {(!collapsible || isAccordionSectionOpen) && (
-        <>
-      {/* Restaurant Week Winter 2026 Accordion - commented out until next Restaurant Week
-      {displayRestaurant.meal_types && displayRestaurant.meal_types.length > 0 && (
-        <div className="restaurant-week-accordion">
-          <button
-            className="restaurant-week-accordion-header"
-            onClick={handleRestaurantWeekToggle}
-            aria-expanded={isRestaurantWeekOpen}
-            aria-label="Toggle Restaurant Week details"
-          >
-            <span className="review-accordion-title">
-              <span className="new-badge">NEW</span>
-              2026 Restaurant Week
-            </span>
-            <svg
-              className={`restaurant-week-accordion-chevron ${isRestaurantWeekOpen ? 'open' : ''}`}
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <polyline points="6 9 12 15 18 9" />
-            </svg>
-          </button>
-
-          <div ref={restaurantWeekContentRef} className={`restaurant-week-accordion-content ${isRestaurantWeekOpen ? 'open' : ''}`} onClick={(e) => e.stopPropagation()}>
-            <div className="meal-types-row">
-              <div className="card-body-text">
-
-                For Winter 2026 Restaurant Week, {displayRestaurant.name} is participating{displayRestaurant.participation_weeks2 && (
-                  <> from <b>{displayRestaurant.participation_weeks2}</b></>)}, offering the following menus: <b>{displayRestaurant.meal_types.join(', ')}</b>
-              </div>
-            </div>
-            <div className="restaurant-week-buttons">
-              {displayRestaurant.menu_url && displayRestaurant.menu_url.trim() !== '' && (
-                <a
-                  href={displayRestaurant.menu_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="see-menu-btn"
-                >
-                  See Prix Fixe Menu
-                </a>
-              )}
-              {displayRestaurant.nytourism_url && displayRestaurant.nytourism_url.trim() !== '' && (
-                <a
-                  href={displayRestaurant.nytourism_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="see-menu-btn"
-                >
-                  Learn More ↗
-                </a>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-      */}
-
-      {/* Review Highlights Accordion */}
-      {(displayRestaurant.yelp_review_highlights || displayRestaurant.reddit) && (
-        <div className="review-accordion">
-          <button
-            className="review-accordion-header"
-            onClick={handleReviewToggle}
-            aria-expanded={isReviewsOpen}
-            aria-label="Toggle reviews"
-          >
-            <span className="review-accordion-title">Reviews</span>
-            <svg
-              className={`review-accordion-chevron ${isReviewsOpen ? 'open' : ''}`}
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <polyline points="6 9 12 15 18 9" />
-            </svg>
-          </button>
-
-          <div ref={reviewsContentRef} className={`review-accordion-content ${isReviewsOpen ? 'open' : ''}`} onClick={(e) => e.stopPropagation()}>
-            {displayRestaurant.yelp_review_highlights && (
-              <div className="review-item">
-                <div className="review-header">
-                  <img src={asset("/yelp_logo.png")} alt="Yelp" className="review-source-icon" />
-                  <span className="review-source-label">Yelp:</span>
-                </div>
-                <span className="card-body-text">{processYelpReview(displayRestaurant.yelp_review_highlights)}</span>
-              </div>
-            )}
-            {displayRestaurant.reddit && displayRestaurant.reddit.trim() !== '' && (
-              <div className="review-item">
-                <div className="review-header">
-                  <img src={asset("/reddit.webp")} alt="Reddit" className="review-source-icon" />
-                  <span className="review-source-label">Reddit:</span>
-                </div>
-                <span className="card-body-text">
-                  {displayRestaurant.reddit.split('. ').reduce((acc: string, sentence: string, index: number, array: string[]) => {
-                    const sentenceWithPeriod = index === array.length - 1 && sentence.endsWith('.') ? sentence : sentence + '.';
-                    if (index > 0 && index % 2 === 0) {
-                      return acc + '\n\n' + sentenceWithPeriod;
-                    }
-                    return acc + (index > 0 ? ' ' : '') + sentenceWithPeriod;
-                  }, '')}
-                </span>
-              </div>
-            )}
-            {displayRestaurant.yelp_url && displayRestaurant.yelp_url.trim() !== '' && (
-              <a
-                href={displayRestaurant.yelp_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="see-menu-btn"
-                style={{ marginTop: '8px', marginLeft: 'auto' }}
-              >
-                <img src={asset("/yelp_logo.png")} alt="Yelp" />
-                <span className="arrow">↗</span>
-              </a>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* About Accordion */}
-      {displayRestaurant.summary2 && displayRestaurant.summary2.trim() !== '' && (
-        <div className="about-accordion">
-          <button
-            className="about-accordion-header"
-            onClick={handleAboutToggle}
-            aria-expanded={isAboutOpen}
-            aria-label="Toggle about"
-          >
-            <span className="review-accordion-title">About</span>
-            <svg
-              className={`about-accordion-chevron ${isAboutOpen ? 'open' : ''}`}
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <polyline points="6 9 12 15 18 9" />
-            </svg>
-          </button>
-
-          <div ref={aboutContentRef} className={`about-accordion-content ${isAboutOpen ? 'open' : ''}`} onClick={(e) => e.stopPropagation()}>
-            {/* Award Tags */}
-            <div className="about-award-tags" style={{ display: 'flex', gap: '6px', marginBottom: '4px', flexWrap: 'wrap' }}>
-              {displayRestaurant.michelin_award && ['ONE_STAR', 'TWO_STARS', 'THREE_STARS'].includes(displayRestaurant.michelin_award) && (
-                <span className="tag tag-michelin">
-                  <img src={asset("/MichelinStar.svg.png")} alt="" className="tag-icon" />
-                  Michelin
-                </span>
-              )}
-              {displayRestaurant.michelin_award === 'BIB_GOURMAND' && (
-                <span className="tag tag-bib">
-                  <img src={asset("/bibgourmand.png")} alt="" className="tag-icon" />
-                  Bib Gourmand
-                </span>
-              )}
-              {displayRestaurant.nyttop100_rank && (
-                <span className="tag tag-nyt-rank">
-                  <img src={asset("/nytimes.png")} alt="" className="tag-icon" />
-                  NYT Rank {displayRestaurant.nyttop100_rank}
-                </span>
-              )}
-              {displayRestaurant.participation_weeks2 && (
-                <span className="tag tag-resweek">
-                  Winter'25 NYC Res Week
-                </span>
-              )}
-            </div>
-            <p className="card-body-text">
-              {displayRestaurant.summary2 && displayRestaurant.summary2.split('. ').reduce((acc: string, sentence: string, index: number, array: string[]) => {
-                const sentenceWithPeriod = index === array.length - 1 && sentence.endsWith('.') ? sentence : sentence + '.';
-                if (index > 0 && index % 2 === 0) {
-                  return acc + '\n\n' + sentenceWithPeriod;
-                }
-                return acc + (index > 0 ? ' ' : '') + sentenceWithPeriod;
-              }, '')}
-            </p>
-            {(displayRestaurant.website || displayRestaurant.michelin_award || displayRestaurant.nyttop100_rank) && (
-              <div className="restaurant-week-buttons">
-                {displayRestaurant.website && displayRestaurant.website.trim() !== '' && (
-                  <a
-                    href={displayRestaurant.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="see-menu-btn"
-                  >
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="10"/>
-                      <line x1="2" y1="12" x2="22" y2="12"/>
-                      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-                    </svg>
-                    <span className="arrow">↗</span>
-                  </a>
-                )}
-                {displayRestaurant.michelin_award && (
-                  <a
-                    href={displayRestaurant.michelin_url || `https://guide.michelin.com/en/new-york-state/new-york/restaurant/${displayRestaurant.michelin_slug || displayRestaurant.slug}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="see-menu-btn"
-                  >
-                    <img src={asset(displayRestaurant.michelin_award === 'BIB_GOURMAND' ? '/bibgourmand.png' : '/MichelinStar.svg.png')} alt="Michelin" />
-                    <span className="arrow">↗</span>
-                  </a>
-                )}
-                {displayRestaurant.nyttop100_rank && (
-                  <a
-                    href={displayRestaurant.nyt_url || `https://www.nytimes.com/interactive/2025/dining/best-nyc-restaurants.html#${displayRestaurant.name.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-')}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="see-menu-btn"
-                  >
-                    <img src={asset("/nytimes.png")} alt="NYT" />
-                    <span className="arrow">↗</span>
-                  </a>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Contact & Links Accordion */}
-      <div className="contact-accordion">
-        <button
-          className="contact-accordion-header"
-          onClick={(e) => {
-            e.stopPropagation() // Prevent parent click handler from collapsing drawer
-            const newState = !isContactsOpen
-            setIsContactsOpen(newState)
-
-            // Expand drawer to 80vh when opening accordion on mobile
-            if (newState && onExpandDrawer) {
-              onExpandDrawer()
-            }
-
-            // Scroll expanded content into view after animation
-            if (newState && contactsContentRef.current) {
-              setTimeout(() => {
-                contactsContentRef.current?.scrollIntoView({
-                  behavior: 'smooth',
-                  block: 'nearest'
-                })
-              }, 350)
-            }
-          }}
-          aria-expanded={isContactsOpen}
-          aria-label="Toggle contact and links"
-        >
-          <span className="review-accordion-title">Socials</span>
-          <svg
-            className={`contact-accordion-chevron ${isContactsOpen ? 'open' : ''}`}
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <polyline points="6 9 12 15 18 9" />
-          </svg>
-        </button>
-
-        <div ref={contactsContentRef} className={`contact-accordion-content ${isContactsOpen ? 'open' : ''}`} onClick={(e) => e.stopPropagation()}>
-          <div className="restaurant-icons-row">
-        {displayRestaurant.website && (
-          <a href={displayRestaurant.website} target="_blank" rel="noopener noreferrer" className="icon-link" title="Website">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10"/>
-              <line x1="2" y1="12" x2="22" y2="12"/>
-              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-            </svg>
-          </a>
-        )}
-        {displayRestaurant.instagram_url && (
-          <a href={displayRestaurant.instagram_url} target="_blank" rel="noopener noreferrer" className="icon-link" title="Instagram">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
-            </svg>
-          </a>
-        )}
-        {displayRestaurant.facebook_url && (
-          <a href={displayRestaurant.facebook_url} target="_blank" rel="noopener noreferrer" className="icon-link" title="Facebook">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
-            </svg>
-          </a>
-        )}
-        {displayRestaurant.telephone && (
-          <a href={`tel:${displayRestaurant.telephone}`} className="icon-link" title="Call">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-            </svg>
-          </a>
-        )}
-        {displayRestaurant.yelp_url && (
-          <a href={displayRestaurant.yelp_url} target="_blank" rel="noopener noreferrer" className="icon-link icon-yelp" title="Yelp">
-            <img src={asset("/yelp.png")} alt="Yelp" style={{ width: '14px', height: '14px', objectFit: 'contain' }} />
-          </a>
-        )}
-        {displayRestaurant.latitude && displayRestaurant.longitude && (
-          <a
-            href={`https://www.google.com/maps/search/?api=1&query=${displayRestaurant.latitude},${displayRestaurant.longitude}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="icon-link"
-            title="Google Maps"
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-              <circle cx="12" cy="10" r="3"/>
-            </svg>
-          </a>
-        )}
-          </div>
-        </div>
-      </div>
-        </>
-      )}
-    </div>
-  )
-} 
+    </Card>
+    </TooltipProvider>
+  );
+}

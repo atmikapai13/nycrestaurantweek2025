@@ -130,10 +130,6 @@
   max-width: 100%;
   padding: 8px 12px;
   border-radius: 16px;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 1.4;
   word-wrap: break-word;
   overflow-wrap: anywhere;
   white-space: pre-wrap;
@@ -146,7 +142,7 @@
   border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: none;
 
-  color: #333;
+  color: var(--color-ink);
 }
 
 .chat-message.assistant .message-bubble {
@@ -165,7 +161,7 @@
 .user-bubble {
   display: block !important;
   background: rgba(36, 36, 36, 0.7) !important;
-  color: #f5f5f5 !important;
+  color: var(--color-grey-lightest) !important;
   width: 90%;
 }
 
@@ -195,20 +191,7 @@
 /* Bold words inside an italic example (e.g. the quick-start "For example: *I'm in **Soho**…*")
    are the parts users can swap out, so they're highlighted in Remi pink */
 .message-content em strong {
-  color: #ef4893;
-}
-
-/* Welcome greeting - larger font for visual hierarchy */
-.welcome-greeting {
-  font-size: 18px;
-  font-weight: 700;
-  display: block;
-}
-
-@media (max-width: 768px) {
-  .welcome-greeting {
-    font-size: 16px;
-  }
+  color: var(--color-pink);
 }
 
 /* Restaurant card message - avatar outside the card */
@@ -267,43 +250,6 @@
   object-fit: cover;
 }
 
-.restaurant-card-wrapper {
-  flex: 1;
-  min-width: 0;
-}
-
-.restaurant-card-wrapper .restaurant-card {
-  width: 85%;
-  margin: 0;
-  border-radius: 16px;
-}
-
-.restaurant-card-wrapper .restaurant-card .restaurant-name {
-  font-size: 14px;
-}
-
-.restaurant-card-wrapper .restaurant-card .restaurant-tags {
-  flex-wrap: wrap;
-  gap: 3px;
-  margin-bottom: 3px;
-}
-
-.restaurant-card-wrapper .restaurant-card .restaurant-tags .tag {
-  font-size: 9px;
-  padding: 2px 6px;
-}
-
-.restaurant-card-wrapper .restaurant-card .restaurant-description {
-  font-size: 10px;
-  line-height: 1.3;
-  margin-bottom: 3px;
-}
-
-/* Hide close button in chat cards, but keep heart visible */
-.restaurant-card-wrapper .restaurant-card .restaurant-card-close {
-  display: none;
-}
-
 /* Restaurant card content wrapper - for card + suggestions */
 .restaurant-card-content {
   display: flex;
@@ -311,81 +257,6 @@
   gap: 8px;
   flex: 1;
   min-width: 0;
-}
-
-/* Restaurant Suggestions - Outside the card */
-.restaurant-suggestions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
-
-  width: 85%;
-}
-
-.restaurant-suggestion-btn {
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(3px) saturate(100%);
-  border: 1px solid rgba(255, 3, 217, 0.3);
-  -webkit-backdrop-filter: blur(3px) saturate(100%);
-  border-radius: 16px;
-  padding: 4px 8px;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 8px;
-  font-weight: 400;
-  font-style: italic;
-  color: #333;
-  text-align: left;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: none;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.restaurant-suggestion-btn .suggestion-icon {
-  width: 12px;
-  height: 12px;
-  object-fit: contain;
-  flex-shrink: 0;
-}
-
-.restaurant-suggestion-btn:hover {
-  background: rgba(242, 61, 150, 0.6);
-  color: #fff;
-  transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.restaurant-suggestion-btn:active {
-  transform: translateY(0);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-}
-
-/* Typing indicator inside bubble */
-.typing-content {
-  display: flex;
-  gap: 4px;
-  align-items: center;
-  padding: 8px 0;
-}
-
-.typing-content span {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #999;
-  opacity: 0.7;
-  animation: typing 1.4s infinite;
-}
-
-.typing-content span:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.typing-content span:nth-child(3) {
-  animation-delay: 0.4s;
 }
 
 @keyframes typing {
@@ -413,7 +284,7 @@
 
 .remi-status-glyph {
   display: inline-block;
-  color: #f63996;
+  color: var(--color-pink);
   animation: remi-status-spin 2.4s linear infinite;
 }
 
@@ -421,7 +292,7 @@
   font-style: italic;
   /* Italic glyphs overhang the box; padding keeps the gradient clip from cutting the last letter */
   padding-right: 2px;
-  background: linear-gradient(90deg, #8a8a8a 0%, #8a8a8a 40%, #2b2b2b 50%, #8a8a8a 60%, #8a8a8a 100%);
+  background: linear-gradient(90deg, var(--color-grey) 0%, var(--color-grey) 40%, var(--color-ink) 50%, var(--color-grey) 60%, var(--color-grey) 100%);
   background-size: 200% 100%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -450,7 +321,7 @@
     animation: none;
   }
   .remi-status-label {
-    color: #8a8a8a;
+    color: var(--color-grey);
   }
 }
 
@@ -470,16 +341,8 @@
   gap: 8px;
   font-size: 11px;
   font-style: italic;
-  color: #666;
+  color: var(--color-grey-dark);
   animation: fadeIn 0.3s ease;
-}
-
-.interlined-tool-status {
-  margin: 4px 0;
-  padding: 4px 8px;
-  
-  border-radius: 8px;
-  width: auto;
 }
 
 .isochrone-toggle-button {
@@ -490,7 +353,7 @@
   background: rgba(255, 105, 180, 0.1);
   border: 1px solid rgba(255, 105, 180, 0.3);
   border-radius: 12px;
-  color: #ff69b4;
+  color: var(--color-pink-light);
   font-size: 10px;
   font-weight: 600;
   cursor: pointer;
@@ -508,25 +371,8 @@
   transform: translateY(0);
 }
 
-.tool-spinner {
-  width: 12px;
-  height: 12px;
-  border: 2px solid rgba(255, 105, 180, 0.3);
-  border-top-color: #ff69b4;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  flex-shrink: 0;
-}
-
-.tool-done {
-  color: #4CAF50;
-  font-weight: bold;
-  font-size: 12px;
-  flex-shrink: 0;
-}
-
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to{ transform: rotate(360deg); }
 }
 
 /* Intro Suggestions Wrapper */
@@ -550,49 +396,6 @@
 }
 
 /* Vertical variant for meta-learning suggestions */
-.suggestions-container-vertical {
-  flex-direction: column !important;
-  align-items: stretch;
-}
-
-.suggestions-container-vertical .suggestion-pill {
-  white-space: normal;
-  
-}
-
-.suggestion-pill {
-  background: rgba(255, 197, 218, 0.40);;
-  backdrop-filter: blur(3px) saturate(100%);
-  -webkit-backdrop-filter: blur(3px) saturate(100%);
-  border: 1px solid rgba(255, 3, 217, 0.3);
-  border-radius: 20px;
-  padding: 4px 10px;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 11px;
-  font-weight: 400;
-  font-style: normal;
-  line-height: 1.4;
-  color: #333;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: none;
-  white-space: nowrap;
-}
-
-.suggestion-pill:hover {
-  background: rgba(242, 61, 150, 0.7);
-  color: #fff;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(242, 61, 150, 0.3);
-  border-color: rgba(242, 61, 150, 0.6);
-}
-
-.suggestion-pill:active {
-  transform: translateY(0);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-}
-
 .try-it-button {
   display: inline-block;
   margin-top: 2px;
@@ -602,17 +405,14 @@
   border: 1px solid rgba(255, 3, 217, 0.3);
   border-radius: 20px;
   padding: 4px 12px;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 11px;
-  font-weight: 500;
-  color: #333;
+  color: var(--color-ink);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .try-it-button:hover {
   background: rgba(242, 61, 150, 0.7);
-  color: #fff;
+  color: var(--color-white);
   transform: translateY(-1px);
   border-color: rgba(242, 61, 150, 0.6);
 }
@@ -667,7 +467,7 @@
 }
 
 .chat-input::placeholder {
-  color: #999;
+  color: var(--color-grey);
 }
 
 .chat-send-button {
@@ -675,8 +475,8 @@
   height: 32px;
   border-radius: 50%;
   border: none;
-  background: linear-gradient(135deg, #6e6e6e 0%, #404040 100%);
-  color: #fff;
+  background: linear-gradient(135deg, var(--color-grey-dark) 0%, var(--color-grey-dark) 100%);
+  color: var(--color-white);
   font-size: 14px;
   cursor: pointer;
   display: flex;
@@ -703,7 +503,7 @@
   border-radius: 50%;
   border: none;
   background: transparent;
-  color: #666;
+  color: var(--color-grey-dark);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -713,7 +513,7 @@
 }
 
 .chat-mic-button:hover:not(:disabled) {
-  color: #f63996;
+  color: var(--color-pink);
   background: rgba(246, 57, 150, 0.1);
 }
 
@@ -723,7 +523,7 @@
 }
 
 .chat-mic-button.listening {
-  color: #f63996;
+  color: var(--color-pink);
   background: rgba(246, 57, 150, 0.15);
   animation: pulse-mic 1.5s ease-in-out infinite;
 }
@@ -740,7 +540,7 @@
 }
 
 .chat-mic-button.transcribing {
-  color: #B3A0F0;
+  color: var(--color-isochrone);
   background: rgba(179, 160, 240, 0.15);
 }
 
@@ -749,8 +549,8 @@
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from{ transform: rotate(0deg); }
+  to{ transform: rotate(360deg); }
 }
 
 /* Drag Handle - Mobile Only */
@@ -882,9 +682,7 @@
   }
 
   .drawer-collapsed-text {
-    font-size: 14px;
-    font-weight: 600;
-    color: #4B5563;
+    color: var(--color-grey-dark);
   }
 
   .drawer-30 .chat-messages {
@@ -899,16 +697,7 @@
     max-height: calc(80vh - 110px);
   }
 
-  .message-bubble {
-    font-size: 13px;
-    line-height: 1.4;
-  }
-
-  .suggestion-pill {
-    font-size: 12px;
-  }
-
-  .chat-input-container {
+    .chat-input-container {
     padding: 6px 10px;
     width: auto;
     margin: 0 8px;
@@ -964,106 +753,10 @@
     min-height: 70px; /* Ensure bubble contains the 50px avatar positioned at top: 10px */
   }
 
-  /* Restaurant card full width on mobile */
-  .restaurant-card-wrapper {
-    width: 100%;
-  }
-
-  .restaurant-card-wrapper .restaurant-card {
-    width: 100%;
-  }
-
-  /* Adjust restaurant suggestion button for mobile */
-  .restaurant-suggestion-btn {
-    font-size: 10px;
-    padding: 6px 10px;
-  }
-
-  .restaurant-suggestion-btn .suggestion-icon {
-    width: 14px;
-    height: 14px;
-  }
-
-  .restaurant-suggestions {
-    width: 100%;
-  }
-
   /* Disable hover/active transform on restaurant cards on mobile */
-  .restaurant-cards-container .restaurant-card-message:hover{
+  .restaurant-cards-container .restaurant-card-message:hover {
     transform: none;
   }
-}
-
-/* Confirmation Dialog */
-.confirmation-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10000;
-  backdrop-filter: blur(4px);
-}
-
-.confirmation-dialog {
-  background: white;
-  border-radius: 12px;
-  padding: 24px;
-  max-width: 400px;
-  width: 90%;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-}
-
-.confirmation-dialog h3 {
-  margin: 0 0 12px 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: #333;
-}
-
-.confirmation-dialog p {
-  margin: 0 0 20px 0;
-  font-size: 14px;
-  line-height: 1.5;
-  color: #666;
-}
-
-.confirmation-actions {
-  display: flex;
-  gap: 12px;
-  justify-content: flex-end;
-}
-
-.confirmation-actions button {
-  padding: 10px 20px;
-  border-radius: 8px;
-  border: none;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-secondary {
-  background: #f0f0f0;
-  color: #333;
-}
-
-.btn-secondary:hover {
-  background: #e0e0e0;
-}
-
-.btn-primary {
-  background: #FF69B4;
-  color: white;
-}
-
-.btn-primary:hover {
-  background: #ff1493;
 }
 
 /* Short mobile screens - Hide collapsed header to prevent cutoff */

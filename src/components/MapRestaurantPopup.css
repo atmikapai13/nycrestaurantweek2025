@@ -1,0 +1,16 @@
+/* The card brings its own surface; strip Mapbox's popup box and arrow. */
+.restaurant-popup .mapboxgl-popup-content {
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.restaurant-popup .mapboxgl-popup-tip {
+  display: none;
+}
+
+/* Above the restaurant markers and character portraits */
+.restaurant-popup {
+  z-index: 5;
+}

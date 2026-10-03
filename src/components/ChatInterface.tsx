@@ -18,7 +18,6 @@ import {
   type GeoJSONGeometry,
 } from "../contexts/MapContext";
 import { IsochroneMessage } from "./IsochroneMessage";
-import RestaurantCard from "./RestaurantCard";
 import RemiStatus, { remiStage } from "./RemiStatus";
 import RestaurantCarousel from "./RestaurantCarousel";
 import type { UIMessagePart } from "ai";
@@ -30,11 +29,13 @@ import {
   isToolInvocationPart,
   hasDynamicToolOutput,
   extractToolResult,
-  type SqlQueryResult,
   type IsolineResult,
-  type SearchDocumentsResult,
 } from "../types/ai-message";
 import "./ChatInterface.css";
+import { colors } from "@/styles/tokens";
+import { Button } from "@/components/ui/button";
+import { useIsDesktop } from "../hooks/useIsDesktop";
+import RemiPickList from "./RemiPickList";
 
 // Google Analytics gtag declaration
 declare function gtag(command: 'event', eventName: string, eventParams?: Record<string, unknown>): void;
@@ -63,8 +64,8 @@ const CHARACTER_IMAGES = [
 
 // Isochrone layer styling
 const ISOCHRONE_COLORS = {
-  fill: "#B3A0F0",   // Electric purple
-  stroke: "#31004a", // Deeper purple for outline
+  fill: colors.isochrone,   // Electric purple
+  stroke: colors.isochroneOutline, // Deeper purple for outline
 };
 
 interface Message {
@@ -79,125 +80,8 @@ export interface ChatInterfaceHandle {
   addRestaurantCard: (restaurant: Restaurant) => void;
 }
 
-/**
- * Computes aggregate metadata from restaurant array for intelligent summaries
- * Performance: O(n) single pass, ~5-10ms for 628 restaurants
- * NOTE: Currently unused but kept for potential future use
- */
-// @ts-expect-error - Unused function kept for potential future use
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function computeResultMetadata(restaurants: Restaurant[]) {
-  if (restaurants.length === 0) {
-    return {
-      total_count: 0,
-      message: "No restaurants match your current filters.",
-    };
-  }
-
-  const metadata: Record<string, any> = {
-    total_count: restaurants.length,
-    cuisine_breakdown: {} as Record<string, number>,
-    top_cuisines: [] as string[],
-    borough_breakdown: {} as Record<string, number>,
-    top_neighborhoods: [] as string[],
-    price_breakdown: { $: 0, $$: 0, $$$: 0, $$$$: 0 },
-    avg_rating: 0,
-    rating_range: [5, 0] as [number, number],
-    michelin_count: 0,
-    michelin_types: [] as string[],
-    nyt_count: 0,
-    collections_present: [] as string[],
-    has_awards: false,
-  };
-
-  let totalRating = 0;
-  let ratingCount = 0;
-  const neighborhoodCounts: Record<string, number> = {};
-  const collectionSet = new Set<string>();
-  const michelinSet = new Set<string>();
-
-  // Single pass through restaurants
-  restaurants.forEach((r) => {
-    // Cuisine
-    if (r.cuisine) {
-      metadata.cuisine_breakdown[r.cuisine] =
-        (metadata.cuisine_breakdown[r.cuisine] || 0) + 1;
-    }
-
-    // Borough
-    if (r.borough) {
-      metadata.borough_breakdown[r.borough] =
-        (metadata.borough_breakdown[r.borough] || 0) + 1;
-    }
-
-    // Neighborhood
-    if (r.neighborhood) {
-      neighborhoodCounts[r.neighborhood] =
-        (neighborhoodCounts[r.neighborhood] || 0) + 1;
-    }
-
-    // Price
-    if (r.price && r.price in metadata.price_breakdown) {
-      metadata.price_breakdown[
-        r.price as keyof typeof metadata.price_breakdown
-      ]++;
-    }
-
-    // Rating
-    if (r.yelp_rating && r.yelp_rating > 0) {
-      totalRating += r.yelp_rating;
-      ratingCount++;
-      metadata.rating_range[0] = Math.min(
-        metadata.rating_range[0],
-        r.yelp_rating
-      );
-      metadata.rating_range[1] = Math.max(
-        metadata.rating_range[1],
-        r.yelp_rating
-      );
-    }
-
-    // Awards
-    if (r.michelin_award) {
-      metadata.michelin_count++;
-      michelinSet.add(r.michelin_award);
-      metadata.has_awards = true;
-    }
-
-    if (r.nyttop100_rank) {
-      metadata.nyt_count++;
-      metadata.has_awards = true;
-    }
-
-    // Collections
-    r.collections?.forEach((c) => collectionSet.add(c));
-  });
-
-  // Compute derived fields
-  metadata.avg_rating =
-    ratingCount > 0 ? Math.round((totalRating / ratingCount) * 10) / 10 : 0;
-
-  // Top 3 cuisines
-  metadata.top_cuisines = Object.entries(metadata.cuisine_breakdown)
-    .sort(([, a], [, b]) => (b as number) - (a as number))
-    .slice(0, 3)
-    .map(([cuisine]) => cuisine);
-
-  // Top 3 neighborhoods
-  metadata.top_neighborhoods = Object.entries(neighborhoodCounts)
-    .sort(([, a], [, b]) => b - a)
-    .slice(0, 3)
-    .map(([hood]) => hood);
-
-  metadata.michelin_types = Array.from(michelinSet);
-  metadata.collections_present = Array.from(collectionSet);
-
-  return metadata;
-}
-
 interface ChatInterfaceProps {
   onRestaurantSelect: (restaurant: Restaurant) => void;
-  onMapFocus?: (restaurantIds: string[]) => void;
   onToggleFavorite?: (restaurantName: string) => void;
 }
 
@@ -208,47 +92,49 @@ const CHATBOT_DOWN_MESSAGE =
   "Oof — my kitchen is temporarily closed! 🍳 My sous-chef (the AI behind the scenes) has stepped out, so I can't whisk up recommendations right now. We're working to get NYC Eats back up and running soon.<br><br>In the meantime, you can still explore the map, browse restaurant markers, and favorite your spots. Merci for your patience — please check back shortly!";
 
 const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
-  ({ onRestaurantSelect, onMapFocus, onToggleFavorite }, ref) => {
+  ({ onRestaurantSelect, onToggleFavorite }, ref) => {
     // Use MapContext for data and state management
     const {
-      allRestaurants,
       favorites,
       addLayers,
-      isochroneRegionSlugs,
-      clearAllLayers,
       filterPoolSlugs,
       setRestaurantWeekActive,
       addGeocodedMarker,
       clearGeocodedMarkers,
-      setRecommendedSlugs,
+      setRecommendedPicks,
+      recommendedPicks,
+      allRestaurants,
+      setSelectedRestaurant,
       userLocation,
     } = useMap();
+    // Desktop: Remi's picks are a list of names here and the card opens on the map
+    const isDesktop = useIsDesktop();
 
     // Random welcome message selection
     const welcomeMessages = [
-      '<span class="welcome-greeting">I\'m Remi!</span>I\'ll help you find restaurants in NYC.',
+      '<span class="block text-subheading">Hey, I\'m Remi!</span><br>I\'m here in NYC for the winter, scouting the latest epicurean finds. Let\'s help you find the finest spots by:',
     ];
 
     // Quick-start suggestions - clicking these triggers Remi to ask a guiding question
     const suggestions = [
       {
-        label: "By Area",
+        label: "Area",
         type: "guided" as const,
         remiResponse: "<strong>How far are you willing to travel and by what mode of transit?</strong> I can recommend restaurants within your vicinity. \n\nFor example: *I'm in <strong>Soho</strong>. Find <strong>happy hour</strong> spots within <strong>10 min walk</strong>.*",
         example: "I'm in Soho. Find happy hour spots within 10 min walk.",
       },
       {
-        label: "By Midpoint",
+        label: "Midpoint",
         type: "guided" as const,
         remiResponse:
           "<strong>Meeting up with a friend?</strong> Tell me where you both are, and I'll find restaurants in between! \n\nFor example: *I'm at <strong>AMC Times Square</strong>, and my friend is by <strong>One Manhattan West</strong>. We can travel <strong>15 minutes by subway</strong>. Find <strong>happy hour, vegan</strong> spots between us, Remi.*",
-        example: "I'm by AMC Times Square, and my friend is at One Manhattan West. We can travel 15 minutes by subway. Find lively, happy hour spots between us, Remi.",
+        example: "I'm by AMC Times Square, and my friend is at One Manhattan West. We can travel 15 mins by subway. Find lively happy hour spots between us, Remi.",
       },
       {
-        label: "By Vibes",
+        label: "Vibes",
         type: "guided" as const,
-        remiResponse: "<strong>Going for a vibe?</strong> I can find:\n\n• Happy hour spots\n• Cozy date night places\n• Vegan-friendly Restaurant Week deals\n\n*e.g. Find me cozy date night spots, Remi.*",
-        example: "Find me cozy date night spots, Remi.",
+        remiResponse: "<strong>Going for a vibe?</strong> I can suggest:\n• Happy hour spots\n• Cozy date night places\n• Vegan-friendly deals",
+        example: "Find me cozy date night spots around the city, Remi. My gf is vegan. A candleight dinner for our anniversary, perhaps?",
       },
     ];
 
@@ -320,7 +206,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       "Anything in Brooklyn?"
     ];
 
-
     // Initialize with welcome message
     const [initialMessage] = useState(() => {
       // Select welcome message once to ensure consistency
@@ -346,7 +231,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
     const API_ENDPOINT = API_CONFIG.CHAT_URL;
 
     useEffect(() => {
-      
+
     }, []);
 
     // Store filterPoolSlugs in a ref so transport can access current value
@@ -378,8 +263,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                 userLocation: userLocationRef.current,
               },
             };
-
-            
 
             return fetch(url, {
               ...options,
@@ -449,14 +332,14 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
     // Manually seed messages on mount if empty
     useEffect(() => {
       if (aiMessages.length === 0) {
-        
+
         setMessages([initialMessage]);
       }
     }, []); // Only run once on mount
 
     // Debug: Log messages
     useEffect(() => {
-      
+
     }, [aiMessages]);
 
     const [customMessages, setCustomMessages] = useState<Message[]>([]); // For restaurant cards
@@ -495,9 +378,19 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
     const isLoading = status === "submitted" || status === "streaming";
 
+    // Desktop: once Remi finishes answering, open his first pick's card on the map
+    const autoOpenedPicks = useRef("");
+    useEffect(() => {
+      if (!isDesktop || isLoading || recommendedPicks.length === 0) return;
+      const key = recommendedPicks.map((p) => p.slug).join(",");
+      if (autoOpenedPicks.current === key) return;
+      autoOpenedPicks.current = key;
+      const first = recommendedPicks[0];
+      setSelectedRestaurant(allRestaurants.find((r) => r.slug === first.slug) ?? first);
+    }, [isDesktop, isLoading, recommendedPicks, allRestaurants, setSelectedRestaurant]);
+
     // Process tool results from AI SDK messages
     const processToolResults = () => {
-      
 
       // Find NEW (unprocessed) isoline/isochrone parts from the LAST message only
       // This prevents processing the same parts multiple times and creating duplicate layers
@@ -508,7 +401,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       const allIsolineParts = (lastMessage.parts || []).filter(
         (p): p is DynamicToolPart =>
           isDynamicToolPart(p) &&
-          (p.toolName === "get_isochrone" || p.toolName === "get_isoline")
+          p.toolName === "get_isoline"
       );
 
       // Find UNPROCESSED isoline parts with results
@@ -518,8 +411,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
           !processedToolCallIds.current.has(p.toolCallId)
       );
 
-      
-
       // If there are multiple isoline CALLS in the message, wait for ALL to complete
       let isolineParts: DynamicToolPart[];
 
@@ -527,8 +418,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
         const completedCount = allIsolineParts.filter((p) =>
           hasDynamicToolOutput(p)
         ).length;
-
-        
 
         // Don't process until ALL isoline calls are complete
         if (completedCount < allIsolineParts.length) {
@@ -576,69 +465,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
             const result = extractToolResult(part);
 
             try {
-              // Handle SQL results
-              if (part.toolName === "execute_sql") {
-                processedToolCallIds.current.add(part.toolCallId);
-                const sqlResult = result as SqlQueryResult;
-                if (sqlResult.rows) {
-                  const potentialRestaurants = sqlResult.rows.filter(
-                    (row) => row.name && (row.cuisine || row.neighborhood)
-                  );
-
-                  if (potentialRestaurants.length > 0) {
-                    const slugs = potentialRestaurants
-                      .map((r) => r.slug)
-                      .filter((slug): slug is string => Boolean(slug));
-                    potentialRestaurants.forEach((r) => {
-                      // Add restaurant card - cast is safe as SQL should return all fields
-                      addRestaurantCard(r as unknown as Restaurant);
-                    });
-                    if (onMapFocus && slugs.length > 0) {
-                      onMapFocus(slugs);
-                    }
-                  }
-                }
-                // Note: geojson from displayRestaurants is ignored -
-                // isochrones are handled by get_isoline tool via MapContext
-              }
-
-              // Handle search_documents results - try to find matching restaurants to highlight
-              if (part.toolName === "search_documents") {
-                processedToolCallIds.current.add(part.toolCallId);
-                const searchResult = result as SearchDocumentsResult;
-                if (searchResult.chunks && Array.isArray(searchResult.chunks)) {
-                  // Filter pool: if isochrone is active, only search for names within that area
-                  // to prevent zooming out to other boroughs for common names
-                  const searchPool =
-                    isochroneRegionSlugs && isochroneRegionSlugs.length > 0
-                      ? allRestaurants.filter((r) =>
-                          isochroneRegionSlugs.includes(r.slug)
-                        )
-                      : allRestaurants;
-
-                  const foundSlugs: string[] = [];
-                  searchResult.chunks.forEach((chunk) => {
-                    const text = (chunk.text || "").toLowerCase();
-                    searchPool.forEach((r) => {
-                      const name = r.name.toLowerCase();
-                      // Strict matching: only match names > 3 chars to avoid false positives with words like "The", "In", etc.
-                      if (name.length > 3 && text.includes(name)) {
-                        if (!foundSlugs.includes(r.slug)) {
-                          foundSlugs.push(r.slug);
-                        }
-                      }
-                    });
-                  });
-
-                  if (foundSlugs.length > 0) {
-
-                    if (onMapFocus) {
-                      onMapFocus(foundSlugs);
-                    }
-                  }
-                }
-              }
-
               // Handle geocode results - drop a character pin at the geocoded location
               if (part.toolName === "geocode") {
                 processedToolCallIds.current.add(part.toolCallId);
@@ -678,7 +504,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
           }
 
           // Handle local tools (type: "tool-{toolName}" format)
-          // semantic_search_restaurants - highlight results as yellow markers on map
+          // semantic_search_restaurants - turns on the Restaurant Week filter if the query was about it
           if (
             part.type === "tool-semantic_search_restaurants" &&
             (part as any).state === "output-available" &&
@@ -700,8 +526,8 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
             !processedToolCallIds.current.has((part as any).toolCallId)
           ) {
             processedToolCallIds.current.add((part as any).toolCallId);
-            const restaurants: Array<{ slug: string }> = (part as any).output?.restaurants ?? [];
-            if (restaurants.length) setRecommendedSlugs(restaurants.map((r) => r.slug));
+            const restaurants: Restaurant[] = (part as any).output?.restaurants ?? [];
+            if (restaurants.length) setRecommendedPicks(restaurants);
           }
 
         });
@@ -709,24 +535,21 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
       // 2. Handle Isochrone/Isoline results with "Between Us" support
       if (isolineParts.length > 0) {
-        
 
         // Find newest isoline part that hasn't been processed yet
         const newIsolineParts = isolineParts.filter(
           (p) => !processedToolCallIds.current.has(p.toolCallId)
         );
 
-        
-
         if (newIsolineParts.length > 0) {
           // Mark all as processed
           newIsolineParts.forEach((p) => {
-            
+
             processedToolCallIds.current.add(p.toolCallId);
           });
 
           if (isolineParts.length > 1) {
-            
+
             const messageId = lastMessage.id;
             const layers: IsochroneLayer[] = isolineParts
               .filter(
@@ -802,7 +625,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
                 console.log("🗺️ Using MapContext to add layers");
                 addLayers(layers, messageId);
-                // clearGeocodedMarkers(); // Keep center markers visible after isochrones render
 
                 console.log(
                   `📌 Added ${layers.length} layers for message ${messageId}`
@@ -814,7 +636,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                   "🗺️ Using MapContext to add layers (no intersection)"
                 );
                 addLayers(layers, messageId);
-                // clearGeocodedMarkers(); // Keep center markers visible after isochrones render
 
                 console.log(
                   `📌 Added ${layers.length} layers for message ${messageId}`
@@ -864,7 +685,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
               console.log("🗺️ Using MapContext to add single layer");
               addLayers([singleLayer], messageId);
-              // clearGeocodedMarkers(); // Keep center markers visible after isochrone renders
 
               console.log(
                 `📌 Added single isochrone layer ${layerId} for message ${messageId}`
@@ -1044,11 +864,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       });
     };
 
-    // Function to remove a restaurant card by index
-    const removeRestaurantCard = (index: number) => {
-      setCustomMessages((prev) => prev.filter((_, i) => i !== index));
-    };
-
     useImperativeHandle(ref, () => ({
       addRestaurantCard,
     }));
@@ -1069,13 +884,13 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       // Markdown links: [text](url) → <a href="url">text</a>
       result = result.replace(
         /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,
-        '<a href="$2" target="_blank" rel="noopener noreferrer" style="color: #FF69B4; text-decoration: underline;">$1</a>'
+        '<a href="$2" target="_blank" rel="noopener noreferrer" style="color: var(--color-pink-light); text-decoration: underline;">$1</a>'
       );
 
       // URLs with protocol (but not already inside href attributes)
       result = result.replace(
         /(?<!href=")(https?:\/\/[^\s<>"]+)/g,
-        '<a href="$1" target="_blank" rel="noopener noreferrer" style="color: #FF69B4; text-decoration: underline;">$1</a>'
+        '<a href="$1" target="_blank" rel="noopener noreferrer" style="color: var(--color-pink-light); text-decoration: underline;">$1</a>'
       );
 
       // URLs without protocol
@@ -1088,7 +903,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
           }
           return match.replace(
             url,
-            `<a href="https://${url}" target="_blank" rel="noopener noreferrer" style="color: #FF69B4; text-decoration: underline;">${url}</a>`
+            `<a href="https://${url}" target="_blank" rel="noopener noreferrer" style="color: var(--color-pink-light); text-decoration: underline;">${url}</a>`
           );
         }
       );
@@ -1359,7 +1174,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       }
     };
 
-
     // Combine AI messages with custom messages (restaurant cards)
     // Simple approach: AI messages first, then restaurant cards at the end
     const allMessages = useMemo(() => {
@@ -1441,7 +1255,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
               alt="Remi"
               className="drawer-collapsed-logo"
             />
-            <span className="drawer-collapsed-text">Chat with Remi</span>
+            <span className="drawer-collapsed-text text-label font-semibold">Chat with Remi</span>
           </div>
 
           {/* Messages */}
@@ -1469,7 +1283,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                           width: "100%",
                         }}
                       >
-                        <div className="message-bubble">
+                        <div className="message-bubble font-sans text-body">
                           <div className="message-avatar-inside desktop-only">
                             <img src={asset("/remi.png")} alt="remi" />
                           </div>
@@ -1523,7 +1337,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                         {tryItExample && (
                                           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                                             <button
-                                              className="try-it-button"
+                                              className="try-it-button text-caption font-medium"
                                               onClick={() => handleSend(tryItExample)}
                                             >
                                               Test it↩
@@ -1538,10 +1352,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                   ) {
                                     // Progress is shown by the single RemiStatus line, not per tool.
                                     return null;
-                                  } else if (
-                                    part.type === "tool-displayRestaurants" ||
-                                    part.type === "tool-lookup_restaurant"
-                                  ) {
+                                  } else if (part.type === "tool-displayRestaurants") {
                                     // Generative UI: Render restaurant cards
                                     switch (part.state) {
                                       case "input-available":
@@ -1559,13 +1370,15 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                         if (displayRestaurantsPool.length === 0) {
                                           if (!part.output?.error) {
                                             console.log(
-                                              `[ChatInterface] No restaurants found:`,
-                                              part.type === "tool-lookup_restaurant"
-                                                ? `lookup for "${part.output?.restaurant_name || 'unknown'}"`
-                                                : `search for "${part.output?.query || 'unknown'}"`
+                                              `[ChatInterface] No restaurants found: search for "${part.output?.query || 'unknown'}"`
                                             );
                                           }
                                           return null;
+                                        }
+
+                                        // Desktop: names only; the cards open on the map
+                                        if (isDesktop) {
+                                          return <RemiPickList key={pIdx} picks={displayRestaurantsPool} />;
                                         }
 
                                         return (
@@ -1623,7 +1436,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                 }}
                               />
                             ) : (
-                              <div className="message-content" style={{ color: "#888", fontStyle: "italic" }}>
+                              <div className="message-content" style={{ color: colors.grey, fontStyle: "italic" }}>
                                 Hmm, let me try that again. Could you rephrase your question?
                               </div>
                             )}
@@ -1638,16 +1451,12 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                             msg.parts.some((p) => {
                               if (isDynamicToolPart(p)) {
                                 return (
-                                  (p.toolName === "get_isochrone" ||
-                                    p.toolName === "get_isoline") &&
+                                  p.toolName === "get_isoline" &&
                                   p.state === "output-available"
                                 );
                               }
                               if (isToolInvocationPart(p)) {
-                                return (
-                                  p.toolName === "get_isochrone" ||
-                                  p.toolName === "get_isoline"
-                                );
+                                return p.toolName === "get_isoline";
                               }
                               return false;
                             }) &&
@@ -1661,15 +1470,17 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                 <div className="suggestions-container">
                                   {suggestions.map(
                                     (suggestion, suggestionIdx) => (
-                                      <button
+                                      <Button
                                         key={suggestionIdx}
-                                        className="suggestion-pill"
+                                        variant="secondary"
+                                        size="pill"
+                                        className="border border-solid border-primary/40 font-sans font-normal shadow-none"
                                         onClick={() => {
                                           handleGuidedSuggestion(suggestion.remiResponse, suggestion.example);
                                         }}
                                       >
                                         {suggestion.label}
-                                      </button>
+                                      </Button>
                                     )
                                   )}
                                 </div>
@@ -1681,7 +1492,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                       </div>
                   ) : (
                     <div
-                      className="message-bubble user-bubble"
+                      className="message-bubble user-bubble font-sans text-body"
                       dangerouslySetInnerHTML={{
                         __html: linkifyText(msg.content),
                       }}
@@ -1710,7 +1521,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                       <RestaurantCarousel
                         restaurants={customRestaurants}
                         startFromLast={true}
-                        collapsible={false}
                         onRestaurantSelect={(restaurant) => {
                           if (onRestaurantSelect) {
                             onRestaurantSelect(restaurant);
@@ -1736,7 +1546,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
             {isLoading && !canMergeLoading && (
               <div className="chat-message assistant">
-                <div className="message-bubble">
+                <div className="message-bubble font-sans text-body">
                   <div className="message-avatar-inside desktop-only">
                     <img src={asset("/remi.png")} alt="remi" />
                   </div>

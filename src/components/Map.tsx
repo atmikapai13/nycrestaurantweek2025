@@ -1,11 +1,13 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "./Map.css";
 import type { Restaurant } from "../types/restaurant";
 import ChatInterface, { type ChatInterfaceHandle } from "./ChatInterface";
 import { MapLegend } from "./MapLegend";
-import { useMap, hasAnyAward, type IsochroneLayer, type GeocodedMarker } from "../contexts/MapContext";
+import MapRestaurantPopup, { POPUP_CARD_WIDTH } from "./MapRestaurantPopup";
+import { useIsDesktop } from "../hooks/useIsDesktop";
+import { useMap, hasAnyAward, type IsochroneLayer } from "../contexts/MapContext";
 import {
   addRestaurantLayers,
   CLICKABLE_RESTAURANT_LAYERS,
@@ -17,54 +19,6 @@ import {
 
 // Set your Mapbox access token
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
-
-// Cuisine → emoji mapping (Cooking Mama style)
-const CUISINE_EMOJI: Record<string, string> = {
-  'Italian': '🍝',
-  'Japanese / Sushi': '🍣',
-  'French': '🥐',
-  'Mexican': '🌮',
-  'Steakhouse': '🥩',
-  'Chinese': '🥡',
-  'Korean': '🍱',
-  'Indian': '🍛',
-  'Thai': '🥘',
-  'Seafood': '🦐',
-  'Mediterranean': '🥙',
-  'Greek': '🥙',
-  'American (New)': '🍔',
-  'American (Traditional)': '🍔',
-  'Pizza': '🍕',
-  'Vietnamese': '🥢',
-  'Asian Fusion': '🥢',
-  'Gastropub': '🍺',
-  'Soul Food / Southern': '🍗',
-  'Spanish': '🥘',
-  'Middle Eastern': '🧆',
-  'Caribbean': '🥥',
-  'Brazilian': '🥩',
-  'Turkish': '🧆',
-  'Belgian': '🧇',
-  'Eastern European': '🥟',
-  'Ukrainian': '🥟',
-  'Irish': '☘️',
-  'British': '🫖',
-  'Austrian': '🥨',
-  'African': '🍲',
-  'Cajun/Creole': '🦞',
-
-  'Pan-Asian': '🥢',
-  
-  
-  'Argentinian': '🥩',
-  
-  'Puerto Rican': '🍛',
-  'Barbecue': '🍖',
-  'Continental': '🍷',
-  'Eclectic': '🍴',
-};
-const FALLBACK_EMOJI = '🍽️';
-
 
 // Compare two GeoJSON polygons for equality
 const arePolygonsEqual = (
@@ -92,20 +46,17 @@ const arePolygonsEqual = (
 interface MapProps {
   onRestaurantSelect: (restaurant: Restaurant) => void;
   onToggleFavorite?: (restaurantName: string) => void;
-  onFilterChange: (filterType: string, values: string[]) => void;
-  onResetAll?: () => void;
-  mapResetRef?: React.MutableRefObject<(() => void) | null>;
 }
 
 export default function Map({
   onRestaurantSelect,
   onToggleFavorite,
-  onFilterChange,
-  onResetAll,
-  mapResetRef,
 }: MapProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
+  // The map once loaded, as state so the card popup renders when it's ready
+  const [loadedMap, setLoadedMap] = useState<mapboxgl.Map | null>(null);
+  const isDesktop = useIsDesktop();
   const chatInterfaceRef = useRef<ChatInterfaceHandle>(null);
   const restaurantsBySlug = useRef<globalThis.Map<string, Restaurant>>(new globalThis.Map()); // for layer clicks
   const restaurantLayersReady = useRef(false);
@@ -116,7 +67,6 @@ export default function Map({
 
   // Use MapContext for state and actions
   const {
-    allRestaurants,
     filteredRestaurants,
     favorites,
     favoritesActive,
@@ -126,13 +76,9 @@ export default function Map({
     selectedRestaurant,
     setSelectedRestaurant,
     restaurantWeekActive,
-    drawerHeight,
-    setDrawerHeight,
     geocodedMarkers,
     markerVisibilityMap,
-    clearGeocodedMarkers,
     recommendedSlugs,
-    setRecommendedSlugs,
     setUserLocation,
   } = useMap();
 
@@ -146,108 +92,6 @@ export default function Map({
   useEffect(() => {
     selectedRestaurantRef.current = selectedRestaurant;
   }, [selectedRestaurant]);
-
-  // Function to reset map state (isochrones and view)
-  const resetMapView = () => {
-    // Layer clearing is now handled by MapContext.clearAllLayers()
-    // Clear selected restaurant
-    setSelectedRestaurant(null);
-    // Clear recommended slugs
-    setRecommendedSlugs([]);
-    // Clear geocoded location pins
-    clearGeocodedMarkers();
-
-    // Detect mobile viewport
-    const isMobile = window.innerWidth <= 768;
-
-    // Use EXACT same values as initial map setup (lines 212-221)
-    const center = isMobile ? [-73.992, 40.727] : [-74.014, 40.737];
-    const zoom = isMobile ? 12.2 : 12.58; 
-    const pitch = 45;
-    const bearing = 0;
-
-    // Reset map to default view (mobile or desktop)
-    if (map.current) {
-      // Create a small bounding box around the center point
-      // This allows us to use fitBounds with padding (same as isochrone operations)
-      const lng = center[0];
-      const lat = center[1];
-      const offset = 0.05; // Small offset to create bounds (~5km)
-
-      const bounds = new mapboxgl.LngLatBounds(
-        [lng - offset, lat - offset], // Southwest
-        [lng + offset, lat + offset] // Northeast
-      );
-
-      // Use fitBounds with padding to account for chat interface
-      // This matches the padding used in isochrone operations (lines 367-372)
-      // Force exact zoom level to match initial map setup
-      
-      map.current.fitBounds(bounds, {
-        padding: isMobile
-          ? { top: 40, bottom: 350, left: 20, right: 20 } // Mobile: pad bottom for drawer (40vh ≈ 320px)
-          : { top: 100, bottom: 100, left: 480, right: 100 }, // Desktop: pad left for chat panel
-        pitch,
-        bearing,
-        maxZoom: zoom, // Force exact zoom level
-        minZoom: zoom, // Force exact zoom level
-        duration: 1500,
-      });
-    }
-  };
-
-  // Set the reset function to the ref so App.tsx can call it
-  useEffect(() => {
-    if (mapResetRef) {
-      mapResetRef.current = resetMapView;
-    }
-  }, [mapResetRef]);
-
-  // Implement onMapFocus handler for semantic search results
-  const handleMapFocus = (restaurantSlugs: string[]) => {
-    // Recommended restaurants are drawn as red markers
-    setRecommendedSlugs(restaurantSlugs);
-
-    // Filter allRestaurants to only include the semantic search results
-    const focusedRestaurants = allRestaurants.filter((r) =>
-      restaurantSlugs.includes(r.slug)
-    );
-
-    
-
-    // DON'T set isochrone region here - that should only be set by actual isochrone queries
-    // This function is called by RAG/semantic/filter results, which should highlight within existing isochrone
-
-    // Use onFilterChange to set a special "Semantic Search" filter
-    // This will trigger App.tsx to update filteredRestaurants
-    onFilterChange(
-      "Semantic Search Results",
-      focusedRestaurants.map((r) => r.slug)
-    );
-
-    // Fit map to bounds with responsive padding
-    if (map.current && focusedRestaurants.length > 0) {
-      const bounds = new mapboxgl.LngLatBounds();
-
-      focusedRestaurants.forEach((restaurant) => {
-        if (restaurant.longitude && restaurant.latitude) {
-          bounds.extend([restaurant.longitude, restaurant.latitude]);
-        }
-      });
-
-      const isMobileView = window.innerWidth <= 768;
-
-     
-
-      map.current.fitBounds(bounds, {
-        padding: isMobileView
-          ? { top: 80, bottom: 320, left: 20, right: 20 } // Mobile: pad bottom for drawer
-          : { top: 100, bottom: 100, left: 480, right: 100 }, // Desktop: pad left for chat panel
-        maxZoom: 16, // High zoom limit for neighborhood focus
-        duration: 1500,
-      });
-    }
-  };
 
   useEffect(() => {
     if (!mapContainer.current) return;
@@ -284,9 +128,9 @@ export default function Map({
 
     // Restaurant markers live in map layers (see restaurantLayers.ts)
     mapInstance.on("load", () => {
-      const emojis = [...new Set([...Object.values(CUISINE_EMOJI), FALLBACK_EMOJI])];
-      addRestaurantLayers(mapInstance, emojis, isMobile);
+      addRestaurantLayers(mapInstance, isMobile);
       restaurantLayersReady.current = true;
+      setLoadedMap(mapInstance);
       renderRestaurants.current();
       renderPlaces.current();
     });
@@ -301,7 +145,8 @@ export default function Map({
       } else {
         setSelectedRestaurant(restaurant);
         onRestaurantSelectRef.current(restaurant);
-        chatInterfaceRef.current?.addRestaurantCard(restaurant);
+        // Desktop shows the card on the map (MapRestaurantPopup); mobile adds it to the chat
+        if (window.innerWidth <= 768) chatInterfaceRef.current?.addRestaurantCard(restaurant);
       }
     });
     mapInstance.on("mouseenter", CLICKABLE_RESTAURANT_LAYERS, () => {
@@ -599,7 +444,6 @@ export default function Map({
           favorites,
           selectedSlug: selectedRestaurant?.slug ?? null,
           recommended: new Set(recommendedSlugs),
-          emojiFor: (r) => CUISINE_EMOJI[r.cuisine] || FALLBACK_EMOJI,
         })
       );
     };
@@ -621,8 +465,14 @@ export default function Map({
       const isInViewport = bounds.contains([longitude, latitude]);
 
       // Skip flyTo only if zoomed in past threshold AND restaurant is already visible
+      // (on desktop, with room for its card to the right and below)
       const skipZoomThreshold = isMobileView ? 13.5 : 15;
-      if (currentZoom > skipZoomThreshold && isInViewport) return;
+      const { x, y } = map.current.project([longitude, latitude]);
+      const container = map.current.getContainer();
+      const cardFits =
+        isMobileView ||
+        (x > 480 && x + POPUP_CARD_WIDTH + 40 < container.clientWidth && y > 100 && y + 380 < container.clientHeight);
+      if (currentZoom > skipZoomThreshold && isInViewport && cardFits) return;
 
       // Keep current zoom if already zoomed in, otherwise zoom to target (13 for mobile, 14.1 for desktop)
       const minZoom = isMobileView ? 13.8 : 14.1;
@@ -638,7 +488,7 @@ export default function Map({
         essential: true, // This animation is essential with respect to prefers-reduced-motion
         padding: isMobileView
           ? { top: 10, bottom: 450, left: 20, right: 20 } // Mobile: pad bottom for drawer
-          : { top: 100, bottom: 100, left: 480, right: 100 }, // Desktop: pad left for chat panel
+          : { top: 100, bottom: 380, left: 480, right: POPUP_CARD_WIDTH + 60 }, // Desktop: chat panel on the left, card to the right of and below the pin
       });
     }
   }, [selectedRestaurant]);
@@ -660,10 +510,11 @@ export default function Map({
       <ChatInterface
         ref={chatInterfaceRef}
         onRestaurantSelect={onRestaurantSelect}
-        onMapFocus={handleMapFocus}
-        onResetAll={onResetAll}
         onToggleFavorite={onToggleFavorite}
       />
+
+      {/* Desktop: the selected restaurant's card, next to its pin */}
+      {isDesktop && <MapRestaurantPopup map={loadedMap} onToggleFavorite={onToggleFavorite} />}
 
       {/* Map Legend */}
       <MapLegend />

@@ -108,9 +108,11 @@ interface MapContextType {
   addGeocodedMarker: (marker: Omit<GeocodedMarker, "id">) => void;
   clearGeocodedMarkers: () => void;
 
-  // Restaurants in Remi's latest answer (drawn as red markers)
+  // Restaurants in Remi's latest answer, in his order, with his match_reason (drawn as red
+  // markers; the map card steps through them)
+  recommendedPicks: Restaurant[];
+  setRecommendedPicks: React.Dispatch<React.SetStateAction<Restaurant[]>>;
   recommendedSlugs: string[];
-  setRecommendedSlugs: React.Dispatch<React.SetStateAction<string[]>>;
 
   // User's current location (from browser geolocation)
   userLocation: { latitude: number; longitude: number } | null;
@@ -157,7 +159,8 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
   const [markerVisibilityMap, setMarkerVisibilityMap] = useState<Map<string, boolean>>(new Map());
 
   // Restaurants in Remi's latest answer (drawn as red markers)
-  const [recommendedSlugs, setRecommendedSlugs] = useState<string[]>([]);
+  const [recommendedPicks, setRecommendedPicks] = useState<Restaurant[]>([]);
+  const recommendedSlugs = useMemo(() => recommendedPicks.map((r) => r.slug), [recommendedPicks]);
 
   // User's current location (from browser geolocation)
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
@@ -540,8 +543,9 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
         markerVisibilityMap,
         addGeocodedMarker,
         clearGeocodedMarkers,
+        recommendedPicks,
+        setRecommendedPicks,
         recommendedSlugs,
-        setRecommendedSlugs,
         userLocation,
         setUserLocation,
       }}
