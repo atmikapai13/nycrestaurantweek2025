@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Project Overview
 
 NYC Eats is a conversational geospatial restaurant discovery tool for Manhattan. "Remi" (Ratatouille persona) answers chat queries and renders results on a map.
-- **Frontend**: React 18 + TypeScript + Vite + Mapbox GL
+- **Frontend**: React 19 + TypeScript + Vite + Mapbox GL, Tailwind v4 + shadcn/ui
 - **Backend**: Hono on Vercel Functions, AI SDK UI-message streaming
 - **AI**: Google Gemini 2.5 Flash: one structured-output call to parse the request, one streamed call to narrate. Retrieval is plain code.
 - **Geo**: Mapbox Search Box + Geoapify geocoding (validated, Manhattan-preferring); Geoapify isochrones (walk / bike / drive / transit), hedged against occasional stalls
@@ -56,7 +56,7 @@ The backend streams parts shaped like the old MCP tool calls, and `ChatInterface
 
 ## Design Tokens
 
-All colors and fonts come from `src/styles/tokens.ts` (documented in `DESIGN.md`): `var(--color-*)` / `var(--font-*)` in CSS, Tailwind classes like `bg-pink-soft` / `text-grey-dark`, `colors.*` in TS. Don't hard-code hex values. UI primitives are shadcn/ui in `src/components/ui/` (Tailwind preflight is off).
+All colors and fonts come from `src/styles/tokens.ts` (documented in `DESIGN.md`): `var(--color-*)` / `var(--font-*)` in CSS, Tailwind classes like `bg-pink-soft` / `text-grey-dark`, `colors.*` in TS. Don't hard-code hex values. UI primitives are shadcn/ui in `src/components/ui/` (Tailwind v4 without preflight; `tokens.css` is generated from `tokens.ts` by `vite.config.ts`).
 
 ## Map Markers
 

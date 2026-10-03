@@ -2,23 +2,37 @@ import fs from "fs";
 import path from "path";
 import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+import { colors, cssVar, fonts, fontSizes } from "./src/styles/tokens";
 
-// Tailwind only reloads its config when tailwind.config.js itself changes, not when the
-// design tokens it imports do. Touch the config on a tokens edit so dev picks it up.
-const reloadTailwindOnTokens = (): Plugin => ({
-  name: "reload-tailwind-on-tokens",
-  handleHotUpdate({ file }) {
-    if (file.endsWith("src/styles/tokens.ts")) {
-      const config = path.resolve(__dirname, "tailwind.config.js");
-      const now = new Date();
-      fs.utimesSync(config, now, now);
-    }
+// Design tokens → src/styles/tokens.css, a Tailwind v4 @theme block (bg-pink, text-body, …,
+// plus --color-* / --font-* variables). tokens.ts stays the single source; Vite restarts when
+// it changes (it's a config dependency), which regenerates the file.
+const designTokens = (): Plugin => ({
+  name: "design-tokens",
+  config() {
+    const lines = [
+      ...Object.entries(colors).map(([name, value]) => `  ${cssVar(name)}: ${value};`),
+      ...Object.entries(fonts).map(([name, value]) => `  ${cssVar(name, "font")}: ${value};`),
+      ...Object.entries(fontSizes).flatMap(([name, [size, lineHeight, weight]]) => [
+        `  --text-${name}: ${size};`,
+        `  --text-${name}--line-height: ${lineHeight};`,
+        `  --text-${name}--font-weight: ${weight};`,
+      ]),
+    ];
+    const css = `/* Generated from src/styles/tokens.ts by vite.config.ts. Edit tokens.ts, not this file. */
+@theme static {
+${lines.join("\n")}
+}
+`;
+    const file = path.resolve(__dirname, "src/styles/tokens.css");
+    if (!fs.existsSync(file) || fs.readFileSync(file, "utf8") !== css) fs.writeFileSync(file, css);
   },
 });
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), reloadTailwindOnTokens()],
+  plugins: [designTokens(), react(), tailwindcss()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

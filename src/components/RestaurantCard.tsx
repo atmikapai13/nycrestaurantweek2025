@@ -245,7 +245,7 @@ export default function RestaurantCard({
 
   return (
     <TooltipProvider delayDuration={200}>
-    <Card className="restaurant-card tw-reset relative w-full border-solid border-foreground font-sans text-foreground shadow-md">
+    <Card className="restaurant-card tw-reset relative w-full gap-0 border-foreground py-0 font-sans text-foreground shadow-md">
       {/* Close (when shown in a popup) */}
       <div className="absolute right-2 top-2 flex items-center">
         {onClose && (
@@ -265,7 +265,7 @@ export default function RestaurantCard({
       </div>
 
       {/* 1. What it is (name, cuisine / price / award tags) and is it good (star arc, top-right) */}
-      <CardHeader className={cn("flex-row items-start gap-3 space-y-0 p-4 pb-3", onClose && "pr-10")}>
+      <CardHeader className={cn("flex flex-row items-start gap-3 p-4 pb-3", onClose && "pr-10")}>
         <div className="flex min-w-0 flex-1 flex-col gap-2">
           <CardTitle className="text-heading font-bold leading-[1.2] tracking-tight" title={r.name}>
             {displayName(r.name)}

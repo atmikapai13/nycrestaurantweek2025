@@ -44,7 +44,7 @@ export default function FavoritesFilter() {
           aria-label={favoritesActive ? "Hide favorites" : "Show favorites"}
         >
           {/* Same pink dot as favorites on the map */}
-          <span className="inline-block size-2.5 rounded-full border border-solid border-white bg-pink-light shadow-sm" />
+          <span className="inline-block size-2.5 rounded-full border border-solid border-white bg-pink-light shadow-xs" />
           <Heart className={cn("!size-3.5 text-pink-light", favoritesActive && "fill-pink-light")} strokeWidth={2} />
           {hasFavorites && (
             <ChevronDown className={cn("!size-3 transition-transform", open && "rotate-180")} aria-hidden="true" />

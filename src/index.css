@@ -1,70 +1,95 @@
 /* Import Inter font */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Tailwind v4 without its preflight reset (it would restyle the existing app): just the theme
+   and utilities. Layer order: theme < base < components < utilities. */
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+@import "tw-animate-css";
+/* Design tokens (palette, fonts, type scale), generated from src/styles/tokens.ts */
+@import "./styles/tokens.css";
 
-/* shadcn/ui variables that don't come from the palette. The palette ones (--primary,
-   --border, …) and every --color-* / --font-* token are emitted from src/styles/tokens.ts
-   by tailwind.config.js. Preflight is disabled, so the existing app isn't reset. */
+@custom-variant dark (&:is(.dark *));
+
+/* shadcn/ui theme variables, pointing at the palette (see DESIGN.md for which is which) */
+:root {
+  --radius: 0.5rem;
+  --background: var(--color-white);
+  --foreground: var(--color-ink);
+  --card: var(--color-white);
+  --card-foreground: var(--color-ink);
+  --popover: var(--color-white);
+  --popover-foreground: var(--color-ink);
+  --primary: var(--color-pink);
+  --primary-foreground: var(--color-white);
+  --secondary: var(--color-pink-soft);
+  --secondary-foreground: var(--color-ink);
+  --muted: var(--color-grey-lightest);
+  --muted-foreground: var(--color-grey-dark);
+  --accent: var(--color-pink-soft);
+  --accent-foreground: var(--color-ink);
+  --destructive: #dc2626;
+  --border: var(--color-grey-light);
+  --input: var(--color-grey-light);
+  --ring: var(--color-pink);
+}
+
+/* shadcn class names (bg-primary, border-input, …) → those variables */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
 @layer base {
-  :root {
-    --background: 0 0% 100%;
-    --card: 0 0% 100%;
-    --popover: 0 0% 100%;
-    --primary-foreground: 0 0% 100%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --radius: 0.5rem;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 330 87% 59%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 325 80% 94%;
-    --sidebar-accent-foreground: 0 0% 7%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 330 87% 59%;
-  }
-
-  /* Preflight is off (it would restyle the existing app), so give shadcn's portaled
-     menus the bits of it they rely on: solid zero-width borders and no UA input chrome. */
+  /* No preflight, so give shadcn components (they carry data-slot) and anything inside
+     "tw-reset" or a portaled menu the reset bits they rely on. Utilities still win. */
+  [data-slot],
   [data-radix-popper-content-wrapper] *,
   [data-radix-popper-content-wrapper] *::before,
-  [data-radix-popper-content-wrapper] *::after {
-    box-sizing: border-box;
-    border-width: 0;
-    border-style: solid;
-    border-color: hsl(var(--border));
-  }
-  [data-radix-popper-content-wrapper] input {
-    font: inherit;
-    margin: 0;
-    padding: 0;
-  }
-
-  /* The same preflight essentials for components built entirely from shadcn/Tailwind
-     (e.g. RestaurantCard): add class "tw-reset" to the root. Utilities still win. */
+  [data-radix-popper-content-wrapper] *::after,
   .tw-reset *,
   .tw-reset *::before,
   .tw-reset *::after {
     box-sizing: border-box;
     border-width: 0;
     border-style: solid;
-    border-color: hsl(var(--border));
+    border-color: var(--border);
   }
-  .tw-reset :where(button) {
+  [data-radix-popper-content-wrapper] input {
+    font: inherit;
+    margin: 0;
+    padding: 0;
+  }
+  .tw-reset :where(button),
+  button[data-slot] {
     background: transparent;
     font: inherit;
     color: inherit;
     cursor: pointer;
   }
-  .tw-reset :where(a) {
+  .tw-reset :where(a),
+  a[data-slot] {
     color: inherit;
     text-decoration: inherit;
   }
@@ -75,45 +100,50 @@
   --drawer-height: 40vh; /* Default drawer height for mobile */
 }
 
-/* Reset and base styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  position: fixed;
-}
-
-/* iOS Safari URL bar collapse trick - allow minimal scroll on mobile */
-@media (max-width: 768px) {
-  html {
-    height: calc(100% + 1px);
+/* The app's own reset and page styles. In Tailwind's base layer: v4 puts utilities in a real
+   cascade layer, and unlayered CSS beats any layer, so an unlayered `* { padding: 0 }` would
+   cancel every p-*, m-* utility. */
+@layer base {
+  /* Reset and base styles */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
-  body {
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
     height: 100%;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow: hidden;
+    position: fixed;
   }
-}
 
-body {
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: var(--color-grey-lightest);
-  color: var(--color-ink);
-  line-height: 1.6;
-}
+  /* iOS Safari URL bar collapse trick - allow minimal scroll on mobile */
+  @media (max-width: 768px) {
+    html {
+      height: calc(100% + 1px);
+    }
+    body {
+      height: 100%;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+  }
 
-code {
-  font-family: var(--font-mono);
+  body {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: var(--color-grey-lightest);
+    color: var(--color-ink);
+    line-height: 1.6;
+  }
+
+  code {
+    font-family: var(--font-mono);
+  }
 }
 
 /* Mapbox custom styles */

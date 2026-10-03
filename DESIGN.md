@@ -8,9 +8,9 @@ Every color and font in the app is defined once in **`src/styles/tokens.ts`**. R
 | Tailwind / shadcn class | `bg-pink-soft`, `text-grey-dark`, `border-grey-light`, `font-display`, `text-caption` |
 | TypeScript (Mapbox paint, inline SVG fills) | `import { colors } from "@/styles/tokens"` → `colors.pinkLight` |
 
-`tailwind.config.js` imports `tokens.ts`. From it, it builds the Tailwind color/font/size scales and emits every token as a CSS variable on `:root`. It also derives shadcn's own variables (`--primary`, `--border`, `--muted`, …) from the palette, so shadcn components match automatically.
+`vite.config.ts` turns `tokens.ts` into `src/styles/tokens.css`, a Tailwind v4 `@theme` block, so every token is both a Tailwind class (`bg-pink`, `text-body`) and a CSS variable (`--color-pink`). `src/index.css` imports it and points shadcn's theme variables (`--primary`, `--border`, `--muted`, …) at the palette, so shadcn components match automatically. Don't edit `tokens.css`; it's regenerated whenever `tokens.ts` changes.
 
-**Adding or changing a color:** edit `tokens.ts` only. A new token `fooBar` becomes `var(--color-foo-bar)` in CSS. To use it as a Tailwind class, also add it to `colors` in `tailwind.config.js`.
+**Adding or changing a color:** edit `tokens.ts` only. A new token `fooBar` becomes the class `bg-foo-bar` and the variable `var(--color-foo-bar)`.
 
 ## Colors
 
@@ -69,4 +69,4 @@ Use these classes rather than `font-size` in CSS. Each one sets size, line-heigh
 
 - **Prefer shadcn's semantic classes** (`bg-primary`, `bg-secondary`, `bg-accent`, `border-input`, `text-muted-foreground`, `bg-foreground`) over palette classes in components. They map onto the palette: `primary` = pink, `secondary`/`accent` = pinkSoft, `border`/`input` = greyLight, `muted` = greyLightest, `muted-foreground` = greyDark, `foreground` = ink.
 - **Filter bar pills** are shadcn `Button`/`Toggle` with `variant="outline"` and the added `size="pill"`. Active state: `border-primary bg-secondary` (`filterPill()` in `src/components/FilterBar/filterPill.ts`).
-- **shadcn/ui** components live in `src/components/ui/` (new-york style, add more with `npx shadcn@2.3.0 add <name>`). Tailwind's preflight reset is off, so portaled menus get a minimal border reset in `src/index.css`.
+- **shadcn/ui** components live in `src/components/ui/` (Tailwind v4, React 19; add more with `npx shadcn@latest add <name>`, then fix the generated `import { cn } from "cn"` to `"@/lib/utils"`). Our additions: the `pill` size on Button and Toggle. Tailwind's preflight reset is off (it would restyle the rest of the app), so `src/index.css` gives shadcn components (`[data-slot]`), portaled menus and anything under `.tw-reset` the reset bits they need.

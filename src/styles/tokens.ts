@@ -2,11 +2,11 @@
  * Design tokens: the single source for every color and font in the app. See DESIGN.md.
  *
  * Use them by name, never by hex:
- *   CSS       var(--color-pink), var(--font-sans)   (emitted on :root by tailwind.config.js)
+ *   CSS       var(--color-pink), var(--font-sans)   (generated into tokens.css, a Tailwind @theme)
  *   Tailwind  bg-pink, text-grey-dark, border-grey-light, font-sans
  *   TS / Map  import { colors } from "@/styles/tokens"  (Mapbox paint can't read CSS variables)
  *
- * Plain-object module (no React/DOM imports) so tailwind.config.js can import it too.
+ * Plain-object module (no React/DOM imports) so vite.config.ts can import it to write tokens.css.
  */
 
 export const colors = {
