@@ -616,7 +616,7 @@ export default function FilterBar() {
 
         <div
           ref={filterBarRef}
-          className={`filter-row ${isExpanded ? "" : "hidden"}`}
+          className={`filter-row ${isExpanded ? "" : "is-collapsed"}`}
         >
           {/* Restaurant Week filter - commented out until next Restaurant Week
           <button

@@ -27,8 +27,8 @@
 }
 
 /* But disable on hidden filter row */
-.filter-row.hidden,
-.filter-row.hidden * {
+.filter-row.is-collapsed,
+.filter-row.is-collapsed * {
   pointer-events: none;
 }
 
@@ -262,7 +262,7 @@
   transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
-.filter-row.hidden {
+.filter-row.is-collapsed {
   opacity: 0;
   transform: translateX(-10px);
   pointer-events: none;
