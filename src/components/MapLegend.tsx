@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import { useMap, hasAnyAward } from '../contexts/MapContext'
+import { colors } from '@/styles/tokens'
 
 export const MapLegend: React.FC = () => {
   const {
@@ -26,14 +27,14 @@ export const MapLegend: React.FC = () => {
   return (
     <div className="map-legend">
       <div className="legend-content">
-        <h4 style={{ color: '#000000', margin: '0 0 -4px 0' }}>
+        <h4 style={{ color: colors.ink, margin: '0 0 -4px 0' }}>
           Remi's pickings
         </h4>
 
         {/* Legend items */}
         <div className="legend-items">
           <div className="legend-item">
-            <div className="legend-marker" style={{ backgroundColor: '#7f7576', width: '8px', height: '8px' }}></div>
+            <div className="legend-marker" style={{ backgroundColor: colors.grey, width: '8px', height: '8px' }}></div>
             <span>
               {isochroneRegionSlugs && hasVisibleIsochrones
                 ? `${isochroneRegionSlugs.length} in isochrone`
@@ -51,7 +52,7 @@ export const MapLegend: React.FC = () => {
                 fontWeight: awardsActive ? 600 : 400
               }}
             >
-              <div className="legend-marker" style={{ backgroundColor: '#7f7576', width: '8px', height: '8px' }}></div>
+              <div className="legend-marker" style={{ backgroundColor: colors.grey, width: '8px', height: '8px' }}></div>
               <span>{awardWinnersCount} award-winners</span>
             </div>
           )}
@@ -65,7 +66,7 @@ export const MapLegend: React.FC = () => {
               fontWeight: favoritesActive ? 600 : 400
             }}
           >
-            <div className="legend-marker" style={{ backgroundColor: '#ff67b2', width: '8px', height: '8px' }}></div>
+            <div className="legend-marker" style={{ backgroundColor: colors.pinkLight, width: '8px', height: '8px' }}></div>
             <span>{favoritesCount === 0 ? '0 favorited as of yet' : `${favoritesCount} favorited`}</span>
           </div>
         </div>

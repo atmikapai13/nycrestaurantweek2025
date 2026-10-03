@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { useMap } from '../contexts/MapContext';
+import { colors } from '@/styles/tokens';
 
 interface IsochroneMessageProps {
   messageId: string;
@@ -51,7 +52,7 @@ export function IsochroneMessage({ messageId }: IsochroneMessageProps) {
             borderColor: areLayersVisible
               ? 'rgba(255, 105, 180, 0.3)'
               : 'rgba(100, 100, 100, 0.3)',
-            color: areLayersVisible ? '#ff69b4' : '#666',
+            color: areLayersVisible ? colors.pinkLight : colors.greyDark,
           }}
           title={
             areLayersVisible

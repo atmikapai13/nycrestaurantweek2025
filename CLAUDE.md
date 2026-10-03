@@ -54,9 +54,13 @@ Same prompt ⇒ same intent ⇒ same restaurants. Intents, geocodes, isochrones 
 
 The backend streams parts shaped like the old MCP tool calls, and `ChatInterface.tsx` drives the map from them by **tool name and output shape**: `geocode` (dynamic) → `structuredContent.results[0]` (character markers), `get_isoline` (dynamic) → `structuredContent.results[0].geojson` (layers; overlap computed client-side once all isoline parts finish), `tool-semantic_search_restaurants` → `restaurantWeekDetected`, `tool-displayRestaurants` → card payload (rendered only after the stream ends). A `data-intent` part rides along in history for follow-ups. Change both sides together.
 
+## Design Tokens
+
+All colors and fonts come from `src/styles/tokens.ts` (documented in `DESIGN.md`): `var(--color-*)` / `var(--font-*)` in CSS, Tailwind classes like `bg-pink-soft` / `text-grey-dark`, `colors.*` in TS. Don't hard-code hex values. UI primitives are shadcn/ui in `src/components/ui/` (Tailwind preflight is off).
+
 ## Map Markers
 
-Markers are Mapbox layers, not DOM elements (`src/components/restaurantLayers.ts`; images drawn once on a canvas): grey dots `#7f7576`, pink `#ff67b2` for favorites, sized by zoom; Remi's current picks (`recommendedSlugs` in MapContext, set from `displayRestaurants` results) are small plain red teardrops; the selected restaurant is a cuisine-emoji teardrop (`CUISINE_EMOJI` in `Map.tsx`) with a Yelp-star arc. Searched places render as character portraits (`public/characters/1_alfredo.png`…, assigned in order per search) in a layer above the markers; isochrones are inserted beneath everything. The user's own location is a pulsing blue DOM dot.
+Markers are Mapbox layers, not DOM elements (`src/components/restaurantLayers.ts`; images drawn once on a canvas): grey dots (`colors.grey`), pink (`colors.pinkLight`) for favorites, sized by zoom; Remi's current picks (`recommendedSlugs` in MapContext, set from `displayRestaurants` results) are plain red teardrops, a bit smaller than the selected one; the selected restaurant is a cuisine-emoji teardrop (`CUISINE_EMOJI` in `Map.tsx`) with a Yelp-star arc. Searched places render as character portraits (`public/characters/1_alfredo.png`…, assigned in order per search) in a layer above the markers; isochrones are inserted beneath everything. The user's own location is a pulsing blue DOM dot.
 
 ## Environment Variables
 

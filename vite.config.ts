@@ -1,10 +1,24 @@
+import fs from "fs";
 import path from "path";
-import { defineConfig } from "vite";
+import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
+
+// Tailwind only reloads its config when tailwind.config.js itself changes, not when the
+// design tokens it imports do. Touch the config on a tokens edit so dev picks it up.
+const reloadTailwindOnTokens = (): Plugin => ({
+  name: "reload-tailwind-on-tokens",
+  handleHotUpdate({ file }) {
+    if (file.endsWith("src/styles/tokens.ts")) {
+      const config = path.resolve(__dirname, "tailwind.config.js");
+      const now = new Date();
+      fs.utimesSync(config, now, now);
+    }
+  },
+});
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), reloadTailwindOnTokens()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

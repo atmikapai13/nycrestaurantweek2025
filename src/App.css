@@ -31,35 +31,9 @@
   height: 100%;
 }
 
-/* Restaurant Card Overlay */
-.restaurant-card-overlay {
-  position: absolute;
-  bottom: 1rem;
-  left: calc(5% + 1rem);
-  z-index: 1000;
-  max-width: calc(90% - 2rem);
-  width: 100%;
-  height: auto;
-  max-height: calc(100vh - 400px);
-  overflow-y: auto;
-}
-
-
-
-/* Restaurant Card Styles */
-.restaurant-card {
-  background: white;
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e5e7eb;
-  height: auto;
-  min-height: fit-content;
-}
-
 .no-selection {
   text-align: center;
-  color: #9ca3af;
+  color: var(--color-grey);
   margin-top: 2rem;
 }
 
@@ -82,14 +56,14 @@
   left: 10px;
   z-index: 100;
   font-size: 11px;
-  color: #666;
+  color: var(--color-grey-dark);
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
 .map-attribution a {
-  color: #0078a8;
+  color: var(--color-blue);
   text-decoration: none;
 }
 
@@ -103,13 +77,6 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-
-
-  .restaurant-card-overlay {
-    left: 10px;
-    bottom: 10px;
-    max-width: calc(100vw - 20px);
-  }
 
 }
 

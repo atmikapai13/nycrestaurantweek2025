@@ -9,10 +9,10 @@
 }
 
 .floating-header-title {
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: var(--font-display);
   font-size: 20px;
   font-weight: 400;
-  color: #404040;
+  color: var(--color-grey-dark);
   letter-spacing: 0.5px;
   margin: 0;
   text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8);
