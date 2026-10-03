@@ -131,6 +131,29 @@ function byQuality(a: Restaurant, b: Restaurant): number {
   return qualityScore(b) - qualityScore(a) || a.slug.localeCompare(b.slug);
 }
 
+/** Vibe/dish searches: mostly relevance, with a little quality so a well-loved place beats an
+    almost-as-relevant poorly rated one. Both are rescaled to 0–1 across the candidates first
+    (relevance scores sit in a narrow band, quality in a wide one), so the weights mean what
+    they say. */
+const RELEVANCE_WEIGHT = 0.85;
+const QUALITY_WEIGHT = 0.15;
+
+function blendWithQuality(scored: Array<{ restaurant: Restaurant; score: number }>): Restaurant[] {
+  if (scored.length < 2) return scored.map((s) => s.restaurant);
+  const quality = scored.map((s) => qualityScore(s.restaurant));
+  const scale = (values: number[]) => {
+    const min = Math.min(...values);
+    const range = Math.max(...values) - min;
+    return values.map((v) => (range > 0 ? (v - min) / range : 0));
+  };
+  const relevance01 = scale(scored.map((s) => s.score));
+  const quality01 = scale(quality);
+  return scored
+    .map((s, i) => ({ restaurant: s.restaurant, blended: RELEVANCE_WEIGHT * relevance01[i] + QUALITY_WEIGHT * quality01[i] }))
+    .sort((a, b) => b.blended - a.blended || a.restaurant.slug.localeCompare(b.restaurant.slug))
+    .map((s) => s.restaurant);
+}
+
 function computeAreaStats(restaurants: Restaurant[]): AreaStats {
   const cuisineCounts = new Map<string, number>();
   const priceMix: Record<string, number> = {};
@@ -245,7 +268,7 @@ export async function runSearch(intent: SearchIntent, ctx: PipelineContext): Pro
   const rank = async (pool: Restaurant[]) => {
     const candidates = applyFilters(pool, intent);
     const unseen = intent.kind === "more" ? candidates.filter((r) => !ctx.previouslyShown.includes(r.slug)) : candidates;
-    let ranked = ranker ? ranker.rank(unseen).map((s) => s.restaurant) : [...unseen].sort(byQuality);
+    let ranked = ranker ? blendWithQuality(ranker.rank(unseen)) : [...unseen].sort(byQuality);
     if (dietRanker) {
       const checked = ranked.slice(0, DIET_CHECK_LIMIT);
       const evidence = await ctx.tools.measure("diet evidence", { diets: intent.diets, checked: checked.length }, () =>
@@ -299,15 +322,19 @@ export async function runSearch(intent: SearchIntent, ctx: PipelineContext): Pro
     areaCounts = chosen!.areas.map((a) => a.inside.length);
     // Let the pin drop register before the isochrone appears (skipped for "near me": no pin)
     if (ctx.pacing && intent.locations.some((l) => l !== MY_LOCATION)) await dwell(geocodedAt, GEOCODE_DWELL_MS);
-    chosen!.areas.forEach((area, i) => {
-      const loc = locations[i];
-      const id = ctx.tools.start(
+    // Announce every area before finishing any: the frontend draws a lone isoline as a single
+    // search, so with several places it must see them all first (then it waits for all, and
+    // draws each plus their overlap).
+    const ids = chosen!.areas.map((_, i) =>
+      ctx.tools.start(
         "get_isoline",
-        { latitude: loc.latitude, longitude: loc.longitude, mode: travel!.mode, minutes: travel!.minutes },
+        { latitude: locations[i].latitude, longitude: locations[i].longitude, mode: travel!.mode, minutes: travel!.minutes },
         { dynamic: true }
-      );
+      )
+    );
+    chosen!.areas.forEach((area, i) => {
       // The frontend reads structuredContent.results[0].geojson to draw the layer.
-      ctx.tools.finish(id, {
+      ctx.tools.finish(ids[i], {
         structuredContent: { results: [{ geojson: area.feature }] },
         restaurantSlugs: area.inside.map((r) => r.slug),
         count: area.inside.length,

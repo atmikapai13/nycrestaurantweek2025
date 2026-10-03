@@ -28,12 +28,28 @@ const QUOTE_FIELDS = [
 /** Below this, no sentence is a convincing match and the card shows facts only. */
 const MIN_QUOTE_SCORE = 0.62;
 
+/** A sentence that opens with a contrast is usually the caveat ("However, some reviewers…"). */
+const CONTRAST_OPENER = /^(however|but|although|though|unfortunately|that said|on the downside)\b/i;
+/** Clearly negative wording (including "it's worse now"): such a sentence never sells the place,
+    nor proves it fits a diet. */
+const NEGATIVE =
+  /\b(disappoint\w*|overpriced|mediocre|bland|rude|underwhelm\w*|complain\w*|complaints?|worst|subpar|lackluster|overrated|soggy|stale|dirty|greasy|inattentive|used to be|no longer|went downhill|not as good)\b/i;
+
 function sentences(text: string | undefined): string[] {
   if (!text) return [];
   return text
     .split(/(?<=[.!?])\s+(?=["“'A-Z0-9])/)
     .map((s) => s.trim())
-    .filter((s) => s.length >= 25 && s.length <= 320 && !/^Yelp categorizes/i.test(s));
+    // "In Yelp reviews, pasta is mentioned…" → "Pasta is mentioned…"
+    .map((s) => s.replace(/^In Yelp reviews,\s*(\w)/i, (_, c: string) => c.toUpperCase()))
+    .filter(
+      (s) =>
+        s.length >= 25 &&
+        s.length <= 320 &&
+        !/^Yelp categorizes/i.test(s) &&
+        !CONTRAST_OPENER.test(s) &&
+        !NEGATIVE.test(s)
+    );
 }
 
 function milesBetween(lat1: number, lng1: number, lat2: number, lng2: number): number {

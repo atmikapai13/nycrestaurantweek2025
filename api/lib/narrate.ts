@@ -28,11 +28,12 @@ export function cannedReply(outcome: SearchOutcome): string | null {
 
 const PERSONA = `You are Remi, a witty restaurant concierge inspired by Ratatouille's Remy, with Anthony Bourdain's honesty. You help people find Manhattan restaurants, especially NYC Restaurant Week prix-fixe deals ($30/$45/$60 lunch, brunch, and dinner menus at 600+ restaurants).`;
 
-const RULES = `Write the reply that accompanies restaurant cards the user can already see. Be terse: 2 sentences maximum in total, no lists or headings.
-- Sentence 1 (ONLY if ASSUMED TRAVEL is given): lay out the assumption so the user can correct it, naming the pinned places from PLACED ON THE MAP (e.g. "Assuming a 15-minute subway ride from AMC Empire 25 and One Manhattan West."). Without ASSUMED TRAVEL there is no sentence 1: don't confirm pins or restate travel the user specified. Never state times or distances that aren't given to you.
-- When there is a sentence 1, put a blank line (two newlines) between it and the last sentence.
-- Last sentence: call out 1–2 restaurants, each with a reason of at most ~8 words paraphrased from its "why" (quote first, else facts), e.g. "Lilia for wood-fired pastas, or Dante's buzzy aperitivo bar." Never paste the quote or use quotation marks (the card shows it), never cite review percentages, never invent details.
-- Don't name the other restaurants; the cards show them. No filler ("solid choices", "you've got options").
+const RULES = `Write the reply that accompanies the restaurants the user can already see on the map. Up to 3 short sentences in total, no lists or headings.
+- Opening (ONLY if ASSUMED TRAVEL is given): lay out the assumption so the user can correct it, naming the pinned places from PLACED ON THE MAP (e.g. "Assuming a 15-minute subway ride from AMC Empire 25 and One Manhattan West."). Without ASSUMED TRAVEL there is no opening: don't confirm pins or restate travel the user specified. Never state times or distances that aren't given to you. Put a blank line (two newlines) after the opening.
+- SEARCH AREA: ONLY when a SEARCH AREA line is given, begin the overview by saying where you searched, in the words it suggests. When there is no SEARCH AREA line, never say you stayed in the same area or searched all of Manhattan.
+- Overview: one sentence saying how many picks you have (the number of SHOWN RESTAURANTS) and, if WHERE is given, where they are, in your own voice (e.g. "I've got 5 spots for you, most of them in Koreatown."). Use only the neighborhoods in WHERE; never invent geography.
+- Highlights: one sentence calling out the first two SHOWN RESTAURANTS, in that order (they're the top-ranked picks, numbered 1 and 2 on the map; only the first if there's just one), each with a reason of about 8–14 words paraphrased from its "why" (quote first, else facts) and its cuisine, e.g. "HanGawi for serene, fine-dining vegetarian Korean, or Gaonnuri for Korean BBQ with penthouse views over the city." Never paste the quote or use quotation marks (the card shows it), never cite review percentages, never invent details.
+- Don't name the other restaurants; the map shows them. No filler ("solid choices", "you've got options").
 - Never mention tools, databases, search steps, embeddings, or IDs.`;
 
 function compactRestaurant(r: any, reason?: MatchReason) {
@@ -71,9 +72,22 @@ function placementNote(outcome: SearchOutcome): string {
   return `\nPLACED ON THE MAP: ${pins}.`;
 }
 
-function buildPrompt(userMessage: string, intent: SearchIntent, outcome: SearchOutcome): string {
+/** Where the shown restaurants are, computed here so Remi never guesses the geography:
+    "mostly in Koreatown (3 of 5)" when one neighborhood has at least half, else the list. */
+function whereNote(shown: any[]): string {
+  const hoods = shown.map((r) => r.neighborhood).filter(Boolean) as string[];
+  if (!hoods.length) return "";
+  const counts = new Map<string, number>();
+  for (const h of hoods) counts.set(h, (counts.get(h) ?? 0) + 1);
+  const [top, n] = [...counts.entries()].sort((a, b) => b[1] - a[1])[0];
+  if (n === shown.length) return `\nWHERE: all in ${top}`;
+  if (n >= 2 && n * 2 >= shown.length) return `\nWHERE: mostly in ${top} (${n} of ${shown.length})`;
+  return `\nWHERE: spread across ${[...counts.keys()].slice(0, 4).join(", ")}`;
+}
+
+function buildPrompt(userMessage: string, intent: SearchIntent, outcome: SearchOutcome, scope = ""): string {
   const travel = "travel" in outcome ? outcome.travel : null;
-  const asked = `USER MESSAGE: ${userMessage}\nSEARCHED FOR: ${describeSearch(intent, travel)}${placementNote(outcome)}${assumptionNote(outcome)}`;
+  const asked = `USER MESSAGE: ${userMessage}\nSEARCHED FOR: ${describeSearch(intent, travel)}${scope ? `\n${scope}` : ""}${placementNote(outcome)}${assumptionNote(outcome)}`;
 
   switch (outcome.status) {
     case "chitchat":
@@ -93,11 +107,12 @@ function buildPrompt(userMessage: string, intent: SearchIntent, outcome: SearchO
       return `${asked}${areas}${diet}\n\nNothing matched. In 1–2 sentences, say so and suggest one concrete way to loosen the search (more minutes, a different mode of travel, or dropping a filter).`;
     }
     case "ok": {
+      const where = whereNote(outcome.shown);
       const area = outcome.areaStats
         ? `\nAREA OVERVIEW (use these numbers; this request wants a fuller overview, up to 5 sentences): ${JSON.stringify(outcome.areaStats)}`
         : "";
       return (
-        `${asked}\nTOTAL MATCHES: ${outcome.totalMatches} (showing the top ${outcome.shown.length})${area}\n` +
+        `${asked}\nTOTAL MATCHES: ${outcome.totalMatches} (showing the top ${outcome.shown.length})${where}${area}\n` +
         `SHOWN RESTAURANTS, in display order:\n${JSON.stringify(outcome.shown.map((r) => compactRestaurant(r, outcome.reasons[r.slug])))}`
       );
     }
@@ -106,11 +121,12 @@ function buildPrompt(userMessage: string, intent: SearchIntent, outcome: SearchO
   }
 }
 
-export function narrate(userMessage: string, intent: SearchIntent, outcome: SearchOutcome) {
+/** `scope`: where a follow-up searched (the area already on the map, or all of Manhattan). */
+export function narrate(userMessage: string, intent: SearchIntent, outcome: SearchOutcome, scope = "") {
   return streamText({
     model: google(GEMINI_MODEL),
     system: `${PERSONA}\n\n${RULES}`,
-    prompt: buildPrompt(userMessage, intent, outcome),
+    prompt: buildPrompt(userMessage, intent, outcome, scope),
     temperature: 0.4,
     maxOutputTokens: 400,
     providerOptions: NO_THINKING,

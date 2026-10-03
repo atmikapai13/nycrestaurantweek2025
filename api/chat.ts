@@ -48,6 +48,33 @@ const intentOf = (message: ValidatedUIMessage): SearchIntent | null =>
   ((message.parts ?? []).find((p: any) => p.type === "data-intent") as any)?.data ?? null;
 
 /** The intent of the most recent assistant reply, for follow-up refinement. */
+/** Did the parser just copy the previous search's places and travel (the user didn't name any
+    place or change how they're getting around)? */
+function carriesOverArea(intent: SearchIntent, previous: SearchIntent, message: string): boolean {
+  if (!previous.locations.length || intent.kind === "lookup" || intent.kind === "chitchat") return false;
+  const same = (a: string[], b: string[]) =>
+    a.length === b.length && a.every((x, i) => x.toLowerCase() === b[i].toLowerCase());
+  if (!same(intent.locations, previous.locations)) return false;
+  if (intent.travelMode !== previous.travelMode || intent.travelMinutes !== previous.travelMinutes) return false;
+  const text = message.toLowerCase();
+  return !intent.locations.some((place) => place !== "MY_LOCATION" && text.includes(place.toLowerCase()));
+}
+
+/** Tells Remi where this follow-up searched, so he can say so (or ask) instead of guessing. */
+function scopeNote(
+  scope: "visible area" | "hidden area" | null,
+  region: { places: string[]; restaurantCount: number } | null
+): string {
+  if (scope === "visible area") {
+    const places = region?.places.length ? ` around ${region.places.join(" and ")}` : "";
+    return `SEARCH AREA: the same travel-time area already on the map${places} (${region?.restaurantCount ?? "?"} restaurants); it wasn't redrawn. `;
+  }
+  if (scope === "hidden area") {
+    return "SEARCH AREA: the user hid the earlier travel-time area, so this searched all of Manhattan.";
+  }
+  return "";
+}
+
 function previousIntent(messages: ValidatedUIMessage[]): SearchIntent | null {
   for (let i = messages.length - 1; i >= 0; i--) {
     if (messages[i].role !== "assistant") continue;
@@ -97,14 +124,25 @@ const chatHandler = async (c: any) => {
   const rawPool: string[] = (context as any)?.filterPool ?? [];
   const filterPool = rawPool.length < allRestaurants.length ? rawPool : [];
   const userLocation = (context as any)?.userLocation ?? null;
+  // The travel-time area shown on the map (null when none is visible or the user hid it)
+  const mapRegion: { places: string[]; restaurantCount: number } | null = (context as any)?.mapRegion ?? null;
 
   // 1. Parse intent (before streaming, so a rate limit can still return a 429).
   let intent: SearchIntent;
+  let areaScope: "visible area" | "hidden area" | null = null;
   try {
     const startMs = metrics.now();
-    const result = await parseIntent(userMessage, previousIntent(messages), CUISINES, useCache);
+    const previous = previousIntent(messages);
+    const result = await parseIntent(userMessage, previous, CUISINES, useCache);
     metrics.recordLlmCall("parse intent", startMs, result.usage, result.cached);
     intent = result.intent;
+    // A follow-up that keeps the previous places and travel unchanged doesn't redraw the area:
+    // it searches what's on the map (filterPool is already limited to the visible area), or all
+    // of Manhattan if the user hid it. Naming new places or changing the travel still re-runs.
+    if (previous && carriesOverArea(intent, previous, userMessage)) {
+      areaScope = mapRegion ? "visible area" : "hidden area";
+      intent = { ...intent, locations: [], travelMode: "unspecified", travelMinutes: null };
+    }
     if (mentionsRestaurantWeek(userMessage)) intent = { ...intent, restaurantWeek: true };
   } catch (error) {
     console.error("❌ Intent parsing failed:", error);
@@ -179,7 +217,7 @@ const chatHandler = async (c: any) => {
         write({ type: "text-end", id: "reply" });
       } else {
         const startMs = metrics.now();
-        const reply = narrate(userMessage, intent, outcome);
+        const reply = narrate(userMessage, intent, outcome, scopeNote(areaScope, mapRegion));
         for await (const chunk of reply.toUIMessageStream({ sendStart: false, sendFinish: false })) write(chunk);
         metrics.recordLlmCall("narrate", startMs, await reply.usage);
       }
