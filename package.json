@@ -14,14 +14,12 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist --nojekyll --no-history",
     "embeddings:generate": "node scripts/generate-embeddings.js",
-    "embeddings:upload": "node scripts/upload-to-pinecone.js",
-    "embeddings:setup": "npm run embeddings:generate && npm run embeddings:upload"
+    "embeddings:setup": "npm run embeddings:generate"
   },
   "dependencies": {
     "@ai-sdk/google": "^3.0.6",
     "@ai-sdk/react": "^3.0.29",
     "@google/generative-ai": "^0.24.1",
-    "@pinecone-database/pinecone": "^3.0.3",
     "@t3-oss/env-core": "^0.13.10",
     "@turf/turf": "^7.3.0",
     "@types/mapbox-gl": "^3.4.1",

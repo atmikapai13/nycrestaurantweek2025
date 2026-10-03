@@ -167,7 +167,7 @@ async function main() {
   console.log('\n✅ Embedding generation complete!')
   console.log(`   📊 Total embeddings: ${embeddings.length}/${restaurants.length}`)
   console.log(`   📁 File size: ${(fs.statSync(outputPath).size / 1024 / 1024).toFixed(2)} MB`)
-  console.log('\n🎉 Next step: Run upload-to-pinecone.js to upload embeddings to Pinecone')
+  console.log('\n🎉 Done. The API reads this file directly for semantic search (api/lib/vectorSearch.ts).')
 }
 
 // Run the script

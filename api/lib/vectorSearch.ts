@@ -1,6 +1,6 @@
 /**
- * Semantic restaurant search over the local embeddings file (the same vectors
- * that were uploaded to Pinecone). With only ~650 restaurants an exact scan is
+ * Semantic restaurant search (the retrieval step of RAG) over the local embeddings
+ * file from scripts/generate-embeddings.js. With only ~650 restaurants an exact scan is
  * a few milliseconds, scoring happens *within* the given candidate set (so a
  * small isochrone never comes back empty because its restaurants weren't in a
  * global top-K), and the only network call is embedding the query — cached.
