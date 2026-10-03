@@ -17,6 +17,10 @@
     { "source": "/summer2026/api/:path*", "destination": "https://nyceats-summer2026.vercel.app/api/:path*" },
     { "source": "/summer2026", "destination": "https://nyceats-summer2026.vercel.app/summer2026/index.html" },
     { "source": "/summer2026/", "destination": "https://nyceats-summer2026.vercel.app/summer2026/index.html" },
-    { "source": "/summer2026/:path*", "destination": "https://nyceats-summer2026.vercel.app/summer2026/:path*" }
+    { "source": "/summer2026/:path*", "destination": "https://nyceats-summer2026.vercel.app/summer2026/:path*" },
+    { "source": "/winter2026/api/:path*", "destination": "https://nyceats-winter2026.vercel.app/api/:path*" },
+    { "source": "/winter2026", "destination": "https://nyceats-winter2026.vercel.app/winter2026/index.html" },
+    { "source": "/winter2026/", "destination": "https://nyceats-winter2026.vercel.app/winter2026/index.html" },
+    { "source": "/winter2026/:path*", "destination": "https://nyceats-winter2026.vercel.app/winter2026/:path*" }
   ]
 }
