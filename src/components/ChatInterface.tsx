@@ -53,6 +53,14 @@ const classifyQuery = (query: string): string => {
   return 'general';
 };
 
+// Map pins for searched places, one per person/place in a search (public/characters order)
+const CHARACTER_IMAGES = [
+  asset("/characters/1_alfredo.png"),
+  asset("/characters/2_collette.png"),
+  asset("/characters/3_anton.png"),
+  asset("/characters/4_skinner.png"),
+];
+
 // Isochrone layer styling
 const ISOCHRONE_COLORS = {
   fill: "#B3A0F0",   // Electric purple
@@ -212,13 +220,13 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       setRestaurantWeekActive,
       addGeocodedMarker,
       clearGeocodedMarkers,
-      geocodedMarkers,
+      setRecommendedSlugs,
       userLocation,
     } = useMap();
 
     // Random welcome message selection
     const welcomeMessages = [
-      '<span class="welcome-greeting">I\'m Remi!</span><br>Let\'s help you find the best restaurants and 2026 Restaurant Week deals:',
+      '<span class="welcome-greeting">I\'m Remi!</span>I\'ll help you find restaurants in NYC.',
     ];
 
     // Quick-start suggestions - clicking these triggers Remi to ask a guiding question
@@ -226,15 +234,15 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       {
         label: "By Area",
         type: "guided" as const,
-        remiResponse: "<strong>Where are you?</strong> Tell me how far you're willing to travel, and I can recommend restaurants within your vicinity. \n\n*e.g. I'm by Soho. I'd like to find happy hour spots within 10 min walk from me.*",
-        example: "I'm by Soho. I'd like to find happy hour spots within 10 min walk from me.",
+        remiResponse: "<strong>How far are you willing to travel and by what mode of transit?</strong> I can recommend restaurants within your vicinity. \n\nFor example: *I'm in <strong>Soho</strong>. Find <strong>happy hour</strong> spots within <strong>10 min walk</strong>.*",
+        example: "I'm in Soho. Find happy hour spots within 10 min walk.",
       },
       {
         label: "By Midpoint",
         type: "guided" as const,
         remiResponse:
-          "<strong>Meeting up with a friend?</strong> Tell me where you both are, and I'll find restaurants in between! \n\n*e.g. I'm by AMC Times Square, and my friend is at One Manhattan West. We can travel 15 minutes by subway. Find lively spots between us, Remi.*",
-        example: "I'm by AMC Times Square, and my friend is at One Manhattan West. We can travel 15 minutes by subway. Find lively spots between us, Remi.",
+          "<strong>Meeting up with a friend?</strong> Tell me where you both are, and I'll find restaurants in between! \n\nFor example: *I'm at <strong>AMC Times Square</strong>, and my friend is by <strong>One Manhattan West</strong>. We can travel <strong>15 minutes by subway</strong>. Find <strong>happy hour, vegan</strong> spots between us, Remi.*",
+        example: "I'm by AMC Times Square, and my friend is at One Manhattan West. We can travel 15 minutes by subway. Find lively, happy hour spots between us, Remi.",
       },
       {
         label: "By Vibes",
@@ -556,7 +564,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       }
 
       // 1. Handle SQL results and other non-isoline tools
-      let geocodeCountThisRender = 0;
       aiMessages.forEach((msg) => {
         if (!msg.parts) return;
 
@@ -632,8 +639,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                 }
               }
 
-              // Handle geocode results - drop a teardrop pin at the geocoded location
-              // Colors match isochrone colors: person 1 = pink, person 2 = blue
+              // Handle geocode results - drop a character pin at the geocoded location
               if (part.toolName === "geocode") {
                 processedToolCallIds.current.add(part.toolCallId);
                 const geocodeResult = result as {
@@ -647,11 +653,12 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                 if (geocodeResult.results && geocodeResult.results.length > 0) {
                   const firstResult = geocodeResult.results[0];
                   if (firstResult.latitude && firstResult.longitude) {
-                    // Cycle characters using existing markers + ones added this render pass
-                    const characterImages = [asset("/characters/collette.png"), asset("/characters/anton.png"), asset("/characters/skinner.png")];
-                    const currentCount = geocodedMarkers.length + geocodeCountThisRender;
-                    geocodeCountThisRender++;
-                    const characterImage = characterImages[currentCount % characterImages.length];
+                    // Each place in a search gets its own character, in public/characters order:
+                    // place 1 → Alfredo, 2 → Collette, 3 → Anton, 4 → Skinner
+                    const placeIndex = (msg.parts || []).filter(
+                      (p) => isDynamicToolPart(p) && p.toolName === "geocode"
+                    ).findIndex((p) => isDynamicToolPart(p) && p.toolCallId === part.toolCallId);
+                    const characterImage = CHARACTER_IMAGES[Math.max(placeIndex, 0) % CHARACTER_IMAGES.length];
 
                     addGeocodedMarker({
                       latitude: firstResult.latitude,
@@ -684,6 +691,17 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
             if (output?.restaurantWeekDetected) {
               setRestaurantWeekActive(true);
             }
+          }
+
+          // displayRestaurants - Remi's picks become red markers (replacing the previous answer's)
+          if (
+            part.type === "tool-displayRestaurants" &&
+            (part as any).state === "output-available" &&
+            !processedToolCallIds.current.has((part as any).toolCallId)
+          ) {
+            processedToolCallIds.current.add((part as any).toolCallId);
+            const restaurants: Array<{ slug: string }> = (part as any).output?.restaurants ?? [];
+            if (restaurants.length) setRecommendedSlugs(restaurants.map((r) => r.slug));
           }
 
         });
@@ -1393,6 +1411,12 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
     // One in-place status line ("✻ Mapping…") until Remi's reply starts streaming
     const lastAssistantParts = isLastMessageAssistant ? allMessages[allMessages.length - 1].parts ?? [] : [];
     const remiReplyStarted = lastAssistantParts.some((p) => isTextPart(p) && p.text.trim() !== "");
+    // Before anything streams, open on "Geocoding…" if the message sounds like a location search
+    const lastUserMessage = [...allMessages].reverse().find((m) => m.role === "user");
+    const lastUserText =
+      lastUserMessage?.content ||
+      (lastUserMessage?.parts ?? []).map((p) => (isTextPart(p) ? p.text : "")).join(" ");
+    const openingStage = classifyQuery(lastUserText || "") === "location" ? "Geocoding" : "Tasting";
 
     return (
       <div className="chat-interface">
@@ -1606,7 +1630,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
                             {/* Status line while Remi works, merged into his message */}
                             {isLastMessage && canMergeLoading && !remiReplyStarted && (
-                              <RemiStatus stage={remiStage(lastAssistantParts)} />
+                              <RemiStatus stage={remiStage(lastAssistantParts, openingStage)} />
                             )}
 
                             {/* Controls Section (with divider) - Toggle button only */}
@@ -1727,7 +1751,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                       flex: 1,
                     }}
                   >
-                    <RemiStatus stage="Tasting" />
+                    <RemiStatus stage={openingStage} />
                   </div>
                 </div>
               </div>

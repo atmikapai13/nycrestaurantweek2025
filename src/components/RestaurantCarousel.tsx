@@ -199,15 +199,22 @@ export default function RestaurantCarousel({
               {distances.map((d, i) => {
                 const pin = reason?.pins?.[i];
                 const marker = markerFor(pin);
+                // "0.5 mi from AMC Empire 25" → the pin's avatar goes right before the place name
+                const [, lead = d, place = ""] = d.match(/^(.* from )(.+)$/) ?? [];
                 return (
                   <div key={d} className="match-distance">
-                    {travelIcon && <span className="match-distance-mode" aria-hidden="true">{travelIcon}</span>}
+                    {(() => {
+                      const legMode = reason?.legModes?.[i];
+                      const icon = legMode ? TRAVEL_ICONS[legMode] : travelIcon;
+                      return icon && <span className="match-distance-mode" aria-hidden="true">{icon}</span>;
+                    })()}
+                    <span>{lead}</span>
                     {pin?.isUser ? (
                       <span className="match-distance-you" aria-hidden="true" />
                     ) : marker ? (
                       <img className="match-distance-avatar" src={marker.characterImage} alt="" />
                     ) : null}
-                    <span>{d}</span>
+                    {place && <span>{place}</span>}
                   </div>
                 );
               })}

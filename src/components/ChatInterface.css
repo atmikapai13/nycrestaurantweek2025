@@ -192,6 +192,12 @@
   min-width: 0;
 }
 
+/* Bold words inside an italic example (e.g. the quick-start "For example: *I'm in **Soho**…*")
+   are the parts users can swap out, so they're highlighted in Remi pink */
+.message-content em strong {
+  color: #ef4893;
+}
+
 /* Welcome greeting - larger font for visual hierarchy */
 .welcome-greeting {
   font-size: 18px;

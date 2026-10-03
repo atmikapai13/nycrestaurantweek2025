@@ -33,7 +33,7 @@ export const MapLegend: React.FC = () => {
         {/* Legend items */}
         <div className="legend-items">
           <div className="legend-item">
-            <div className="legend-marker" style={{ backgroundColor: '#7c7c7c', width: '8px', height: '8px' }}></div>
+            <div className="legend-marker" style={{ backgroundColor: '#7f7576', width: '8px', height: '8px' }}></div>
             <span>
               {isochroneRegionSlugs && hasVisibleIsochrones
                 ? `${isochroneRegionSlugs.length} in isochrone`
@@ -51,7 +51,7 @@ export const MapLegend: React.FC = () => {
                 fontWeight: awardsActive ? 600 : 400
               }}
             >
-              <div className="legend-marker" style={{ backgroundColor: '#928f8e', width: '8px', height: '8px' }}></div>
+              <div className="legend-marker" style={{ backgroundColor: '#7f7576', width: '8px', height: '8px' }}></div>
               <span>{awardWinnersCount} award-winners</span>
             </div>
           )}

@@ -6,6 +6,14 @@ import type { Restaurant } from "../types/restaurant";
 import ChatInterface, { type ChatInterfaceHandle } from "./ChatInterface";
 import { MapLegend } from "./MapLegend";
 import { useMap, hasAnyAward, type IsochroneLayer, type GeocodedMarker } from "../contexts/MapContext";
+import {
+  addRestaurantLayers,
+  CLICKABLE_RESTAURANT_LAYERS,
+  FIRST_OVERLAY_LAYER,
+  RESTAURANT_SOURCE,
+  restaurantFeatures,
+  setPlaces,
+} from "./restaurantLayers";
 
 // Set your Mapbox access token
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
@@ -22,12 +30,12 @@ const CUISINE_EMOJI: Record<string, string> = {
   'Indian': '🍛',
   'Thai': '🥘',
   'Seafood': '🦐',
-  'Mediterranean': '🫒',
+  'Mediterranean': '🥙',
   'Greek': '🥙',
   'American (New)': '🍔',
   'American (Traditional)': '🍔',
   'Pizza': '🍕',
-  'Vietnamese': '🍜',
+  'Vietnamese': '🥢',
   'Asian Fusion': '🥢',
   'Gastropub': '🍺',
   'Soul Food / Southern': '🍗',
@@ -44,12 +52,12 @@ const CUISINE_EMOJI: Record<string, string> = {
   'Austrian': '🥨',
   'African': '🍲',
   'Cajun/Creole': '🦞',
-  'Cuban': '🫔',
+
   'Pan-Asian': '🥢',
-  'Latin American': '🫔',
-  'Peruvian': '🐟',
+  
+  
   'Argentinian': '🥩',
-  'Colombian': '🫔',
+  
   'Puerto Rican': '🍛',
   'Barbecue': '🍖',
   'Continental': '🍷',
@@ -57,12 +65,6 @@ const CUISINE_EMOJI: Record<string, string> = {
 };
 const FALLBACK_EMOJI = '🍽️';
 
-// Emoji teardrop background color (Cooking Mama beige cream)
-const EMOJI_BG_COLOR = '#FFFAEA';
-
-// Zoom threshold for emoji mode (mobile shows earlier)
-const EMOJI_ZOOM_THRESHOLD_DESKTOP = 15;
-const EMOJI_ZOOM_THRESHOLD_MOBILE = 14.5;
 
 // Compare two GeoJSON polygons for equality
 const arePolygonsEqual = (
@@ -104,14 +106,13 @@ export default function Map({
 }: MapProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
-  const markers = useRef<mapboxgl.Marker[]>([]);
-  const markerElements = useRef<HTMLDivElement[]>([]);
   const chatInterfaceRef = useRef<ChatInterfaceHandle>(null);
-  const geocodedPins = useRef<mapboxgl.Marker[]>([]); // Native teardrop pins for geocoded locations
-  const pendingMarkerUpdate = useRef<number | null>(null); // Throttle zoom marker updates
-  const currentMarkerMode = useRef<'dot' | 'emoji'>('dot'); // Track marker display mode
-  const markerElBySlug = useRef<globalThis.Map<string, HTMLDivElement>>(new globalThis.Map()); // slug → marker element
-  const recommendedSlugs = useRef<Set<string>>(new Set()); // Remi-suggested restaurants
+  const restaurantsBySlug = useRef<globalThis.Map<string, Restaurant>>(new globalThis.Map()); // for layer clicks
+  const restaurantLayersReady = useRef(false);
+  // Pushes the latest restaurants/favorites/selection into the restaurant layer source
+  const renderRestaurants = useRef<() => void>(() => {});
+  // Pushes the visible searched places (character portraits) into the places layer
+  const renderPlaces = useRef<() => void>(() => {});
 
   // Use MapContext for state and actions
   const {
@@ -130,12 +131,16 @@ export default function Map({
     geocodedMarkers,
     markerVisibilityMap,
     clearGeocodedMarkers,
+    recommendedSlugs,
+    setRecommendedSlugs,
     setUserLocation,
   } = useMap();
 
   // Refs for tracking previous isochrone states to prevent unnecessary re-renders
   const previousLayers = useRef<IsochroneLayer[]>([]);
   const selectedRestaurantRef = useRef(selectedRestaurant); // Avoid stale closures in click handlers
+  const onRestaurantSelectRef = useRef(onRestaurantSelect);
+  onRestaurantSelectRef.current = onRestaurantSelect;
 
   // Keep selectedRestaurantRef in sync (avoids stale closures in click handlers)
   useEffect(() => {
@@ -148,7 +153,7 @@ export default function Map({
     // Clear selected restaurant
     setSelectedRestaurant(null);
     // Clear recommended slugs
-    recommendedSlugs.current.clear();
+    setRecommendedSlugs([]);
     // Clear geocoded location pins
     clearGeocodedMarkers();
 
@@ -200,24 +205,8 @@ export default function Map({
 
   // Implement onMapFocus handler for semantic search results
   const handleMapFocus = (restaurantSlugs: string[]) => {
-    // Directly flip recommended markers to emoji teardrops
-    restaurantSlugs.forEach((slug) => {
-      const el = markerElBySlug.current.get(slug);
-      if (el) {
-        el.classList.add("emoji-mode");
-        el.style.width = "36px";
-        el.style.height = "42px";
-        el.style.borderRadius = "";
-        el.style.backgroundColor = EMOJI_BG_COLOR;
-        const dotColor = el.getAttribute("data-dot-color") || "#928f8e";
-        el.style.border = dotColor === "#928f8e" ? "" : `2.5px solid ${dotColor}`;
-        const emojiSpan = el.querySelector(".marker-emoji") as HTMLElement | null;
-        if (emojiSpan) emojiSpan.style.display = "";
-        // Bring to front
-        const mapboxContainer = el.closest('.mapboxgl-marker') as HTMLElement | null;
-        if (mapboxContainer) mapboxContainer.style.zIndex = "5";
-      }
-    });
+    // Recommended restaurants are drawn as red markers
+    setRecommendedSlugs(restaurantSlugs);
 
     // Filter allRestaurants to only include the semantic search results
     const focusedRestaurants = allRestaurants.filter((r) =>
@@ -260,107 +249,6 @@ export default function Map({
     }
   };
 
-  // Function to determine if device is mobile
-  const isMobile = () => {
-    return window.innerWidth <= 768 || "ontouchstart" in window;
-  };
-
-  // Function to calculate marker size based on zoom level and device
-  const getMarkerSize = (
-    baseSize: number,
-    zoom: number,
-    isMobileDevice: boolean
-  ) => {
-    // Scale smoothly based on zoom level
-    // Smaller when zoomed out to reduce clustering
-    const minZoom = 10;
-    const maxZoom = 16;
-    const minScale = isMobileDevice ? 0.45 : 0.5;
-    const maxScale = isMobileDevice ? 1.5 : 1.2;
-
-    const clampedZoom = Math.max(minZoom, Math.min(maxZoom, zoom));
-    const t = (clampedZoom - minZoom) / (maxZoom - minZoom);
-    const scale = minScale + t * (maxScale - minScale);
-
-    return Math.round(baseSize * scale);
-  };
-
-  // Function to update all marker sizes (batched for performance)
-  const updateMarkerSizes = () => {
-    if (!map.current) return;
-
-    const zoom = map.current.getZoom();
-    const mobile = isMobile();
-    const emojiThreshold = mobile ? EMOJI_ZOOM_THRESHOLD_MOBILE : EMOJI_ZOOM_THRESHOLD_DESKTOP;
-    const shouldBeEmoji = zoom >= emojiThreshold;
-
-    // Update mode ref
-    currentMarkerMode.current = shouldBeEmoji ? 'emoji' : 'dot';
-
-    // Batch all calculations first (reads) - prevents layout thrashing
-    const updates: Array<{
-      el: HTMLDivElement;
-      size: number;
-      isSelected: boolean;
-      wrapper: HTMLElement | null;
-    }> = [];
-
-    markerElements.current.forEach((markerEl) => {
-      if (markerEl && markerEl.style) {
-        const baseSize = parseInt(markerEl.getAttribute("data-base-size") || "6");
-        let newSize = getMarkerSize(baseSize, zoom, mobile);
-        const isSelected = markerEl.getAttribute("data-is-selected") === "true";
-        if (isSelected) {
-          newSize = Math.round(newSize * 1.25);
-        }
-        updates.push({
-          el: markerEl,
-          size: newSize,
-          isSelected,
-          wrapper: markerEl.parentElement,
-        });
-      }
-    });
-
-    // Then apply all styles (writes) - no interleaved reads
-    const padding = mobile ? "8px" : "6px";
-    updates.forEach(({ el, size, isSelected, wrapper }) => {
-      if (shouldBeEmoji || isSelected) {
-        // Emoji teardrop mode — or selected at any zoom
-        el.classList.add("emoji-mode");
-        el.classList.remove("emoji-selected");
-        el.style.width = "36px";
-        el.style.height = "42px";
-        el.style.borderRadius = "";  // Let CSS handle it
-        el.style.backgroundColor = EMOJI_BG_COLOR;
-        const dotColor = el.getAttribute("data-dot-color") || "#928f8e";
-        el.style.border = dotColor === "#928f8e" ? "" : `2.5px solid ${dotColor}`;
-        // Show emoji
-        const emojiSpan = el.querySelector(".marker-emoji") as HTMLElement | null;
-        if (emojiSpan) emojiSpan.style.display = "";
-        if (wrapper) {
-          wrapper.style.padding = "4px";
-        }
-      } else {
-        // Dot mode (non-selected, zoom < 15)
-        const dotColor = el.getAttribute("data-dot-color") || "#928f8e";
-        el.classList.remove("emoji-mode");
-        el.classList.remove("emoji-selected");
-        el.style.width = `${size}px`;
-        el.style.height = `${size}px`;
-        el.style.borderRadius = "50%";
-        el.style.backgroundColor = dotColor;
-        el.style.border = "1px solid white";
-        // Hide emoji
-        const emojiSpan = el.querySelector(".marker-emoji") as HTMLElement | null;
-        if (emojiSpan) emojiSpan.style.display = "none";
-        if (wrapper) {
-          wrapper.style.padding = padding;
-        }
-      }
-    });
-  };
-
   useEffect(() => {
     if (!mapContainer.current) return;
 
@@ -392,19 +280,36 @@ export default function Map({
         '© <a href="https://atmikapai.dev/" target="_blank">Atmika</a> © <a href="https://marauders.earth/" target="_blank">Marauders</a>',
     });
 
-    // Add zoom event listener to update marker sizes (throttled with rAF)
-    map.current.on("zoom", () => {
-      if (pendingMarkerUpdate.current) {
-        cancelAnimationFrame(pendingMarkerUpdate.current);
-      }
-      pendingMarkerUpdate.current = requestAnimationFrame(() => {
-        updateMarkerSizes();
-        pendingMarkerUpdate.current = null;
-      });
+    const mapInstance = map.current;
+
+    // Restaurant markers live in map layers (see restaurantLayers.ts)
+    mapInstance.on("load", () => {
+      const emojis = [...new Set([...Object.values(CUISINE_EMOJI), FALLBACK_EMOJI])];
+      addRestaurantLayers(mapInstance, emojis, isMobile);
+      restaurantLayersReady.current = true;
+      renderRestaurants.current();
+      renderPlaces.current();
     });
 
-    // Add resize event listener for mobile detection
-    window.addEventListener("resize", updateMarkerSizes);
+    // Click a restaurant to select it; click it again to deselect
+    mapInstance.on("click", CLICKABLE_RESTAURANT_LAYERS, (e) => {
+      const slug = e.features?.[0]?.properties?.slug as string | undefined;
+      const restaurant = slug ? restaurantsBySlug.current.get(slug) : undefined;
+      if (!restaurant) return;
+      if (selectedRestaurantRef.current?.slug === restaurant.slug) {
+        setSelectedRestaurant(null);
+      } else {
+        setSelectedRestaurant(restaurant);
+        onRestaurantSelectRef.current(restaurant);
+        chatInterfaceRef.current?.addRestaurantCard(restaurant);
+      }
+    });
+    mapInstance.on("mouseenter", CLICKABLE_RESTAURANT_LAYERS, () => {
+      mapInstance.getCanvas().style.cursor = "pointer";
+    });
+    mapInstance.on("mouseleave", CLICKABLE_RESTAURANT_LAYERS, () => {
+      mapInstance.getCanvas().style.cursor = "";
+    });
 
     // Auto-detect user location and show on map
     map.current.on("load", () => {
@@ -443,13 +348,10 @@ export default function Map({
     });
 
     return () => {
-      if (pendingMarkerUpdate.current) {
-        cancelAnimationFrame(pendingMarkerUpdate.current);
-      }
+      restaurantLayersReady.current = false;
       if (map.current) {
         map.current.remove();
       }
-      window.removeEventListener("resize", updateMarkerSizes);
     };
   }, []);
 
@@ -574,6 +476,8 @@ export default function Map({
         });
 
         // Add fill layer with solid color
+        // Insert isochrones beneath the place portraits and restaurant markers
+        const beneathRestaurants = mapInstance.getLayer(FIRST_OVERLAY_LAYER) ? FIRST_OVERLAY_LAYER : undefined;
         if (layer.opacity > 0) {
           mapInstance.addLayer({
             id: fillLayerId,
@@ -587,7 +491,7 @@ export default function Map({
               "fill-color": layer.color,
               "fill-opacity": layer.opacity,
             },
-          });
+          }, beneathRestaurants);
         }
 
         // Add outline layer
@@ -604,7 +508,7 @@ export default function Map({
             "line-width": 1,
             "line-opacity": 0.4,
           },
-        });
+        }, beneathRestaurants);
       });
 
       // ... (existing fitBounds logic) ...
@@ -676,189 +580,31 @@ export default function Map({
     }
   }, [isochroneLayers, layerVisibilityMap]);
 
-  // Update markers when restaurants change (NOT on selection change)
+  // Update the restaurant layer when restaurants, filters, favorites, or selection change
   useEffect(() => {
-    if (!map.current) return;
+    // Favorites / award toggles show only matching restaurants (OR logic)
+    const restaurantsToRender =
+      favoritesActive || awardsActive
+        ? filteredRestaurants.filter(
+            (r) => (awardsActive && hasAnyAward(r)) || (favoritesActive && favorites.includes(r.name))
+          )
+        : filteredRestaurants;
 
-    // Clear existing markers
-    markers.current.forEach((marker) => marker.remove());
-    markers.current = [];
-    markerElements.current = [];
-    markerElBySlug.current.clear();
-
-    // Check if any filter modes are active
-    const hasActiveFilters = favoritesActive || awardsActive;
-
-    let restaurantsToRender = filteredRestaurants;
-
-    if (hasActiveFilters) {
-      // Filter mode active: apply OR logic to the already filtered pool
-      restaurantsToRender = filteredRestaurants.filter((r) => {
-        if (awardsActive && hasAnyAward(r)) return true;
-        if (favoritesActive && favorites.includes(r.name)) return true;
-        return false;
-      });
-    }
-
-    // Sort restaurants so favorites render last (on top of grey markers)
-    const sortedRestaurants = [...restaurantsToRender].sort(
-      (a, b) => Number(favorites.includes(a.name)) - Number(favorites.includes(b.name))
-    );
-
-    // Render restaurants with coordinates
-    sortedRestaurants.forEach((restaurant) => {
-      if (restaurant.latitude && restaurant.longitude) {
-        const isFavorite = favorites.includes(restaurant.name);
-
-        // Pink for favorites, grey for everything else
-        let markerColor = '#928f8e'  // Default grey
-        let baseMarkerSize = 10;     // Base size for grey markers
-        let zIndex = 0
-
-        if (isFavorite) {
-          markerColor = "#ff67b2"; // Pink
-          baseMarkerSize = 12;
-          zIndex = 3;
-        }
-
-        let marker: mapboxgl.Marker;
-        let markerEl: HTMLDivElement | null = null;
-
-        // All restaurants use custom DOM markers (emoji-capable)
-        const markerWrapper = document.createElement("div");
-        markerWrapper.style.padding = isMobile() ? "10px" : "8px";
-        markerWrapper.style.display = "flex";
-        markerWrapper.style.alignItems = "center";
-        markerWrapper.style.justifyContent = "center";
-        markerWrapper.style.cursor = "pointer";
-
-        // Determine cuisine emoji
-        const cuisineEmoji = CUISINE_EMOJI[restaurant.cuisine] || FALLBACK_EMOJI;
-
-        // Create the actual marker element
-        markerEl = document.createElement("div");
-        markerEl.className = "restaurant-marker";
-        markerEl.style.width = `${baseMarkerSize}px`;
-        markerEl.style.height = `${baseMarkerSize}px`;
-        markerEl.style.borderRadius = "50%";
-        markerEl.style.backgroundColor = markerColor;
-        markerEl.style.border = "1px solid white";
-        markerEl.style.boxShadow = "0 2px 4px rgba(0,0,0,0.2)";
-        markerEl.style.zIndex = zIndex.toString();
-
-        // Store data attributes for emoji mode
-        markerEl.setAttribute("data-cuisine-emoji", cuisineEmoji);
-        markerEl.setAttribute("data-dot-color", markerColor);
-        markerEl.setAttribute("data-slug", restaurant.slug);
-
-        // Add emoji span (hidden by default, shown at zoom ≥ 15)
-        const emojiSpan = document.createElement("span");
-        emojiSpan.className = "marker-emoji";
-        emojiSpan.textContent = cuisineEmoji;
-        emojiSpan.style.display = "none";
-        markerEl.appendChild(emojiSpan);
-
-        // Add star rating badge arcing above marker (hidden, shown on selection)
-        if (restaurant.yelp_rating) {
-          const starCount = Math.round(restaurant.yelp_rating);
-          const starBadge = document.createElement("div");
-          starBadge.className = "marker-star-badge";
-          // Position each star along an arc
-          const arcRadius = 30;
-          const totalArc = Math.min(starCount * 30, 140); // degrees of arc
-          const startAngle = 90 + totalArc / 2; // start from left side
-          for (let i = 0; i < starCount; i++) {
-            const star = document.createElement("span");
-            star.className = "marker-star";
-            star.textContent = '⭐';
-            const angle = startAngle - (starCount > 1 ? i * (totalArc / (starCount - 1)) : 0);
-            const rad = (angle * Math.PI) / 180;
-            const x = arcRadius * Math.cos(rad);
-            const y = -arcRadius * Math.sin(rad);
-            star.style.transform = `translate(${x}px, ${y}px)`;
-            starBadge.appendChild(star);
-          }
-          markerWrapper.appendChild(starBadge);
-        }
-
-        // Add the marker to the wrapper
-        markerWrapper.appendChild(markerEl);
-
-        // Store base size for dynamic resizing
-        markerEl.setAttribute("data-base-size", baseMarkerSize.toString());
-
-        // Create marker using the wrapper
-        marker = new mapboxgl.Marker(markerWrapper)
-          .setLngLat([restaurant.longitude, restaurant.latitude])
-          .addTo(map.current!);
-
-        // Add click handler (uses ref to avoid stale closure)
-        markerWrapper.addEventListener("click", () => {
-          if (selectedRestaurantRef.current?.slug === restaurant.slug) {
-            // Deselect
-            setSelectedRestaurant(null);
-          } else {
-            // Select
-            setSelectedRestaurant(restaurant);
-            onRestaurantSelect(restaurant);
-            if (chatInterfaceRef.current) {
-              chatInterfaceRef.current.addRestaurantCard(restaurant);
-            }
-          }
-        });
-
-        markers.current.push(marker);
-        if (markerEl) {
-          markerElements.current.push(markerEl);
-          markerElBySlug.current.set(restaurant.slug, markerEl);
-        }
-      }
-    });
-
-    // Update marker sizes after creating all markers
-    updateMarkerSizes();
-  }, [
-    filteredRestaurants,
-    onRestaurantSelect,
-    favoritesActive,
-    awardsActive,
-    favorites,
-    setSelectedRestaurant,
-    restaurantWeekActive,
-  ]);
-
-  // Handle selection styling without recreating markers
-  useEffect(() => {
-    // Clear previous selection and reset z-index
-    markerElBySlug.current.forEach((el) => {
-      el.removeAttribute("data-is-selected");
-      const mapboxContainer = el.closest('.mapboxgl-marker') as HTMLElement | null;
-      if (mapboxContainer) {
-        mapboxContainer.style.zIndex = "";
-        // Hide star badge
-        const starBadge = mapboxContainer.querySelector('.marker-star-badge') as HTMLElement | null;
-        if (starBadge) starBadge.style.display = "none";
-      }
-    });
-
-    // Apply selection to new marker
-    if (selectedRestaurant) {
-      const el = markerElBySlug.current.get(selectedRestaurant.slug);
-      if (el) {
-        el.setAttribute("data-is-selected", "true");
-        const mapboxContainer = el.closest('.mapboxgl-marker') as HTMLElement | null;
-        if (mapboxContainer) {
-          mapboxContainer.style.zIndex = "10";
-          // Show star badge
-          const starBadge = mapboxContainer.querySelector('.marker-star-badge') as HTMLElement | null;
-          if (starBadge) starBadge.style.display = "block";
-        }
-      }
-    }
-
-    // Re-run marker sizing to apply/remove emoji-selected styling
-    updateMarkerSizes();
-  }, [selectedRestaurant]);
+    renderRestaurants.current = () => {
+      const source = map.current?.getSource(RESTAURANT_SOURCE) as mapboxgl.GeoJSONSource | undefined;
+      if (!restaurantLayersReady.current || !source) return; // the map's load handler renders once ready
+      restaurantsBySlug.current = new globalThis.Map(restaurantsToRender.map((r) => [r.slug, r]));
+      source.setData(
+        restaurantFeatures(restaurantsToRender, {
+          favorites,
+          selectedSlug: selectedRestaurant?.slug ?? null,
+          recommended: new Set(recommendedSlugs),
+          emojiFor: (r) => CUISINE_EMOJI[r.cuisine] || FALLBACK_EMOJI,
+        })
+      );
+    };
+    renderRestaurants.current();
+  }, [filteredRestaurants, favoritesActive, awardsActive, favorites, selectedRestaurant, restaurantWeekActive, recommendedSlugs]);
 
   // Zoom to selected restaurant when it changes
   useEffect(() => {
@@ -897,35 +643,14 @@ export default function Map({
     }
   }, [selectedRestaurant]);
 
-  // Render geocoded location pins (native Mapbox teardrop markers showing isochrone centers)
+  // Render searched places' character portraits (a map layer beneath the restaurant markers)
   useEffect(() => {
-    if (!map.current) return;
-
-    // Clear existing geocoded pins
-    geocodedPins.current.forEach((pin) => pin.remove());
-    geocodedPins.current = [];
-
-    // Add new pins for each visible geocoded marker
-    const visibleMarkers = geocodedMarkers.filter(
-      (marker) => markerVisibilityMap.get(marker.id) !== false
-    );
-
-    visibleMarkers.forEach((marker) => {
-      const el = document.createElement("div");
-      el.className = "isochrone-character-marker";
-
-      const img = document.createElement("img");
-      img.src = marker.characterImage;
-      img.alt = marker.label;
-      el.appendChild(img);
-
-      const pin = new mapboxgl.Marker({ element: el })
-        .setLngLat([marker.longitude, marker.latitude])
-        .addTo(map.current!);
-
-      pin.getElement().style.zIndex = "10";
-      geocodedPins.current.push(pin);
-    });
+    const visibleMarkers = geocodedMarkers.filter((marker) => markerVisibilityMap.get(marker.id) !== false);
+    renderPlaces.current = () => {
+      if (!map.current || !restaurantLayersReady.current) return; // the map's load handler renders once ready
+      setPlaces(map.current, visibleMarkers);
+    };
+    renderPlaces.current();
   }, [geocodedMarkers, markerVisibilityMap]);
 
   return (

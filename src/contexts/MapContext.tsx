@@ -44,7 +44,7 @@ export interface GeocodedMarker {
   longitude: number;
   label: string; // The query or formatted address
   color: string; // Marker color to match isochrone
-  characterImage: string; // Character image path (e.g. "/characters/collette.png")
+  characterImage: string; // Character image path (e.g. "/characters/2_collette.png")
   messageId?: string; // Track which message created this marker (for visibility toggling)
 }
 
@@ -108,6 +108,10 @@ interface MapContextType {
   addGeocodedMarker: (marker: Omit<GeocodedMarker, "id">) => void;
   clearGeocodedMarkers: () => void;
 
+  // Restaurants in Remi's latest answer (drawn as red markers)
+  recommendedSlugs: string[];
+  setRecommendedSlugs: React.Dispatch<React.SetStateAction<string[]>>;
+
   // User's current location (from browser geolocation)
   userLocation: { latitude: number; longitude: number } | null;
   setUserLocation: (location: { latitude: number; longitude: number } | null) => void;
@@ -151,6 +155,9 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
   // Geocoded location markers
   const [geocodedMarkers, setGeocodedMarkers] = useState<GeocodedMarker[]>([]);
   const [markerVisibilityMap, setMarkerVisibilityMap] = useState<Map<string, boolean>>(new Map());
+
+  // Restaurants in Remi's latest answer (drawn as red markers)
+  const [recommendedSlugs, setRecommendedSlugs] = useState<string[]>([]);
 
   // User's current location (from browser geolocation)
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
@@ -533,6 +540,8 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
         markerVisibilityMap,
         addGeocodedMarker,
         clearGeocodedMarkers,
+        recommendedSlugs,
+        setRecommendedSlugs,
         userLocation,
         setUserLocation,
       }}

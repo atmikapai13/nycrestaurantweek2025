@@ -154,7 +154,8 @@
 .match-distance {
   display: flex;
   align-items: center;
-  gap: 5px;
+  flex-wrap: wrap;
+  gap: 4px;
 }
 
 .match-distance-mode {
@@ -167,7 +168,7 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  border: 1.5px solid #ff67b2;
+  border: 1px solid #ff67b2;
   background: #fff;
   object-fit: cover;
   flex-shrink: 0;
