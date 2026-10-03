@@ -1,7 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import "./App.css";
 import FloatingHeader from "./components/FloatingHeader";
-import FilterBar from "./components/FilterBar";
+import FilterBar from "./components/FilterBar/FilterBar";
 import Map from "./components/Map";
 import type { Restaurant } from "./types/restaurant";
 import { MapProvider, useMap } from "./contexts/MapContext";
@@ -10,16 +10,10 @@ import { API_CONFIG } from "./config/features";
 function AppContent() {
   const {
     allRestaurants,
-    setActiveFilters,
-    setLegendFilters,
-    setSearchTerm,
     favorites,
     setFavorites,
     setSelectedRestaurant,
   } = useMap();
-
-  // Callback ref for map reset function (will be set by Map component)
-  const mapResetRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     // Check for favorites in URL hash first, then localStorage
@@ -98,32 +92,8 @@ function AppContent() {
     }
   };
 
-  const handleFilterChange = (filterType: string, values: string[]) => {
-    setActiveFilters((prevFilters) => {
-      const newFilters = { ...prevFilters };
-      if (values.length === 0) {
-        delete newFilters[filterType];
-      } else {
-        newFilters[filterType] = values;
-      }
-      return newFilters;
-    });
-  };
-
   const handleRestaurantSelect = (restaurant: Restaurant) => {
     setSelectedRestaurant(restaurant);
-  };
-
-  const handleResetAll = () => {
-    setActiveFilters({});
-    setLegendFilters([]);
-    setSearchTerm("");
-    setSelectedRestaurant(null);
-
-    // Also reset map state (isochrones, view) if the callback is available
-    if (mapResetRef.current) {
-      mapResetRef.current();
-    }
   };
 
   return (
@@ -138,9 +108,6 @@ function AppContent() {
         <Map
           onRestaurantSelect={handleRestaurantSelect}
           onToggleFavorite={toggleFavorite}
-          onFilterChange={handleFilterChange}
-          onResetAll={handleResetAll}
-          mapResetRef={mapResetRef}
         />
 
         {/* Restaurant Card now appears in chat when clicking markers */}

@@ -1,0 +1,82 @@
+/* Where the filter bar sits and how it collapses. Pill and menu styling is shadcn/Tailwind
+   (see filterPill.ts); menus render in portals, so nothing here needs to leave room for them. */
+
+.filter-bar-container {
+  position: absolute;
+  top: 3%;
+  /* Right of the chat panel: 20px (chat left) + min(35vw, 500px) (chat width) + 10px gap */
+  left: calc(20px + min(35vw, 500px) + 10px);
+  right: 50px;
+  z-index: 850;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+  pointer-events: none; /* Touches pass through to the map; pills opt back in */
+}
+
+/* Refine + the row of pills; Refine sits above the row when collapsed */
+.filter-bar-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.filter-bar-wrapper.collapsed {
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filter-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.filter-row.is-collapsed {
+  opacity: 0;
+  transform: translateX(-10px);
+  max-width: 0;
+  overflow: hidden;
+}
+
+/* Hidden pills can't be clicked */
+.filter-row.is-collapsed,
+.filter-row.is-collapsed * {
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .filter-bar-container {
+    position: fixed;
+    top: 40px;
+    left: 10px;
+    right: 10px;
+  }
+
+  .filter-row {
+    max-width: calc(100vw - 50px);
+    gap: 8px;
+  }
+}
+
+/* Tablet: the chat panel is 45vw / 600px max */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .filter-bar-container {
+    left: calc(20px + min(45vw, 600px) + 10px);
+    right: 10px;
+  }
+}
+
+/* Large screens (useIsLargeScreen's 1536px): 3% of a tall viewport pushes Refine too low */
+@media (min-width: 1536px) {
+  .filter-bar-container {
+    top: 1%;
+  }
+}
