@@ -15,10 +15,10 @@ NYC Eats is a conversational geospatial restaurant discovery tool for Manhattan.
 ## Commands
 
 ```bash
-npm run dev                   # Vite frontend (5173), served under /spring2026/
+npm run dev                   # Vite frontend (5173), served under /winter2026/
 npm run api:dev               # Local Hono API server with tsx watch (3001) — REQUIRED for chat in dev
 npm run vercel-dev            # Vercel Functions locally (3000)
-npm run build                 # tsc + vite build → dist/spring2026
+npm run build                 # tsc + vite build → dist/winter2026
 npm run lint                  # ESLint, --max-warnings 0
 npm run embeddings:generate   # Regenerate src/data/embeddings.json from FinalData.json (needed after data changes)
 node scripts/benchmark-chat.js --label <name>   # Speed + consistency benchmark (needs api:dev); report → benchmarks/results/
@@ -32,10 +32,10 @@ In dev, `src/config/features.ts` hard-codes the chat/transcribe endpoints to `ht
 
 ## Deployment (subpath build)
 
-This branch (`spring2026`) is built as a self-contained subpath app:
-- `vite.config.ts` sets `base: "/spring2026/"` and `outDir: "dist/spring2026"`. The site is served at `nyceats.live/spring2026/` via a separate Vercel router project, and also on its own `.vercel.app` domain.
+This branch (`winter2026`) is built as a self-contained subpath app:
+- `vite.config.ts` sets `base: "/winter2026/"` and `outDir: "dist/winter2026"`. The site is served at `nyceats.live/winter2026/` via a separate Vercel router project, and also on its own `.vercel.app` domain.
 - **Public assets must go through `asset()`** (`src/utils/asset.ts`), e.g. `asset("/characters/anton.png")`. Hard-coded `/foo.png` paths break under the subpath.
-- `vercel.json` rewrites `/spring2026/api/*` → `/api/*`; functions have a 60s max duration (`includeFiles` bundles `FinalData.json` and `embeddings.json` with the functions). Vercel deploys from this branch; the `gh-pages` branch is excluded. `npm run deploy` (gh-pages) is legacy.
+- `vercel.json` rewrites `/winter2026/api/*` → `/api/*`; functions have a 60s max duration (`includeFiles` bundles `FinalData.json` and `embeddings.json` with the functions). Vercel deploys from this branch; the `gh-pages` branch is excluded. `npm run deploy` (gh-pages) is legacy.
 - Kill switch: set `CHATBOT_DOWN = true` in `src/components/ChatInterface.tsx` to take Remi offline (shows a down message instead of calling the API).
 
 ## Request Flow (`api/chat.ts`)
@@ -56,7 +56,7 @@ The backend streams parts shaped like the old MCP tool calls, and `ChatInterface
 
 ## Map Markers
 
-Restaurant dot colors by priority: selected orange `#FF9100` > favorite pink `#ff67b2` > award red `#c81224` > default grey `#928f8e`. At zoom ≥15 (14.5 mobile) dots become cuisine-emoji teardrops (`CUISINE_EMOJI` in `Map.tsx`). Geocoded locations render as character portraits in pink-rimmed circles (`.isochrone-character-marker`); the user's own location is a pulsing blue dot.
+Markers are Mapbox layers, not DOM elements (`src/components/restaurantLayers.ts`; images drawn once on a canvas): grey dots `#7f7576`, pink `#ff67b2` for favorites, sized by zoom; Remi's current picks (`recommendedSlugs` in MapContext, set from `displayRestaurants` results) are small plain red teardrops; the selected restaurant is a cuisine-emoji teardrop (`CUISINE_EMOJI` in `Map.tsx`) with a Yelp-star arc. Searched places render as character portraits (`public/characters/1_alfredo.png`…, assigned in order per search) in a layer above the markers; isochrones are inserted beneath everything. The user's own location is a pulsing blue DOM dot.
 
 ## Environment Variables
 

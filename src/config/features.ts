@@ -4,7 +4,7 @@ export const FEATURES = {
 };
 
 // API base path (no trailing slash), always derived from the app's base so requests
-// route through the router to THIS event's serverless functions, e.g. "/spring2026/api".
+// route through the router to THIS event's serverless functions, e.g. "/winter2026/api".
 // Do NOT make this configurable via env — the subpath must match the deploy.
 const API_BASE = `${import.meta.env.BASE_URL}api`;
 
