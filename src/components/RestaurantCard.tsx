@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { ChevronDown, Globe, Heart, Phone, X } from "lucide-react";
-import TravelTimes from "./TravelTimes";
 import RatingArc from "./RatingArc";
 import type { Restaurant } from "../types/restaurant";
 import { asset } from "../utils/asset";
+import { displayName } from "../utils/restaurantName";
+import TravelTimes from "./TravelTimes";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -22,12 +23,6 @@ interface RestaurantCardProps {
 }
 
 const MICHELIN_STARS = ["ONE_STAR", "TWO_STARS", "THREE_STARS"];
-
-/** Drop a location suffix: "Bar Primi - Bowery" / "Sant Ambroeus—SoHo" → the name alone.
-    Splits on a spaced " - " / " – " or any em dash; hyphens inside words (Jean-Georges) stay. */
-export function displayName(name: string): string {
-  return name.split(/\s+[-–]\s+|\s*—\s*/)[0].trim() || name;
-}
 
 /** Split text into paragraphs of two sentences (dropping Yelp's "Yelp categorizes…" opener). */
 function paragraphs(text: string | undefined, dropYelpOpener = false): string {
@@ -141,10 +136,11 @@ export default function RestaurantCard({
   const longAbout = r.summary2?.trim() || shortAbout;
   const hasDetails = hasReviews || !!longAbout;
 
-  const whyBlock = reason && (
+  // Remi's reason (his picks): the quote in full, then the facts; nothing when he gave neither
+  const whyBlock = reason && (reason.quote || reason.facts.length > 0) && (
     <div className="border-l-2 border-primary py-1 pl-2.5">
       {reason.quote && (
-        <blockquote className="line-clamp-2 text-body italic text-muted-foreground">
+        <blockquote className="text-body italic text-muted-foreground">
           “{reason.quote.text}”
           <span className="whitespace-nowrap text-caption not-italic text-grey"> — {reason.quote.source}</span>
         </blockquote>
@@ -308,10 +304,8 @@ export default function RestaurantCard({
       </CardHeader>
 
       <CardContent className="flex flex-col gap-3 p-4 pt-0">
-        {/* 2. Why Remi picked it (his picks only) */}
+        {/* 2. Why Remi picked it, then the travel time from each searched place (his picks only) */}
         {whyBlock}
-
-        {/* Travel time from each searched place (Remi's picks) */}
         <TravelTimes reason={reason} />
 
         {/* 4. Act on it, across the full width: one solid main action (Reserve, or the website when

@@ -443,7 +443,7 @@ export default function Map({
         restaurantFeatures(restaurantsToRender, {
           favorites,
           selectedSlug: selectedRestaurant?.slug ?? null,
-          recommended: new Set(recommendedSlugs),
+          recommended: recommendedSlugs,
         })
       );
     };

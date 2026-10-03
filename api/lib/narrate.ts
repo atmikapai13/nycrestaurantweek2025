@@ -29,7 +29,7 @@ export function cannedReply(outcome: SearchOutcome): string | null {
 const PERSONA = `You are Remi, a witty restaurant concierge inspired by Ratatouille's Remy, with Anthony Bourdain's honesty. You help people find Manhattan restaurants, especially NYC Restaurant Week prix-fixe deals ($30/$45/$60 lunch, brunch, and dinner menus at 600+ restaurants).`;
 
 const RULES = `Write the reply that accompanies restaurant cards the user can already see. Be terse: 2 sentences maximum in total, no lists or headings.
-- Sentence 1 (only if PLACED ON THE MAP or ASSUMED TRAVEL is given): a short clause confirming the pins (e.g. "Pinned you at AMC Empire 25 and your friend at One Manhattan West."). Mention travel mode/time ONLY when ASSUMED TRAVEL is given (don't restate travel the user specified), and never state times or distances that aren't given to you.
+- Sentence 1 (ONLY if ASSUMED TRAVEL is given): lay out the assumption so the user can correct it, naming the pinned places from PLACED ON THE MAP (e.g. "Assuming a 15-minute subway ride from AMC Empire 25 and One Manhattan West."). Without ASSUMED TRAVEL there is no sentence 1: don't confirm pins or restate travel the user specified. Never state times or distances that aren't given to you.
 - When there is a sentence 1, put a blank line (two newlines) between it and the last sentence.
 - Last sentence: call out 1–2 restaurants, each with a reason of at most ~8 words paraphrased from its "why" (quote first, else facts), e.g. "Lilia for wood-fired pastas, or Dante's buzzy aperitivo bar." Never paste the quote or use quotation marks (the card shows it), never cite review percentages, never invent details.
 - Don't name the other restaurants; the cards show them. No filler ("solid choices", "you've got options").
@@ -61,12 +61,14 @@ function assumptionNote(outcome: SearchOutcome): string {
   return `\nASSUMED TRAVEL: the user didn't fully specify how they're getting around, so this searched a ${travel.minutes}-minute ${trip}. Mention it in a few words so they can correct it.`;
 }
 
-/** Where each place was pinned, so Remi can confirm it and a wrong pin is easy to catch. */
+/** Where each place was pinned; only given when travel was assumed, so Remi's assumption
+    sentence can name the places. */
 function placementNote(outcome: SearchOutcome): string {
+  const travel = "travel" in outcome ? outcome.travel : null;
   const locations = ("locations" in outcome ? outcome.locations : []).filter((l) => l.query !== "your location");
-  if (!locations.length) return "";
+  if (!travel?.assumed || !locations.length) return "";
   const pins = locations.map((l) => `"${l.query}" → ${l.formattedAddress}`).join("; ");
-  return `\nPLACED ON THE MAP: ${pins}. Confirm the pins in a few words (e.g. "One Manhattan West on 9th Ave") so the user can catch a wrong spot.`;
+  return `\nPLACED ON THE MAP: ${pins}.`;
 }
 
 function buildPrompt(userMessage: string, intent: SearchIntent, outcome: SearchOutcome): string {

@@ -1,9 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import mapboxgl from "mapbox-gl";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useMap } from "@/contexts/MapContext";
-import { Button } from "@/components/ui/button";
 import RestaurantCard from "./RestaurantCard";
 import { SELECTED_PIN_SCALE } from "./restaurantLayers";
 import "./MapRestaurantPopup.css";
@@ -18,8 +16,7 @@ const PIN_HALF_WIDTH = 16 * SELECTED_PIN_SCALE;
 /**
  * Desktop: the selected restaurant's card in a Mapbox popup to the right of its pin. It
  * follows the pin as the map moves, its top level with the pin's. When the restaurant is one of
- * Remi's picks, the card shows his reason, with ‹ n of N › arrows under it that step through the
- * picks (the map flies to each).
+ * Remi's picks, the card shows his reason and travel times, and ← / → step through his picks.
  */
 export default function MapRestaurantPopup({
   map,
@@ -64,13 +61,27 @@ export default function MapRestaurantPopup({
 
   useEffect(() => () => void popup.current?.remove(), []);
 
-  if (!open || !restaurant) return null;
+  // ← / → step through Remi's picks (wrapping) while one of them is open; the map flies to each.
+  // Ignored while typing (e.g. in the chat box) so the arrows still move the cursor there.
+  useEffect(() => {
+    if (pickIndex < 0 || recommendedPicks.length < 2) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+      if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
+      const target = e.target as HTMLElement | null;
+      if (target?.closest("input, textarea, select, [contenteditable='true']")) return;
+      e.preventDefault();
+      e.stopPropagation(); // the map would otherwise pan too
+      const delta = e.key === "ArrowRight" ? 1 : -1;
+      const next = recommendedPicks[(pickIndex + delta + recommendedPicks.length) % recommendedPicks.length];
+      setSelectedRestaurant(allRestaurants.find((r) => r.slug === next.slug) ?? next);
+    };
+    // Capture phase, so this runs before the map's own arrow-key panning
+    window.addEventListener("keydown", onKey, true);
+    return () => window.removeEventListener("keydown", onKey, true);
+  }, [pickIndex, recommendedPicks, allRestaurants, setSelectedRestaurant]);
 
-  // Step to the previous / next pick; the selection change flies the map there
-  const step = (delta: number) => {
-    const next = recommendedPicks[(pickIndex + delta + recommendedPicks.length) % recommendedPicks.length];
-    setSelectedRestaurant(allRestaurants.find((r) => r.slug === next.slug) ?? next);
-  };
+  if (!open || !restaurant) return null;
 
   return createPortal(
     <div className="flex flex-col gap-1.5" style={{ width: POPUP_CARD_WIDTH }}>
@@ -83,19 +94,6 @@ export default function MapRestaurantPopup({
           onClose={() => setSelectedRestaurant(null)}
         />
       </div>
-      {pickIndex >= 0 && recommendedPicks.length > 1 && (
-        <div className="tw-reset flex items-center justify-between self-stretch rounded-md bg-card/95 px-1 py-0.5 font-sans shadow-sm">
-          <Button variant="ghost" size="icon" className="size-7" onClick={() => step(-1)} aria-label="Previous pick">
-            <ChevronLeft className="!size-4" />
-          </Button>
-          <span className="text-caption font-medium text-muted-foreground">
-            Remi's pick {pickIndex + 1} of {recommendedPicks.length}
-          </span>
-          <Button variant="ghost" size="icon" className="size-7" onClick={() => step(1)} aria-label="Next pick">
-            <ChevronRight className="!size-4" />
-          </Button>
-        </div>
-      )}
     </div>,
     container
   );

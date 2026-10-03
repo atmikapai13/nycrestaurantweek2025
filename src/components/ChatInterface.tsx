@@ -35,7 +35,7 @@ import "./ChatInterface.css";
 import { colors } from "@/styles/tokens";
 import { Button } from "@/components/ui/button";
 import { useIsDesktop } from "../hooks/useIsDesktop";
-import RemiPickList from "./RemiPickList";
+import { boldPicks } from "../utils/boldPicks";
 
 // Google Analytics gtag declaration
 declare function gtag(command: 'event', eventName: string, eventParams?: Record<string, unknown>): void;
@@ -378,7 +378,21 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
     const isLoading = status === "submitted" || status === "streaming";
 
-    // Desktop: once Remi finishes answering, open his first pick's card on the map
+    // Close the open restaurant card as soon as Remi starts placing pins or drawing travel-time
+    // areas (once per tool call), so the map is clear for the new search
+    const cardClosedForTools = useRef(new Set<string>());
+    useEffect(() => {
+      const last = aiMessages[aiMessages.length - 1];
+      for (const part of last?.parts ?? []) {
+        if (!isDynamicToolPart(part)) continue;
+        if (part.toolName !== "geocode" && part.toolName !== "get_isoline") continue;
+        if (cardClosedForTools.current.has(part.toolCallId)) continue;
+        cardClosedForTools.current.add(part.toolCallId);
+        setSelectedRestaurant(null);
+      }
+    }, [aiMessages, setSelectedRestaurant]);
+
+    // Desktop: once Remi finishes answering, open pick 1's card on the map
     const autoOpenedPicks = useRef("");
     useEffect(() => {
       if (!isDesktop || isLoading || recommendedPicks.length === 0) return;
@@ -1323,6 +1337,12 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                     return true;
                                   });
 
+                                  // Remi's picks in this answer, so their names are bold in his text
+                                  const picksPart = msg.parts.find((p) => p.type === "tool-displayRestaurants") as
+                                    | { output?: { restaurants?: Restaurant[] } }
+                                    | undefined;
+                                  const messagePicks = picksPart?.output?.restaurants ?? [];
+
                                   return deduplicatedParts.map((part, pIdx: number) => {
                                   if (isTextPart(part)) {
                                     const tryItExample = guidedExamplesRef.current.get(msg.id);
@@ -1331,7 +1351,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                         <div
                                           className="message-content"
                                           dangerouslySetInnerHTML={{
-                                            __html: linkifyText(part.text),
+                                            __html: linkifyText(boldPicks(part.text, messagePicks)),
                                           }}
                                         />
                                         {tryItExample && (
@@ -1376,10 +1396,8 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                           return null;
                                         }
 
-                                        // Desktop: names only; the cards open on the map
-                                        if (isDesktop) {
-                                          return <RemiPickList key={pIdx} picks={displayRestaurantsPool} />;
-                                        }
+                                        // Desktop: the cards open on the map (numbered red pins)
+                                        if (isDesktop) return null;
 
                                         return (
                                           <div

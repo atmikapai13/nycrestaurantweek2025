@@ -5,8 +5,10 @@
  *
  *   restaurants-hit             invisible, larger circles so small dots are easy to tap
  *   restaurants-dots            grey dots, pink for favorites; radius grows with zoom
- *   restaurants-picks           plain red teardrops for Remi's current picks, a bit smaller
+ *   restaurants-picks           red teardrops numbered 1, 2, 3… for Remi's current picks (his order,
+ *                               matching the numbers in his reply), a bit smaller, name beside each
  *   restaurants-selected        the same red teardrop, a little bigger, for the selected restaurant
+ *                               (numbered if it's one of Remi's picks)
  *
  * Above them, `places-characters` draws the searched places' character portraits
  * (Alfredo, Collette…). Isochrones go beneath everything.
@@ -16,6 +18,7 @@
 import type { LayerSpecification, Map as MapboxMap } from "mapbox-gl";
 import type { Restaurant } from "../types/restaurant";
 import { colors } from "@/styles/tokens";
+import { displayName } from "../utils/restaurantName";
 
 export const RESTAURANT_SOURCE = "restaurants";
 const LAYERS = {
@@ -75,14 +78,28 @@ function drawPinShape(ctx: CanvasRenderingContext2D, fill: string, rim: { color:
   ctx.stroke();
 }
 
-/** Plain red teardrop with a white rim: Remi's picks and the selected restaurant. */
-function drawPickPin(): ImageData {
+/** Red teardrop with a white rim, with Remi's pick number in its round part (or plain). */
+function drawPickPin(number?: number): ImageData {
   const { el, ctx } = canvas(PIN.W, PIN.H);
   drawPinShape(ctx, RED, { color: colors.white, width: 2 });
+  if (number) {
+    ctx.fillStyle = colors.white;
+    ctx.font = `700 ${number > 9 ? 14 : 17}px Inter, -apple-system, BlinkMacSystemFont, sans-serif`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(String(number), PIN.cx, PIN.cy + 1);
+  }
   return ctx.getImageData(0, 0, el.width, el.height);
 }
 
+/** Numbered pins exist for picks 1…MAX_NUMBERED_PICK; later ones use the plain pin. */
+const MAX_NUMBERED_PICK = 10;
+const pickPinImage = (n: number) => `${PICK_PIN_IMAGE}-${n}`;
+
 function registerImages(map: MapboxMap) {
+  for (let n = 1; n <= MAX_NUMBERED_PICK; n++) {
+    if (!map.hasImage(pickPinImage(n))) map.addImage(pickPinImage(n), drawPickPin(n), { pixelRatio: PIXEL_RATIO });
+  }
   if (!map.hasImage(PICK_PIN_IMAGE)) map.addImage(PICK_PIN_IMAGE, drawPickPin(), { pixelRatio: PIXEL_RATIO });
 }
 
@@ -109,7 +126,13 @@ export function addRestaurantLayers(map: MapboxMap, mobile: boolean) {
   const sortKey = ["case", ["get", "selected"], 3, recommended, 2, favorite, 1, 0];
 
   const teardropLayout = {
-    "icon-image": PICK_PIN_IMAGE,
+    // Numbered when it's one of Remi's picks, else the plain red pin
+    "icon-image": [
+      "case",
+      ["all", [">", ["get", "pickNumber"], 0], ["<=", ["get", "pickNumber"], MAX_NUMBERED_PICK]],
+      ["concat", `${PICK_PIN_IMAGE}-`, ["to-string", ["get", "pickNumber"]]],
+      PICK_PIN_IMAGE,
+    ],
     "icon-anchor": "bottom",
     "icon-offset": [0, 5], // the pin's point (not the shadow margin) touches the location
     "icon-allow-overlap": true,
@@ -151,6 +174,20 @@ export function addRestaurantLayers(map: MapboxMap, mobile: boolean) {
       ...teardropLayout,
       // A bit smaller than the selected restaurant's teardrop, growing with zoom
       "icon-size": ["interpolate", ["linear"], ["zoom"], 11, 0.6, 16, 0.7],
+      // The restaurant's name to the right of the pin's round head. Labels that would collide
+      // are dropped (the pin stays), so crowded areas don't turn into a pile of text.
+      "text-field": ["get", "label"],
+      "text-font": ["DIN Pro Medium", "Arial Unicode MS Regular"],
+      "text-size": 12,
+      "text-anchor": "left",
+      "text-offset": [1, -1.5],
+      "text-max-width": 10,
+      "text-optional": true,
+    },
+    paint: {
+      "text-color": colors.ink,
+      "text-halo-color": colors.white,
+      "text-halo-width": 1.5,
     },
   });
 
@@ -176,17 +213,19 @@ export function addRestaurantLayers(map: MapboxMap, mobile: boolean) {
   });
 }
 
-/** GeoJSON for the restaurant source. Recommended = in Remi's latest answer (red pin); highlighted = selected. */
+/** GeoJSON for the restaurant source. Recommended = in Remi's latest answer (red pin numbered in
+    his order, with its name); highlighted = selected. */
 export function restaurantFeatures(
   restaurants: Restaurant[],
-  options: { favorites: string[]; selectedSlug: string | null; recommended: Set<string> }
+  options: { favorites: string[]; selectedSlug: string | null; recommended: string[] }
 ): GeoJSON.FeatureCollection<GeoJSON.Point> {
+  const pickNumber = new Map(options.recommended.map((slug, i) => [slug, i + 1]));
   const features: GeoJSON.Feature<GeoJSON.Point>[] = [];
   for (const r of restaurants) {
     if (!r.latitude || !r.longitude) continue;
     const favorite = options.favorites.includes(r.name);
     const selected = r.slug === options.selectedSlug;
-    const recommended = options.recommended.has(r.slug);
+    const recommended = pickNumber.has(r.slug);
     features.push({
       type: "Feature",
       geometry: { type: "Point", coordinates: [r.longitude, r.latitude] },
@@ -196,6 +235,8 @@ export function restaurantFeatures(
         recommended,
         selected,
         highlight: selected,
+        pickNumber: pickNumber.get(r.slug) ?? 0,
+        label: recommended ? displayName(r.name) : "",
       },
     });
   }

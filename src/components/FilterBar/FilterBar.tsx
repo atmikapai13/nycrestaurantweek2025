@@ -31,6 +31,7 @@ export default function FilterBar() {
     drawerHeight,
     setDrawerHeight,
     selectedRestaurant,
+    setSelectedRestaurant,
     isochroneLayers,
     geocodedMarkers,
   } = useMap();
@@ -55,6 +56,8 @@ export default function FilterBar() {
   const toggleExpanded = () => {
     const next = !isExpanded;
     setIsExpanded(next);
+    // Opening the filters closes the restaurant card, so the two don't compete for attention
+    if (next) setSelectedRestaurant(null);
     // On mobile, expanding the bar lowers the drawer out of the way
     if (isMobile() && next) setDrawerHeight(8);
   };
