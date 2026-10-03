@@ -167,7 +167,7 @@ async function main() {
   console.log('\n✅ Embedding generation complete!')
   console.log(`   📊 Total embeddings: ${embeddings.length}/${restaurants.length}`)
   console.log(`   📁 File size: ${(fs.statSync(outputPath).size / 1024 / 1024).toFixed(2)} MB`)
-  console.log('\n🎉 Done. The API reads this file directly for semantic search (api/lib/vectorSearch.ts).')
+  console.log('\n🎉 Done. The API reads this file directly for semantic search (api/_lib/vectorSearch.ts).')
 }
 
 // Run the script

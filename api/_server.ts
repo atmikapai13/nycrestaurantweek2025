@@ -2,7 +2,7 @@ import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import chat from "./chat.js";
 import transcribe from "./transcribe.js";
-import { env, getGoogleApiKey } from "./env.js";
+import { env, getGoogleApiKey } from "./_env.js";
 
 const port = env.API2_PORT;
 

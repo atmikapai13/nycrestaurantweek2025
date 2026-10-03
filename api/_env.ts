@@ -19,7 +19,7 @@ export const env = {
   GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
   GOOGLE_GENERATIVE_AI_API_KEY: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
 
-  // Geoapify: geocoding + isochrones (api/lib/geo.ts)
+  // Geoapify: geocoding + isochrones (api/_lib/geo.ts)
   GEOAPIFY_API_KEY: process.env.GEOAPIFY_API_KEY || "",
 
   // API server configuration

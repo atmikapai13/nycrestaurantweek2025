@@ -43,7 +43,7 @@ export interface Restaurant {
   // Additional fields
   price?: string;
   reddit?: string;
-  // Set on chat results only: why Remi picked it (api/lib/matchReasons.ts)
+  // Set on chat results only: why Remi picked it (api/_lib/matchReasons.ts)
   match_reason?: MatchReason;
 }
 

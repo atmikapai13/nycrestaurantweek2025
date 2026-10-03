@@ -15,12 +15,12 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { handle } from "hono/vercel";
 import { createUIMessageStream, createUIMessageStreamResponse, type UIMessageChunk } from "ai";
-import { safeParseChatRequest, type ValidatedUIMessage } from "./schemas/chat.js";
-import { RequestMetrics, METRICS_HEADER } from "./lib/requestMetrics.js";
-import { parseIntent, type SearchIntent } from "./lib/intent.js";
-import { describeSearch, runSearch, type ToolReporter } from "./lib/searchPipeline.js";
-import { cannedReply, narrate } from "./lib/narrate.js";
-import { allRestaurants, CUISINES, mentionsRestaurantWeek, toCard } from "./lib/restaurants.js";
+import { safeParseChatRequest, type ValidatedUIMessage } from "./_schemas/chat.js";
+import { RequestMetrics, METRICS_HEADER } from "./_lib/requestMetrics.js";
+import { parseIntent, type SearchIntent } from "./_lib/intent.js";
+import { describeSearch, runSearch, type ToolReporter } from "./_lib/searchPipeline.js";
+import { cannedReply, narrate } from "./_lib/narrate.js";
+import { allRestaurants, CUISINES, mentionsRestaurantWeek, toCard } from "./_lib/restaurants.js";
 
 /** Benchmarks send `x-nyceats-cache: off` to measure uncached latency and model determinism. */
 const CACHE_HEADER = "x-nyceats-cache";
@@ -235,7 +235,7 @@ const chatHandler = async (c: any) => {
   return createUIMessageStreamResponse({ stream });
 };
 
-// Mount on "/chat" for local development (api/server.ts)
+// Mount on "/chat" for local development (api/_server.ts)
 app.post("/chat", chatHandler);
 // Catch-all for Vercel (file-based routing passes "/" or full path)
 app.post("/", chatHandler);
@@ -246,7 +246,7 @@ export const config = {
   runtime: "nodejs",
 };
 
-// Default export for local development (api/server.ts uses this)
+// Default export for local development (api/_server.ts uses this)
 export default app;
 
 // Named exports for Vercel serverless functions

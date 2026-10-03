@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { handle } from "hono/vercel";
 import { cors } from "hono/cors";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { env } from "./env.js";
+import { env } from "./_env.js";
 
 const app = new Hono();
 

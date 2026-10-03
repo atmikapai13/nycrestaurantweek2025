@@ -1,6 +1,6 @@
 import type { Restaurant } from "../types/restaurant";
 
-/** Same box the API uses to accept "your location" (MANHATTAN_BOUNDS in api/lib/geo.ts). */
+/** Same box the API uses to accept "your location" (MANHATTAN_BOUNDS in api/_lib/geo.ts). */
 const MANHATTAN_BOUNDS = { minLat: 40.6829, maxLat: 40.882, minLng: -74.02, maxLng: -73.9067 };
 /** The box also catches riverfront Brooklyn/Queens/NJ, so also require a listed restaurant nearby. */
 const MAX_DISTANCE_TO_A_RESTAURANT_M = 600;
@@ -26,7 +26,7 @@ export function isInManhattan(point: { latitude: number; longitude: number }, re
   );
 }
 
-/** Landmarks Remi always geocodes (they're in the API's known-places table, api/lib/geo.ts). */
+/** Landmarks Remi always geocodes (they're in the API's known-places table, api/_lib/geo.ts). */
 const FRIEND_LANDMARKS = [
   { name: "Union Square", latitude: 40.7359, longitude: -73.9911 },
   { name: "Bryant Park", latitude: 40.7536, longitude: -73.9832 },

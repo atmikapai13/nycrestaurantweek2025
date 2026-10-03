@@ -10,7 +10,7 @@
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { generateObject, type LanguageModelUsage } from "ai";
 import { z } from "zod";
-import { getGoogleApiKey } from "../env.js";
+import { getGoogleApiKey } from "../_env.js";
 
 export const MY_LOCATION = "MY_LOCATION";
 
