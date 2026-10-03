@@ -69,10 +69,10 @@
 .filter-hamburger-button {
   height: 25px;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(3px) saturate(100%);
-  -webkit-backdrop-filter: blur(3px) saturate(100%);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  /* Same pairing as an active filter pill: pale pink fill, pink rim, dark ink */
+  background: #fce4f2;
+  border: 1px solid #f23d97;
+  box-shadow: 0 2px 8px rgba(242, 61, 151, 0.2);
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -86,24 +86,132 @@
 }
 
 .filter-hamburger-button:hover {
-  background: rgba(255, 255, 255, 0.7);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: #f9d2e8;
+  box-shadow: 0 2px 8px rgba(242, 61, 151, 0.3);
 }
 
 .filter-hamburger-button svg {
-  color: #333;
+  color: #111111;
 }
 
 .filter-button-label {
   font-size: 12px;
-  font-weight: 500;
-  color: #333;
+  font-weight: 600;
+  color: #111111;
   white-space: nowrap;
 }
 
 /* When expanded, make button more compact (icon only) */
 .filter-bar-wrapper.expanded .filter-hamburger-button {
   padding: 0 6px;
+}
+
+.filter-hamburger-wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+/* Search toggle — same button styling as Refine, stacked below it.
+   Positioned absolutely (rather than relying on document flow) because the
+   Refine row's hidden-dropdown padding hack gives .filter-bar-wrapper a much
+   taller box than what's visible, which would otherwise push this far down. */
+.filter-search-wrapper {
+  position: absolute;
+  top: 33px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  pointer-events: auto;
+}
+
+.filter-search-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.filter-search-icon {
+  position: absolute;
+  left: 8px;
+  color: #9ca3af;
+  pointer-events: none;
+}
+
+.filter-search-input {
+  height: 25px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  padding: 0 10px 0 26px;
+  font-size: 12px;
+  font-family: inherit;
+  outline: none;
+  width: 95%;
+}
+
+/* Top-5 name-match typeahead, shown below the search input while typing */
+.filter-search-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 95%;
+  margin-top: 4px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  list-style: none;
+  padding: 4px;
+  overflow: hidden;
+}
+
+.filter-search-suggestion {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  padding: 7px 8px;
+  font-size: 12px;
+  font-family: inherit;
+  text-align: left;
+  color: #1f2937;
+  cursor: pointer;
+}
+
+.filter-search-suggestion:hover,
+.filter-search-suggestion:active {
+  background: rgba(242, 61, 151, 0.1);
+}
+
+
+/* Onboarding "point here" hint — bounces in from the right of the Refine button.
+   Horizontal (rather than below it) so it never collides with the Search button
+   stacked directly underneath Refine. */
+.filter-refine-hint {
+  position: absolute;
+  left: 100%;
+  top: -4px;
+  margin-left: 4px;
+  pointer-events: none;
+  z-index: 5;
+  animation: filter-refine-hint-bounce 1s ease-in-out infinite;
+}
+
+@keyframes filter-refine-hint-bounce {
+  0%,
+  100% {
+    transform: translateX(2px);
+  }
+  50% {
+    transform: translateX(-4px);
+  }
 }
 
 /* FilterBar - Two Row Layout */
@@ -198,19 +306,16 @@
 
 /* Unified base class for all filter pills (dropdowns and toggle buttons) */
 .filter-pill-base {
-  /* Glassmorphism matching ChatInterface.css and RestaurantCard.css */
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(3px) saturate(100%);
-  -webkit-backdrop-filter: blur(3px) saturate(100%);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: none;
+  background: #ffffff;
+  border: 1px solid #e3e3e3;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
   padding: 4px 10px;
   border-radius: 16px;
 
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 11px;
   font-weight: 500;
-  color: #333;
+  color: #111111;
 
   cursor: pointer;
   transition: all 0.2s ease;
@@ -226,17 +331,17 @@
 
 /* Unified hover state for all filter pills */
 .filter-pill-base:hover {
-  background: rgba(255, 255, 255, 0.85);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: #f4f4f4;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* Unified active state for all filter pills */
 .filter-pill-base.active {
-  background: rgba(255, 105, 180, 0.2);
-  border: 1px solid rgba(255, 105, 180, 0.5);
-  color: #333;
-  font-weight: 500;
-  box-shadow: 0 4px 12px rgba(255, 105, 180, 0.2);
+  background: #fce4f2;
+  border: 1px solid #f23d97;
+  color: #111111;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(242, 61, 151, 0.2);
 }
 
 /* Filter Pill Elements */
@@ -245,13 +350,21 @@
   line-height: 1;
 }
 
+.filter-pill-icon-img {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
 .filter-pill-label {
   font-weight: 500;
 }
 
 .filter-pill-badge {
-  background: rgba(255, 255, 255, 0.9);
-  color: #333;
+  background: #111111;
+  color: #ffffff;
   border-radius: 6px;
   padding: 1px 4px;
   font-size: 9px;
@@ -261,8 +374,8 @@
 }
 
 .filter-pill-button.active .filter-pill-badge {
-  background: rgba(255, 255, 255, 1);
-  color: #333;
+  background: #f23d97;
+  color: #ffffff;
 }
 
 .filter-pill-arrow {
@@ -270,19 +383,50 @@
   margin-left: 1px;
 }
 
+/* Desktop: larger, more legible filter pills (mobile keeps its own sizes below) */
+@media (min-width: 769px) {
+  .filter-pill-base {
+    font-size: 13px;
+    padding: 6px 13px;
+    border-radius: 16px;
+  }
+  .filter-pill-button {
+    gap: 5px;
+  }
+  .filter-pill-icon {
+    font-size: 14px;
+  }
+  .filter-pill-arrow {
+    font-size: 10px;
+  }
+  .filter-pill-badge {
+    font-size: 10px;
+  }
+  .filter-hamburger-button {
+    height: 31px;
+    border-radius: 16px;
+  }
+  .filter-button-label {
+    font-size: 13px;
+  }
+  .filter-reset-button {
+    font-size: 13px;
+    padding: 6px 13px;
+  }
+}
+
 /* Dropdown Menu */
 .filter-dropdown-menu {
   position: absolute;
   top: calc(100% + 4px);
-  min-width: 140px;
-  max-width: 250px;
+  min-width: 210px;
+  max-width: 320px;
   max-height: 250px;
   overflow-y: auto;
 
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px) saturate(180%);
-  -webkit-backdrop-filter: blur(10px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: #ffffff;
+  border: 1px solid #e3e3e3;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   border-radius: 8px;
 
   padding: 4px;
@@ -415,10 +559,15 @@
 }
 
 .filter-option-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex: 1;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 11px;
-  font-weight: 400;
-  color: #333;
+  font-size: 13px;
+  font-weight: 500;
+  color: #111111;
   user-select: none;
 }
 
@@ -468,7 +617,7 @@
 @media (max-width: 768px) {
   .filter-bar-container {
     position: fixed;
-    top: 35px;
+    top: 40px;
     left: 10px;
     right: 10px;
     bottom: auto;
@@ -591,10 +740,9 @@
   position: absolute;
   top: calc(100% + 4px);
   min-width: 180px;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px) saturate(180%);
-  -webkit-backdrop-filter: blur(10px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: #ffffff;
+  border: 1px solid #e3e3e3;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   border-radius: 8px;
   padding: 4px;
   z-index: 2000;
@@ -670,23 +818,22 @@
 
 /* Reset Button */
 .filter-reset-button {
-  background: rgba(178, 178, 178, 0.7);
-  backdrop-filter: blur(3px) saturate(100%);
-  -webkit-backdrop-filter: blur(3px) saturate(100%);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 8px;
+  background: #111111;
+  border: 1px solid #111111;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  border-radius: 16px;
   padding: 4px 10px;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 11px;
   font-weight: 500;
-  color: #333;
+  color: #ffffff;
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
 }
 
 .filter-reset-button:hover {
-  background: rgba(0, 0, 0, 0.85);
+  background: #333333;
   color: #ffffff;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -698,5 +845,14 @@
     /* Chat panel is 45%/600px max on tablets, so adjust left position */
     left: calc(20px + min(45vw, 600px) + 10px);
     right: 10px;
+  }
+}
+
+/* Large/ultra-wide screens (matches useIsLargeScreen's 1536px breakpoint) —
+   3% of a much taller viewport pushes the Refine button noticeably lower,
+   so trim it back closer to normal-desktop's effective position. */
+@media (min-width: 1536px) {
+  .filter-bar-container {
+    top: 1%;
   }
 }
