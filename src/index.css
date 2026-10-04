@@ -35,6 +35,23 @@
   --ring: var(--color-pink);
 }
 
+/* Quick-prompt bubbles: a ✨ that twinkles at the corner (animate-twinkle), staggered per
+   bubble with an animation-delay. */
+@theme {
+  --animate-twinkle: twinkle 1.6s ease-in-out infinite;
+  @keyframes twinkle {
+    0%,
+    100% {
+      transform: scale(0.6) rotate(0deg);
+      opacity: 0.25;
+    }
+    50% {
+      transform: scale(1.15) rotate(20deg);
+      opacity: 1;
+    }
+  }
+}
+
 /* shadcn class names (bg-primary, border-input, …) → those variables */
 @theme inline {
   --color-background: var(--background);
@@ -97,7 +114,7 @@
 
 /* CSS Variables */
 :root {
-  --drawer-height: 40vh; /* Default drawer height for mobile */
+  --drawer-height: 55vh; /* Mobile drawer height; ChatInterface keeps it in sync with drawerHeight */
   /* Desktop chat panel width; the filter bar sits just right of it (Map.tsx measures it) */
   --chat-panel-width: max(30vw, 320px);
 }

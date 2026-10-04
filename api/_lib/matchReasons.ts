@@ -3,19 +3,24 @@
  * given to the narrator so its reply is grounded in the same evidence.
  *
  * - distances: travel time from each pinned place by the search's mode (miles if
- *   routing is unavailable), shown under the card.
+ *   routing is unavailable), for the narrator.
+ * - times: walk / bike / transit minutes from each pinned place, shown on the card.
  * - facts: whichever cuisine / price / award / Restaurant Week filters it passed.
  * - quote: for vibe searches, the single sentence from the restaurant's own text
  *   (NYC Tourism's description or Yelp's review summary) that best matches the
  *   vibe, verbatim. Chosen by embedding similarity, so it's the same every time.
  */
 import type { MatchReason, Restaurant } from "../../src/types/restaurant.js";
-import { travelMinutes, type GeocodeResult, type TravelLeg, type TravelMode } from "./geo.js";
+import { drivingMinutes, legFor, modeTimes, type GeocodeResult, type TravelLeg, type TravelMode } from "./geo.js";
 import type { SearchIntent } from "./intent.js";
 import { hasMichelinStar, isBibGourmand, isNytTop100 } from "./restaurants.js";
 import type { SemanticRanker } from "./vectorSearch.js";
 
 export type { MatchReason };
+
+/** Transit times on the card go up to this many minutes (5-min bands, 1 Geoapify credit each);
+ *  beyond it the card shows no transit time */
+const TRANSIT_TIMES_MAX = 20;
 
 // summary / summary2 come from the restaurant's NYC Tourism Restaurant Week page;
 // yelp_review_highlights is Yelp's AI summary of its reviews.
@@ -27,6 +32,10 @@ const QUOTE_FIELDS = [
 
 /** Below this, no sentence is a convincing match and the card shows facts only. */
 const MIN_QUOTE_SCORE = 0.62;
+/** Card quotes for vibe searches can be a looser match: a shown pick with a relevant-enough
+    sentence ("Drinks are mentioned in 46.5% of Yelp reviews…") beats a card with no reason at
+    all. Diet evidence keeps the strict MIN_QUOTE_SCORE, since it's proof the place qualifies. */
+const MIN_CARD_QUOTE_SCORE = 0.55;
 
 /** A sentence that opens with a contrast is usually the caveat ("However, some reviewers…"). */
 const CONTRAST_OPENER = /^(however|but|although|though|unfortunately|that said|on the downside)\b/i;
@@ -91,7 +100,11 @@ type Quote = NonNullable<MatchReason["quote"]>;
  * kept only if it clears MIN_QUOTE_SCORE. Used both for card quotes and as the
  * evidence that a restaurant really fits a dietary need.
  */
-export async function findEvidence(restaurants: Restaurant[], ranker: SemanticRanker): Promise<Map<string, Quote>> {
+export async function findEvidence(
+  restaurants: Restaurant[],
+  ranker: SemanticRanker,
+  minScore = MIN_QUOTE_SCORE
+): Promise<Map<string, Quote>> {
   const candidates = restaurants.flatMap((r) =>
     QUOTE_FIELDS.flatMap(([field, source]) =>
       sentences((r as any)[field]).map((text) => ({ slug: r.slug, text, field, source }))
@@ -107,7 +120,7 @@ export async function findEvidence(restaurants: Restaurant[], ranker: SemanticRa
     if (!current || scores[i] > current.score) best.set(candidate.slug, { score: scores[i], candidate });
   });
   for (const [slug, { score, candidate }] of best) {
-    if (score >= MIN_QUOTE_SCORE) evidence.set(slug, { text: candidate.text, field: candidate.field, source: candidate.source });
+    if (score >= minScore) evidence.set(slug, { text: candidate.text, field: candidate.field, source: candidate.source });
   }
   return evidence;
 }
@@ -127,14 +140,23 @@ export async function buildMatchReasons(
   const pins = locations.map((l) => ({ latitude: l.latitude, longitude: l.longitude, isUser: l.query === "your location" }));
   const targets = shown.map((r) => ({ latitude: Number(r.latitude), longitude: Number(r.longitude) }));
   // Travel times and vibe quotes are independent network calls; run them together
-  const [vibeQuotes, minutes] = await Promise.all([
-    vibeRanker ? findEvidence(shown, vibeRanker) : Promise.resolve(new Map<string, Quote>()),
-    travel && pins.length ? travelMinutes(pins, targets, travel.mode, travel.minutes) : Promise.resolve(null),
+  // Transit bands reach at least TRANSIT_TIMES_MAX, further if the search asked for more
+  const transitMax = Math.max(TRANSIT_TIMES_MAX, travel?.mode === "transit" ? travel.minutes : 0);
+  const [vibeQuotes, times, driving] = await Promise.all([
+    vibeRanker ? findEvidence(shown, vibeRanker, MIN_CARD_QUOTE_SCORE) : Promise.resolve(new Map<string, Quote>()),
+    pins.length ? modeTimes(pins, targets, transitMax) : Promise.resolve(null),
+    travel?.mode === "driving" && pins.length ? drivingMinutes(pins, targets) : Promise.resolve(null),
   ]);
   return Object.fromEntries(
-    shown.map((r) => {
+    shown.map((r, j) => {
       const quote = dietEvidence.get(r.slug) ?? vibeQuotes.get(r.slug);
-      const legs = minutes?.map((row) => row[shown.indexOf(r)]);
+      const rowTimes = times?.map((row) => row[j]);
+      // The search's own mode, for the narrator's "N min from …"
+      const legs = !travel
+        ? undefined
+        : travel.mode === "driving"
+          ? driving?.map((row) => row[j])
+          : rowTimes?.map((t) => legFor(travel.mode as Exclude<TravelMode, "driving">, t));
       return [
         r.slug,
         {
@@ -142,6 +164,7 @@ export async function buildMatchReasons(
           ...(pins.length ? { pins } : {}),
           ...(travel ? { travelMode: travel.mode } : {}),
           ...(legs?.some(Boolean) ? { legModes: legs.map((l) => l?.mode ?? null) } : {}),
+          ...(rowTimes ? { times: rowTimes } : {}),
           facts: facts(r, intent),
           ...(quote ? { quote } : {}),
         },

@@ -14,7 +14,7 @@ export const colors = {
   pink: "#f23d97",
   /** Lighter pink: favorites (hearts, map dots, outlines), hover fills */
   pinkLight: "#ff69b4",
-  /** Pale pink: active-pill and Refine fills */
+  /** Pale pink: active-pill fills, selected menu rows */
   pinkSoft: "#fce4f2",
   /** pinkSoft on hover */
   pinkSoftHover: "#f9d2e8",

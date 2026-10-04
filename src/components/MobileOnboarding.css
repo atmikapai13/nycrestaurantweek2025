@@ -1,0 +1,144 @@
+/* Mobile first-visit walkthrough (MobileOnboarding): Remi's card at the bottom of the screen
+   while the chat drawer waits off-screen, plus a ring and arrow on whatever a line points at. */
+
+.mobile-onboarding {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1500;
+  padding: 0 16px calc(48px + env(safe-area-inset-bottom));
+  pointer-events: none;
+  animation: mobile-onboarding-in 0.45s cubic-bezier(0.22, 1.2, 0.36, 1) both;
+}
+
+.mobile-onboarding--leaving {
+  animation: mobile-onboarding-out 0.25s ease-in both;
+}
+
+@keyframes mobile-onboarding-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.96);
+  }
+}
+
+@keyframes mobile-onboarding-out {
+  to {
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+  }
+}
+
+.mobile-onboarding-inner {
+  position: relative;
+}
+
+/* Remi's chat bubble (RemiBubble) as a tap target */
+.mobile-onboarding-card {
+  pointer-events: auto;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mobile-onboarding-text {
+  /* Room for two lines, so the bubble doesn't grow as the text types out */
+  min-height: 2.8em;
+  margin: 0;
+}
+
+.mobile-onboarding-highlight {
+  color: var(--color-pink);
+  font-weight: 700;
+}
+
+.mobile-onboarding-cursor {
+  display: inline-block;
+  width: 0.5em;
+  height: 1em;
+  margin-left: 2px;
+  background: var(--color-ink);
+  vertical-align: text-bottom;
+  animation: mobile-onboarding-blink 0.6s steps(1) infinite;
+}
+
+@keyframes mobile-onboarding-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* The "tap to continue" chevrons, nudging right */
+.mobile-onboarding-next {
+  color: var(--color-pink);
+  animation: mobile-onboarding-nudge 0.9s ease-in-out infinite;
+}
+
+@keyframes mobile-onboarding-nudge {
+  50% {
+    transform: translateX(4px);
+  }
+}
+
+/* shadcn Button (outline, small pill); just its spot under the bubble */
+.mobile-onboarding-skip {
+  position: absolute;
+  bottom: -36px;
+  right: 4px;
+  pointer-events: auto;
+}
+
+/* Invisible tap-catcher over the map: a tap anywhere advances the walkthrough. Sits under the
+   filter bar (z-index 850), so the Filter button stays tappable. */
+.mobile-onboarding-catcher {
+  position: fixed;
+  inset: 0;
+  z-index: 840;
+  cursor: pointer;
+}
+
+/* Pulsing pink ring around the element a line points at */
+.mobile-onboarding-ring {
+  position: fixed;
+  z-index: 860;
+  border-radius: 999px;
+  box-shadow: 0 0 0 3px var(--color-pink);
+  pointer-events: none;
+  animation: mobile-onboarding-pulse 1.4s ease-out infinite;
+}
+
+@keyframes mobile-onboarding-pulse {
+  0% {
+    box-shadow: 0 0 0 3px var(--color-pink), 0 0 0 3px color-mix(in srgb, var(--color-pink) 45%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 3px var(--color-pink), 0 0 0 16px transparent;
+  }
+}
+
+/* Bouncing arrow under it */
+.mobile-onboarding-arrow {
+  position: fixed;
+  z-index: 860;
+  color: var(--color-pink);
+  pointer-events: none;
+  translate: -50% 0;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+  animation: mobile-onboarding-bounce 0.9s ease-in-out infinite;
+}
+
+@keyframes mobile-onboarding-bounce {
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-onboarding,
+  .mobile-onboarding-ring,
+  .mobile-onboarding-arrow,
+  .mobile-onboarding-next {
+    animation: none;
+  }
+}

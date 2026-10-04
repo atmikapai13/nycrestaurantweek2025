@@ -20,6 +20,7 @@ import {
 import { IsochroneMessage } from "./IsochroneMessage";
 import RemiStatus, { remiStage } from "./RemiStatus";
 import RestaurantCarousel from "./RestaurantCarousel";
+import RemiBubble from "./RemiBubble";
 import type { UIMessagePart } from "ai";
 import {
   type DynamicToolPart,
@@ -33,8 +34,11 @@ import {
 } from "../types/ai-message";
 import "./ChatInterface.css";
 import { colors } from "@/styles/tokens";
-import { Message, MessageAvatar, MessageContent } from "@/components/ui/message";
+import { Message, MessageContent } from "@/components/ui/message";
 import { Bubble, BubbleContent, BubbleGroup } from "@/components/ui/bubble";
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupTextarea } from "@/components/ui/input-group";
+import { ArrowUp, LoaderCircle, Mic } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { useIsDesktop } from "../hooks/useIsDesktop";
 import { boldPicks } from "../utils/boldPicks";
 import { friendLandmarkNear, isInManhattan } from "../utils/manhattan";
@@ -73,8 +77,7 @@ const ISOCHRONE_COLORS = {
 interface Message {
   role: "user" | "assistant";
   content: string;
-  type?: "text" | "restaurant_card";
-  restaurant?: Restaurant;
+  type?: "text";
 }
 
 // Expose methods to parent component
@@ -94,30 +97,8 @@ const CHATBOT_DOWN_MESSAGE =
   "Oof — my kitchen is temporarily closed! 🍳 My sous-chef (the AI behind the scenes) has stepped out, so I can't whisk up recommendations right now. We're working to get NYC Eats back up and running soon.<br><br>In the meantime, you can still explore the map, browse restaurant markers, and favorite your spots. Merci for your patience — please check back shortly!";
 
 // Chat rows are shadcn Message + Bubble: Remi's replies are white tiles with his avatar inside
-// (full width, since they hold status lines and toggles); yours are charcoal, on the right.
-const REMI_BUBBLE_CONTENT =
-  "flex w-full gap-3 rounded-2xl rounded-tl-sm px-3 py-2.5 font-sans text-body text-foreground shadow-xs whitespace-pre-wrap";
-const USER_BUBBLE_CONTENT = "rounded-2xl rounded-br-sm px-3 py-2 font-sans text-body whitespace-pre-wrap";
-
-function RemiAvatar() {
-  return (
-    <MessageAvatar className="size-8 self-start bg-transparent md:size-11">
-      <img src={asset("/remi.png")} alt="Remi" className="size-full object-cover" />
-    </MessageAvatar>
-  );
-}
-
-/** Remi's white message tile, with his avatar inside it at the top-left and the content beside. */
-function RemiBubble({ children }: { children: React.ReactNode }) {
-  return (
-    <Bubble variant="outline" className="w-full max-w-full">
-      <BubbleContent className={REMI_BUBBLE_CONTENT}>
-        <img src={asset("/remi.png")} alt="Remi" className="size-10 shrink-0 rounded-full object-cover md:size-12" />
-        <div className="flex min-w-0 flex-1 flex-col gap-2">{children}</div>
-      </BubbleContent>
-    </Bubble>
-  );
-}
+// (RemiBubble; full width, since they hold status lines and toggles); yours are charcoal, on the right.
+const USER_BUBBLE_CONTENT = "rounded-2xl rounded-br-sm px-3 py-2 font-sans text-body shadow-xs whitespace-pre-wrap";
 
 const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
   ({ onRestaurantSelect, onToggleFavorite }, ref) => {
@@ -131,22 +112,27 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       clearGeocodedMarkers,
       setRecommendedPicks,
       recommendedPicks,
+      filteredRestaurants,
       isochroneRegionSlugs,
       geocodedMarkers,
       markerVisibilityMap,
       allRestaurants,
       setSelectedRestaurant,
       userLocation,
+      onboardingActive,
     } = useMap();
     // Desktop: Remi's picks are a list of names here and the card opens on the map
     const isDesktop = useIsDesktop();
 
     // Random welcome message selection
     const welcomeMessages = [
-      '<span class="block text-subheading">Hey, I\'m Remi!</span><br>I\'m here in NYC for the winter, scouting the latest epicurean finds. Try one of these, or tell me what you\'re after:',
+      '<span class="block text-subheading">Hey, I\'m Remi!</span><br>How can I help you find a restaurant today?',
     ];
+    // After the mobile walkthrough (where Remi already introduced himself), he skips the hello
+    const POST_ONBOARDING_WELCOME = "What are you craving?";
 
-    // Quick-start prompts under the welcome message: an area search and a midpoint search. Clicking one sends it straight away, so a new user sees results immediately.
+    // Quick-start prompts under the welcome message: an area search and a midpoint search.
+    // **…** marks the words shown semibold in the bubble; they're stripped before the prompt is sent. Clicking one sends it straight away, so a new user sees results immediately.
     // When the browser shared a location in Manhattan, the first two start from "me".
     const userInManhattan = useMemo(
       () => !!userLocation && isInManhattan(userLocation, allRestaurants),
@@ -158,14 +144,14 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
     const friendLandmark = userInManhattan && userLocation ? friendLandmarkNear(userLocation) : null;
     const quickPrompts = userInManhattan
       ? [
-          "Happy hour spots within 10-min subway",
+          "**Happy hour** spots within **10-min subway**",
           friendLandmark
-            ? `My friend is at ${friendLandmark}. Find pasta spots within a 15-min walk of both of us.`
-            : "My friend is at Bryant Park. Find pasta spots between us.",
+            ? `My friend is at **${friendLandmark}**. Find **pasta** spots within a **15-min walk** of both of us.`
+            : "My friend is at **Bryant Park**. Find **pasta** spots between us.",
         ]
       : [
-          "Happy hour spots within 10-min subway of Soho",
-          "I'm in Washington Square Park, my friend is in Union Square. Find pasta spots within a 15-min walk of both of us.",
+          "**Happy hour** spots within **10-min subway** of **Soho**",
+          "I'm in **Washington Square Park**, my friend is in **Union Square**. Find **pasta** spots within a **15-min walk** of both of us.",
         ];
 
     const test = [
@@ -239,8 +225,9 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
     // Initialize with welcome message
     const [initialMessage] = useState(() => {
       // Select welcome message once to ensure consistency
-      const selectedMessage =
-        welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
+      const selectedMessage = onboardingActive
+        ? POST_ONBOARDING_WELCOME
+        : welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
 
       return {
         id: "welcome",
@@ -384,7 +371,23 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
     }, [aiMessages]);
 
-    const [customMessages, setCustomMessages] = useState<Message[]>([]); // For restaurant cards
+    // Mobile walkthrough: the drawer waits off-screen, then springs up with its contents
+    // following in a stagger (drawer-reveal, for as long as that takes)
+    const [drawerRevealing, setDrawerRevealing] = useState(false);
+    // A drawer that starts with the walkthrough never plays its usual slide-in (see drawer-onboarding)
+    const [startedWithOnboarding] = useState(onboardingActive);
+    const wasOnboarding = useRef(onboardingActive);
+    useEffect(() => {
+      if (wasOnboarding.current && !onboardingActive) {
+        setDrawerRevealing(true);
+        const timer = setTimeout(() => setDrawerRevealing(false), 1400);
+        wasOnboarding.current = false;
+        return () => clearTimeout(timer);
+      }
+    }, [onboardingActive]);
+
+    // Mobile: the restaurant whose marker was tapped; its card takes the slot under Remi's latest reply
+    const [tappedRestaurant, setTappedRestaurant] = useState<Restaurant | null>(null);
 
     const lastMessageRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -434,16 +437,17 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       }
     }, [aiMessages, setSelectedRestaurant]);
 
-    // Desktop: once Remi finishes answering, open pick 1's card on the map
+    // Once Remi finishes answering, select pick 1: the map flies to it (desktop also opens its card
+    // on the map; mobile's carousel already starts on it)
     const autoOpenedPicks = useRef("");
     useEffect(() => {
-      if (!isDesktop || isLoading || recommendedPicks.length === 0) return;
+      if (isLoading || recommendedPicks.length === 0) return;
       const key = recommendedPicks.map((p) => p.slug).join(",");
       if (autoOpenedPicks.current === key) return;
       autoOpenedPicks.current = key;
       const first = recommendedPicks[0];
       setSelectedRestaurant(allRestaurants.find((r) => r.slug === first.slug) ?? first);
-    }, [isDesktop, isLoading, recommendedPicks, allRestaurants, setSelectedRestaurant]);
+    }, [isLoading, recommendedPicks, allRestaurants, setSelectedRestaurant]);
 
     // Process tool results from AI SDK messages
     const processToolResults = () => {
@@ -759,16 +763,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       }
     };
 
-    const scrollToLastMessage = () => {
-      // Scroll the messages container to the absolute bottom
-      if (messagesContainerRef.current) {
-        messagesContainerRef.current.scrollTo({
-          top: messagesContainerRef.current.scrollHeight,
-          behavior: "smooth",
-        });
-      }
-    };
-
     // Scroll to show the top of the last message/card
     const scrollToLastCardTop = (offset: number = 40) => {
       if (messagesContainerRef.current) {
@@ -868,56 +862,31 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       autoResizeTextarea();
     }, [input]);
 
-    // Scroll when custom messages (restaurant cards) are added
-    // On mobile: scroll to show top of card; on desktop: scroll to bottom
+    // A new question brings new picks, which take the card slot back
     useEffect(() => {
-      if (customMessages.length > 0) {
-        const isMobile = window.innerWidth <= 768;
-        // Use requestAnimationFrame to ensure DOM is fully updated and laid out
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            if (isMobile) {
-              scrollToLastCardTop();
-            } else {
-              scrollToLastMessage();
-            }
-          });
-        });
-      }
-    }, [customMessages]);
+      if (isLoading) setTappedRestaurant(null);
+    }, [isLoading]);
 
-    // Expose addRestaurantCard method to parent via ref
+    // Scroll the card slot into view (the top of the card at the top of the chat)
+    const scrollToCardSlot = () => {
+      const container = messagesContainerRef.current;
+      const slot = container?.querySelector<HTMLElement>("[data-card-slot]");
+      if (!container || !slot) return;
+      const top = container.scrollTop + slot.getBoundingClientRect().top - container.getBoundingClientRect().top;
+      container.scrollTo({ top: Math.max(0, top - 12), behavior: "smooth" });
+    };
+
+    // Mobile: a tapped marker's card (Map.tsx calls this through the ref)
     const addRestaurantCard = (restaurant: Restaurant) => {
       // Don't add cards while Remi is responding
       if (isLoading) return;
 
-      const isMobile = window.innerWidth <= 768;
+      // Expand the drawer when it's collapsed
+      if (drawerHeight === 8) setDrawerHeight(55);
 
-      // Expand drawer to 45vh on mobile when marker is clicked (from 8vh or 30vh landing)
-      if (isMobile && (drawerHeight === 8 || drawerHeight === 30)) {
-        setDrawerHeight(55);
-      }
-
-      const card: Message = {
-        role: "assistant",
-        content: "",
-        type: "restaurant_card",
-        restaurant,
-      };
-
-      setCustomMessages((prev) => [...prev, card]);
-
-      // Use double requestAnimationFrame to ensure layout is complete
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          // On mobile, scroll to show top of the card; on desktop, scroll to bottom
-          if (isMobile) {
-            scrollToLastCardTop();
-          } else {
-            scrollToLastMessage();
-          }
-        });
-      });
+      setTappedRestaurant(restaurant);
+      // Double requestAnimationFrame so the new card is laid out first
+      requestAnimationFrame(() => requestAnimationFrame(scrollToCardSlot));
     };
 
     useImperativeHandle(ref, () => ({
@@ -1004,8 +973,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
 
     // Quick-start prompt: send it as if typed (on mobile, open the drawer enough to see results)
     const handleQuickPrompt = (prompt: string) => {
-      setCustomMessages([]);
-      if (window.innerWidth <= 768 && (drawerHeight === 8 || drawerHeight === 30)) {
+      if (window.innerWidth <= 768 && drawerHeight === 8) {
         setDrawerHeight(55);
       }
       handleSend(prompt);
@@ -1059,8 +1027,8 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
         console.debug('GA tracking skipped:', e);
       }
 
-      // Clear restaurant cards and geocoded pins when starting a new conversation turn
-      setCustomMessages([]);
+      // Clear the tapped marker's card and geocoded pins when starting a new conversation turn
+      setTappedRestaurant(null);
       clearGeocodedMarkers();
 
       setInput("");
@@ -1233,31 +1201,17 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
         };
       });
 
-      // Restaurant cards always appear at the end
-      return [...convertedAiMessages, ...customMessages] as (Message & {
+      return convertedAiMessages as (Message & {
         id?: string;
         parts?: UIMessagePart<any, any>[];
       })[];
-    }, [aiMessages, customMessages]);
-
-    // Expand drawer to 45vh after first message on mobile
-    useEffect(() => {
-      const isMobile = window.innerWidth <= 768;
-      const hasUserMessage = allMessages.some(msg => msg.role === 'user');
-      if (isMobile && hasUserMessage && drawerHeight === 30) {
-        setDrawerHeight(55);
-      }
-    }, [allMessages, drawerHeight, setDrawerHeight]);
+    }, [aiMessages]);
 
     const conversationStarted = allMessages.some((m) => m.role === "user");
     const isLastMessageAssistant =
       allMessages.length > 0 &&
       allMessages[allMessages.length - 1].role === "assistant";
-    const isLastMessageRestaurantCard =
-      allMessages.length > 0 &&
-      allMessages[allMessages.length - 1].type === "restaurant_card";
-    const canMergeLoading =
-      isLoading && isLastMessageAssistant && !isLastMessageRestaurantCard;
+    const canMergeLoading = isLoading && isLastMessageAssistant;
     // One in-place status line ("✻ Mapping…") until Remi's reply starts streaming
     const lastAssistantParts = isLastMessageAssistant ? allMessages[allMessages.length - 1].parts ?? [] : [];
     const remiReplyStarted = lastAssistantParts.some((p) => isTextPart(p) && p.text.trim() !== "");
@@ -1268,9 +1222,76 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       (lastUserMessage?.parts ?? []).map((p) => (isTextPart(p) ? p.text : "")).join(" ");
     const openingStage = classifyQuery(lastUserText || "") === "location" ? "Geocoding" : "Tasting";
 
+    // Remi's picks in a message, once it has finished streaming
+    const picksOf = (msg: (typeof allMessages)[number], isLastMessage: boolean): Restaurant[] => {
+      const part = msg.parts?.find((p) => p.type === "tool-displayRestaurants") as
+        | { state?: string; output?: { restaurants?: Restaurant[] } }
+        | undefined;
+      if (part?.state !== "output-available" || (isLoading && isLastMessage)) return [];
+      return part.output?.restaurants ?? [];
+    };
+
+    // Mobile: a carousel of restaurant cards. Swiping past the last one walks on to the nearest
+    // restaurants; `picks` get their "Remi's pick #N" label.
+    const renderCards = (
+      restaurants: Restaurant[],
+      { picks, startIndex = 0, slot = false }: { picks: Restaurant[]; startIndex?: number; slot?: boolean }
+    ) => (
+      <div className="restaurant-cards-container" data-card-slot={slot || undefined}>
+        <RestaurantCarousel
+          key={`${restaurants[0]?.slug}-${startIndex}`}
+          restaurants={restaurants}
+          startIndex={startIndex}
+          pickNumberFor={(r) => {
+            const index = picks.findIndex((p) => p.slug === r.slug);
+            return index >= 0 ? index + 1 : undefined;
+          }}
+          continueWith={filteredRestaurants}
+          onRestaurantSelect={(restaurant) => {
+            onRestaurantSelect?.(restaurant);
+            // Expand the drawer when it's collapsed
+            if (window.innerWidth <= 768 && drawerHeight === 8) setDrawerHeight(55);
+          }}
+          favorites={favorites}
+          onToggleFavorite={onToggleFavorite}
+          onRequestReviewHighlights={handleRestaurantSuggestionClick}
+          onExpandDrawer={() => {
+            if (window.innerWidth <= 768) setDrawerHeight(80);
+          }}
+        />
+      </div>
+    );
+
+    // Mobile: Remi's picks below his message (desktop opens them on the map). Under his latest
+    // reply, a tapped marker takes the slot: one of his picks jumps there (the numbered pins on the
+    // map still mark them all); any other restaurant replaces them.
+    const renderPicks = (msg: (typeof allMessages)[number], isLastMessage: boolean) => {
+      if (isDesktop) return null;
+      const picks = picksOf(msg, isLastMessage);
+      if (picks.length === 0) return null;
+      if (!isLastMessage) return renderCards(picks, { picks });
+      if (!tappedRestaurant) return renderCards(picks, { picks, slot: true });
+      const pickIndex = picks.findIndex((p) => p.slug === tappedRestaurant.slug);
+      return pickIndex >= 0
+        ? renderCards(picks, { picks, startIndex: pickIndex, slot: true })
+        : renderCards([tappedRestaurant], { picks, slot: true });
+    };
+    // A tapped marker's card when Remi's latest reply has no picks to replace: it goes at the end
+    const lastMessage = allMessages[allMessages.length - 1];
+    const tappedCardAtEnd =
+      !isDesktop && tappedRestaurant && !(lastMessage?.role === "assistant" && picksOf(lastMessage, true).length > 0);
+
     return (
       <div className="chat-interface">
-        <div ref={drawerRef} className={`chat-bubble drawer-${drawerHeight}`}>
+        <div
+          ref={drawerRef}
+          className={cn(
+            `chat-bubble drawer-${drawerHeight}`,
+            startedWithOnboarding && "drawer-onboarding",
+            onboardingActive && "drawer-hidden",
+            drawerRevealing && "drawer-reveal"
+          )}
+        >
           {/* Drag handle - mobile only */}
           <div
             className="drawer-handle"
@@ -1287,7 +1308,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
             onClick={() => setDrawerHeight(55)}
           >
             <img
-              src={asset("/remi_transparent.png")}
+              src={asset("/remi.png")}
               alt="Remi"
               className="drawer-collapsed-logo"
             />
@@ -1297,11 +1318,6 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
           {/* Messages */}
           <div ref={messagesContainerRef} className="chat-messages">
             {allMessages.map((msg, idx) => {
-              // Skip restaurant_card messages - they're rendered as a carousel below
-              if (msg.type === "restaurant_card" && msg.restaurant) {
-                return null;
-              }
-
               const isLastMessage = idx === allMessages.length - 1;
 
               return msg.role === "assistant" ? (
@@ -1368,53 +1384,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                                         return null;
 
                                       case "output-available":
-                                        // Delay rendering cards until streaming ends (only for current message)
-                                        if (isLoading && isLastMessage) {
-                                          return null;
-                                        }
-
-                                        const displayRestaurantsPool =
-                                          part.output?.restaurants || [];
-
-                                        if (displayRestaurantsPool.length === 0) {
-                                          if (!part.output?.error) {
-                                            console.log(
-                                              `[ChatInterface] No restaurants found: search for "${part.output?.query || 'unknown'}"`
-                                            );
-                                          }
-                                          return null;
-                                        }
-
-                                        // Desktop: the cards open on the map (numbered red pins)
-                                        if (isDesktop) return null;
-
-                                        return (
-                                          <div
-                                            key={pIdx}
-                                            className="restaurant-cards-container"
-                                          >
-                                            <RestaurantCarousel
-                                              restaurants={displayRestaurantsPool}
-                                              onRestaurantSelect={(restaurant) => {
-                                                if (onRestaurantSelect) {
-                                                  onRestaurantSelect(restaurant);
-                                                }
-                                                // Expand drawer to 55vh on mobile when navigating cards (only from smaller states)
-                                                if (window.innerWidth <= 768 && (drawerHeight === 8 || drawerHeight === 30)) {
-                                                  setDrawerHeight(55);
-                                                }
-                                              }}
-                                              favorites={favorites}
-                                              onToggleFavorite={onToggleFavorite}
-                                              onRequestReviewHighlights={handleRestaurantSuggestionClick}
-                                              onExpandDrawer={() => {
-                                                if (window.innerWidth <= 768) {
-                                                  setDrawerHeight(80);
-                                                }
-                                              }}
-                                            />
-                                          </div>
-                                        );
+                                        return null; // Rendered below the bubble (see renderPicks)
 
                                       case "output-error":
                                         return (
@@ -1472,15 +1442,20 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                             ) : null}
                     </RemiBubble>
 
-                    {/* Quick prompts under the welcome message: styled like your messages, on your side;
-                        gone once the conversation has started */}
-                    {idx === 0 && !conversationStarted && (
-                      <BubbleGroup className="items-end">
+                    {/* Mobile: Remi's picks sit below his message, like a tapped marker's card */}
+                    {renderPicks(msg, isLastMessage)}
+
+                    {/* Quick prompts: shadcn's "Links and Buttons" bubble pattern, right-aligned tinted
+                        bubbles that send when clicked. Gone once the conversation has started, or
+                        once a tapped marker's card is showing (mobile). */}
+                    {idx === 0 && !conversationStarted && !tappedRestaurant && (
+                      <BubbleGroup>
                         {quickPrompts.map((prompt) => (
-                          <Bubble key={prompt} variant="user" align="end">
-                            <BubbleContent asChild className="cursor-pointer rounded-2xl rounded-br-sm font-sans text-body transition-colors">
-                              <button type="button" onClick={() => handleQuickPrompt(prompt)}>
-                                {prompt}
+                          <Bubble key={prompt} variant="tinted" align="end">
+                            <BubbleContent asChild className="shadow-xs hover:border-primary">
+                              <button type="button" onClick={() => handleQuickPrompt(prompt.replace(/\*\*/g, ""))}>
+                                {/* **…** marks the key words (semibold here, stripped before sending) */}
+                                {prompt.split(/\*\*/).map((part, j) => (j % 2 ? <strong key={j} className="font-semibold">{part}</strong> : part))}
                               </button>
                             </BubbleContent>
                           </Bubble>
@@ -1508,43 +1483,8 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
               );
             })}
 
-            {/* Custom restaurant cards carousel (from marker clicks) */}
-            {(() => {
-              const customRestaurants = customMessages
-                .filter((msg) => msg.type === "restaurant_card" && msg.restaurant)
-                .map((msg) => msg.restaurant)
-                .filter((r): r is Restaurant => r !== undefined);
-
-              if (customRestaurants.length === 0) return null;
-
-              return (
-                <Message className="chat-message assistant" ref={lastMessageRef}>
-                  <RemiAvatar />
-                  <MessageContent>
-                      <RestaurantCarousel
-                        restaurants={customRestaurants}
-                        startFromLast={true}
-                        onRestaurantSelect={(restaurant) => {
-                          if (onRestaurantSelect) {
-                            onRestaurantSelect(restaurant);
-                          }
-                          if (window.innerWidth <= 768 && (drawerHeight === 8 || drawerHeight === 30)) {
-                            setDrawerHeight(55);
-                          }
-                        }}
-                        favorites={favorites}
-                        onToggleFavorite={onToggleFavorite}
-                        onRequestReviewHighlights={handleRestaurantSuggestionClick}
-                        onExpandDrawer={() => {
-                          if (window.innerWidth <= 768) {
-                            setDrawerHeight(80);
-                          }
-                        }}
-                      />
-                  </MessageContent>
-                </Message>
-              );
-            })()}
+            {/* A tapped marker's card, when there are no picks for it to replace */}
+            {tappedCardAtEnd && tappedRestaurant && renderCards([tappedRestaurant], { picks: recommendedPicks, slot: true })}
 
             {isLoading && !canMergeLoading && (
               <Message className="chat-message assistant">
@@ -1557,9 +1497,9 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
             )}
           </div>
 
-          {/* Input */}
-          <div className="chat-input-container">
-            <textarea
+          {/* Input: shadcn InputGroup (auto-growing textarea, mic and send buttons inside) */}
+          <InputGroup className="chat-input-container rounded-2xl border-border bg-background/95 shadow-xs backdrop-blur-sm has-[[data-slot=input-group-control]:focus-visible]:border-border has-[[data-slot=input-group-control]:focus-visible]:ring-0">
+            <InputGroupTextarea
               ref={inputRef}
               value={input}
               onChange={(e) => {
@@ -1572,49 +1512,50 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                   handleSend();
                   // Reset textarea height after sending
                   if (inputRef.current) {
-                    inputRef.current.style.height = 'auto';
+                    inputRef.current.style.height = "auto";
                   }
                 }
               }}
               placeholder={isListening ? "Listening... tap mic to stop" : isTranscribing ? "Transcribing..." : "Search for a restaurant..."}
               disabled={isLoading || isListening || isTranscribing}
-              className="chat-input"
+              // 14px keeps iOS from zooming in on focus; height is managed by autoResizeTextarea
+              className="min-h-0 py-2.5 pl-4 font-sans text-[14px] leading-[1.4] [scrollbar-width:none] placeholder:text-grey"
               rows={1}
             />
-            <button
-              onClick={toggleListening}
-              disabled={isLoading || isTranscribing}
-              className={`chat-mic-button ${isListening ? 'listening' : ''} ${isTranscribing ? 'transcribing' : ''}`}
-              title={isTranscribing ? "Transcribing..." : isListening ? "Click to stop" : "Voice input"}
-              aria-label={isTranscribing ? "Transcribing..." : isListening ? "Click to stop" : "Voice input"}
-            >
-              {isTranscribing ? (
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="transcribing-spinner">
-                  <circle cx="12" cy="12" r="10" strokeDasharray="31.4" strokeDashoffset="10" />
-                </svg>
-              ) : (
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
-                  <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-                  <line x1="12" y1="19" x2="12" y2="23" />
-                  <line x1="8" y1="23" x2="16" y2="23" />
-                </svg>
-              )}
-            </button>
-            <button
-              onClick={() => {
-                handleSend();
-                // Reset textarea height after sending
-                if (inputRef.current) {
-                  inputRef.current.style.height = 'auto';
-                }
-              }}
-              disabled={isLoading || !input.trim()}
-              className="chat-send-button"
-            >
-              ➤
-            </button>
-          </div>
+            <InputGroupAddon align="inline-end" className="self-end pb-1.5">
+              <InputGroupButton
+                size="icon-sm"
+                variant="ghost"
+                onClick={toggleListening}
+                disabled={isLoading || isTranscribing}
+                className={cn(
+                  "rounded-full text-muted-foreground hover:bg-secondary hover:text-primary",
+                  isListening && "animate-pulse bg-secondary text-primary",
+                  isTranscribing && "text-isochrone"
+                )}
+                title={isTranscribing ? "Transcribing..." : isListening ? "Click to stop" : "Voice input"}
+                aria-label={isTranscribing ? "Transcribing..." : isListening ? "Click to stop" : "Voice input"}
+              >
+                {isTranscribing ? <LoaderCircle className="animate-spin" /> : <Mic />}
+              </InputGroupButton>
+              <InputGroupButton
+                size="icon-sm"
+                variant="default"
+                onClick={() => {
+                  handleSend();
+                  // Reset textarea height after sending
+                  if (inputRef.current) {
+                    inputRef.current.style.height = "auto";
+                  }
+                }}
+                disabled={isLoading || !input.trim()}
+                className="rounded-full bg-charcoal text-white hover:bg-charcoal/85"
+                aria-label="Send"
+              >
+                <ArrowUp />
+              </InputGroupButton>
+            </InputGroupAddon>
+          </InputGroup>
         </div>
 
       </div>

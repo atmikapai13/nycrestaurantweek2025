@@ -14,9 +14,15 @@ import { filterMenuClass, filterPill } from "./filterPill";
  * ♥ pill: clicking toggles "show only favorites". When there are favorites it also opens
  * a menu with "Share with Friends", which copies a #favorites=<slugs> link.
  */
-export default function FavoritesFilter() {
+export default function FavoritesFilter({
+  open,
+  onOpenChange: setOpen,
+}: {
+  /** Controlled by the filter bar so only one menu is open at a time */
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
   const { allRestaurants, favorites, favoritesActive, setFavoritesActive } = useMap();
-  const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const hasFavorites = favorites.length > 0;
 
@@ -35,7 +41,7 @@ export default function FavoritesFilter() {
   }, [favorites, allRestaurants]);
 
   return (
-    <DropdownMenu open={open} onOpenChange={(next) => setOpen(next && hasFavorites)}>
+    <DropdownMenu open={open} onOpenChange={(next) => setOpen(next && hasFavorites)} modal={false}>
       <DropdownMenuTrigger asChild>
         <button
           type="button"

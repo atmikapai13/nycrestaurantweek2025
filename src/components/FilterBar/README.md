@@ -4,7 +4,7 @@
 
 | File | What it does / edit it to… |
 |---|---|
-| `FilterBar.tsx` | Layout and pill order; Refine, 500+ Reviews toggle, Reset. Add, remove or reorder pills. |
+| `FilterBar.tsx` | Layout and pill order; the Filter button, 500+ Reviews toggle, Reset. Add, remove or reorder pills. |
 | `FilterDropdown.tsx` | A dropdown pill and its menu (searchable for Cuisine). Change how menus and option rows look or behave. |
 | `FavoritesFilter.tsx` | ♥ pill and the "Share with Friends" link. Change favorites or sharing. |
 | `useFilterOptions.ts` | Each dropdown's options, live counts and disabled states. Add options or change how counts are computed. |

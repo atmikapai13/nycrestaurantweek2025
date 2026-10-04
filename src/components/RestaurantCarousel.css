@@ -99,11 +99,16 @@
 }
 
 .carousel-dot-active {
-  background: var(--color-pink-light);
+  background: var(--color-ink);
 }
 
 .carousel-dot-active:hover {
-  background: var(--color-pink-light);
+  background: var(--color-ink);
+}
+
+/* Room under the card that the dots pull up into (desktop) */
+.carousel-card-wrapper .restaurant-card {
+  margin-bottom: 10%;
 }
 
 /* Mobile styles */
@@ -122,17 +127,17 @@
     width: 100%;
   }
 
+  /* Dots sit just under the card (the card's bottom margin is dropped below) */
   .carousel-dots {
-    margin-top: 10px;
+    margin-top: 12px;
+  }
+
+  .carousel-card-wrapper .restaurant-card {
+    margin-bottom: 0;
   }
 
   .carousel-dot {
     width: 6px;
     height: 6px;
   }
-}
-
-/* Room under the card that the dots pull up into */
-.carousel-card-wrapper .restaurant-card {
-  margin-bottom: 10%;
 }

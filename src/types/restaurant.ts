@@ -56,6 +56,8 @@ export interface MatchReason {
   travelMode?: "walking" | "cycling" | "driving" | "transit";
   /** Mode actually used per distance line (a transit search walks short hops); null = miles. */
   legModes?: Array<"walking" | "cycling" | "driving" | "transit" | null>;
+  /** Minutes from each pinned place (same order) on foot, by bike and by transit ("within N"); null = unavailable. */
+  times?: Array<{ walking: number | null; cycling: number | null; transit: number | null }>;
   /** Filters it passed, e.g. "Italian", "$45 Lunch · $60 Dinner". */
   facts: string[];
   /** For vibe searches: the restaurant's own sentence that best matches the vibe, verbatim. */

@@ -45,14 +45,17 @@ export function IsochroneMessage({ messageId }: IsochroneMessageProps) {
         <button
           onClick={handleToggle}
           className="isochrone-toggle-button"
+          // Visible: the isochrone's own purple (its fill, tinted; text between fill and outline)
           style={{
             background: areLayersVisible
-              ? 'rgba(255, 105, 180, 0.1)'
+              ? `color-mix(in srgb, ${colors.isochrone} 22%, transparent)`
               : 'rgba(100, 100, 100, 0.1)',
             borderColor: areLayersVisible
-              ? 'rgba(255, 105, 180, 0.3)'
+              ? `color-mix(in srgb, ${colors.isochrone} 70%, transparent)`
               : 'rgba(100, 100, 100, 0.3)',
-            color: areLayersVisible ? colors.pinkLight : colors.greyDark,
+            color: areLayersVisible
+              ? `color-mix(in srgb, ${colors.isochroneOutline} 65%, ${colors.isochrone})`
+              : colors.greyDark,
           }}
           title={
             areLayersVisible

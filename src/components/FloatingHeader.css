@@ -25,9 +25,10 @@
 /* Mobile responsive */
 @media (max-width: 768px) {
   .floating-header {
-    display: flex; /* Show on mobile */
+    display: flex; /* Show on mobile, top-left (the Filter button is top-right) */
     top: 0px;
     left: 0px;
+    right: auto;
     padding: 8px 14px;
     gap: 8px;
     align-items: flex-end;

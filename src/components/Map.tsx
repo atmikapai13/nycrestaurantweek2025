@@ -49,6 +49,18 @@ function chatPanelInset(): number {
   return panel ? Math.round(panel.getBoundingClientRect().right) + 20 : 480;
 }
 
+/**
+ * Mobile: camera padding that keeps content in the strip between the top bar (NYC EATS + Filter)
+ * and the chat drawer, sized from --drawer-height (55vh by default; ChatInterface keeps it in sync).
+ */
+function mobileMapPadding() {
+  const drawerVh = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--drawer-height")) || 55;
+  const top = 64;
+  // Leave at least 120px of map visible even with the drawer at 80vh on a short phone
+  const bottom = Math.min(Math.round((window.innerHeight * drawerVh) / 100) + 24, window.innerHeight - top - 120);
+  return { top, bottom, left: 24, right: 24 };
+}
+
 interface MapProps {
   onRestaurantSelect: (restaurant: Restaurant) => void;
   onToggleFavorite?: (restaurantName: string) => void;
@@ -412,7 +424,7 @@ export default function Map({
 
           mapInstance.fitBounds(bounds, {
             padding: isMobileView
-              ? { top: 40, bottom: 350, left: 20, right: 20 }  // Mobile: pad bottom for drawer (40vh ≈ 320px)
+              ? mobileMapPadding() // Mobile: fit above the chat drawer
               : { top: 100, bottom: 100, left: chatPanelInset(), right: 100 }, // Desktop: pad left for chat panel
             maxZoom: maxZoomLevel,
             duration: 1500, // Smooth 1.2s animation
@@ -494,7 +506,7 @@ export default function Map({
         duration: 2500, // Smooth 1.8s animation
         essential: true, // This animation is essential with respect to prefers-reduced-motion
         padding: isMobileView
-          ? { top: 10, bottom: 450, left: 20, right: 20 } // Mobile: pad bottom for drawer
+          ? mobileMapPadding() // Mobile: center above the chat drawer
           : { top: 100, bottom: 100, left: chatPanelInset(), right: PANEL_CARD_WIDTH + PANEL_INSET.right + 40 }, // Desktop: chat panel on the left, card in the bottom-right corner
       });
     }

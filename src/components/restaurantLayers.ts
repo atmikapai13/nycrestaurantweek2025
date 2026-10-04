@@ -132,6 +132,23 @@ export function addRestaurantLayers(map: MapboxMap, mobile: boolean) {
   // Drawn on top: selected > Remi's picks > favorites > the rest
   const sortKey = ["case", ["get", "selected"], 3, recommended, 2, favorite, 1, 0];
 
+  // The restaurant's name to the right of the pin's round head (Remi's picks only). Labels that
+  // would collide are dropped (the pin stays), so crowded areas don't turn into a pile of text.
+  const pickLabelLayout = {
+    "text-field": ["get", "label"],
+    "text-font": ["DIN Pro Medium", "Arial Unicode MS Regular"],
+    "text-size": 12,
+    "text-anchor": "left",
+    "text-offset": [1, -1.5],
+    "text-max-width": 10,
+    "text-optional": true,
+  };
+  const pickLabelPaint = {
+    "text-color": colors.ink,
+    "text-halo-color": colors.white,
+    "text-halo-width": 1.5,
+  };
+
   const teardropLayout = {
     // Numbered when it's one of Remi's picks, else the plain red pin
     "icon-image": [
@@ -181,21 +198,9 @@ export function addRestaurantLayers(map: MapboxMap, mobile: boolean) {
       ...teardropLayout,
       // A bit smaller than the selected restaurant's teardrop, growing with zoom
       "icon-size": ["interpolate", ["linear"], ["zoom"], 11, 0.6, 16, 0.7],
-      // The restaurant's name to the right of the pin's round head. Labels that would collide
-      // are dropped (the pin stays), so crowded areas don't turn into a pile of text.
-      "text-field": ["get", "label"],
-      "text-font": ["DIN Pro Medium", "Arial Unicode MS Regular"],
-      "text-size": 12,
-      "text-anchor": "left",
-      "text-offset": [1, -1.5],
-      "text-max-width": 10,
-      "text-optional": true,
+      ...pickLabelLayout,
     },
-    paint: {
-      "text-color": colors.ink,
-      "text-halo-color": colors.white,
-      "text-halo-width": 1.5,
-    },
+    paint: pickLabelPaint,
   });
 
   addLayer(map, {
@@ -213,7 +218,11 @@ export function addRestaurantLayers(map: MapboxMap, mobile: boolean) {
         SELECTED_PIN_IMAGE,
       ],
       "icon-size": SELECTED_PIN_SCALE,
+      // Keeps its name when selected (label is empty for restaurants that aren't Remi's picks)
+      ...pickLabelLayout,
+      "text-offset": [1.1, -1.7],
     },
+    paint: pickLabelPaint,
   });
 
   // Added last, so the place portraits draw above every restaurant marker

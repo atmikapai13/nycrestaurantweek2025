@@ -48,6 +48,8 @@ export interface GeocodedMarker {
   messageId?: string; // Track which message created this marker (for visibility toggling)
 }
 
+const ONBOARDING_SEEN_KEY = "nyceats-onboarding-seen";
+
 interface MapContextType {
   // Data state
   allRestaurants: Restaurant[];
@@ -101,6 +103,10 @@ interface MapContextType {
   // Drawer height state (for coordinating UI elements)
   drawerHeight: number;
   setDrawerHeight: React.Dispatch<React.SetStateAction<number>>;
+  /** Mobile first-visit walkthrough (MobileOnboarding) is showing; the chat drawer waits off-screen */
+  onboardingActive: boolean;
+  /** End the walkthrough (remembered in this browser); the drawer slides up */
+  finishOnboarding: () => void;
 
   // Geocoded location markers (teardrop pins)
   geocodedMarkers: GeocodedMarker[];
@@ -152,7 +158,28 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
   >(null);
 
   // Drawer height state (for coordinating UI elements)
-  const [drawerHeight, setDrawerHeight] = useState(30);
+  // Mobile chat drawer height in vh: 8 (collapsed bar), 55 (default), or 80 (expanded)
+  const [drawerHeight, setDrawerHeight] = useState(55);
+
+  // Mobile first-visit walkthrough: once per browser (add ?onboarding to the URL to replay it)
+  const [onboardingActive, setOnboardingActive] = useState(() => {
+    if (window.innerWidth > 768) return false;
+    if (new URLSearchParams(window.location.search).has("onboarding")) return true;
+    try {
+      return localStorage.getItem(ONBOARDING_SEEN_KEY) === null;
+    } catch {
+      return false; // storage blocked: skip it rather than show it on every visit
+    }
+  });
+  const finishOnboarding = useCallback(() => {
+    setOnboardingActive(false);
+    setDrawerHeight(55);
+    try {
+      localStorage.setItem(ONBOARDING_SEEN_KEY, "1");
+    } catch {
+      // storage blocked: nothing to remember it in
+    }
+  }, []);
 
   // Geocoded location markers
   const [geocodedMarkers, setGeocodedMarkers] = useState<GeocodedMarker[]>([]);
@@ -539,6 +566,8 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
         filterPoolSlugs,
         drawerHeight,
         setDrawerHeight,
+        onboardingActive,
+        finishOnboarding,
         geocodedMarkers,
         markerVisibilityMap,
         addGeocodedMarker,

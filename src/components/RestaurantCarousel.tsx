@@ -1,6 +1,7 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import type { Restaurant } from "../types/restaurant";
 import RestaurantCard from "./RestaurantCard";
+import { nearestTour } from "../utils/nearestTour";
 import "./RestaurantCarousel.css";
 
 interface RestaurantCarouselProps {
@@ -10,7 +11,13 @@ interface RestaurantCarouselProps {
   favorites: string[];
   onRequestReviewHighlights?: (prompt: string, slug: string) => void;
   onExpandDrawer?: () => void;
-  startFromLast?: boolean; // If true, show newest (last) item; if false, show first item
+  /** Card shown first; remount (change `key`) to jump to another */
+  startIndex?: number;
+  /** "Remi's pick #N" label for a restaurant, if it's one of his picks */
+  pickNumberFor?: (restaurant: Restaurant) => number | undefined;
+  /** Swiping past the last card keeps going: the closest restaurant from this pool, then the
+   *  closest to that, and so on (as desktop's ← / → do past Remi's picks) */
+  continueWith?: Restaurant[];
 }
 
 export default function RestaurantCarousel({
@@ -20,9 +27,18 @@ export default function RestaurantCarousel({
   favorites,
   onRequestReviewHighlights,
   onExpandDrawer,
-  startFromLast = false,
+  startIndex = 0,
+  pickNumberFor,
+  continueWith,
 }: RestaurantCarouselProps) {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(startIndex);
+  // The cards: `restaurants`, then (with continueWith) one nearest restaurant past wherever the
+  // user has swiped, so there's always a next card
+  const extraSteps = continueWith ? Math.max(currentIndex + 2 - restaurants.length, 0) : 0;
+  const cards = useMemo(
+    () => (continueWith ? nearestTour(restaurants, continueWith, extraSteps) : restaurants),
+    [restaurants, continueWith, extraSteps]
+  );
   const containerRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
@@ -36,8 +52,7 @@ export default function RestaurantCarousel({
 
   // Set initial index when restaurants change
   useEffect(() => {
-    const newIndex = startFromLast ? restaurants.length - 1 : 0;
-    setCurrentIndex(newIndex);
+    setCurrentIndex(startIndex);
     hasUserNavigated.current = false;
 
     // Auto-zoom to restaurant when there's only one result
@@ -46,24 +61,24 @@ export default function RestaurantCarousel({
       onRestaurantSelectRef.current(restaurants[0]);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [restaurants.length, startFromLast]);
+  }, [restaurants.length, startIndex]);
 
   // Notify parent when current restaurant changes (for map flyTo)
   // Only trigger after user has navigated, not on initial render
   useEffect(() => {
-    if (hasUserNavigated.current && restaurants[currentIndex] && onRestaurantSelectRef.current) {
-      onRestaurantSelectRef.current(restaurants[currentIndex]);
+    if (hasUserNavigated.current && cards[currentIndex] && onRestaurantSelectRef.current) {
+      onRestaurantSelectRef.current(cards[currentIndex]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentIndex]);
 
   // Navigate to specific card index
   const goToIndex = useCallback((index: number) => {
-    if (index >= 0 && index < restaurants.length) {
+    if (index >= 0 && index < cards.length) {
       hasUserNavigated.current = true;
       setCurrentIndex(index);
     }
-  }, [restaurants.length]);
+  }, [cards.length]);
 
   const goToPrevious = useCallback(() => {
     goToIndex(currentIndex - 1);
@@ -132,10 +147,10 @@ export default function RestaurantCarousel({
     return null;
   }
 
-  const currentRestaurant = restaurants[currentIndex];
-  const showNavigation = restaurants.length > 1;
+  const currentRestaurant = cards[currentIndex] ?? restaurants[0];
+  const showNavigation = cards.length > 1;
   const isFirst = currentIndex === 0;
-  const isLast = currentIndex === restaurants.length - 1;
+  const isLast = currentIndex === cards.length - 1;
 
   return (
     <div
@@ -174,6 +189,7 @@ export default function RestaurantCarousel({
               }
               onRequestReviewHighlights={onRequestReviewHighlights}
               onExpandDrawer={onExpandDrawer}
+              pickNumber={pickNumberFor?.(currentRestaurant)}
             />
           </div>
         </div>
@@ -195,8 +211,9 @@ export default function RestaurantCarousel({
         )}
       </div>
 
-      {/* Dot Indicators (hide for large lists) */}
-      {showNavigation && restaurants.length <= 5 && (
+      {/* Dot indicators for the starting restaurants (hidden for large lists); none is
+          highlighted once you swipe past them */}
+      {restaurants.length > 1 && restaurants.length <= 5 && (
         <div className="carousel-dots">
           {restaurants.map((_, index) => (
             <button

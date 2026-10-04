@@ -224,10 +224,9 @@
   align-items: center;
   gap: 4px;
   padding: 2px 8px;
-  background: rgba(255, 105, 180, 0.1);
-  border: 1px solid rgba(255, 105, 180, 0.3);
+  /* Colors are set inline (IsochroneMessage): the isochrone's purple while it's shown */
+  border: 1px solid transparent;
   border-radius: 12px;
-  color: var(--color-pink-light);
   font-size: 10px;
   font-weight: 600;
   cursor: pointer;
@@ -237,7 +236,7 @@
 }
 
 .isochrone-toggle-button:hover {
-  background: rgba(255, 105, 180, 0.2);
+  filter: brightness(0.96);
   transform: translateY(-1px);
 }
 
@@ -245,166 +244,10 @@
   transform: translateY(0);
 }
 
-@keyframes spin {
-  to{ transform: rotate(360deg); }
-}
-
-/* "Test it" button under Remi's guided examples */
-.try-it-button {
-  display: inline-block;
-  margin-top: 2px;
-  background: rgba(255, 197, 218, 0.40);
-  backdrop-filter: blur(3px) saturate(100%);
-  -webkit-backdrop-filter: blur(3px) saturate(100%);
-  border: 1px solid rgba(255, 3, 217, 0.3);
-  border-radius: 20px;
-  padding: 4px 12px;
-  color: var(--color-ink);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.try-it-button:hover {
-  background: rgba(242, 61, 150, 0.7);
-  color: var(--color-white);
-  transform: translateY(-1px);
-  border-color: rgba(242, 61, 150, 0.6);
-}
-
-/* Input Container - Glassmorphism */
+/* Chat input (shadcn InputGroup): only where it sits; its look comes from the component */
 .chat-input-container {
-  display: flex;
-  gap: 6px;
-  padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(10px) saturate(180%);
-  -webkit-backdrop-filter: blur(10px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-radius: 20px;
-  box-shadow: none;
   margin-top: auto;
   margin-bottom: 15px;
-  align-items: flex-end;
-}
-
-.chat-input {
-  flex: 1;
-  padding: 4px 8px;
-  border: none;
-  border-radius: 12px;
-  font-size: 14px;
-  line-height: 1.4;
-  outline: none;
-  background: transparent;
-  transition: background-color 0.2s ease;
-  resize: none;
-  overflow: hidden;
-  min-height: 24px;
-  max-height: 120px;
-  font-family: inherit;
-  /* Hide scrollbar but allow scrolling when at max height */
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE/Edge */
-}
-
-.chat-input::-webkit-scrollbar {
-  display: none; /* Chrome/Safari */
-}
-
-.chat-input:focus {
-  background: rgba(255, 255, 255, 0.3);
-}
-
-.chat-input:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.chat-input::placeholder {
-  color: var(--color-grey);
-}
-
-.chat-send-button {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: none;
-  background: linear-gradient(135deg, var(--color-grey-dark) 0%, var(--color-grey-dark) 100%);
-  color: var(--color-white);
-  font-size: 14px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-}
-
-.chat-send-button:hover:not(:disabled) {
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(255, 107, 157, 0.3);
-}
-
-.chat-send-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* Mic Button */
-.chat-mic-button {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: none;
-  background: transparent;
-  color: var(--color-grey-dark);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-}
-
-.chat-mic-button:hover:not(:disabled) {
-  color: var(--color-pink);
-  background: rgba(246, 57, 150, 0.1);
-}
-
-.chat-mic-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.chat-mic-button.listening {
-  color: var(--color-pink);
-  background: rgba(246, 57, 150, 0.15);
-  animation: pulse-mic 1.5s ease-in-out infinite;
-}
-
-@keyframes pulse-mic {
-  0%, 100% {
-    transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(246, 57, 150, 0.4);
-  }
-  50% {
-    transform: scale(1.05);
-    box-shadow: 0 0 0 8px rgba(246, 57, 150, 0);
-  }
-}
-
-.chat-mic-button.transcribing {
-  color: var(--color-isochrone);
-  background: rgba(179, 160, 240, 0.15);
-}
-
-.transcribing-spinner {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from{ transform: rotate(0deg); }
-  to{ transform: rotate(360deg); }
 }
 
 /* Drag Handle - Mobile Only */
@@ -420,7 +263,6 @@
 .mobile-only {
   display: none;
 }
-
 
 /* Responsive - Mobile Drawer */
 @media (max-width: 768px) {
@@ -441,24 +283,79 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background: rgba(255, 255, 255, 0.50);
-    backdrop-filter: blur(3px) saturate(180%);
-    -webkit-backdrop-filter: blur(3px) saturate(180%);
+    /* Frosted glass. To tune how much the map shows through:
+       - background alpha (0.55): higher = whiter / less map, lower = more see-through
+       - blur (6px): higher = map behind is softer / less busy
+       - saturate (120%): lower = map colors behind are duller (less contrast) */
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(6px) saturate(120%);
+    -webkit-backdrop-filter: blur(6px) saturate(120%);
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
-    transition: height 0.3s ease;
+    /* transform: the walkthrough's reveal, a spring that overshoots slightly and settles */
+    transition:
+      height 0.3s ease,
+      transform 0.75s cubic-bezier(0.22, 1.35, 0.36, 1);
     display: flex;
     flex-direction: column;
+  }
+
+  /* During the mobile walkthrough the drawer waits just below the screen. Its usual slide-in
+     animation is off for the whole visit: the animation's transform would override this one (the
+     drawer flashing on screen at load), and would restart the moment drawer-hidden comes off. */
+  .chat-bubble.drawer-onboarding {
+    animation: none;
+  }
+
+  .chat-bubble.drawer-hidden {
+    transform: translateY(calc(100% + 24px));
+  }
+
+  /* ...then, as it springs up, Remi's message, the two sample prompts and the input pop in one
+     after another (the drawer-reveal class lasts as long as this takes) */
+  .drawer-reveal .chat-message [data-slot="bubble"],
+  .drawer-reveal .chat-input-container {
+    animation: drawerRevealItem 0.5s cubic-bezier(0.22, 1.2, 0.36, 1) both;
+  }
+
+  .drawer-reveal .chat-message > [data-slot="message-content"] > [data-slot="bubble"] {
+    animation-delay: 0.3s;
+  }
+
+  .drawer-reveal [data-slot="bubble-group"] > [data-slot="bubble"]:nth-child(1) {
+    animation-delay: 0.5s;
+  }
+
+  .drawer-reveal [data-slot="bubble-group"] > [data-slot="bubble"]:nth-child(2) {
+    animation-delay: 0.65s;
+  }
+
+  .drawer-reveal .chat-input-container {
+    animation-delay: 0.8s;
+  }
+
+  @keyframes drawerRevealItem {
+    from {
+      opacity: 0;
+      transform: translateY(14px) scale(0.97);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .chat-bubble {
+      transition: height 0.3s ease;
+    }
+
+    .drawer-reveal .chat-message [data-slot="bubble"],
+    .drawer-reveal .chat-input-container {
+      animation: none;
+    }
   }
 
   /* Drawer height states */
   .drawer-8 {
     height: 8vh;
-  }
-
-  .drawer-30 {
-    height: 30vh;
   }
 
   .drawer-55 {
@@ -510,9 +407,14 @@
     align-items: center;
     justify-content: flex-start;
     gap: 8px;
-    padding: 0 16px 5px 16px;
+    padding: 0 16px 6px 16px;
     cursor: pointer;
     transition: opacity 0.2s;
+  }
+
+  /* Collapsed (8vh is ~55-70px): a slimmer handle so the Remi avatar row fits without clipping */
+  .drawer-8 .drawer-handle {
+    padding: 8px 10px 4px 0;
   }
 
   /* Hide content when drawer is minimized at 8vh */
@@ -522,17 +424,13 @@
   }
 
   .drawer-collapsed-logo {
-    width: 36px;
-    height: 36px;
+    width: 30px;
+    height: 30px;
     object-fit: contain;
   }
 
   .drawer-collapsed-text {
     color: var(--color-grey-dark);
-  }
-
-  .drawer-30 .chat-messages {
-    max-height: calc(30vh - 110px);
   }
 
   .drawer-55 .chat-messages {
@@ -544,7 +442,6 @@
   }
 
     .chat-input-container {
-    padding: 6px 10px;
     width: auto;
     margin: 0 8px;
     position: absolute;
@@ -555,13 +452,6 @@
     align-items: flex-end;
   }
 
-  .chat-input {
-    min-height: 20px;
-    max-height: 90px;
-    font-size: 14px; /* Prevent iOS zoom on focus */
-    line-height: 1.2;
-  }
-
   /* Switch from desktop avatar (outside bubble) to mobile avatar (inside bubble) */
   .desktop-only {
     display: none !important;
@@ -569,13 +459,6 @@
 
   .mobile-only {
     display: block !important;
-  }
-}
-
-/* Short mobile screens - Hide collapsed header to prevent cutoff */
-@media (max-width: 768px) and (max-height: 766px) {
-  .drawer-8 .drawer-collapsed-header {
-    display: none;
   }
 }
 

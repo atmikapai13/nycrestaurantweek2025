@@ -19,7 +19,7 @@ Every color and font in the app is defined once in **`src/styles/tokens.ts`**. R
 |---|---|---|---|---|
 | `pink` | `--color-pink` | `pink` | `#f23d97` | Remi's accent: active rims, emphasis, status glyph, card quote rule |
 | `pinkLight` | `--color-pink-light` | `pink-light` | `#ff69b4` | Favorites (hearts, map dots, outlines), links |
-| `pinkSoft` | `--color-pink-soft` | `pink-soft` | `#fce4f2` | Active pill and Refine fill, selected menu rows |
+| `pinkSoft` | `--color-pink-soft` | `pink-soft` | `#fce4f2` | Active pill fills, selected menu rows |
 | `pinkSoftHover` | `--color-pink-soft-hover` | `pink-soft-hover` | `#f9d2e8` | `pinkSoft` on hover |
 
 ### Neutrals
@@ -30,7 +30,7 @@ Every color and font in the app is defined once in **`src/styles/tokens.ts`**. R
 | `grey` | `--color-grey` | `grey` | `#888888` | Muted text, placeholders, counts, default map dots |
 | `greyLight` | `--color-grey-light` | `grey-light` | `#e3e3e3` | Borders, dividers |
 | `greyLightest` | `--color-grey-lightest` | `grey-lightest` | `#f4f4f4` | Hover fills, chips, page background |
-| `charcoal` | `--color-charcoal` | `charcoal` | `#575e61` | Your chat messages and the quick-prompt bubbles |
+| `charcoal` | `--color-charcoal` | `charcoal` | `#575e61` | Your chat messages |
 | `white` | `--color-white` | `white` | `#ffffff` | Surfaces, text on dark |
 
 ### Map and accents

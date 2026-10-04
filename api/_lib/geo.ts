@@ -369,12 +369,14 @@ export function restaurantsInPolygon(
   });
 }
 
-const MATRIX_MODE: Partial<Record<TravelMode, string>> = { walking: "walk", cycling: "bicycle", driving: "drive" };
 const TRAVEL_TIME_BUDGET_MS = 3000;
 
 type Point = { latitude: number; longitude: number };
 
-async function matrixSeconds(origins: Point[], targets: Point[], mode: string): Promise<(number | null)[][] | null> {
+type MatrixCell = { seconds: number; meters: number | null } | null;
+
+/** Route time (and distance) from each origin to each target, one Geoapify route-matrix call. */
+async function routeMatrix(origins: Point[], targets: Point[], mode: string): Promise<MatrixCell[][] | null> {
   const res = await fetch(`https://api.geoapify.com/v1/routematrix?apiKey=${apiKey()}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -386,8 +388,15 @@ async function matrixSeconds(origins: Point[], targets: Point[], mode: string): 
     }),
   });
   if (!res.ok) return null;
-  const rows: Array<Array<{ time?: number }>> = (await res.json()).sources_to_targets ?? [];
-  return origins.map((_, i) => targets.map((_, j) => (typeof rows[i]?.[j]?.time === "number" ? rows[i][j].time! : null)));
+  const rows: Array<Array<{ time?: number; distance?: number }>> = (await res.json()).sources_to_targets ?? [];
+  return origins.map((_, i) =>
+    targets.map((_, j) => {
+      const cell = rows[i]?.[j];
+      return typeof cell?.time === "number"
+        ? { seconds: cell.time, meters: typeof cell.distance === "number" ? cell.distance : null }
+        : null;
+    })
+  );
 }
 
 const transitBandCache = new Map<string, Array<{ minutes: number; feature: Feature<Polygon | MultiPolygon> }>>();
@@ -419,49 +428,69 @@ export interface TravelLeg {
   upTo: boolean;
 }
 
-/**
- * Travel time from each origin to each target: legs[origin][target], null where unavailable.
- * - Walk / bike / drive: exact minutes from one route-matrix call.
- * - Transit: Geoapify's point-to-point transit routing returns bogus 10–30 m routes for
- *   short trips, so instead each origin gets nested transit isochrones (5, 10, 15… min)
- *   and a restaurant's time is the smallest band containing it — the same transit model
- *   that decided it's reachable. A walking matrix covers hops that are as fast on foot.
- * Gives up after a few seconds (callers fall back to miles).
- */
-export async function travelMinutes(
-  origins: Point[],
-  targets: Point[],
-  mode: TravelMode,
-  maxMinutes: number
-): Promise<(TravelLeg | null)[][] | null> {
-  try {
-    const matrixMode = MATRIX_MODE[mode];
-    if (matrixMode) {
-      const seconds = await matrixSeconds(origins, targets, matrixMode);
-      return (
-        seconds &&
-        seconds.map((row) =>
-          row.map((s) => (typeof s === "number" ? { minutes: Math.max(1, Math.round(s / 60)), mode, upTo: false } : null))
-        )
-      );
-    }
+const toMinutes = (seconds: number | null | undefined) =>
+  typeof seconds === "number" && Number.isFinite(seconds) ? Math.max(1, Math.round(seconds / 60)) : null;
 
+/** Typical Manhattan cycling speed (~10 mph), for bike times estimated from the walking route */
+const BIKE_METERS_PER_SECOND = 4.5;
+
+/** Minutes on foot, by bike and by transit (transit is "within N": an isochrone band); null = unavailable. */
+export interface ModeTimes {
+  walking: number | null;
+  cycling: number | null;
+  transit: number | null;
+}
+
+/**
+ * Walk, bike and transit times from each origin to each target: times[origin][target].
+ * - Walk: exact minutes from one walking route-matrix call.
+ * - Bike: estimated from that walking route's distance at ~10 mph, rather than a second
+ *   matrix call (saves credits; ignores bike lanes and one-way streets, usually within a minute or two).
+ * - Transit: Geoapify's point-to-point transit routing returns bogus 10–30 m routes for
+ *   short trips, so instead each origin gets nested transit isochrones (5, 10, 15… min,
+ *   one call) and a restaurant's time is the smallest band containing it — the same transit
+ *   model that decided it's reachable.
+ *   Beyond `transitMaxMinutes` there's no transit time.
+ * 1 + (number of origins) calls in parallel; gives up after a few seconds (callers fall back to miles).
+ */
+export async function modeTimes(origins: Point[], targets: Point[], transitMaxMinutes: number): Promise<ModeTimes[][] | null> {
+  try {
     const [walking, bands] = await Promise.all([
-      matrixSeconds(origins, targets, "walk").catch(() => null),
-      Promise.all(origins.map((o) => transitBands(o, maxMinutes).catch(() => []))),
+      routeMatrix(origins, targets, "walk").catch(() => null),
+      Promise.all(origins.map((o) => transitBands(o, transitMaxMinutes).catch(() => []))),
     ]);
+    if (!walking && bands.every((b) => b.length === 0)) return null;
     return origins.map((_, i) =>
-      targets.map((target, j) => {
-        const band = bands[i].find((b) => booleanPointInPolygon(point([target.longitude, target.latitude]), b.feature));
-        const walkSeconds = walking?.[i]?.[j];
-        const onFoot: TravelLeg | null =
-          typeof walkSeconds === "number"
-            ? { minutes: Math.max(1, Math.round(walkSeconds / 60)), mode: "walking", upTo: false }
-            : null;
-        const byTransit: TravelLeg | null = band ? { minutes: band.minutes, mode: "transit", upTo: true } : null;
-        if (onFoot && byTransit) return onFoot.minutes <= byTransit.minutes ? onFoot : byTransit;
-        return byTransit ?? onFoot;
-      })
+      targets.map((target, j) => ({
+        walking: toMinutes(walking?.[i]?.[j]?.seconds),
+        cycling: toMinutes((walking?.[i]?.[j]?.meters ?? NaN) / BIKE_METERS_PER_SECOND),
+        transit:
+          bands[i].find((b) => booleanPointInPolygon(point([target.longitude, target.latitude]), b.feature))?.minutes ??
+          null,
+      }))
+    );
+  } catch {
+    return null;
+  }
+}
+
+/** The travel time by a search's mode (not driving). A transit search walks hops that are as fast on foot. */
+export function legFor(mode: Exclude<TravelMode, "driving">, times: ModeTimes): TravelLeg | null {
+  const onFoot: TravelLeg | null = times.walking ? { minutes: times.walking, mode: "walking", upTo: false } : null;
+  if (mode === "walking") return onFoot;
+  if (mode === "cycling") return times.cycling ? { minutes: times.cycling, mode: "cycling", upTo: false } : null;
+  const byTransit: TravelLeg | null = times.transit ? { minutes: times.transit, mode: "transit", upTo: true } : null;
+  if (onFoot && byTransit) return onFoot.minutes <= byTransit.minutes ? onFoot : byTransit;
+  return byTransit ?? onFoot;
+}
+
+/** Driving minutes from each origin to each target (one route-matrix call); null where unavailable. */
+export async function drivingMinutes(origins: Point[], targets: Point[]): Promise<(TravelLeg | null)[][] | null> {
+  try {
+    const matrix = await routeMatrix(origins, targets, "drive");
+    return (
+      matrix &&
+      matrix.map((row) => row.map((c) => (c ? { minutes: toMinutes(c.seconds)!, mode: "driving" as const, upTo: false } : null)))
     );
   } catch {
     return null;

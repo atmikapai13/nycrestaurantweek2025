@@ -4,7 +4,8 @@ import RatingArc from "./RatingArc";
 import type { Restaurant } from "../types/restaurant";
 import { asset } from "../utils/asset";
 import { displayName } from "../utils/restaurantName";
-import TravelTimes from "./TravelTimes";
+import TravelTimes, { SECTION_LABEL } from "./TravelTimes";
+import { useIsDesktop } from "../hooks/useIsDesktop";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -108,6 +109,7 @@ export default function RestaurantCard({
   const [showMore, setShowMore] = useState(false);
   // Open section inside Reviews & more: "reviews", "about" or "" (none)
   const [openSection, setOpenSection] = useState("");
+  const isDesktop = useIsDesktop();
   const r = restaurant || placeholderRestaurant;
   if (!r) return null;
 
@@ -139,8 +141,9 @@ export default function RestaurantCard({
   const longAbout = r.summary2?.trim() || shortAbout;
   const hasDetails = hasReviews || !!longAbout;
 
-  // Remi's reason (his picks): the quote in full, then the facts; nothing when he gave neither
-  const whyBlock = reason && (reason.quote || reason.facts.length > 0) && (
+  // Remi's reason (his picks): the quote in full, then the facts. Only when there's a quote: the
+  // facts alone ("Italian") just repeat the search's filters and the card's tags
+  const whyBlock = reason?.quote && (
     <div className="border-l-2 border-primary py-1 pl-2.5">
       {reason.quote && (
         <blockquote className="text-body italic text-muted-foreground">
@@ -158,6 +161,101 @@ export default function RestaurantCard({
     </div>
   );
 
+  // What it is (name, cuisine / price / award tags) and is it good (star arc, top-right)
+  const header = (
+    <CardHeader className={cn("flex flex-row items-start gap-3 p-4 pb-3", onClose && "pr-10")}>
+      <div className="flex min-w-0 flex-1 flex-col gap-2">
+        <CardTitle className="text-heading font-bold leading-[1.2] tracking-tight max-md:text-[19px]" title={r.name}>
+          {displayName(r.name)}
+        </CardTitle>
+        <div className="flex flex-wrap gap-1.5">
+          {r.cuisine && (
+            <Tag color="peach">
+              {r.cuisine}
+            </Tag>
+          )}
+          {r.price && (
+            <Tag color="butter">
+              {r.price}
+            </Tag>
+          )}
+          {isStarred && (
+            <Tag color="lavender">
+              <img src={asset("/MichelinStar.svg.png")} alt="" className="size-3.5" /> Michelin
+            </Tag>
+          )}
+          {isBib && (
+            <Tag color="lavender">
+              <img src={asset("/bibgourmand.png")} alt="" className="size-3.5" /> Bib Gourmand
+            </Tag>
+          )}
+          {r.nyttop100_rank && (
+            <Tag color="lavender">
+              <img src={asset("/nytimes.png")} alt="" className="size-3.5" /> NYT #{r.nyttop100_rank}
+            </Tag>
+          )}
+        </div>
+      </div>
+      {hasYelp && (
+        <RatingArc size="sm" rating={r.yelp_rating!} reviews={`${compactCount(r.yelp_review_count!)} reviews`} />
+      )}
+    </CardHeader>
+  );
+
+  // Act on it, across the full width: one solid main action (Reserve, or the website when
+  // there's no booking link), then website / Instagram / call / save as icon buttons
+  const actions = (
+    <div className="flex items-center gap-1.5">
+      {mainAction && (
+        <Button asChild className="h-8 flex-1 rounded-md bg-foreground text-label font-semibold text-background hover:bg-foreground/85">
+          <a href={mainAction.href} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}>
+            {mainAction.label}
+          </a>
+        </Button>
+      )}
+      {reserveUrl && r.website?.trim() && (
+        <ActionIcon href={r.website} label="Website">
+          <Globe />
+        </ActionIcon>
+      )}
+      {r.instagram_url?.trim() && (
+        <ActionIcon href={r.instagram_url} label="Instagram">
+          <InstagramIcon />
+        </ActionIcon>
+      )}
+      {r.telephone?.trim() && (
+        <ActionIcon href={`tel:${r.telephone}`} label={`Call ${r.telephone}`}>
+          <Phone />
+        </ActionIcon>
+      )}
+      {onToggleFavorite && (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="outline"
+              size="icon"
+              className="size-8 shrink-0 rounded-md"
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleFavorite();
+              }}
+              aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}
+              aria-pressed={isFavorited}
+            >
+              <Heart className={cn("!size-3.5 text-pink-light", isFavorited && "fill-pink-light")} />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent className="z-[2000] bg-foreground font-sans text-caption text-background">
+            {isFavorited ? "Unfavorite" : "Favorite"}
+          </TooltipContent>
+        </Tooltip>
+      )}
+    </div>
+  );
+
+  // Desktop picks (cards with Remi's reason) get the pink-panel layout
+  const pickLayout = isDesktop && !!reason;
+
   // Inside "Reviews & more": Reviews (two-line preview, opens to the full text) and About,
   // one open at a time; on mobile the chat drawer grows to make room
   const details = (
@@ -174,7 +272,7 @@ export default function RestaurantCard({
         <AccordionItem value="reviews" className="border-grey-light last:border-b-0">
           <AccordionTrigger className="items-start gap-3 py-2.5 hover:no-underline [&>svg]:mt-0.5">
             <span className="flex min-w-0 flex-col items-start gap-1 text-left">
-              <span className="text-label font-semibold">Reviews</span>
+              <span className={SECTION_LABEL}>Reviews</span>
               {openSection !== "reviews" && reviewPreview && (
                 <span className="line-clamp-2 text-body font-normal text-muted-foreground">
                   <SourceIcon src={asset(r.yelp_review_highlights ? "/yelp_logo.png" : "/reddit.webp")} label={r.yelp_review_highlights ? "Yelp" : "Reddit"} />
@@ -208,7 +306,7 @@ export default function RestaurantCard({
       )}
       {longAbout && (
         <AccordionItem value="about" className="border-grey-light last:border-b-0">
-          <AccordionTrigger className="py-2.5 text-label font-semibold hover:no-underline">About</AccordionTrigger>
+          <AccordionTrigger className={cn("py-2.5 hover:no-underline", SECTION_LABEL)}>About</AccordionTrigger>
           <AccordionContent className="flex flex-col gap-2 pb-3">
             <p className="whitespace-pre-line text-body text-muted-foreground">{paragraphs(longAbout)}</p>
             {(r.michelin_award || r.nyttop100_rank) && (
@@ -248,7 +346,7 @@ export default function RestaurantCard({
 
   return (
     <TooltipProvider delayDuration={200}>
-    <Card className="restaurant-card tw-reset relative w-full gap-0 border-foreground py-0 font-sans text-foreground shadow-md">
+    <Card className="restaurant-card tw-reset relative w-full gap-0 overflow-hidden border-foreground py-0 font-sans text-foreground shadow-md">
       {/* Close (when shown in a popup) */}
       <div className={cn("absolute right-2 flex items-center", pickNumber ? "top-0" : "top-2")}>
         {onClose && (
@@ -278,111 +376,43 @@ export default function RestaurantCard({
         </div>
       )}
 
-      {/* 1. What it is (name, cuisine / price / award tags) and is it good (star arc, top-right) */}
-      <CardHeader className={cn("flex flex-row items-start gap-3 p-4 pb-3", onClose && "pr-10")}>
-        <div className="flex min-w-0 flex-1 flex-col gap-2">
-          <CardTitle className="text-heading font-bold leading-[1.2] tracking-tight" title={r.name}>
-            {displayName(r.name)}
-          </CardTitle>
-          <div className="flex flex-wrap gap-1.5">
-            {r.cuisine && (
-              <Tag color="peach">
-                {r.cuisine}
-              </Tag>
-            )}
-            {r.price && (
-              <Tag color="butter">
-                {r.price}
-              </Tag>
-            )}
-            {isStarred && (
-              <Tag color="lavender">
-                <img src={asset("/MichelinStar.svg.png")} alt="" className="size-3.5" /> Michelin
-              </Tag>
-            )}
-            {isBib && (
-              <Tag color="lavender">
-                <img src={asset("/bibgourmand.png")} alt="" className="size-3.5" /> Bib Gourmand
-              </Tag>
-            )}
-            {r.nyttop100_rank && (
-              <Tag color="lavender">
-                <img src={asset("/nytimes.png")} alt="" className="size-3.5" /> NYT #{r.nyttop100_rank}
-              </Tag>
-            )}
+      {pickLayout ? (
+        <>
+          {/* Desktop pick: what it is and how to act on it, with a full-width line under it; then
+              why Remi picked it and how far it is */}
+          <div className="border-b">
+            {header}
+            <div className="px-4 pb-4">{actions}</div>
           </div>
-        </div>
-        {hasYelp && (
-          <RatingArc size="sm" rating={r.yelp_rating!} reviews={`${compactCount(r.yelp_review_count!)} reviews`} />
-        )}
-      </CardHeader>
-
-      <CardContent className="flex flex-col gap-3 p-4 pt-0">
-        {/* 2. Why Remi picked it, then the travel time from each searched place (his picks only) */}
-        {whyBlock}
-        <TravelTimes reason={reason} />
-
-        {/* 4. Act on it, across the full width: one solid main action (Reserve, or the website when
-            there's no booking link), then website / Instagram / call / save as icon buttons */}
-        <div className="flex items-center gap-1.5">
-          {mainAction && (
-            <Button asChild className="h-8 flex-1 rounded-md bg-foreground text-label font-semibold text-background hover:bg-foreground/85">
-              <a href={mainAction.href} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}>
-                {mainAction.label}
-              </a>
-            </Button>
+          {(whyBlock || reason.distances.length > 0) && (
+            <CardContent className="flex flex-col gap-3 p-4">
+              {whyBlock}
+              <TravelTimes reason={reason} />
+            </CardContent>
           )}
-          {reserveUrl && r.website?.trim() && (
-            <ActionIcon href={r.website} label="Website">
-              <Globe />
-            </ActionIcon>
-          )}
-          {r.instagram_url?.trim() && (
-            <ActionIcon href={r.instagram_url} label="Instagram">
-              <InstagramIcon />
-            </ActionIcon>
-          )}
-          {r.telephone?.trim() && (
-            <ActionIcon href={`tel:${r.telephone}`} label={`Call ${r.telephone}`}>
-              <Phone />
-            </ActionIcon>
-          )}
-          {onToggleFavorite && (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="size-8 shrink-0 rounded-md"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onToggleFavorite();
-                  }}
-                  aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}
-                  aria-pressed={isFavorited}
-                >
-                  <Heart className={cn("!size-3.5 text-pink-light", isFavorited && "fill-pink-light")} />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent className="z-[2000] bg-foreground font-sans text-caption text-background">
-                {isFavorited ? "Unfavorite" : "Favorite"}
-              </TooltipContent>
-            </Tooltip>
-          )}
-        </div>
-
-      </CardContent>
+        </>
+      ) : (
+        <>
+          {header}
+          <CardContent className="flex flex-col gap-3 p-4 pt-0">
+            {actions}
+            {/* Why Remi picked it (his picks only), then how far it is */}
+            {whyBlock}
+            <TravelTimes reason={reason} />
+          </CardContent>
+        </>
+      )}
 
       {/* 5. Reviews & more: a grey footer strip that opens downward into the accordions; once
           open, the strip's title gives way to the sections, with "Show less" at the bottom */}
       {hasDetails && (
-        <div className="rounded-b-xl border-t bg-muted/60" onClick={(e) => e.stopPropagation()}>
+        <div className="rounded-b-xl border-t bg-muted" onClick={(e) => e.stopPropagation()}>
           {showMore ? (
             <>
               <div className="max-h-[50vh] overflow-y-auto px-4 pt-1">{details}</div>
               <button
                 type="button"
-                className="flex w-full items-center justify-center gap-1 rounded-b-xl py-2 text-caption font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                className="flex w-full items-center justify-center gap-1 rounded-b-xl py-2 text-caption font-medium text-muted-foreground transition-colors hover:bg-[color-mix(in_oklch,var(--muted),var(--foreground)_5%)] hover:text-foreground"
                 onClick={() => {
                   setShowMore(false);
                   setOpenSection("");
@@ -396,7 +426,13 @@ export default function RestaurantCard({
           ) : (
             <button
               type="button"
-              className="flex w-full items-center justify-between rounded-b-xl px-4 py-2.5 text-label font-semibold text-foreground transition-colors hover:bg-muted"
+              // Same small uppercase label as "Getting there", but dark (grey on the grey strip would
+              // look disabled); the strip and chevron say it opens
+              className={cn(
+                "flex w-full items-center justify-between rounded-b-xl px-4 py-2.5 transition-colors",
+                SECTION_LABEL,
+                "text-foreground hover:bg-[color-mix(in_oklch,var(--muted),var(--foreground)_5%)]"
+              )}
               onClick={() => {
                 setShowMore(true);
                 onExpandDrawer?.();

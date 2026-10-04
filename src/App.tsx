@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import "./App.css";
 import FloatingHeader from "./components/FloatingHeader";
 import FilterBar from "./components/FilterBar/FilterBar";
+import MobileOnboarding from "./components/MobileOnboarding";
 import Map from "./components/Map";
 import type { Restaurant } from "./types/restaurant";
 import { MapProvider, useMap } from "./contexts/MapContext";
@@ -102,6 +103,9 @@ function AppContent() {
 
       {/* Filter Bar */}
       <FilterBar />
+
+      {/* Mobile first-visit walkthrough (renders nothing once seen) */}
+      <MobileOnboarding />
 
       {/* Full Screen Map */}
       <div className="map-section">

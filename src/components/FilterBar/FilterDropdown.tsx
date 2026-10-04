@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -36,6 +35,9 @@ interface FilterDropdownProps {
   placeholder?: string;
   /** Searchable list (Popover + Command) instead of a plain checkbox menu. */
   searchable?: boolean;
+  /** Open state, controlled by the filter bar so only one menu is open at a time */
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
 /**
@@ -51,8 +53,9 @@ export default function FilterDropdown({
   onChange,
   placeholder,
   searchable = false,
+  open,
+  onOpenChange: setOpen,
 }: FilterDropdownProps) {
-  const [open, setOpen] = useState(false);
   const selected = new Set(selectedValues);
   const hasSelections = selectedValues.length > 0;
 
@@ -112,7 +115,8 @@ export default function FilterDropdown({
   }
 
   return (
-    <DropdownMenu open={open} onOpenChange={setOpen}>
+    // Non-modal: clicking another filter pill switches menus in one click
+    <DropdownMenu open={open} onOpenChange={setOpen} modal={false}>
       <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
       <DropdownMenuContent align="start" className={filterMenuClass}>
         {options.length === 0 ? (
