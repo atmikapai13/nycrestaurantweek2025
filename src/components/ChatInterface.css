@@ -112,6 +112,58 @@
   }
 }
 
+/* A soft sheen sweeps across each sample prompt every few seconds (the second a beat after the
+   first) so they don't sit there dead; on devices with a pointer they also lift a little on
+   hover (not on touch, where the hover state sticks after a tap) */
+.quick-prompts [data-slot="bubble-content"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.75) 50%, transparent 70%);
+  transform: translateX(-120%);
+  animation: quickPromptSheen 5s ease-in-out 1.2s infinite;
+}
+
+.quick-prompts > [data-slot="bubble"]:nth-child(2) [data-slot="bubble-content"]::after {
+  animation-delay: 1.6s;
+}
+
+@media (hover: hover) {
+  .quick-prompts [data-slot="bubble-content"] {
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .quick-prompts [data-slot="bubble-content"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+}
+
+/* The sweep takes the first ~20% of each cycle; the rest is a pause */
+@keyframes quickPromptSheen {
+  0% {
+    transform: translateX(-120%);
+  }
+
+  20%,
+  100% {
+    transform: translateX(120%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quick-prompts [data-slot="bubble-content"]:hover {
+    transform: none;
+  }
+
+  .quick-prompts [data-slot="bubble-content"]::after {
+    display: none;
+  }
+}
+
 /* Message content wrapper */
 .message-content {
   flex: 1;

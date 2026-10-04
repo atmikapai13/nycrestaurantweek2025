@@ -1449,10 +1449,11 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                         bubbles that send when clicked. Gone once the conversation has started, or
                         once a tapped marker's card is showing (mobile). */}
                     {idx === 0 && !conversationStarted && !tappedRestaurant && (
-                      <BubbleGroup>
+                      // quick-prompts: sheen, and hover lift with a pointer (ChatInterface.css)
+                      <BubbleGroup className="quick-prompts">
                         {quickPrompts.map((prompt) => (
                           <Bubble key={prompt} variant="tinted" align="end">
-                            <BubbleContent asChild className="shadow-xs hover:border-primary">
+                            <BubbleContent asChild className="relative shadow-xs hover:border-primary">
                               <button type="button" onClick={() => handleQuickPrompt(prompt.replace(/\*\*/g, ""))}>
                                 {/* **…** marks the key words (semibold here, stripped before sending) */}
                                 {prompt.split(/\*\*/).map((part, j) => (j % 2 ? <strong key={j} className="font-semibold">{part}</strong> : part))}

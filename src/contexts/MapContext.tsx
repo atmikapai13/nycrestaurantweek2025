@@ -103,6 +103,11 @@ interface MapContextType {
   // Drawer height state (for coordinating UI elements)
   drawerHeight: number;
   setDrawerHeight: React.Dispatch<React.SetStateAction<number>>;
+  /** The filter bar's pills are showing (FilterBar; also opened from Remi's message) */
+  filterBarExpanded: boolean;
+  setFilterBarExpanded: React.Dispatch<React.SetStateAction<boolean>>;
+  /** Open the filter bar: closes the restaurant card and, on mobile, lowers the drawer out of the way */
+  openFilterBar: () => void;
   /** Mobile first-visit walkthrough (MobileOnboarding) is showing; the chat drawer waits off-screen */
   onboardingActive: boolean;
   /** End the walkthrough (remembered in this browser); the drawer slides up */
@@ -161,6 +166,9 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
   // Mobile chat drawer height in vh: 8 (collapsed bar), 55 (default), or 80 (expanded)
   const [drawerHeight, setDrawerHeight] = useState(55);
 
+  // Filter bar: starts collapsed (just Filter) on every screen
+  const [filterBarExpanded, setFilterBarExpanded] = useState(false);
+
   // Mobile first-visit walkthrough: once per browser (add ?onboarding to the URL to replay it)
   const [onboardingActive, setOnboardingActive] = useState(() => {
     if (window.innerWidth > 768) return false;
@@ -179,6 +187,14 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
     } catch {
       // storage blocked: nothing to remember it in
     }
+  }, []);
+
+  const openFilterBar = useCallback(() => {
+    setFilterBarExpanded(true);
+    // The filters and the restaurant card would compete for attention
+    setSelectedRestaurant(null);
+    // On mobile the drawer drops to its bar so the pills (top of the screen) have the map
+    if (window.innerWidth <= 768) setDrawerHeight(8);
   }, []);
 
   // Geocoded location markers
@@ -568,6 +584,9 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
         setDrawerHeight,
         onboardingActive,
         finishOnboarding,
+        filterBarExpanded,
+        setFilterBarExpanded,
+        openFilterBar,
         geocodedMarkers,
         markerVisibilityMap,
         addGeocodedMarker,

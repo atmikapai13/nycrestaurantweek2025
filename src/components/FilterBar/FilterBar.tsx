@@ -29,18 +29,20 @@ export default function FilterBar() {
     highReviewCountActive,
     setHighReviewCountActive,
     drawerHeight,
-    setDrawerHeight,
     selectedRestaurant,
-    setSelectedRestaurant,
     isochroneLayers,
     geocodedMarkers,
     onboardingActive,
     finishOnboarding,
+    filterBarExpanded,
+    setFilterBarExpanded,
+    openFilterBar,
   } = useMap();
   const { priceOptions, ratingOptions, cuisineOptions, badgeOptions } = useFilterOptions();
 
-  // Starts collapsed (just Filter) on every screen; opening it is up to the user
-  const [isExpanded, setIsExpanded] = useState(false);
+  // Open/closed lives in MapContext, so Remi's messages can open it too
+  const isExpanded = filterBarExpanded;
+  const setIsExpanded = setFilterBarExpanded;
 
   // On mobile, collapse when the drawer is pulled up to 55vh or 80vh
   useEffect(() => {
@@ -63,14 +65,10 @@ export default function FilterBar() {
   }, [selectedRestaurant, isochroneLayers.length, geocodedMarkers.length]);
 
   const toggleExpanded = () => {
-    const next = !isExpanded;
     // Tapping Filter during the mobile walkthrough (which points at it) ends the walkthrough
     if (onboardingActive) finishOnboarding();
-    setIsExpanded(next);
-    // Opening the filters closes the restaurant card, so the two don't compete for attention
-    if (next) setSelectedRestaurant(null);
-    // On mobile, expanding the bar lowers the drawer out of the way
-    if (isMobile() && next) setDrawerHeight(8);
+    if (isExpanded) setIsExpanded(false);
+    else openFilterBar();
   };
 
   const setFilter = (key: FilterKey, values: string[]) =>
