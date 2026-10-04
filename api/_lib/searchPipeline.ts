@@ -4,7 +4,7 @@
  *
  *   locations → geocode (parallel) → isochrones (parallel) → intersect
  *   → filter pool / cuisine / price / awards / Restaurant Week
- *   → rank (semantic if vibes were given, otherwise a fixed quality score) → top 5
+ *   → rank (semantic if dishes or vibes were given, otherwise a fixed quality score) → top 5
  *
  * Progress is reported through `tools` so the route can stream the same tool
  * parts the frontend already renders (geocode markers, isochrone layers, cards).
@@ -247,10 +247,10 @@ export async function runSearch(intent: SearchIntent, ctx: PipelineContext): Pro
     ? allRestaurants.filter((r) => ctx.filterPool.includes(r.slug))
     : allRestaurants;
 
-  // Vibes and diets both steer ranking; diets are also strict: a restaurant only counts
+  // Dishes, vibes and diets all steer ranking; diets are also strict: a restaurant only counts
   // if one of its own sentences supports the diet (so "vegan" never shows Veselka).
-  const semanticQuery = [...intent.vibes, ...intent.diets].join(", ");
-  const vibeQuery = intent.vibes.join(", ");
+  const semanticQuery = [...intent.dishes, ...intent.vibes, ...intent.diets].join(", ");
+  const vibeQuery = [...intent.dishes, ...intent.vibes].join(", ");
   const dietQuery = intent.diets.join(", ");
   // One embedding per distinct query, fetched in parallel.
   const [ranker, vibeOnly, dietOnly] = await Promise.all([
@@ -379,6 +379,7 @@ export async function runSearch(intent: SearchIntent, ctx: PipelineContext): Pro
 /** One-line human description of what was searched, for narration and logs. */
 export function describeSearch(intent: SearchIntent, travel: Travel | null = null): string {
   const parts: string[] = [];
+  if (intent.dishes.length) parts.push(intent.dishes.join(", "));
   if (intent.vibes.length) parts.push(intent.vibes.join(", "));
   if (intent.diets.length) parts.push(intent.diets.join(" + "));
   if (intent.cuisines.length) parts.push(intent.cuisines.join(" or "));

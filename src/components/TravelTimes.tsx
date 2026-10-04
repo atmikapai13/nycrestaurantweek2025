@@ -10,7 +10,7 @@ const MODES: Array<{ mode: Mode; Icon: ComponentType<LucideProps>; label: string
   { mode: "walking", Icon: Footprints, label: "walk" },
   { mode: "transit", Icon: TramFront, label: "transit" },
 ];
-/** The restaurant card's small section labels ("Getting there", "Reviews & more", "Reviews", "About") */
+/** The restaurant card's small section labels ("Reviews & more", "Reviews", "About") */
 export const SECTION_LABEL = "text-[11px] font-semibold tracking-wide text-grey uppercase";
 
 const LEGACY_ICONS = { walking: "🚶", cycling: "🚲", driving: "🚕", transit: "🚇" } as const;
@@ -70,15 +70,8 @@ export default function TravelTimes({
     ) : null;
   };
 
-  // The pills get a small heading (the portraits alone don't say what the numbers are)
-  const hasPills = distances.some((_, i) => {
-    const times = reason?.times?.[i];
-    return !!times && MODES.some(({ mode }) => times[mode] != null);
-  });
-
   return (
     <div className={cn("flex min-w-0 flex-col gap-1.5 text-caption font-semibold text-muted-foreground", className)}>
-      {hasPills && <div className={SECTION_LABEL}>Getting there</div>}
       {distances.map((d, i) => {
         // "0.5 mi from AMC Empire 25" → the place's name
         const [, lead = d, place = ""] = d.match(/^(.* from )(.+)$/) ?? [];

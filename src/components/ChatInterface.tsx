@@ -37,8 +37,9 @@ import { colors } from "@/styles/tokens";
 import { Message, MessageContent } from "@/components/ui/message";
 import { Bubble, BubbleContent, BubbleGroup } from "@/components/ui/bubble";
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupTextarea } from "@/components/ui/input-group";
-import { ArrowUp, LoaderCircle, Mic } from "lucide-react";
+import { ArrowUp, LoaderCircle, Mic, RotateCcw } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useIsDesktop } from "../hooks/useIsDesktop";
 import { boldPicks } from "../utils/boldPicks";
 import { friendLandmarkNear, isInManhattan } from "../utils/manhattan";
@@ -98,6 +99,8 @@ const CHATBOT_DOWN_MESSAGE =
 
 // Chat rows are shadcn Message + Bubble: Remi's replies are white tiles with his avatar inside
 // (RemiBubble; full width, since they hold status lines and toggles); yours are charcoal, on the right.
+// The input bar's button tooltips: the restaurant card's dark style, above the chat (z-index)
+const INPUT_TOOLTIP = "z-[2000] bg-foreground font-sans text-caption text-background";
 const USER_BUBBLE_CONTENT = "rounded-2xl rounded-br-sm px-3 py-2 font-sans text-body shadow-xs whitespace-pre-wrap";
 
 const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
@@ -120,6 +123,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       setSelectedRestaurant,
       userLocation,
       onboardingActive,
+      clearIsochroneLayers,
     } = useMap();
     // Desktop: Remi's picks are a list of names here and the card opens on the map
     const isDesktop = useIsDesktop();
@@ -308,6 +312,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       sendMessage,
       status,
       setMessages,
+      stop,
     } = useChat({
       transport,
       id: "nyc-restaurant-chat",
@@ -972,6 +977,27 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
     };
 
     // Quick-start prompt: send it as if typed (on mobile, open the drawer enough to see results)
+    // New chat: back to Remi's welcome and the sample prompts, with this conversation's areas,
+    // place pins, picks and cards cleared off the map (the user's own filters stay)
+    const voiceLabel = isTranscribing ? "Transcribing…" : isListening ? "Stop recording" : "Voice note";
+
+    const startNewChat = () => {
+      stop();
+      const welcome = welcomeMessages[0];
+      setMessages([
+        { id: "welcome", role: "assistant", parts: [{ type: "text", text: welcome }] },
+      ]);
+      processedToolCallIds.current = new Set();
+      autoOpenedPicks.current = "";
+      setTappedRestaurant(null);
+      setInput("");
+      clearIsochroneLayers();
+      clearGeocodedMarkers();
+      setRecommendedPicks([]);
+      setSelectedRestaurant(null);
+      inputRef.current?.focus();
+    };
+
     const handleQuickPrompt = (prompt: string) => {
       if (window.innerWidth <= 768 && drawerHeight === 8) {
         setDrawerHeight(55);
@@ -1524,21 +1550,42 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
               rows={1}
             />
             <InputGroupAddon align="inline-end" className="self-end pb-1.5">
-              <InputGroupButton
-                size="icon-sm"
-                variant="ghost"
-                onClick={toggleListening}
-                disabled={isLoading || isTranscribing}
-                className={cn(
-                  "rounded-full text-muted-foreground hover:bg-secondary hover:text-primary",
-                  isListening && "animate-pulse bg-secondary text-primary",
-                  isTranscribing && "text-isochrone"
-                )}
-                title={isTranscribing ? "Transcribing..." : isListening ? "Click to stop" : "Voice input"}
-                aria-label={isTranscribing ? "Transcribing..." : isListening ? "Click to stop" : "Voice input"}
-              >
-                {isTranscribing ? <LoaderCircle className="animate-spin" /> : <Mic />}
-              </InputGroupButton>
+              <TooltipProvider delayDuration={200}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <InputGroupButton
+                    size="icon-sm"
+                    variant="ghost"
+                    onClick={toggleListening}
+                    disabled={isLoading || isTranscribing}
+                    className={cn(
+                      "rounded-full text-muted-foreground hover:bg-secondary hover:text-primary",
+                      isListening && "animate-pulse bg-secondary text-primary",
+                      isTranscribing && "text-isochrone"
+                    )}
+                    aria-label={voiceLabel}
+                  >
+                    {isTranscribing ? <LoaderCircle className="animate-spin" /> : <Mic />}
+                  </InputGroupButton>
+                </TooltipTrigger>
+                <TooltipContent className={INPUT_TOOLTIP}>{voiceLabel}</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <InputGroupButton
+                    size="icon-sm"
+                    variant="ghost"
+                    onClick={startNewChat}
+                    disabled={!conversationStarted || isListening || isTranscribing}
+                    className="rounded-full text-muted-foreground hover:bg-secondary hover:text-primary"
+                    aria-label="Clear conversation"
+                  >
+                    <RotateCcw />
+                  </InputGroupButton>
+                </TooltipTrigger>
+                <TooltipContent className={INPUT_TOOLTIP}>Clear conversation</TooltipContent>
+              </Tooltip>
+              </TooltipProvider>
               <InputGroupButton
                 size="icon-sm"
                 variant="default"

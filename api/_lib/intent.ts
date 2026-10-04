@@ -42,12 +42,21 @@ export function buildIntentSchema(cuisines: string[]) {
     vibes: z
       .array(z.string())
       .describe(
-        'Atmosphere, occasion, or specific dishes, as short lowercase phrases. e.g. ["cozy", "romantic"], ["lively", "date night"], ["omakase"], ["happy hour"]. Do NOT include dietary needs, cuisines, prices, awards, or locations here.'
+        'Atmosphere or occasion, as short lowercase phrases. e.g. ["cozy", "romantic"], ["lively", "date night"], ["happy hour"], ["outdoor seating"]. Do NOT include foods or drinks (those go in dishes), dietary needs, cuisines, prices, awards, or locations here.'
+      ),
+    dishes: z
+      .array(z.string())
+      .describe(
+        'Specific foods or drinks the user wants, as short lowercase phrases. e.g. ["pasta"], ["soup dumplings"], ["omakase"], ["oysters", "martinis"], ["natural wine"]. Always keep a named dish here, even when it also implies a cuisine. [] if none.'
       ),
     diets: z
       .array(z.enum(DIETS))
       .describe('Dietary requirements the user stated ("vegan", "plant-based" → vegan; "veggie" → vegetarian; "celiac" → gluten-free). [] if none.'),
-    cuisines: z.array(z.enum(cuisines as [string, ...string[]])).describe("Cuisines the user asked for, mapped to this exact list."),
+    cuisines: z
+      .array(z.enum(cuisines as [string, ...string[]]))
+      .describe(
+        'Cuisines the user asked for, mapped to this exact list. Also the cuisine a named dish clearly belongs to, alongside the dish in dishes (pasta → Italian, ramen → Japanese / Sushi, tacos → Mexican); none for foods or drinks many cuisines serve (burgers, oysters, cocktails, brunch). [] if neither.'
+      ),
     prices: z
       .array(z.enum(PRICES))
       .describe('cheap/affordable/budget → ["$","$$"]; mid-range → ["$$"]; fancy/splurge/upscale → ["$$$","$$$$"]. [] if not mentioned.'),
@@ -73,6 +82,7 @@ export function normalizeIntent(intent: SearchIntent): SearchIntent {
     restaurantNames: intent.restaurantNames.map((n) => n.trim()).filter(Boolean),
     locations: intent.locations.map((l) => l.trim()).filter(Boolean),
     vibes: normalizeList(intent.vibes, true),
+    dishes: normalizeList(intent.dishes, true),
     diets: normalizeList(intent.diets),
     cuisines: normalizeList(intent.cuisines),
     prices: normalizeList(intent.prices),

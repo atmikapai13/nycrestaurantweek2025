@@ -1,14 +1,13 @@
 import React, { useMemo } from 'react';
 import { useMap } from '../contexts/MapContext';
 import { colors } from '@/styles/tokens';
-import { SlidersHorizontal } from 'lucide-react';
 
 interface IsochroneMessageProps {
   messageId: string;
 }
 
 export function IsochroneMessage({ messageId }: IsochroneMessageProps) {
-  const { isochroneLayers, layerVisibilityMap, toggleLayerVisibility, openFilterBar } = useMap();
+  const { isochroneLayers, layerVisibilityMap, toggleLayerVisibility } = useMap();
 
   // Find all layers belonging to this message
   const myLayerIds = useMemo(() => {
@@ -40,28 +39,9 @@ export function IsochroneMessage({ messageId }: IsochroneMessageProps) {
         style={{
           display: 'flex',
           justifyContent: 'flex-start',
-          gap: '6px',
           marginTop: '4px',
         }}
       >
-        {/* Narrow these results down: opens the filter bar (same as its Filter button) */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            openFilterBar();
-          }}
-          className="isochrone-toggle-button"
-          style={{
-            background: colors.white,
-            borderColor: colors.greyLight,
-            color: colors.greyDark,
-          }}
-          title="Filter restaurants"
-        >
-          <SlidersHorizontal size={14} strokeWidth={2} />
-          <span style={{ marginLeft: '4px' }}>Filter</span>
-        </button>
-
         <button
           onClick={handleToggle}
           className="isochrone-toggle-button"

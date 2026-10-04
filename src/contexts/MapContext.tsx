@@ -86,6 +86,8 @@ interface MapContextType {
   // Layer actions
   addLayers: (layers: IsochroneLayer[], messageId: string) => void;
   removeLayers: (messageId: string) => void;
+  /** Remove every isochrone (a new chat) */
+  clearIsochroneLayers: () => void;
   toggleLayerVisibility: (layerIds: string[]) => void;
   clearAllLayers: () => void;
 
@@ -452,6 +454,11 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
     []
   );
 
+  const clearIsochroneLayers = useCallback(() => {
+    setIsochroneLayers([]);
+    setLayerVisibilityMap(new Map());
+  }, []);
+
   const removeLayers = useCallback((messageId: string) => {
     console.log(`🗺️ MapContext: Removing layers for message ${messageId}`);
 
@@ -582,6 +589,7 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
         filterPoolSlugs,
         drawerHeight,
         setDrawerHeight,
+        clearIsochroneLayers,
         onboardingActive,
         finishOnboarding,
         filterBarExpanded,

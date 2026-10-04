@@ -5,7 +5,6 @@ import type { Restaurant } from "../types/restaurant";
 import { asset } from "../utils/asset";
 import { displayName } from "../utils/restaurantName";
 import TravelTimes, { SECTION_LABEL } from "./TravelTimes";
-import { useIsDesktop } from "../hooks/useIsDesktop";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -109,7 +108,6 @@ export default function RestaurantCard({
   const [showMore, setShowMore] = useState(false);
   // Open section inside Reviews & more: "reviews", "about" or "" (none)
   const [openSection, setOpenSection] = useState("");
-  const isDesktop = useIsDesktop();
   const r = restaurant || placeholderRestaurant;
   if (!r) return null;
 
@@ -253,8 +251,6 @@ export default function RestaurantCard({
     </div>
   );
 
-  // Desktop picks (cards with Remi's reason) get the pink-panel layout
-  const pickLayout = isDesktop && !!reason;
 
   // Inside "Reviews & more": Reviews (two-line preview, opens to the full text) and About,
   // one open at a time; on mobile the chat drawer grows to make room
@@ -376,32 +372,15 @@ export default function RestaurantCard({
         </div>
       )}
 
-      {pickLayout ? (
-        <>
-          {/* Desktop pick: what it is and how to act on it, with a full-width line under it; then
-              why Remi picked it and how far it is */}
-          <div className="border-b">
-            {header}
-            <div className="px-4 pb-4">{actions}</div>
-          </div>
-          {(whyBlock || reason.distances.length > 0) && (
-            <CardContent className="flex flex-col gap-3 p-4">
-              {whyBlock}
-              <TravelTimes reason={reason} />
-            </CardContent>
-          )}
-        </>
-      ) : (
-        <>
-          {header}
-          <CardContent className="flex flex-col gap-3 p-4 pt-0">
-            {actions}
-            {/* Why Remi picked it (his picks only), then how far it is */}
-            {whyBlock}
-            <TravelTimes reason={reason} />
-          </CardContent>
-        </>
-      )}
+      {header}
+
+      {/* Why Remi picked it and how far it is (his picks only), then the Reserve row, set a little
+          further apart since it's a different kind of thing (acting on it, not reading about it) */}
+      <CardContent className="flex flex-col gap-3 p-4 pt-0">
+        {whyBlock}
+        <TravelTimes reason={reason} />
+        <div className={cn((whyBlock || (reason?.distances.length ?? 0) > 0) && "mt-2")}>{actions}</div>
+      </CardContent>
 
       {/* 5. Reviews & more: a grey footer strip that opens downward into the accordions; once
           open, the strip's title gives way to the sections, with "Show less" at the bottom */}
