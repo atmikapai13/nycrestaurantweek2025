@@ -54,15 +54,15 @@ Shadows still use `rgba(0, 0, 0, …)`, and pink glows use `rgba(242, 61, 151, �
 | `display` | `--font-display` | `font-display` | Bebas Neue | The NYC EATS wordmark |
 | `mono` | `--font-mono` | `font-mono` | source-code-pro, Menlo, … | Code |
 
-Type scale (`fontSizes` in `tokens.ts`, Tailwind `text-<name>`):
+Type scale (`fontSizes` in `tokens.ts`, Tailwind `text-<name>`). Sizes are stored in rem; the px values below are at the default 16px root. Past 1440px wide the root font size grows (about 17px at 1920px, capped at 19px from 2560px; `index.css`), scaling all rem-based type and spacing with it, so use rem rather than px for new sizes:
 
 | Name | Size / line-height / weight | Use |
 |---|---|---|
-| `heading` | 22px / 1.2 / 700 | Panel titles, restaurant names on cards |
-| `subheading` | 16px / 1.3 / 600 | Section openers ("Hey, I'm Remi!") |
-| `body` | 13px / 1.4 / 400 | Chat messages, card descriptions, quotes and reviews |
-| `label` | 13px / 1.3 / 500 | Buttons, pills, menu items |
-| `caption` | 11px / 1.4 / 400 | Tags, sources, travel times, section toggles |
+| `heading` | 1.375rem (22px) / 1.2 / 700 | Panel titles, restaurant names on cards |
+| `subheading` | 1rem (16px) / 1.3 / 600 | Section openers ("Hey, I'm Remi!") |
+| `body` | 0.8125rem (13px) / 1.4 / 400 | Chat messages, card descriptions, quotes and reviews |
+| `label` | 0.8125rem (13px) / 1.3 / 500 | Buttons, pills, menu items |
+| `caption` | 0.6875rem (11px) / 1.4 / 400 | Tags, sources, travel times, section toggles |
 
 Use these classes rather than `font-size` in CSS. Each one sets size, line-height and weight together; add `font-semibold` etc. to change only the weight.
 

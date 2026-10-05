@@ -1,13 +1,13 @@
 /* Chat Interface Container - Left Side */
 .chat-interface {
   position: absolute;
-  top: 3%;
+  top: var(--panel-top); /* see index.css */
   left: 20px;
   bottom: 10px;
   z-index: 900;
   display: flex;
   flex-direction: column;
-  width: var(--chat-panel-width); /* 30% of the window (at least 320px); see index.css */
+  width: var(--chat-panel-width); /* 30% of the window (at least 20rem); see index.css */
 }
 
 /* Chat Panel Container - Transparent background */
@@ -112,21 +112,15 @@
   }
 }
 
-/* A soft sheen sweeps across each sample prompt every few seconds (the second a beat after the
-   first) so they don't sit there dead; on devices with a pointer they also lift a little on
-   hover (not on touch, where the hover state sticks after a tap) */
-.quick-prompts [data-slot="bubble-content"]::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.75) 50%, transparent 70%);
-  transform: translateX(-120%);
-  animation: quickPromptSheen 5s ease-in-out 1.2s infinite;
+/* Each sample prompt gives a little bounce every few seconds (the second 1.5s after the first)
+   to hint that it can be clicked; on devices with a pointer they also lift a little on hover
+   (not on touch, where the hover state sticks after a tap) */
+.quick-prompts [data-slot="bubble-content"] {
+  animation: quickPromptBounce 4s ease-in-out 1.2s infinite;
 }
 
-.quick-prompts > [data-slot="bubble"]:nth-child(2) [data-slot="bubble-content"]::after {
-  animation-delay: 1.6s;
+.quick-prompts > [data-slot="bubble"]:nth-child(2) [data-slot="bubble-content"] {
+  animation-delay: 2.7s;
 }
 
 @media (hover: hover) {
@@ -137,30 +131,40 @@
   }
 
   .quick-prompts [data-slot="bubble-content"]:hover {
+    animation: none;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   }
 }
 
-/* The sweep takes the first ~20% of each cycle; the rest is a pause */
-@keyframes quickPromptSheen {
-  0% {
-    transform: translateX(-120%);
-  }
-
+/* Two quick hops at the start of each cycle; the rest is a pause */
+@keyframes quickPromptBounce {
+  0%,
   20%,
   100% {
-    transform: translateX(120%);
+    transform: translateY(0);
+  }
+
+  5% {
+    transform: translateY(-6px);
+  }
+
+  10% {
+    transform: translateY(0);
+  }
+
+  14% {
+    transform: translateY(-3px);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .quick-prompts [data-slot="bubble-content"]:hover {
-    transform: none;
+  .quick-prompts [data-slot="bubble-content"] {
+    animation: none;
   }
 
-  .quick-prompts [data-slot="bubble-content"]::after {
-    display: none;
+  .quick-prompts [data-slot="bubble-content"]:hover {
+    transform: none;
   }
 }
 
@@ -265,7 +269,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-style: italic;
   color: var(--color-grey-dark);
   animation: fadeIn 0.3s ease;
@@ -279,12 +283,12 @@
   /* Colors are set inline (IsochroneMessage): the isochrone's purple while it's shown */
   border: 1px solid transparent;
   border-radius: 12px;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
   flex-shrink: 0;
-  height: 24px;
+  height: 1.5rem;
 }
 
 .isochrone-toggle-button:hover {

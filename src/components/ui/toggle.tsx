@@ -1,6 +1,7 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
+import { PILL_SIZE } from "./button"
 import { Toggle as TogglePrimitive } from "radix-ui"
 
 const toggleVariants = cva(
@@ -17,7 +18,7 @@ const toggleVariants = cva(
         sm: "h-8 min-w-8 px-1.5",
         lg: "h-10 min-w-10 px-2.5",
         // NYC Eats: filter-bar pills
-        pill: "h-[30px] rounded-full px-3 py-0 text-xs md:h-[34px] md:px-[13px] md:text-[13px]",
+        pill: PILL_SIZE,
       },
     },
     defaultVariants: {

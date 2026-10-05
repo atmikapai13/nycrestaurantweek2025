@@ -116,7 +116,21 @@
 :root {
   --drawer-height: 55vh; /* Mobile drawer height; ChatInterface keeps it in sync with drawerHeight */
   /* Desktop chat panel width; the filter bar sits just right of it (Map.tsx measures it) */
-  --chat-panel-width: max(30vw, 320px);
+  --chat-panel-width: max(30vw, 20rem);
+  /* Desktop: top edge shared by the chat panel and the filter bar, so Filter lines up with the first message */
+  --panel-top: 3%;
+}
+
+/* Root font size: a fixed 16px (the tokens were designed in px; a browser default of e.g. 13px
+   would otherwise shrink the whole UI). Past 1440px wide it grows, and with it every rem (type
+   scale, Tailwind spacing, buttons), gently: ~17px at 1920px, 19px from 2560px */
+html {
+  font-size: 16px;
+}
+@media (min-width: 1441px) {
+  html {
+    font-size: clamp(16px, 12.14px + 0.268vw, 19px);
+  }
 }
 
 /* Tablet: a wider chat panel */
@@ -179,7 +193,7 @@
 }
 
 .mapboxgl-popup-close-button {
-  font-size: 16px;
+  font-size: 1rem;
   color: var(--color-grey-dark);
 }
 

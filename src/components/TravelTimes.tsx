@@ -11,7 +11,7 @@ const MODES: Array<{ mode: Mode; Icon: ComponentType<LucideProps>; label: string
   { mode: "transit", Icon: TramFront, label: "transit" },
 ];
 /** The restaurant card's small section labels ("Reviews & more", "Reviews", "About") */
-export const SECTION_LABEL = "text-[11px] font-semibold tracking-wide text-grey uppercase";
+export const SECTION_LABEL = "text-[0.6875rem] font-semibold tracking-wide text-grey uppercase";
 
 const LEGACY_ICONS = { walking: "🚶", cycling: "🚲", driving: "🚕", transit: "🚇" } as const;
 
@@ -83,7 +83,7 @@ export default function TravelTimes({
           return (
             <div key={d} className="flex flex-wrap items-center gap-1">
               {legMode && (
-                <span className="text-[12px] leading-none" aria-hidden="true">
+                <span className="text-[0.75rem] leading-none" aria-hidden="true">
                   {LEGACY_ICONS[legMode]}
                 </span>
               )}
@@ -120,7 +120,7 @@ export default function TravelTimes({
                   title={`${text} by ${label}${mode === fastest ? " (fastest)" : ""}`}
                 >
                   <Icon className="size-3.5" strokeWidth={2.25} aria-hidden="true" />
-                  <span className="text-[10px] font-semibold whitespace-nowrap">{text}</span>
+                  <span className="text-[0.625rem] font-semibold whitespace-nowrap">{text}</span>
                 </div>
               );
             })}

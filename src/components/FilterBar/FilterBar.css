@@ -3,7 +3,9 @@
 
 .filter-bar-container {
   position: absolute;
-  top: 3%;
+  /* Level with the chat panel's first message (its 10px padding is cancelled by the first
+     message's -10px margin, so the message's top edge is the panel's top edge) */
+  top: var(--panel-top);
   /* Right of the chat panel: 20px (chat left) + its width + 10px gap */
   left: calc(20px + var(--chat-panel-width) + 10px);
   right: 50px;
@@ -57,7 +59,7 @@
      and the pills open below it, right-aligned, so they never cover the header */
   .filter-bar-container {
     position: fixed;
-    top: 10px;
+    top: 22px; /* vertically centred on the floating header (8px padding + 60px character) */
     left: 10px;
     right: 10px;
     align-items: flex-end;
@@ -81,12 +83,5 @@
 @media (min-width: 769px) and (max-width: 1024px) {
   .filter-bar-container {
     right: 10px;
-  }
-}
-
-/* Large screens (useIsLargeScreen's 1536px): 3% of a tall viewport pushes Filter button too low */
-@media (min-width: 1536px) {
-  .filter-bar-container {
-    top: 1%;
   }
 }

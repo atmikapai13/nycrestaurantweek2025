@@ -37,6 +37,18 @@ function paragraphs(text: string | undefined, dropYelpOpener = false): string {
   }, "");
 }
 
+/** "Reviews & more" section header: its label, plus a two-line preview while the section is closed. */
+function PreviewTrigger({ label, open, children }: { label: string; open: boolean; children?: React.ReactNode }) {
+  return (
+    <AccordionTrigger className="items-start gap-3 py-2.5 hover:no-underline [&>svg]:mt-0.5">
+      <span className="flex min-w-0 flex-col items-start gap-1 text-left">
+        <span className={SECTION_LABEL}>{label}</span>
+        {!open && children && <span className="line-clamp-2 text-body font-normal text-muted-foreground">{children}</span>}
+      </span>
+    </AccordionTrigger>
+  );
+}
+
 /** Source logo sitting inline at the start of review text, like the first word. */
 function SourceIcon({ src, label }: { src: string; label: string }) {
   return <img src={src} alt={label} title={label} className="mr-1 inline-block size-3.5 object-contain align-[-2px]" />;
@@ -132,26 +144,25 @@ export default function RestaurantCard({
     const t = text.replace(/^In Yelp reviews,\s*/i, "");
     return t.charAt(0).toUpperCase() + t.slice(1);
   })();
-  // About: collapsed shows the one-line pitch (summary); expanded shows the longer write-up
-  // (summary2), which often restates the pitch, so the two are never shown together. When
-  // Remi's quote already is the pitch, the preview uses the write-up instead.
-  const shortAbout = r.summary?.trim() ?? "";
-  const longAbout = r.summary2?.trim() || shortAbout;
+  // About: the longer write-up (summary2), else the one-line pitch (summary)
+  const longAbout = r.summary2?.trim() || r.summary?.trim() || "";
   const hasDetails = hasReviews || !!longAbout;
 
-  // Remi's reason (his picks): the quote in full, then the facts. Only when there's a quote: the
-  // facts alone ("Italian") just repeat the search's filters and the card's tags
+  // Remi's reason (his picks): the quote in full, then any facts the header tags don't already
+  // show (cuisine, price and awards are tags, so only e.g. Restaurant Week meals remain). Only
+  // when there's a quote: the facts alone just repeat the search's filters
+  const reasonFacts = (reason?.facts ?? []).filter(
+    (fact) => fact !== r.cuisine && fact !== r.price && !/^(Michelin|Bib Gourmand|NYT Top 100)/.test(fact)
+  );
   const whyBlock = reason?.quote && (
     <div className="border-l-2 border-primary py-1 pl-2.5">
-      {reason.quote && (
-        <blockquote className="text-body italic text-muted-foreground">
-          “{reason.quote.text}”
-          <span className="whitespace-nowrap text-caption not-italic text-grey"> — {reason.quote.source}</span>
-        </blockquote>
-      )}
-      {reason.facts.length > 0 && (
-        <div className={cn("text-body font-semibold text-foreground", reason.quote && "mt-1")}>
-          {reason.facts.map((fact) => (
+      <blockquote className="text-body italic text-muted-foreground">
+        “{reason.quote.text}”
+        <span className="whitespace-nowrap text-caption not-italic text-grey"> — {reason.quote.source}</span>
+      </blockquote>
+      {reasonFacts.length > 0 && (
+        <div className="mt-1 text-body font-semibold text-foreground">
+          {reasonFacts.map((fact) => (
             <div key={fact}>{fact}</div>
           ))}
         </div>
@@ -163,7 +174,7 @@ export default function RestaurantCard({
   const header = (
     <CardHeader className={cn("flex flex-row items-start gap-3 p-4 pb-3", onClose && "pr-10")}>
       <div className="flex min-w-0 flex-1 flex-col gap-2">
-        <CardTitle className="text-heading font-bold leading-[1.2] tracking-tight max-md:text-[19px]" title={r.name}>
+        <CardTitle className="text-heading font-bold leading-[1.2] tracking-tight max-md:text-[1.1875rem]" title={r.name}>
           {displayName(r.name)}
         </CardTitle>
         <div className="flex flex-wrap gap-1.5">
@@ -252,7 +263,7 @@ export default function RestaurantCard({
   );
 
 
-  // Inside "Reviews & more": Reviews (two-line preview, opens to the full text) and About,
+  // Inside "Reviews & more": Reviews and About (each a two-line preview that opens to the full text),
   // one open at a time; on mobile the chat drawer grows to make room
   const details = (
     <Accordion
@@ -266,17 +277,14 @@ export default function RestaurantCard({
     >
       {hasReviews && (
         <AccordionItem value="reviews" className="border-grey-light last:border-b-0">
-          <AccordionTrigger className="items-start gap-3 py-2.5 hover:no-underline [&>svg]:mt-0.5">
-            <span className="flex min-w-0 flex-col items-start gap-1 text-left">
-              <span className={SECTION_LABEL}>Reviews</span>
-              {openSection !== "reviews" && reviewPreview && (
-                <span className="line-clamp-2 text-body font-normal text-muted-foreground">
-                  <SourceIcon src={asset(r.yelp_review_highlights ? "/yelp_logo.png" : "/reddit.webp")} label={r.yelp_review_highlights ? "Yelp" : "Reddit"} />
-                  {reviewPreview}
-                </span>
-              )}
-            </span>
-          </AccordionTrigger>
+          <PreviewTrigger label="Reviews" open={openSection === "reviews"}>
+            {reviewPreview && (
+              <>
+                <SourceIcon src={asset(r.yelp_review_highlights ? "/yelp_logo.png" : "/reddit.webp")} label={r.yelp_review_highlights ? "Yelp" : "Reddit"} />
+                {reviewPreview}
+              </>
+            )}
+          </PreviewTrigger>
           <AccordionContent className="flex flex-col gap-3 pb-3">
             {r.yelp_review_highlights && (
               <p className="whitespace-pre-line text-body text-muted-foreground">
@@ -302,7 +310,9 @@ export default function RestaurantCard({
       )}
       {longAbout && (
         <AccordionItem value="about" className="border-grey-light last:border-b-0">
-          <AccordionTrigger className={cn("py-2.5 hover:no-underline", SECTION_LABEL)}>About</AccordionTrigger>
+          <PreviewTrigger label="About" open={openSection === "about"}>
+            {longAbout.replace(/\s+/g, " ")}
+          </PreviewTrigger>
           <AccordionContent className="flex flex-col gap-2 pb-3">
             <p className="whitespace-pre-line text-body text-muted-foreground">{paragraphs(longAbout)}</p>
             {(r.michelin_award || r.nyttop100_rank) && (

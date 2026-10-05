@@ -62,18 +62,21 @@ export const fonts = {
   mono: "source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace",
 } as const;
 
-/** Type scale: [font-size, line-height, weight]. Tailwind: text-heading, text-subheading, … */
+/**
+ * Type scale: [font-size, line-height, weight]. Tailwind: text-heading, text-subheading, …
+ * Sizes are rem (16px base) so they grow with the root font size on large screens (index.css).
+ */
 export const fontSizes = {
   /** Panel and card titles */
-  heading: ["22px", "1.2", "700"],
+  heading: ["1.375rem", "1.2", "700"],
   /** Section openers, e.g. "Hey, I'm Remi!" */
-  subheading: ["16px", "1.3", "600"],
+  subheading: ["1rem", "1.3", "600"],
   /** Chat messages and other running text */
-  body: ["13px", "1.4", "400"],
+  body: ["0.8125rem", "1.4", "400"],
   /** Buttons, pills, menu items */
-  label: ["13px", "1.3", "500"],
+  label: ["0.8125rem", "1.3", "500"],
   /** Metadata, hints, small buttons */
-  caption: ["11px", "1.4", "400"],
+  caption: ["0.6875rem", "1.4", "400"],
 } as const;
 
 /** camelCase token name → CSS custom property, e.g. pinkSoft → --color-pink-soft */

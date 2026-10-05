@@ -59,7 +59,7 @@ export default function FavoritesFilter({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className={filterMenuClass}>
         <DropdownMenuItem
-          className="cursor-pointer rounded-lg text-[13px]"
+          className="cursor-pointer rounded-lg text-[0.8125rem]"
           onSelect={(e) => {
             e.preventDefault(); // stay open so "Copied!" is visible
             handleShare();

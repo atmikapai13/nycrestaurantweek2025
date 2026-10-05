@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 
 const SIZES = {
   md: { star: 18, radius: 40, value: "text-heading" },
-  sm: { star: 15, radius: 31, value: "text-[18px]" },
+  sm: { star: 15, radius: 31, value: "text-[1.125rem]" },
 } as const;
 const ANGLES = [-56, -28, 0, 28, 56]; // degrees from vertical, left → right
 
@@ -51,7 +51,8 @@ export default function RatingArc({
               <Star className="absolute inset-0 size-full fill-grey-lightest text-grey-light" strokeWidth={1.5} />
               {fill > 0 && (
                 <span className="absolute inset-0 overflow-hidden" style={{ width: `${fill * 100}%` }}>
-                  <Star className="fill-amber text-amber" style={{ width: star, height: star }} strokeWidth={1.5} />
+                  {/* block: inline, the svg sits on the text baseline and drifts off its outline */}
+                  <Star className="block fill-amber text-amber" style={{ width: star, height: star }} strokeWidth={1.5} />
                 </span>
               )}
             </span>

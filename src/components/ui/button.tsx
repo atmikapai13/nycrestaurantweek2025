@@ -3,6 +3,9 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 import { Slot } from "radix-ui"
 
+/** NYC Eats: filter-bar pill sizing, shared by Button and Toggle */
+export const PILL_SIZE = "h-[1.875rem] rounded-full px-3 py-0 text-xs md:h-[2.125rem] md:px-[0.8125rem] md:text-[0.8125rem]"
+
 const buttonVariants = cva(
   "inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
@@ -29,7 +32,7 @@ const buttonVariants = cva(
         "icon-sm": "size-8",
         "icon-lg": "size-10",
         // NYC Eats: filter-bar pills
-        pill: "h-[30px] rounded-full px-3 py-0 text-xs md:h-[34px] md:px-[13px] md:text-[13px]",
+        pill: PILL_SIZE,
       },
     },
     defaultVariants: {

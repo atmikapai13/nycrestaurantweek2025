@@ -89,7 +89,7 @@ export default function FilterDropdown({
     return (
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>{trigger}</PopoverTrigger>
-        <PopoverContent align="start" className={cn(filterMenuClass, "w-[220px] overflow-hidden p-0")}>
+        <PopoverContent align="start" className={cn(filterMenuClass, "w-[13.75rem] overflow-hidden p-0")}>
           <Command>
             <CommandInput placeholder={`Search ${typeof label === "string" ? label.toLowerCase() : ""}…`} />
             <CommandList>
@@ -101,7 +101,7 @@ export default function FilterDropdown({
                     value={option.value}
                     disabled={option.disabled}
                     onSelect={() => toggle(option.value)}
-                    className={cn("cursor-pointer gap-2 rounded-lg text-[13px]", selected.has(option.value) && selectedRow)}
+                    className={cn("cursor-pointer gap-2 rounded-lg text-[0.8125rem]", selected.has(option.value) && selectedRow)}
                   >
                     {optionContent(option)}
                   </CommandItem>
@@ -132,7 +132,7 @@ export default function FilterDropdown({
               onSelect={(e) => e.preventDefault()}
               // No checkmark column: selected rows are highlighted pink instead
               className={cn(
-                "cursor-pointer rounded-lg pl-2 text-[13px] [&>span:first-child]:hidden",
+                "cursor-pointer rounded-lg pl-2 text-[0.8125rem] [&>span:first-child]:hidden",
                 selected.has(option.value) && selectedRow
               )}
             >

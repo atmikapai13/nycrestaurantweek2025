@@ -1475,7 +1475,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
                         bubbles that send when clicked. Gone once the conversation has started, or
                         once a tapped marker's card is showing (mobile). */}
                     {idx === 0 && !conversationStarted && !tappedRestaurant && (
-                      // quick-prompts: sheen, and hover lift with a pointer (ChatInterface.css)
+                      // quick-prompts: bounce, and hover lift with a pointer (ChatInterface.css)
                       <BubbleGroup className="quick-prompts">
                         {quickPrompts.map((prompt) => (
                           <Bubble key={prompt} variant="tinted" align="end">
@@ -1546,7 +1546,7 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
               placeholder={isListening ? "Listening... tap mic to stop" : isTranscribing ? "Transcribing..." : "Search for a restaurant..."}
               disabled={isLoading || isListening || isTranscribing}
               // 14px keeps iOS from zooming in on focus; height is managed by autoResizeTextarea
-              className="min-h-0 py-2.5 pl-4 font-sans text-[14px] leading-[1.4] [scrollbar-width:none] placeholder:text-grey"
+              className="min-h-0 py-2.5 pl-4 font-sans text-[0.875rem] leading-[1.4] [scrollbar-width:none] placeholder:text-grey"
               rows={1}
             />
             <InputGroupAddon align="inline-end" className="self-end pb-1.5">
