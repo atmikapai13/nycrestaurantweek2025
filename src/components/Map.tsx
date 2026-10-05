@@ -507,7 +507,7 @@ export default function Map({
         essential: true, // This animation is essential with respect to prefers-reduced-motion
         padding: isMobileView
           ? mobileMapPadding() // Mobile: center above the chat drawer
-          : { top: 100, bottom: 100, left: chatPanelInset(), right: PANEL_CARD_WIDTH + PANEL_INSET.right + 40 }, // Desktop: chat panel on the left, card in the bottom-right corner
+          : { top: 100, bottom: 100, left: chatPanelInset(), right: 100 }, // Desktop: pad left for the chat panel (same as the isochrone fit); the corner card sits below the pin
       });
     }
   }, [selectedRestaurant]);
