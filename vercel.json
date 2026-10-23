@@ -1,30 +1,101 @@
 {
   "redirects": [
-    { "source": "/", "destination": "/winter2026/", "permanent": false }
+    {
+      "source": "/",
+      "destination": "/fall2026/",
+      "permanent": false
+    },
+    {
+      "source": "/winter2026",
+      "destination": "/fall2026/",
+      "permanent": false
+    },
+    {
+      "source": "/winter2026/",
+      "destination": "/fall2026/",
+      "permanent": false
+    }
   ],
   "rewrites": [
-    { "source": "/summer2025", "destination": "https://nyceats-summer2025.vercel.app/summer2025/index.html" },
-    { "source": "/summer2025/", "destination": "https://nyceats-summer2025.vercel.app/summer2025/index.html" },
-    { "source": "/summer2025/:path*", "destination": "https://nyceats-summer2025.vercel.app/summer2025/:path*" },
-    { "source": "/spring2026/api/:path*", "destination": "https://nyceats-spring2026.vercel.app/api/:path*" },
-    { "source": "/spring2026", "destination": "https://nyceats-spring2026.vercel.app/spring2026/index.html" },
-    { "source": "/spring2026/", "destination": "https://nyceats-spring2026.vercel.app/spring2026/index.html" },
-    { "source": "/spring2026/:path*", "destination": "https://nyceats-spring2026.vercel.app/spring2026/:path*" },
-    { "source": "/worldcup2026/api/:path*", "destination": "https://nyceats-worldcup2026.vercel.app/api/:path*" },
-    { "source": "/worldcup2026", "destination": "https://nyceats-worldcup2026.vercel.app/worldcup2026/index.html" },
-    { "source": "/worldcup2026/", "destination": "https://nyceats-worldcup2026.vercel.app/worldcup2026/index.html" },
-    { "source": "/worldcup2026/:path*", "destination": "https://nyceats-worldcup2026.vercel.app/worldcup2026/:path*" },
-    { "source": "/summer2026/api/:path*", "destination": "https://nyceats-summer2026.vercel.app/api/:path*" },
-    { "source": "/summer2026", "destination": "https://nyceats-summer2026.vercel.app/summer2026/index.html" },
-    { "source": "/summer2026/", "destination": "https://nyceats-summer2026.vercel.app/summer2026/index.html" },
-    { "source": "/summer2026/:path*", "destination": "https://nyceats-summer2026.vercel.app/summer2026/:path*" },
-    { "source": "/fall2026/api/:path*", "destination": "https://nyceats-winter2026.vercel.app/api/:path*" },
-    { "source": "/fall2026", "destination": "https://nyceats-winter2026.vercel.app/fall2026/index.html" },
-    { "source": "/fall2026/", "destination": "https://nyceats-winter2026.vercel.app/fall2026/index.html" },
-    { "source": "/fall2026/:path*", "destination": "https://nyceats-winter2026.vercel.app/fall2026/:path*" },
-    { "source": "/winter2026/api/:path*", "destination": "https://nyceats-winter2026.vercel.app/api/:path*" },
-    { "source": "/winter2026", "destination": "https://nyceats-winter2026.vercel.app/winter2026/index.html" },
-    { "source": "/winter2026/", "destination": "https://nyceats-winter2026.vercel.app/winter2026/index.html" },
-    { "source": "/winter2026/:path*", "destination": "https://nyceats-winter2026.vercel.app/winter2026/:path*" }
+    {
+      "source": "/summer2025",
+      "destination": "https://nyceats-summer2025.vercel.app/summer2025/index.html"
+    },
+    {
+      "source": "/summer2025/",
+      "destination": "https://nyceats-summer2025.vercel.app/summer2025/index.html"
+    },
+    {
+      "source": "/summer2025/:path*",
+      "destination": "https://nyceats-summer2025.vercel.app/summer2025/:path*"
+    },
+    {
+      "source": "/spring2026/api/:path*",
+      "destination": "https://nyceats-spring2026.vercel.app/api/:path*"
+    },
+    {
+      "source": "/spring2026",
+      "destination": "https://nyceats-spring2026.vercel.app/spring2026/index.html"
+    },
+    {
+      "source": "/spring2026/",
+      "destination": "https://nyceats-spring2026.vercel.app/spring2026/index.html"
+    },
+    {
+      "source": "/spring2026/:path*",
+      "destination": "https://nyceats-spring2026.vercel.app/spring2026/:path*"
+    },
+    {
+      "source": "/worldcup2026/api/:path*",
+      "destination": "https://nyceats-worldcup2026.vercel.app/api/:path*"
+    },
+    {
+      "source": "/worldcup2026",
+      "destination": "https://nyceats-worldcup2026.vercel.app/worldcup2026/index.html"
+    },
+    {
+      "source": "/worldcup2026/",
+      "destination": "https://nyceats-worldcup2026.vercel.app/worldcup2026/index.html"
+    },
+    {
+      "source": "/worldcup2026/:path*",
+      "destination": "https://nyceats-worldcup2026.vercel.app/worldcup2026/:path*"
+    },
+    {
+      "source": "/summer2026/api/:path*",
+      "destination": "https://nyceats-summer2026.vercel.app/api/:path*"
+    },
+    {
+      "source": "/summer2026",
+      "destination": "https://nyceats-summer2026.vercel.app/summer2026/index.html"
+    },
+    {
+      "source": "/summer2026/",
+      "destination": "https://nyceats-summer2026.vercel.app/summer2026/index.html"
+    },
+    {
+      "source": "/summer2026/:path*",
+      "destination": "https://nyceats-summer2026.vercel.app/summer2026/:path*"
+    },
+    {
+      "source": "/fall2026/api/:path*",
+      "destination": "https://nyceats-winter2026.vercel.app/api/:path*"
+    },
+    {
+      "source": "/fall2026",
+      "destination": "https://nyceats-winter2026.vercel.app/fall2026/index.html"
+    },
+    {
+      "source": "/fall2026/",
+      "destination": "https://nyceats-winter2026.vercel.app/fall2026/index.html"
+    },
+    {
+      "source": "/fall2026/:path*",
+      "destination": "https://nyceats-winter2026.vercel.app/fall2026/:path*"
+    },
+    {
+      "source": "/winter2026/api/:path*",
+      "destination": "https://nyceats-winter2026.vercel.app/api/:path*"
+    }
   ]
 }
