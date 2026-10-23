@@ -15,10 +15,10 @@ NYC Eats is a conversational geospatial restaurant discovery tool for Manhattan.
 ## Commands
 
 ```bash
-npm run dev                   # Vite frontend (5173), served under /winter2026/
+npm run dev                   # Vite frontend (5173), served under /fall2026/
 npm run api:dev               # Local Hono API server with tsx watch (3001) — REQUIRED for chat in dev
 npm run vercel-dev            # Vercel Functions locally (3000)
-npm run build                 # tsc + vite build → dist/winter2026
+npm run build                 # tsc + vite build → dist/fall2026
 npm run lint                  # ESLint, --max-warnings 0
 npm run embeddings:generate   # Regenerate src/data/embeddings.json from FinalData.json (needed after data changes)
 node scripts/benchmark-chat.js --label <name>   # Speed + consistency benchmark (needs api:dev); report → benchmarks/results/
@@ -32,10 +32,10 @@ In dev, `src/config/features.ts` hard-codes the chat/transcribe endpoints to `ht
 
 ## Deployment (subpath build)
 
-This branch (`winter2026`) is built as a self-contained subpath app:
-- `vite.config.ts` sets `base: "/winter2026/"` and `outDir: "dist/winter2026"`. The site is served at `nyceats.live/winter2026/` via a separate Vercel router project, and also on its own `.vercel.app` domain.
+This branch (`fall2026`) is built as a self-contained subpath app:
+- `vite.config.ts` sets `base: "/fall2026/"` and `outDir: "dist/fall2026"`. The site is served at `nyceats.live/fall2026/` via a separate Vercel router project, and also on its own `.vercel.app` domain.
 - **Public assets must go through `asset()`** (`src/utils/asset.ts`), e.g. `asset("/characters/anton.png")`. Hard-coded `/foo.png` paths break under the subpath.
-- `vercel.json` rewrites `/winter2026/api/*` → `/api/*`; functions have a 60s max duration (`includeFiles` bundles `FinalData.json` and `embeddings.json` with the functions). Every `.ts` file under `api/` becomes a function and the Hobby plan allows 12 per deployment, so only real endpoints (`chat.ts`, `transcribe.ts`) live there by name; helpers and the dev server are `_`-prefixed (`_lib/`, `_schemas/`, `_env.ts`, `_server.ts`), which Vercel skips. Vercel deploys from this branch; the `gh-pages` branch is excluded. `npm run deploy` (gh-pages) is legacy.
+- `vercel.json` rewrites `/fall2026/api/*` → `/api/*`; functions have a 60s max duration (`includeFiles` bundles `FinalData.json` and `embeddings.json` with the functions). Every `.ts` file under `api/` becomes a function and the Hobby plan allows 12 per deployment, so only real endpoints (`chat.ts`, `transcribe.ts`) live there by name; helpers and the dev server are `_`-prefixed (`_lib/`, `_schemas/`, `_env.ts`, `_server.ts`), which Vercel skips. Vercel deploys from this branch; the `gh-pages` branch is excluded. `npm run deploy` (gh-pages) is legacy.
 - Kill switch: set `CHATBOT_DOWN = true` in `src/components/ChatInterface.tsx` to take Remi offline (shows a down message instead of calling the API).
 
 ## Request Flow (`api/chat.ts`)
