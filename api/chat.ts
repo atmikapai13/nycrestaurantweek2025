@@ -30,6 +30,14 @@ const PACING_HEADER = "x-nyceats-pacing";
 const RATE_LIMIT_MESSAGE =
   "My buddy, Gemini, is exhausted. He's complaining about hitting API rate limits or something. Give us ~30 seconds to catch our breath and try again!";
 
+const BILLING_MESSAGE =
+  "Gemini won't cooperate: our API credits have run out. Please check back later.";
+
+function isBilling(error: unknown): boolean {
+  const text = error instanceof Error ? error.message : String(error);
+  return /prepayment|credits are depleted|billing/i.test(text);
+}
+
 function isRateLimit(error: unknown): boolean {
   const text = error instanceof Error ? error.message : String(error);
   return /429|quota|RESOURCE_EXHAUSTED|rate limit/i.test(text);
@@ -147,7 +155,9 @@ const chatHandler = async (c: any) => {
   } catch (error) {
     console.error("❌ Intent parsing failed:", error);
     metrics.log();
-    return isRateLimit(error)
+    return isBilling(error)
+      ? c.json({ error: "BILLING", message: BILLING_MESSAGE }, 402)
+      : isRateLimit(error)
       ? c.json({ error: "RATE_LIMIT", message: RATE_LIMIT_MESSAGE }, 429)
       : c.json({ error: error instanceof Error ? error.message : String(error) }, 500);
   }
@@ -228,6 +238,7 @@ const chatHandler = async (c: any) => {
     onError: (error) => {
       console.error("❌ Chat stream error:", error);
       metrics.log();
+      if (isBilling(error)) return `BILLING: ${BILLING_MESSAGE}`;
       return isRateLimit(error) ? `RATE_LIMIT: ${RATE_LIMIT_MESSAGE}` : "Something went wrong while searching.";
     },
   });

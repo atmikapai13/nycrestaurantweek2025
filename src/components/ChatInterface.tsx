@@ -97,6 +97,39 @@ const CHATBOT_DOWN = false;
 const CHATBOT_DOWN_MESSAGE =
   "Oof — my kitchen is temporarily closed! 🍳 My sous-chef (the AI behind the scenes) has stepped out, so I can't whisk up recommendations right now. We're working to get NYC Eats back up and running soon.<br><br>In the meantime, you can still explore the map, browse restaurant markers, and favorite your spots. Merci for your patience — please check back shortly!";
 
+// Remi explains what actually broke, in his voice, naming the technical cause. The raw error
+// is quoted for anything unrecognized so the failure is never disguised as a bad question.
+function describeChatError(raw: string): string {
+  // The API wraps errors as {"error": "..."} or {"error":"CODE","message":"..."}
+  let detail = raw;
+  try {
+    const parsed = JSON.parse(raw);
+    detail = parsed?.message || parsed?.error || raw;
+  } catch {
+    /* not JSON */
+  }
+  // The message is rendered as HTML, so escape the quoted error
+  detail = String(detail)
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 200)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+
+  if (/prepayment|credits are depleted|billing/i.test(raw))
+    return "Uh oh, the kitchen's out of funds! Gemini (the AI behind me) is refusing requests because our prepaid API credits are depleted. Please check back later.";
+  if (/429|RATE_LIMIT|RESOURCE_EXHAUSTED|quota|rate limit/i.test(raw))
+    return "Wheeew, we've been busy! My buddy, Gemini, is exhausted. He's complaining about hitting API rate limits or something. Give us ~30 seconds to catch our breath and try again!";
+  if (/503|UNAVAILABLE|overloaded/i.test(raw))
+    return "Gemini says it's overloaded right now (a 503 from Google's servers). That's on their end, so try again in a minute.";
+  if (/401|403|API key|PERMISSION_DENIED|UNAUTHENTICATED/i.test(raw))
+    return "Gemini rejected our API key (a 401/403 auth error), so I can't think right now. That's a setup problem on our side, so please check back later.";
+  if (/Failed to fetch|NetworkError|Load failed|timed? ?out|504|FUNCTION_INVOCATION_TIMEOUT/i.test(raw))
+    return "I lost my connection to the server (the request failed or timed out before anything came back). Check your connection and try again.";
+  return `Something broke in the kitchen, and it wasn't your question. The error was: <i>${detail}</i><br><br>You can try again, but if it keeps happening, it's on us.`;
+}
+
 // Chat rows are shadcn Message + Bubble: Remi's replies are white tiles with his avatar inside
 // (RemiBubble; full width, since they hold status lines and toggles); yours are charcoal, on the right.
 // The input bar's button tooltips: the restaurant card's dark style, above the chat (z-index)
@@ -318,23 +351,15 @@ const ChatInterface = forwardRef<ChatInterfaceHandle, ChatInterfaceProps>(
       id: "nyc-restaurant-chat",
       onError: (error) => {
         console.error("Chat error:", error);
-        // Check if it's a rate limit error
-        const errorStr = error?.message || String(error);
-        const isRateLimit = errorStr.includes("429") ||
-          errorStr.includes("RATE_LIMIT") ||
-          errorStr.includes("quota") ||
-          errorStr.includes("rate limit");
-
-        const errorContent = isRateLimit
-          ? "Wheeew, we've been busy! My buddy, Gemini, is exhausted. He's complaining about hitting API rate limits or something. Give us ~30 seconds to catch our breath and try again!"
-          : "Something went wrong while I was whisking through your request. It seems my whiskers got tangled! <br><br> Could you try rephrasing or asking again?";
+        const errorContent = describeChatError(error?.message || String(error));
 
         const errorMessage = {
           id: `error-${Date.now()}`,
           role: "assistant" as const,
           content: errorContent,
           createdAt: new Date(),
-          parts: [],
+          // Text is rebuilt from parts when rendering, so the message must live here
+          parts: [{ type: "text" as const, text: errorContent }],
         };
         setMessages([...aiMessages, errorMessage]);
       },
